@@ -2,10 +2,10 @@
 
 ## Samenstelling
 - Alexander Van Oyen
-- Axel Lorreyne
+- Axel Lorreyne: Projectleider
 - Gilles Arnout
 - Pieter-Jan De Smijter
 - Reinhard De Paepe
 - Robin Paret: Systeembeheerder
 - Rune Dyselinck
-- Thibaud Collyn
+- Thibaud Collyn: Customer relations officer
