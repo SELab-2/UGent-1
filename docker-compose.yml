@@ -7,33 +7,35 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=pigeonhole
+      - POSTGRES_USER=${SQL_USER}
+      - POSTGRES_PASSWORD=${SQL_PASSWORD}
+      - POSTGRES_DB=${SQL_DATABASE}
     ports:
       - 5432:5432
+    env_file:
+      - path: .env
   
   django:
-    container_name: pigeonhole-dj
+    container_name: pigeonhole-django
     build: ./django
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./backend/:/usr/src/app/
+      - ./django/:/usr/src/app/
     ports:
       - 8000:8000
     env_file:
-      - .env.dev
+      - .env
 
   next:
-    container_name: DrTrottoir-fe
-    build: ./frontend
+    container_name: pigeonhole-next
+    build: ./next
     command: npm run dev
     volumes:
-      - ./frontend/:/usr/src/app
+      - ./next/:/usr/src/app
       - /usr/src/app/node_modules
     ports:
       - 3000:3000
     env_file:
-      - .env.dev
+      - .env
 volumes:
   postgres_data:
