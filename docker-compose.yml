@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  db:
-    container_name: pigeonhole-pg
+  database:
+    container_name: pigeonhole-database
     image: postgres:13.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
@@ -15,7 +15,7 @@ services:
     env_file:
       - .env
   
-  django:
+  backend:
     container_name: pigeonhole-backend
     build: ./backend
     command: python manage.py runserver 0.0.0.0:8000
@@ -26,7 +26,7 @@ services:
     env_file:
       - .env
 
-  next:
+  frontend:
     container_name: pigeonhole-frontend
     build: ./frontend
     command: npm run dev
@@ -37,5 +37,6 @@ services:
       - 3000:3000
     env_file:
       - .env
+
 volumes:
   postgres_data:
