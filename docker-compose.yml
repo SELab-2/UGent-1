@@ -16,22 +16,22 @@ services:
       - path: .env
   
   django:
-    container_name: pigeonhole-django
-    build: ./django
+    container_name: pigeonhole-backend
+    build: ./backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./django/:/usr/src/app/
+      - ./backend/:/usr/src/app/
     ports:
       - 8000:8000
     env_file:
       - .env
 
   next:
-    container_name: pigeonhole-next
-    build: ./next
+    container_name: pigeonhole-frontend
+    build: ./frontend
     command: npm run dev
     volumes:
-      - ./next/:/usr/src/app
+      - ./frontend/:/usr/src/app
       - /usr/src/app/node_modules
     ports:
       - 3000:3000
