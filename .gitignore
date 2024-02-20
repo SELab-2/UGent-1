@@ -1,3 +1,8 @@
-env
-django/db.sqlite3
 **/__pycache__
+.env
+django/db.sqlite3
+venv/
+
+# development environment
+.idea/
+.vscode/
