@@ -12,5 +12,28 @@ services:
       - POSTGRES_DB=pigeonhole
     ports:
       - 5432:5432
+  
+  django:
+    container_name: pigeonhole-dj
+    build: ./django
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend/:/usr/src/app/
+    ports:
+      - 8000:8000
+    env_file:
+      - .env.dev
+
+  next:
+    container_name: DrTrottoir-fe
+    build: ./frontend
+    command: npm run dev
+    volumes:
+      - ./frontend/:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3000:3000
+    env_file:
+      - .env.dev
 volumes:
   postgres_data:
