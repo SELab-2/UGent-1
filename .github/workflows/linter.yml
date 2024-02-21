@@ -1,0 +1,45 @@
+name: Lint CI
+
+on:
+  - pull_request
+
+jobs:
+  flake8:
+    runs-on: sel2-1-server
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Analysing the code with flake8
+        working-directory: ./backend
+        run: |
+          flake8 backend/ drtrottoir/ 
+
+  ESLint:
+    runs-on: sel2-1-server
+    steps:
+
+      # Check out the repository
+      - uses: actions/checkout@v3
+
+      # Install Node.js
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.17.0
+
+      # Install your dependencies
+      - name: Install your dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      # Run ESLint
+      - name: Run ESLint
+        working-directory: ./frontend
+        run: npm run lint

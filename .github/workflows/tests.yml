@@ -1,0 +1,56 @@
+name: "Test CI"
+on:
+  - pull_request
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create and populate .env.dev file
+        run: |
+          echo "${{ secrets.CI_ENV_FILE }}" > .env.dev
+      - name: Remove artifacts
+        run: docker-compose down -v
+      - name: Build the image
+        run: docker-compose up -d --build
+
+  backend-tests:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Test Django unittest
+        run: docker exec DrTrottoir-be python manage.py test
+
+  frontend-tests-Jest:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Test NEXT.js Jest
+        run: docker exec DrTrottoir-fe npm run jest:workflow
+
+  frontend-tests-Cypress:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Test NEXT.js Cypress component
+        run: docker exec DrTrottoir-fe npm run component:headless
+      - name: Test NEXT.js Cypress e2e
+        run: docker exec DrTrottoir-fe npm run e2e:headless
+
+#  linting:
+#    runs-on: self-hosted
+#    needs: build
+#    steps:
+#      - name: Linter Python
+#        run: docker exec DrTrottoir-be flake8 backend/ drtrottoir/
+#      - name: Linter Javascript
+#        run: docker exec DrTrottoir-fe npm run lint
+
+  remove:
+    runs-on: self-hosted
+    if: ${{ always() }}
+    needs: [ build, backend-tests, frontend-tests-Jest, frontend-tests-Cypress]
+    steps:
+      - name: remove artifacts
+        run: docker-compose down -v
