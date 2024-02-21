@@ -20,7 +20,7 @@ jobs:
       - name: Analysing the code with flake8
         working-directory: ./backend
         run: |
-          flake8 backend/ drtrottoir/ 
+          flake8 pigeonhole/ testapi/
 
   ESLint:
     runs-on: self-hosted
