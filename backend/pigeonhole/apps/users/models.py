@@ -11,3 +11,7 @@ class User(AbstractUser):
         self.email = ""
         self.is_active = False
         self.save()
+
+    @property
+    def name(self):
+        return f"{self.first_name.strip()} {self.last_name.strip()}"
