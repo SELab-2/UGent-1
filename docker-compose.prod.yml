@@ -44,9 +44,6 @@ services:
       context: ./frontend
       target: runner
     command: npm run start
-    volumes:
-      - static_volume:/home/app/web/staticfiles
-      - media_volume:/home/app/web/media
     ports:
       - 3000:3000
     depends_on:
@@ -58,6 +55,25 @@ services:
       - "traefik.http.routers.whoami.rule=Host(`sel2-1.ugent.be`)"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=myresolver"
+    
+  static:
+    image: joseluisq/static-web-server:2
+    environment:
+      # Note: those envs are customizable but also optional
+      - SERVER_HOST=sel2-1.ugent.be
+      - SERVER_PORT=4000
+      - SERVER_ROOT=/public
+    volumes:
+      - static_volume:/public
+    depends_on:
+      - backend
+    expose:
+      - 4000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.static.rule=Host(`sel2-1.ugent.be`) && PathPrefix('/static')"
+      - "traefik.http.routers.static.entrypoints=websecure"
+      - "traefik.http.routers.static.tls.certresolver=myresolver"
   
   traefik:
     image: "traefik:v2.10"
