@@ -18,7 +18,7 @@ services:
     build: 
       dockerfile: Dockerfile.prod
       context: ./backend
-    command: python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/uploads
