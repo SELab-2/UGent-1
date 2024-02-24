@@ -65,7 +65,6 @@ RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME/
-RUN chmod 777 $APP_HOME/staticfiles
 
 # change to the app user
 USER app
