@@ -37,25 +37,6 @@ services:
       - "traefik.http.routers.pigeonhole.entrypoints=websecure"
       - "traefik.http.routers.pigeonhole.tls.certresolver=myresolver"
 
-  frontend:
-    container_name: pigeonhole-frontend
-    build:
-      dockerfile: Dockerfile.prod
-      context: ./frontend
-      target: runner
-    command: npm run start
-    ports:
-      - 3000:3000
-    depends_on:
-      - backend
-    env_file:
-      - .env.prod
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`sel2-1.ugent.be`)"
-      - "traefik.http.routers.whoami.entrypoints=websecure"
-      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
-    
   static:
     image: joseluisq/static-web-server:2
     environment:
@@ -74,6 +55,25 @@ services:
       - "traefik.http.routers.static.rule=Host(`sel2-1.ugent.be`) && PathPrefix('/static')"
       - "traefik.http.routers.static.entrypoints=websecure"
       - "traefik.http.routers.static.tls.certresolver=myresolver"
+
+  frontend:
+    container_name: pigeonhole-frontend
+    build:
+      dockerfile: Dockerfile.prod
+      context: ./frontend
+      target: runner
+    command: npm run start
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    env_file:
+      - .env.prod
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`sel2-1.ugent.be`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
   
   traefik:
     image: "traefik:v2.10"
