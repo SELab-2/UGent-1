@@ -31,7 +31,9 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pigeonhole.rule=Host(`sel2-1.ugent.be`) && Path(`/api`)"
+      - "traefik.http.routers.pigeonhole.rule=Host(`sel2-1.ugent.be`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.pigeonhole.middlewares=pigeonhole-stripprefix"
+      - "traefik.http.middlewares.pigeonhole-stripprefix.stripprefix.prefixes=/api"
       - "traefik.http.routers.pigeonhole.entrypoints=websecure"
       - "traefik.http.routers.pigeonhole.tls.certresolver=myresolver"
 
