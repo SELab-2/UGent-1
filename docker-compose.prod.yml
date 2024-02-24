@@ -18,7 +18,7 @@ services:
     build: 
       dockerfile: Dockerfile.prod
       context: ./backend
-    command: python manage.py collectstatic && python manage.py runserver 0.0.0.0:8000
+    command: python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/uploads
@@ -41,7 +41,6 @@ services:
     image: joseluisq/static-web-server:2
     environment:
       # Note: those envs are customizable but also optional
-      - SERVER_HOST=sel2-1.ugent.be
       - SERVER_PORT=4000
       - SERVER_ROOT=/public
     volumes:
