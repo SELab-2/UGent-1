@@ -29,6 +29,10 @@ services:
     depends_on:
       - database
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pigeonholeback.rule=Path(`/api`)"
+      - "traefik.http.routers.pigeonholeback.entrypoints=web"
 
   frontend:
     container_name: pigeonhole-frontend
@@ -46,6 +50,26 @@ services:
       - backend
     env_file:
       - .env.prod
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pigeonholefront.rule=Host(`sel2-1.ugent.be`)"
+      - "traefik.http.routers.pigeonholefront.entrypoints=web"
+  
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
 
 volumes:
   postgres_data:
