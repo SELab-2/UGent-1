@@ -37,23 +37,23 @@ services:
       - "traefik.http.routers.pigeonhole.entrypoints=websecure"
       - "traefik.http.routers.pigeonhole.tls.certresolver=myresolver"
 
-  static:
-    image: joseluisq/static-web-server:2
-    environment:
-      # Note: those envs are customizable but also optional
-      - SERVER_PORT=4000
-      - SERVER_ROOT=/public
-    volumes:
-      - static_volume:/public
-    depends_on:
-      - backend
-    expose:
-      - 4000
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.static.rule=Host(`sel2-1.ugent.be`) && PathPrefix('/static')"
-      - "traefik.http.routers.static.entrypoints=websecure"
-      - "traefik.http.routers.static.tls.certresolver=myresolver"
+  #static:
+  #  image: joseluisq/static-web-server:2
+  #  environment:
+  #    # Note: those envs are customizable but also optional
+  #    - SERVER_PORT=4000
+  #    - SERVER_ROOT=/public
+  #  volumes:
+  #    - static_volume:/public
+  #  depends_on:
+  #    - backend
+  #  expose:
+  #    - 4000
+  #  labels:
+  #    - "traefik.enable=true"
+  #    - "traefik.http.routers.static.rule=Host(`sel2-1.ugent.be`) && PathPrefix('/static')"
+  #    - "traefik.http.routers.static.entrypoints=websecure"
+  #    - "traefik.http.routers.static.tls.certresolver=myresolver"
 
   frontend:
     container_name: pigeonhole-frontend
