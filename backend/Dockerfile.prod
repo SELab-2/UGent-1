@@ -42,7 +42,6 @@ RUN addgroup -S app && adduser -S app -G app
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
 RUN mkdir $APP_HOME
-RUN mkdir $APP_HOME/staticfiles
 RUN mkdir $APP_HOME/static
 RUN mkdir $APP_HOME/uploads
 WORKDIR $APP_HOME
@@ -66,6 +65,7 @@ RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME/
+VOLUME $APP_HOME/static
 
 # change to the app user
 USER app
