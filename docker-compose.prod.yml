@@ -31,11 +31,11 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pigeonholeback.rule=Host(`sel2-1.ugent.be`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.pigeonholeback.middlewares=pigeonholeback-stripprefix"
-      - "traefik.http.middlewares.pigeonholeback-stripprefix.stripprefix.prefixes=/api"
-      - "traefik.http.routers.whoami.entrypoints=websecure"
-      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
+      - "traefik.http.routers.pigeonhole.rule=Host(`sel2-1.ugent.be`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.pigeonhole.middlewares=pigeonhole-stripprefix"
+      - "traefik.http.middlewares.pigeonhole-stripprefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.pigeonhole.entrypoints=websecure"
+      - "traefik.http.routers.pigeonhole.tls.certresolver=myresolver"
 
   frontend:
     container_name: pigeonhole-frontend
@@ -55,9 +55,9 @@ services:
       - .env.prod
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pigeonholefront.rule=Host(`sel2-1.ugent.be`)"
-      - "traefik.http.routers.pigeonholefront.entrypoints=websecure"
-      - "traefik.http.routers.pigeonholefront.tls.certresolver=myresolver"
+      - "traefik.http.routers.pigeonhole.rule=Host(`sel2-1.ugent.be`)"
+      - "traefik.http.routers.pigeonhole.entrypoints=websecure"
+      - "traefik.http.routers.pigeonhole.tls.certresolver=myresolver"
   
   traefik:
     image: "traefik:v2.10"
@@ -70,7 +70,7 @@ services:
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
       - "--certificatesresolvers.myresolver.acme.email=robin.paret@ugent.be"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
