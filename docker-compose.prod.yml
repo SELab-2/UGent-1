@@ -20,7 +20,7 @@ services:
       context: ./backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - static_volume:/home/app/web/staticfiles
+      - static_volume:/home/app/web/static
       - media_volume:/home/app/web/uploads
     expose:
       - 8000
