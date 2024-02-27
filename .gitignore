@@ -1,7 +1,9 @@
 **/__pycache__
 .env
 django/db.sqlite3
+backend/db.sqlite3
 venv/
+.venv/
 
 # development environment
 .idea/
