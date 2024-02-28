@@ -35,14 +35,15 @@ FORCE_SCRIPT_NAME = "/api"
 # Application definition
 
 INSTALLED_APPS = [
+    'pigeonhole.apps',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sessions',
     'django.contrib.staticfiles',
     'rest_framework',
-    "corsheaders",
 ]
 
 MIDDLEWARE = [
