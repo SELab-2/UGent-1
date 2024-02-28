@@ -10,6 +10,7 @@ class Person(models.Model):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
 
+
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
@@ -21,6 +22,7 @@ class Student(models.Model):
     number = models.IntegerField()
     project = models.ManyToManyField('Project')
     course = models.ManyToManyField('Course')
+
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
