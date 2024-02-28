@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'pigeonhole.apps.courses',
     'pigeonhole.apps.projects',
     'pigeonhole.apps.submissions',
+    'pigeonhole.apps.groups',
 ]
 
 MIDDLEWARE = [

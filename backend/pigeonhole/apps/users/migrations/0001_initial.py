@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -24,14 +23,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Student',
             fields=[
-                ('id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='users.person')),
+                ('id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False,
+                                         to='users.person')),
                 ('number', models.IntegerField()),
             ],
         ),
         migrations.CreateModel(
             name='Teacher',
             fields=[
-                ('id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='users.person')),
+                ('id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False,
+                                         to='users.person')),
                 ('is_admin', models.BooleanField(default=False)),
                 ('is_assistent', models.BooleanField(default=False)),
             ],
