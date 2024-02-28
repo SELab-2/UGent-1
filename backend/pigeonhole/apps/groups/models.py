@@ -1,6 +1,7 @@
 from django.db import models
-from pigeonhole.apps.projects.models import Project
 from rest_framework import serializers
+
+from backend.pigeonhole.apps.projects.models import Project
 
 
 class Group(models.Model):

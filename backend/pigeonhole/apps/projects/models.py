@@ -1,6 +1,7 @@
 from django.db import models
-from pigeonhole.apps.courses.models import Course
 from rest_framework import serializers
+
+from backend.pigeonhole.apps.courses.models import Course
 
 
 # Create your models here.

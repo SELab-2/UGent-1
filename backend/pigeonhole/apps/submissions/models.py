@@ -1,7 +1,8 @@
 from django.db import models
-from pigeonhole.apps.projects.models import Project
-from pigeonhole.apps.users.models import Student
 from rest_framework import serializers
+
+from backend.pigeonhole.apps.projects.models import Project
+from backend.pigeonhole.apps.users.models import Student
 
 
 # Create your models here.

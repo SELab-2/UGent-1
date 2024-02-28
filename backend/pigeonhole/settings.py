@@ -38,11 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     "corsheaders",
-    'pigeonhole.apps.users',
-    'pigeonhole.apps.courses',
-    'pigeonhole.apps.projects',
-    'pigeonhole.apps.submissions',
-    'pigeonhole.apps.groups',
+    'backend.pigeonhole.apps.users',
+    'backend.pigeonhole.apps.courses',
+    'backend.pigeonhole.apps.projects',
+    'backend.pigeonhole.apps.submissions',
+    'backend.pigeonhole.apps.groups',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +62,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-ROOT_URLCONF = 'pigeonhole.urls'
+ROOT_URLCONF = 'backend.pigeonhole.urls'
 
 TEMPLATES = [
     {
@@ -80,7 +80,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'pigeonhole.wsgi.application'
+WSGI_APPLICATION = 'backend.pigeonhole.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
