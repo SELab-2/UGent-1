@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('submission_id', models.BigAutoField(primary_key=True, serialize=False)),
                 ('file', models.FileField(
-                    upload_to='uploads/<django.db.models.fields.related.ForeignKey>/<django.db.models.fields.related.ForeignKey>/')),
+                    upload_to='uploads/<django.db.models.fields.related.ForeignKey>/'
+                              '<django.db.models.fields.related.ForeignKey>/')),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
                 ('project_id',
                  models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='projects.project')),
