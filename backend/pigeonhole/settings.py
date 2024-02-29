@@ -20,12 +20,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_lgysrd7c-9-_^7l8@(yhe%_3q7*jqtp_gw^rbdtsupp@4k!w&'
+SECRET_KEY = os.environ.get("SECRET_KEY", default="foo")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = int(os.environ.get("DEBUG", default=0))
+
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="127.0.0.1").split(" ")
+
+if not DEBUG:
+    USE_X_FORWARDED_HOST = True
+    FORCE_SCRIPT_NAME = "/api"
 
 # Application definition
 
@@ -57,10 +62,17 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True  # For now
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'backend.pigeonhole.urls'
 
@@ -132,8 +144,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "static"
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'uploads'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

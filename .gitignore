@@ -8,3 +8,7 @@ venv/
 # development environment
 .idea/
 .vscode/
+
+#deploy
+letsencrypt
+.env.prod

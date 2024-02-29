@@ -1,0 +1,16 @@
+# Continous deployment of the app
+
+name: CD
+
+on:
+  push:
+    branches: ["develop"]
+
+jobs:
+    build:
+        runs-on: self-hosted
+        steps:
+            - uses: actions/checkout@v3
+      
+            - name: Run deploy script
+              run: bash /home/selab2/hosting/UGent-1/deploy.sh
