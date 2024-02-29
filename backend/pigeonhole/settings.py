@@ -29,8 +29,9 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="127.0.0.1").split(" ")
 
-USE_X_FORWARDED_HOST = True
-FORCE_SCRIPT_NAME = "/api"
+if not DEBUG:
+    USE_X_FORWARDED_HOST = True
+    FORCE_SCRIPT_NAME = "/api"
 
 # Application definition
 
