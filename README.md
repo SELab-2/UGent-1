@@ -4,8 +4,8 @@
 - Alexander Van Oyen
 - Axel Lorreyne: Projectleider
 - Gilles Arnout
-- Pieter-Jan De Smijter: Technical lead
-- Reinhard De Paepe: Backend lead
+- Pieter-Jan De Smijter
+- Reinhard De Paepe
 - Robin Paret: Systeembeheerder
 - Rune Dyselinck
-- Thibaud Collyn : Customer relations officer, Frontend lead
+- Thibaud Collyn: Customer relations officer
