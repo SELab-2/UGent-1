@@ -74,6 +74,8 @@ CORS_ALLOW_METHODS = [
 CORS_ORIGIN_ALLOW_ALL = True  # For now
 CORS_ALLOW_CREDENTIALS = True
 
+AUTH_USER_MODEL = "users.User"
+
 ROOT_URLCONF = 'backend.pigeonhole.urls'
 
 TEMPLATES = [
