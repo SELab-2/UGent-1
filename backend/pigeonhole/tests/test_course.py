@@ -3,6 +3,7 @@ from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.users.models import User, Student, Teacher
 from django.db.utils import DataError
 
+
 # python3 manage.py test backend/
 
 
@@ -62,6 +63,3 @@ class CourseTestCase(TestCase):
         course.delete()
         with self.assertRaises(Course.DoesNotExist):
             Course.objects.get(name="Mathematics")
-
-
-

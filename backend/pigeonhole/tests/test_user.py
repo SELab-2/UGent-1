@@ -61,7 +61,7 @@ class UserTestCase(TestCase):
         # delete teacher
         teacher.delete()
         with self.assertRaises(Teacher.DoesNotExist):
-            Teacher.objects.get(id__email="teacher@gmail.com")           
+            Teacher.objects.get(id__email="teacher@gmail.com")
 
     def test_create_student_without_user(self):
         with self.assertRaises(Exception):
