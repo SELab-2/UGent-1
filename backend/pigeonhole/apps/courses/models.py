@@ -8,6 +8,8 @@ class Course(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField()
 
+    objects = models.Manager()
+
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:

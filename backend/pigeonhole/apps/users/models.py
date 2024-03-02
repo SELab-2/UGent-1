@@ -25,6 +25,8 @@ class Student(models.Model):
     number = models.IntegerField()
     course = models.ManyToManyField(Course)
 
+    objects = models.Manager()
+
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,6 +39,8 @@ class Teacher(models.Model):
     course = models.ManyToManyField(Course)
     is_admin = models.BooleanField(default=False)
     is_assistent = models.BooleanField(default=False)
+
+    objects = models.Manager()
 
 
 class TeacherSerializer(serializers.ModelSerializer):

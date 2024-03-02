@@ -8,9 +8,10 @@ from backend.pigeonhole.apps.users.models import Student
 class Group(models.Model):
     group_id = models.BigAutoField(primary_key=True)
     group_nr = models.IntegerField()
-    final_score = models.IntegerField()
     project_id = models.ForeignKey(Project, on_delete=models.CASCADE)
     student = models.ManyToManyField(Student)
+
+    objects = models.Manager()
 
 
 class GroupSerializer(serializers.ModelSerializer):
