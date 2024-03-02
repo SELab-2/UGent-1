@@ -16,12 +16,12 @@ ENV PYTHONUNBUFFERED 1
 RUN apk update \
     && apk add postgresql-dev gcc python3-dev musl-dev
 
-# lint
+# make sure pip is updated
 RUN pip install --upgrade pip
-COPY . .
+#COPY backend/ .
 
 # install dependencies
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
 
@@ -53,12 +53,12 @@ COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --no-cache /wheels/*
 
 # copy entrypoint.prod.sh
-COPY ./entrypoint.prod.sh .
+COPY ./backend/entrypoint.prod.sh .
 RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
 RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
 # copy project
-COPY . $APP_HOME
+COPY ./backend $APP_HOME
 
 RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
