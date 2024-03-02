@@ -6,6 +6,7 @@ from backend.pigeonhole.apps.courses.models import Course
 
 # Create your models here.
 class Project(models.Model):
+    objects = models.Manager()
     project_id = models.BigAutoField(primary_key=True)
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=256)

@@ -33,3 +33,13 @@ class ProjectAPIView(APIView):
         else:
             # User isn't recognized.
             return JsonResponse({"message": "User role not recognized"}, status=403)
+
+    def put(self, request, subject_id, project_id):
+        if request.user.teacher:
+            # update project data, such as name, description, ...
+            project = Project.objects.get(project_id=project_id)
+        elif request.user.student:
+            student = request.user.student
+            project = Project.objects.get(project_id=project_id)
+
+
