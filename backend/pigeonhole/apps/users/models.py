@@ -3,7 +3,6 @@ from django.db import models
 from rest_framework import serializers
 
 from backend.pigeonhole.apps.courses.models import Course
-from backend.pigeonhole.apps.groups.models import Group
 
 
 class User(AbstractUser):
