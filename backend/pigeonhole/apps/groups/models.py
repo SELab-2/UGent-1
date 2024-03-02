@@ -10,6 +10,8 @@ class Group(models.Model):
     group_nr = models.IntegerField()
     project_id = models.ForeignKey(Project, on_delete=models.CASCADE)
     student = models.ManyToManyField(Student)
+    feedback = models.TextField(null=True)
+    final_score = models.IntegerField()
 
     objects = models.Manager()
 

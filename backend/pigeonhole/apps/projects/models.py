@@ -11,8 +11,6 @@ class Project(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField()
     visible = models.BooleanField(default=False)
-    feedback = models.TextField(null=True)
-    final_score = models.IntegerField()
 
 
 class ProjectSerializer(serializers.ModelSerializer):
