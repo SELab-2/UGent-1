@@ -57,6 +57,9 @@ COPY ./backend/entrypoint.prod.sh .
 RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
 RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
+# copy manage.py
+COPY manage.py .
+
 # copy project
 COPY ./backend $APP_HOME
 
