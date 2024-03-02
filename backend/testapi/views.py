@@ -1,7 +1,10 @@
-from django.contrib.auth.models import Group, User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from rest_framework import permissions, viewsets
 
-from testapi.serializers import GroupSerializer, UserSerializer
+from backend.testapi.serializers import UserSerializer, GroupSerializer
+
+User = get_user_model()
 
 
 class UserViewSet(viewsets.ModelViewSet):

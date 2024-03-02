@@ -17,10 +17,10 @@ services:
   
   backend:
     container_name: pigeonhole-backend
-    build: ./backend
+    build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./backend/:/usr/src/app/
+      - ./backend/:/usr/src/app/backend/
     ports:
       - 8000:8000
     env_file:
