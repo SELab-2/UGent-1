@@ -61,7 +61,7 @@ RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 COPY manage.py .
 
 # copy project
-COPY ./backend $APP_HOME
+COPY ./backend $APP_HOME/backend
 
 RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
