@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
                 ('submission_id', models.BigAutoField(primary_key=True, serialize=False)),
                 ('submission_nr', models.IntegerField()),
                 ('file', models.FileField(
-                    upload_to='uploads/<django.db.models.fields.related.ForeignKey>/<django.db.models.fields.IntegerField>/')),
+                    upload_to=
+                    'uploads/<django.db.models.fields.related.ForeignKey>/<django.db.models.fields.IntegerField>/')),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
                 ('group_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='groups.group')),
             ],
