@@ -30,7 +30,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Lijst van groepen als test van API:</h1>
+      <h1>Deployment test:</h1>
       <p>{JSON.stringify(data)}</p>
     </main>
   );
