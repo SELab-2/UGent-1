@@ -17,8 +17,6 @@ class Migration(migrations.Migration):
                 ('course_id', models.BigAutoField(primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=256)),
                 ('description', models.TextField()),
-                ('student', models.ManyToManyField(to='backend.pigeonhole.apps.users.Student')),
-                ('teacher', models.ManyToManyField(to='backend.pigeonhole.apps.users.Teacher')),
             ],
         ),
     ]

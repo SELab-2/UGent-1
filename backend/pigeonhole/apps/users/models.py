@@ -24,14 +24,13 @@ class UserSerializer(serializers.ModelSerializer):
 class Student(models.Model):
     id = models.ForeignKey(User, on_delete=models.CASCADE, primary_key=True)
     number = models.IntegerField()
-    group = models.ManyToManyField(Group)
     course = models.ManyToManyField(Course)
 
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['number', 'group', 'course', 'id']
+        fields = ['number', 'course', 'id']
 
 
 class Teacher(models.Model):
