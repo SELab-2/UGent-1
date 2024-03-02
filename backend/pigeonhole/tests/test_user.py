@@ -7,9 +7,19 @@ from backend.pigeonhole.apps.users.models import User, Student, Teacher
 class UserTestCase(TestCase):
     def setUp(self):
         # Create teacher user
-        teacher_user = User.objects.create_user(username="teacher_username", email="teacher@gmail.com", first_name="Kermit", last_name="The Frog")
+        teacher_user = User.objects.create_user(
+            username="teacher_username",
+            email="teacher@gmail.com",
+            first_name="Kermit",
+            last_name="The Frog"
+        )
         # Create student user
-        student_user = User.objects.create_user(username="student_username", email="student@gmail.com", first_name="Miss", last_name="Piggy")
+        student_user = User.objects.create_user(
+            username="student_username",
+            email="student@gmail.com",
+            first_name="Miss",
+            last_name="Piggy"
+        )
 
         # Create teacher and student using the created users
         Teacher.objects.create(id=teacher_user)
@@ -52,12 +62,11 @@ class UserTestCase(TestCase):
         teacher.delete()
         with self.assertRaises(Teacher.DoesNotExist):
             Teacher.objects.get(id__email="teacher@gmail.com")           
-    
+
     def test_create_student_without_user(self):
         with self.assertRaises(Exception):
             Student.objects.create(number=1234)
-    
+
     def test_create_teacher_without_user(self):
         with self.assertRaises(Exception):
             Teacher.objects.create(is_admin=True, is_assistent=True)
-

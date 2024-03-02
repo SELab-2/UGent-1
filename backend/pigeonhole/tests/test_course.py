@@ -5,12 +5,23 @@ from django.db.utils import DataError
 
 # python3 manage.py test backend/
 
+
 class CourseTestCase(TestCase):
     def setUp(self):
         # Create teacher user
-        teacher_user = User.objects.create_user(username="teacher_username", email="teacher@gmail.com", first_name="Kermit", last_name="The Frog")
+        teacher_user = User.objects.create_user(
+            username="teacher_username",
+            email="teacher@gmail.com",
+            first_name="Kermit",
+            last_name="The Frog"
+        )
         # Create student user
-        student_user = User.objects.create_user(username="student_username", email="student@gmail.com", first_name="Miss", last_name="Piggy")
+        student_user = User.objects.create_user(
+            username="student_username",
+            email="student@gmail.com",
+            first_name="Miss",
+            last_name="Piggy"
+        )
 
         # Create teacher and student using the created users
         teacher = Teacher.objects.create(id=teacher_user)

@@ -5,12 +5,23 @@ from backend.pigeonhole.apps.projects.models import Project
 
 # python3 manage.py test backend/
 
+
 class ProjectTestCase(TestCase):
     def setUp(self):
         # Create teacher user
-        teacher_user = User.objects.create_user(username="teacher_username", email="teacher@gmail.com", first_name="Kermit", last_name="The Frog")
+        teacher_user = User.objects.create_user(
+            username="teacher_username",
+            email="teacher@gmail.com",
+            first_name="Kermit",
+            last_name="The Frog"
+        )
         # Create student user
-        student_user = User.objects.create_user(username="student_username", email="student@gmail.com", first_name="Miss", last_name="Piggy")
+        student_user = User.objects.create_user(
+            username="student_username",
+            email="student@gmail.com",
+            first_name="Miss",
+            last_name="Piggy"
+        )
 
         # Create teacher and student using the created users
         teacher = Teacher.objects.create(id=teacher_user)
@@ -22,7 +33,12 @@ class ProjectTestCase(TestCase):
         student.course.add(course)
 
         # Create project
-        Project.objects.create(name="Project", course_id=course, description="Project Description", deadline="2021-12-12 12:12:12")
+        Project.objects.create(
+            name="Project",
+            course_id=course,
+            description="Project Description",
+            deadline="2021-12-12 12:12:12"
+        )
 
     def test_project_course_relation(self):
         project = Project.objects.get(name="Project")
@@ -41,15 +57,26 @@ class ProjectTestCase(TestCase):
 
     def test_course_name_length_validation(self):
         with self.assertRaises(Exception):
-            Course.objects.create(name="A" * 300, description="Mock")
+            Course.objects.create(
+                name="A" * 300,
+                description="Mock"
+            )
 
     def test_create_project_without_course(self):
         with self.assertRaises(Exception):
-            Project.objects.create(name="Project", description="Project Description", deadline="2021-12-12 12:12:12")
+            Project.objects.create(
+                name="Project",
+                description="Project Description",
+                deadline="2021-12-12 12:12:12"
+            )
 
     def test_create_project_without_deadline(self):
         with self.assertRaises(Exception):
-            Project.objects.create(name="Project", course_id=Course.objects.get(name="Math"), description="Project Description")
+            Project.objects.create(
+                name="Project",
+                course_id=Course.objects.get(name="Math"),
+                description="Project Description"
+            )
 
     def test_update_and_delete_project(self):
         project = Project.objects.get(name="Project")
@@ -61,8 +88,3 @@ class ProjectTestCase(TestCase):
         project.delete()
         with self.assertRaises(Project.DoesNotExist):
             Project.objects.get(name="Project 2")
-
-    
-
-
-
