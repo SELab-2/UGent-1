@@ -8,7 +8,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('projects', '0001_initial'),
         ('groups', '0001_initial'),
     ]
 
@@ -20,8 +19,6 @@ class Migration(migrations.Migration):
                 ('file', models.FileField(upload_to='uploads/<django.db.models.fields.related.ForeignKey>/'
                                                     '<django.db.models.fields.related.ForeignKey>/')),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('project_id', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
-                                                 to='projects.project')),
                 ('group_id', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
                                                to='groups.group')),
                 ('submission_nr', models.IntegerField()),
