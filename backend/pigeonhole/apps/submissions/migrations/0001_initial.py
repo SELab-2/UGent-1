@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('projects', '0001_initial'),
-        ('users', '0001_initial'),
+        ('groups', '0001_initial'),
     ]
 
     operations = [
@@ -22,8 +22,9 @@ class Migration(migrations.Migration):
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
                 ('project_id', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
                                                  to='projects.project')),
-                ('student_id', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
-                                                 to='users.student')),
+                ('group_id', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                                               to='groups.group')),
+                ('submission_nr', models.IntegerField()),
             ],
         ),
     ]

@@ -3,7 +3,7 @@ from django.db import models
 from rest_framework import serializers
 
 from backend.pigeonhole.apps.courses.models import Course
-from backend.pigeonhole.apps.projects.models import Project
+from backend.pigeonhole.apps.groups.models import Group
 
 
 class User(AbstractUser):
@@ -24,14 +24,14 @@ class UserSerializer(serializers.ModelSerializer):
 class Student(models.Model):
     id = models.ForeignKey(User, on_delete=models.CASCADE, primary_key=True)
     number = models.IntegerField()
-    project = models.ManyToManyField(Project)
+    group = models.ManyToManyField(Group)
     course = models.ManyToManyField(Course)
 
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['number', 'project', 'course', 'id']
+        fields = ['number', 'group', 'course', 'id']
 
 
 class Teacher(models.Model):

@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('auth', '0012_alter_user_first_name_max_length'),
         ('courses', '0001_initial'),
-        ('projects', '0001_initial'),
+        ('groups', '0001_initial'),
     ]
 
     operations = [
@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
                                          to=settings.AUTH_USER_MODEL)),
                 ('number', models.IntegerField()),
                 ('course', models.ManyToManyField(to='courses.course')),
-                ('project', models.ManyToManyField(to='projects.project')),
+                ('group', models.ManyToManyField(to='groups.group')),
             ],
         ),
         migrations.CreateModel(

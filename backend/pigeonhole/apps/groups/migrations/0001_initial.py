@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('projects', '0001_initial'),
+        ('users', '0001_initial'),
     ]
 
     operations = [
@@ -20,6 +21,7 @@ class Migration(migrations.Migration):
                 ('group_nr', models.IntegerField()),
                 ('final_score', models.IntegerField()),
                 ('project_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='projects.project')),
+                ('student', models.ManyToManyField(to='users.student')),
             ],
         ),
     ]
