@@ -84,7 +84,7 @@ services:
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory" #for testing
       - "--certificatesresolvers.myresolver.acme.email=robin.paret@ugent.be"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
@@ -95,7 +95,7 @@ services:
       - "443:443"
       - "8080:8080"
     volumes:
-      - "./letsencrypt:/letsencrypt"
+      - certificate_volume:/letsencrypt
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
 
@@ -103,3 +103,4 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
+  certificate_volume:
