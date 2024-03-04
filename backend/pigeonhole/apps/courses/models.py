@@ -3,11 +3,12 @@ from rest_framework import serializers
 
 
 # Create your models here.
-
 class Course(models.Model):
     course_id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=256)
     description = models.TextField()
+
+    objects = models.Manager()
 
 
 class CourseSerializer(serializers.ModelSerializer):
