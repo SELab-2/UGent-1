@@ -1,7 +1,7 @@
 from django.test import TestCase
 from backend.pigeonhole.apps.users.models import User, Student, Teacher
 from backend.pigeonhole.apps.courses.models import Course
-from backend.pigeonhole.apps.projects.models import Project, Conditions, AllowedExtension, ForbiddenExtension
+from backend.pigeonhole.apps.projects.models import Project
 
 
 class ProjectTestCase(TestCase):
