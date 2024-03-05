@@ -18,9 +18,9 @@ services:
     build: 
       dockerfile: Dockerfile.prod
       context: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py collectstatic && python manage.py runserver 0.0.0.0:8000
     volumes:
-      #- static_volume:/home/app/web/static
+      - static_volume:/home/app/web/static
       - media_volume:/home/app/web/uploads
     expose:
       - 8000
@@ -39,11 +39,10 @@ services:
 
   static:
     container_name: statics
-    image: nginx:alpine
+    image: httpd:latest
     restart: always
     volumes:
-      #- static_volume:/srv
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/usr/local/apache2/htdocs/
     depends_on:
       - backend
     ports:
@@ -51,6 +50,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.static.rule=Host(`sel2-1.ugent.be`) && PathPrefix(`/static`)"
+      - "traefik.http.routers.static.middlewares=static-stripprefix"
+      - "traefik.http.middlewares.static-stripprefix.stripprefix.prefixes=/static"
       - "traefik.http.routers.static.entrypoints=websecure"
       - "traefik.http.routers.static.tls.certresolver=myresolver"
 
