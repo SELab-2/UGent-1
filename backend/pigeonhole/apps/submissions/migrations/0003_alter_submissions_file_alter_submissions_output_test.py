@@ -15,12 +15,16 @@ class Migration(migrations.Migration):
             model_name='submissions',
             name='file',
             field=models.FileField(max_length=255, null=True,
-                                   upload_to='uploads/<django.db.models.fields.related.ForeignKey>/<django.db.models.fields.IntegerField>/'),
+                                   upload_to='uploads/<django.db.models.fields'
+                                   '.related.ForeignKey>/<django.db.models.'
+                                   'fields.IntegerField>/',),
         ),
         migrations.AlterField(
             model_name='submissions',
             name='output_test',
             field=models.FileField(max_length=255, null=True,
-                                   upload_to='uploads/<django.db.models.fields.related.ForeignKey>/<django.db.models.fields.IntegerField>/output_test/'),
+                                   upload_to='uploads/<django.db.models.fields'
+                                   '.related.ForeignKey>/<django.db.models.'
+                                   'fields.IntegerField>/output_test/',),
         ),
     ]
