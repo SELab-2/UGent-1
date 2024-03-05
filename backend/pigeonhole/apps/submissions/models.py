@@ -10,10 +10,10 @@ class Submissions(models.Model):
     group_id = models.ForeignKey(Group, on_delete=models.CASCADE, blank=False)
     submission_nr = models.IntegerField()
     file = models.FileField(upload_to='uploads/' + str(group_id) + '/' + str(submission_nr) + '/',
-                            null=True, blank=False)
+                            null=True, blank=False, max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
     output_test = models.FileField(upload_to='uploads/' + str(group_id) + '/' + str(submission_nr) + '/output_test/',
-                                   null=True, blank=False)
+                                   null=True, blank=False, max_length=255)
 
     objects = models.Manager()
 
