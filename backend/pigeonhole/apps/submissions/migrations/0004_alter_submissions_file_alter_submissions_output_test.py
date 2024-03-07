@@ -4,9 +4,8 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('submissions', 
+        ('submissions',
          '0003_alter_submissions_file_alter_submissions_output_test'),
     ]
 
@@ -18,16 +17,16 @@ class Migration(migrations.Migration):
                 max_length=255,
                 null=True,
                 upload_to='uploads/submissions/files/<django.db.models.fields.'
-                'related.ForeignKey>/<django.db.models.fields.IntegerField>/'),
+                          'related.ForeignKey>/<django.db.models.fields.IntegerField>/'),
         ),
         migrations.AlterField(
             model_name='submissions',
             name='output_test',
             field=models.FileField(
-             max_length=255,
-             null=True,
-             upload_to='uploads/submissions/outputs/<django.db.models.fields.'
-             'related.ForeignKey>/<django.db.models.fields.IntegerField>'
-             '/output_test/'),
+                max_length=255,
+                null=True,
+                upload_to='uploads/submissions/outputs/<django.db.models.fields.'
+                          'related.ForeignKey>/<django.db.models.fields.IntegerField>'
+                          '/output_test/'),
         ),
     ]
