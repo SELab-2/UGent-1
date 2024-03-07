@@ -42,9 +42,7 @@ class SubmissionTestCase(TestCase):
 
         # Create group
         group = Group.objects.create(
-            group_nr=1,
             project_id=project,
-            final_score=0,
         )
 
         # Add student to the group

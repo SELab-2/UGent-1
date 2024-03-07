@@ -52,12 +52,12 @@ class UserTestCase(TestCase):
         teacher = Teacher.objects.get(id__email="teacher@gmail.com")
         self.assertEqual(teacher.is_admin, True)
 
-        self.assertEqual(teacher.is_assistent, False)
+        self.assertEqual(teacher.is_assistant, False)
         # update teacher is_assistent
-        teacher.is_assistent = True
+        teacher.is_assistant = True
         teacher.save()
         teacher = Teacher.objects.get(id__email="teacher@gmail.com")
-        self.assertEqual(teacher.is_assistent, True)
+        self.assertEqual(teacher.is_assistant, True)
         # delete teacher
         teacher.delete()
         with self.assertRaises(Teacher.DoesNotExist):

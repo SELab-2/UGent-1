@@ -38,7 +38,7 @@ class Teacher(models.Model):
     id = models.ForeignKey(User, on_delete=models.CASCADE, primary_key=True)
     course = models.ManyToManyField(Course)
     is_admin = models.BooleanField(default=False)
-    is_assistent = models.BooleanField(default=False)
+    is_assistant = models.BooleanField(default=False)
 
     objects = models.Manager()
 
