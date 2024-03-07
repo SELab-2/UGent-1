@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'backend.pigeonhole.apps.projects',
     'backend.pigeonhole.apps.submissions',
     'backend.pigeonhole.apps.groups',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -156,3 +157,12 @@ MEDIA_ROOT = BASE_DIR / 'uploads'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Basic': {
+            'type': 'basic'
+        }
+    }
+}
