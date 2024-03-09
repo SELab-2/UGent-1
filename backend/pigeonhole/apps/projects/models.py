@@ -11,6 +11,7 @@ class Project(models.Model):
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=256)
     description = models.TextField()
+    deadline = models.DateTimeField()
     visible = models.BooleanField(default=False)
 
 
