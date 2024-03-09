@@ -1,6 +1,6 @@
 from rest_framework import viewsets, status
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from .models import Course, CourseSerializer
 
@@ -18,16 +18,18 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = CourseSerializer(instance, data=request.data)
+        course_id = kwargs.get('pk')
+        course = Course.objects.get(pk=course_id)
+        serializer = CourseSerializer(course, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.delete()
+        course_id = kwargs.get('pk')
+        course = Course.objects.get(pk=course_id)
+        course.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def list(self, request, *args, **kwargs):
@@ -35,14 +37,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = CourseSerializer(instance)
+        course_id = kwargs.get('pk')
+        course = Course.objects.get(pk=course_id)
+        serializer = CourseSerializer(course, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def partial_update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = CourseSerializer(instance, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
