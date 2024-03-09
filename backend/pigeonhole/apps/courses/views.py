@@ -3,12 +3,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Course, CourseSerializer
+from .permissions import CourseUserPermissions
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, CourseUserPermissions]
 
     def create(self, request, *args, **kwargs):
         serializer = CourseSerializer(data=request.data)
