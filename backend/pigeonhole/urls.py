@@ -26,7 +26,7 @@ router = routers.DefaultRouter()
 router.register(r'users', test_views.UserViewSet)
 router.register(r'groups', test_views.GroupViewSet)
 router.register(r'courses', CourseViewSet)
-router.register(r'courses/<int:subject_id>/project/<int:project_id>', ProjectViewSet)
+router.register(r'courses/<int:course_id>/projects/<project_id>', ProjectViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
@@ -36,6 +36,7 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path("admin/", admin.site.urls),
+    path('courses/<int:course_id>/projects/', ProjectViewSet.as_view({'post': 'create'}), name='project-create'),
 ]
 
 urlpatterns += router.urls
