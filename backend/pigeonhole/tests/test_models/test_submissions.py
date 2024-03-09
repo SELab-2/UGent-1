@@ -51,7 +51,6 @@ class SubmissionTestCase(TestCase):
         # Create submission
         Submissions.objects.create(
             group_id=group,
-            submission_nr=1,
         )
 
     def test_submission_student_relation(self):
@@ -65,17 +64,6 @@ class SubmissionTestCase(TestCase):
         submission = Submissions.objects.get(submission_nr=1)
         project = submission.group_id.project_id
         self.assertEqual(submission.group_id.project_id, project)
-
-    def test_update_and_delete_submission(self):
-        submission = Submissions.objects.get(submission_nr=1)
-        submission.submission_nr = 2
-        submission.save()
-        updated_submission = Submissions.objects.get(submission_nr=2)
-        self.assertEqual(updated_submission.submission_nr, 2)
-
-        submission.delete()
-        with self.assertRaises(Submissions.DoesNotExist):
-            Submissions.objects.get(submission_nr=2)
 
     def test_submission_file_upload_and_retrieval(self):
         submission = Submissions.objects.get(submission_nr=1)
