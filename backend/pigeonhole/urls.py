@@ -2,6 +2,7 @@ from django.urls import include, path
 from rest_framework import routers, permissions
 
 from backend.testapi import views as test_views
+from backend.pigeonhole.apps.courses.views import CourseViewSet
 #from backend.pigeonhole.apps.projects import views as project_views
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -22,6 +23,7 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 router.register(r'users', test_views.UserViewSet)
 router.register(r'groups', test_views.GroupViewSet)
+router.register(r'courses', CourseViewSet)
 #router.register(r'projects', project_views.ProjectAPIView)
 
 # Wire up our API using automatic URL routing.
