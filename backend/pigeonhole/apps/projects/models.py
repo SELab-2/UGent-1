@@ -11,14 +11,14 @@ class Project(models.Model):
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=256)
     description = models.TextField()
-    # deadline = models.DateTimeField()
+    deadline = models.DateTimeField(null=True, blank=True)
     visible = models.BooleanField(default=False)
 
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ['project_id', 'course_id', 'name', 'description', 'visible']
+        fields = ['project_id', 'course_id', 'name', 'description', 'visible', 'deadline']
 
 
 class Conditions(models.Model):
