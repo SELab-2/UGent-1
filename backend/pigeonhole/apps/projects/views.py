@@ -17,9 +17,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         course_id = kwargs.get('course_id')
-        project_id = kwargs.get('pk')
-
-        serializer = ProjectSerializer(instance=Project.objects.get(pk=project_id), many=False)
+        serializer = ProjectSerializer(Project.objects.filter(course_id=course_id), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
