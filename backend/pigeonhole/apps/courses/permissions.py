@@ -1,30 +1,19 @@
 from rest_framework import permissions
-from backend.pigeonhole.apps.users.models import Student, Teacher
+from backend.pigeonhole.apps.users.models import Teacher, Student
 
 
 class CourseUserPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.user.is_superuser:
             return True
-        if isinstance(request.user, Teacher):
-            return True
-
-        if isinstance(request.user, Student):
-            return view.action in ['list', 'retrieve']
-
-        return False
-
-    def has_object_permission(self, request, view, obj):
-        if request.user.is_superuser:
-            return True
-        if isinstance(request.user, Teacher):
-            if request.user.is_admin:
+        if Teacher.objects.filter(id=request.user.id).exists():
+            teacher = Teacher.objects.get(id=request.user.id)
+            if teacher.is_admin:
                 return True
-            elif Teacher.objects.filter(id=request.user.id, course=obj).exists():
+            # Check if the teacher is assigned to the course
+            course = view.kwargs.get('pk')
+            if teacher.course.filter(course_id=course).exists():
                 return True
+            return view.action in ['list', 'retrieve', 'create']
+        elif Student.objects.filter(id=request.user.id).exists():
             return view.action in ['list', 'retrieve']
-
-        if isinstance(request.user, Student):
-            return view.action in ['list', 'retrieve']
-
-        return False
