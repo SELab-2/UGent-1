@@ -7,6 +7,7 @@ from backend.pigeonhole.apps.courses.views import CourseViewSet
 from backend.pigeonhole.apps.projects.views import ProjectViewSet
 from backend.pigeonhole.apps.submissions.views import SubmissionsViewset
 from backend.pigeonhole.apps.groups.views import GroupViewSet
+from backend.pigeonhole.apps.users.views import StudentViewSet, UserViewSet
 #from backend.pigeonhole.apps.projects import views as project_views
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -25,7 +26,8 @@ schema_view = get_schema_view(
 )
 
 router = routers.DefaultRouter()
-router.register(r'users', test_views.UserViewSet)
+router.register(r'users', UserViewSet)
+router.register(r'students', StudentViewSet)
 router.register(r'groups', GroupViewSet)
 router.register(r'courses', CourseViewSet)
 router.register(r'courses/<int:course_id>/projects/<project_id>', ProjectViewSet)

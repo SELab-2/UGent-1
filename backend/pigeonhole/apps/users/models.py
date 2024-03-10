@@ -17,7 +17,7 @@ class User(AbstractUser):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'e_mail', 'first_name', 'last_name']
+        fields = ['id', 'email', 'first_name', 'last_name']
 
 
 class Student(models.Model):
@@ -29,6 +29,7 @@ class Student(models.Model):
 
 
 class StudentSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = Student
         fields = ['number', 'course', 'id']

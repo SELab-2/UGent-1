@@ -19,4 +19,4 @@ class Group(models.Model):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ["group_id", "group_nr", "final_score", "project_id", "student", "feedback", "project_id"]
+        fields = ["group_id", "group_nr", "final_score", "project_id", "student", "feedback"]
