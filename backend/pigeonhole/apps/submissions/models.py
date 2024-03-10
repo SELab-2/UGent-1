@@ -24,4 +24,4 @@ class Submissions(models.Model):
 class SubmissionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submissions
-        fields = ['submission_id', 'group_id', 'file', 'timestamp', 'submission_nr']
+        fields = ['submission_id', 'group_id', 'file', 'timestamp', 'submission_nr', 'output_test']

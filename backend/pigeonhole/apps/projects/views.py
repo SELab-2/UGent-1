@@ -12,7 +12,19 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated & CanAccessProject]
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def list(self, request, *args, **kwargs):
+        course_id = kwargs.get('course_id')
+        project_id = kwargs.get('pk')
+
+        serializer = ProjectSerializer(instance=Project.objects.get(pk=project_id), many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def create(self, request, *args, **kwargs):
+        print("ceating new project")
+        course_id = kwargs.get('course_id')
         serializer = ProjectSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -23,9 +35,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         course_id = kwargs.get('course_id')
         project_id = kwargs.get('pk')
+
         project = Project.objects.get(pk=project_id)
         project.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Project has been deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
     def retrieve(self, request, *args, **kwargs):
         course_id = kwargs.get('course_id')
@@ -37,14 +50,16 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         course_id = kwargs.get('course_id')
         project_id = kwargs.get('pk')
+
         project = Project.objects.get(pk=project_id)
         serializer = ProjectSerializer(project, data=request.data)
-        serializer.save()
+        if serializer.is_valid():
+            serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def archive(self, request, *args, **kwargs):
-        # Not sure what to do here yet
-        course_id = kwargs.get('course_id')
-        project_id = kwargs.get('pk')
-        serializer = ProjectSerializer(instance=Project.objects.get(pk=project_id), many=False)
-        return Response(serializer, status=status.HTTP_200_OK)
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
