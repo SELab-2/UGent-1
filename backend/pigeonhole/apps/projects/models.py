@@ -11,7 +11,7 @@ class Project(models.Model):
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=256)
     description = models.TextField()
-    deadline = models.DateTimeField()
+    deadline = models.DateTimeField(null=True)
     visible = models.BooleanField(default=False)
 
 
@@ -25,7 +25,6 @@ class Conditions(models.Model):
     condition_id = models.BigAutoField(primary_key=True)
     submission_id = models.ForeignKey(Project, on_delete=models.CASCADE)
     condition = models.CharField(max_length=256)
-    deadline = models.DateTimeField()
     test_file_location = models.CharField(max_length=512, null=True)
     test_file_type = models.CharField(max_length=256, null=True)
 

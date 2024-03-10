@@ -34,6 +34,7 @@ class ConditionsTestCase(TestCase):
         project = Project.objects.create(
             name="Project",
             course_id=course,
+            deadline="2021-12-12 12:12:12",
             description="Project Description"
         )
 
@@ -41,7 +42,6 @@ class ConditionsTestCase(TestCase):
         self.conditions = Conditions.objects.create(
             submission_id=project,
             condition="Condition 1",
-            deadline="2021-12-12 12:12:12",
             test_file_location="path/to/test",
             test_file_type="txt"
         )
@@ -71,7 +71,6 @@ class ConditionsTestCase(TestCase):
         with self.assertRaises(Exception):
             Conditions.objects.create(
                 condition="Condition 2",
-                deadline="2021-12-12 12:12:12",
                 test_file_location="path/to/test",
                 test_file_type="txt"
             )

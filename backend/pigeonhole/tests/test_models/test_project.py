@@ -34,7 +34,8 @@ class ProjectTestCase(TestCase):
         self.project = Project.objects.create(
             name="Project",
             course_id=course,
-            description="Project Description",
+            deadline="2021-12-12 12:12:12",
+            description="Project Description"
         )
 
     def test_project_course_relation(self):
