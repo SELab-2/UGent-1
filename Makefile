@@ -10,3 +10,6 @@ lint:
 
 backendtest:
 	docker exec -it pigeonhole-backend sh /usr/src/app/backend/runtests.sh
+
+backendshell:
+	docker exec -it pigeonhole-backend sh

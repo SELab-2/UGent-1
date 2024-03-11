@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from backend.pigeonhole.apps.users.models import Teacher, Student
+from backend.pigeonhole.apps.users.models import User
 
 
 class CanAccessProject(permissions.BasePermission):
@@ -24,4 +24,5 @@ class CanAccessProject(permissions.BasePermission):
                 return view.action in ['list', 'retrieve']
         elif request.user.is_superuser:
             return True
+
         return False

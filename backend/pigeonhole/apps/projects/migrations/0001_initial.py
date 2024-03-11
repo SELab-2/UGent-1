@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -38,7 +37,8 @@ class Migration(migrations.Migration):
                 ('condition', models.TextField(max_length=256)),
                 ('test_file_location', models.CharField(max_length=512, null=True)),
                 ('test_file_type', models.CharField(max_length=256, null=True)),
-                ('submission_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='projects.project')),
+                ('submission_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                    to='projects.project')),
             ],
         ),
         migrations.CreateModel(

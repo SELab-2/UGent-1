@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -18,9 +17,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('submission_id', models.BigAutoField(primary_key=True, serialize=False)),
                 ('submission_nr', models.IntegerField()),
-                ('file', models.FileField(null=True, upload_to='uploads/<django.db.models.fields.related.ForeignKey>/<django.db.models.fields.IntegerField>/')),
+                ('file', models.FileField(null=True, upload_to='uploads/<django.db.models.fields.related.ForeignKey>/'
+                                                               '<django.db.models.fields.IntegerField>/')),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('output_test', models.FileField(null=True, upload_to='uploads/<django.db.models.fields.related.ForeignKey>/<django.db.models.fields.IntegerField>/output_test/')),
+                ('output_test', models.FileField(null=True, upload_to='uploads/<django.db.models.fields.related.'
+                                                                      'ForeignKey>/<django.db.models.fields.'
+                                                                      'IntegerField>/output_test/')),
                 ('group_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='groups.group')),
             ],
         ),

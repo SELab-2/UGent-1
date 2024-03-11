@@ -2,6 +2,7 @@
 .env
 django/db.sqlite3
 backend/db.sqlite3
+backend/uploads
 venv/
 .venv/
 
