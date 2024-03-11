@@ -1,6 +1,6 @@
 from django.test import TestCase
 from backend.pigeonhole.apps.courses.models import Course
-from backend.pigeonhole.apps.users.models import User, Student, Teacher
+from backend.pigeonhole.apps.users.models import User
 from django.db.utils import DataError
 
 
@@ -25,8 +25,8 @@ class CourseTestCase(TestCase):
         )
 
         # Create teacher and student using the created users
-        teacher = Teacher.objects.create(id=teacher_user)
-        student = Student.objects.create(id=student_user, number=1234)
+        teacher = User.objects.create(id=teacher_user)
+        student = User.objects.create(id=student_user, number=1234)
 
         # Create course
         course = Course.objects.create(name="Math", description="Mathematics")
@@ -34,7 +34,7 @@ class CourseTestCase(TestCase):
         student.course.add(course)
 
     def test_course_teacher_relationship(self):
-        teacher = Teacher.objects.get(id__email="teacher@gmail.com")
+        teacher = User.objects.get(id__email="teacher@gmail.com")
         course = Course.objects.get(name="Math")
         self.assertIn(course, teacher.course.all())
         course_alter_ego = teacher.course.get(name="Math")
@@ -42,7 +42,7 @@ class CourseTestCase(TestCase):
         self.assertTrue(course_alter_ego, "Mathematics")
 
     def test_course_students_relationship(self):
-        student = Student.objects.get(id__email="student@gmail.com")
+        student = User.objects.get(id__email="student@gmail.com")
         course = Course.objects.get(name="Math")
         self.assertIn(course, student.course.all())
         course_alter_ego = student.course.get(name="Math")

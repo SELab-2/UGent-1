@@ -5,7 +5,22 @@ from rest_framework import serializers
 from backend.pigeonhole.apps.courses.models import Course
 
 
+class Roles(models.IntegerChoices):
+    SUPERUSER = 1
+    TEACHER = 2
+    STUDENT = 3
+
+
 class User(AbstractUser):
+    id = models.BigAutoField(primary_key=True)
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=150)
+    course = models.ManyToManyField(Course)
+    role = models.IntegerField(choices=Roles.choices, default=Roles.STUDENT)
+
+    objects = models.Manager()
+
     class Meta(AbstractUser.Meta):
         db_table = "auth_user"
 
@@ -13,39 +28,20 @@ class User(AbstractUser):
     def name(self):
         return f"{self.first_name.strip()} {self.last_name.strip()}"
 
+    @property
+    def is_super(self):
+        return self.role == Roles.SUPERUSER
+
+    @property
+    def is_teacher(self):
+        return self.role == Roles.TEACHER
+
+    @property
+    def is_student(self):
+        return self.role == Roles.STUDENT
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name']
-
-
-class Student(models.Model):
-    id = models.ForeignKey(User, on_delete=models.CASCADE, primary_key=True)
-    number = models.IntegerField()
-    course = models.ManyToManyField(Course)
-
-    objects = models.Manager()
-
-
-class StudentSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-
-    class Meta:
-        model = Student
-        fields = ['number', 'course', 'id']
-
-
-class Teacher(models.Model):
-    id = models.ForeignKey(User, on_delete=models.CASCADE, primary_key=True)
-    course = models.ManyToManyField(Course)
-    is_admin = models.BooleanField(default=False)
-    is_assistant = models.BooleanField(default=False)
-
-    objects = models.Manager()
-
-
-class TeacherSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Teacher
-        fields = ['course', 'id', 'is_admin', 'is_assistent']
+        fields = ['id', 'email', 'first_name', 'last_name', 'course', 'role']

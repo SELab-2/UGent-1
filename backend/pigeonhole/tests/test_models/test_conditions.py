@@ -1,5 +1,5 @@
 from django.test import TestCase
-from backend.pigeonhole.apps.users.models import User, Student, Teacher
+from backend.pigeonhole.apps.users.models import User
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.projects.models import Project, Conditions, AllowedExtension, ForbiddenExtension
 
@@ -22,8 +22,8 @@ class ConditionsTestCase(TestCase):
         )
 
         # Create teacher and student using the created users
-        teacher = Teacher.objects.create(id=teacher_user)
-        student = Student.objects.create(id=student_user, number=1234)
+        teacher = User.objects.create(id=teacher_user)
+        student = User.objects.create(id=student_user, number=1234)
 
         # Create course
         course = Course.objects.create(name="Math", description="Mathematics")
