@@ -30,6 +30,7 @@ class Student(models.Model):
 
 class StudentSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
     class Meta:
         model = Student
         fields = ['number', 'course', 'id']

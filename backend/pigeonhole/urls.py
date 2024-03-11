@@ -1,16 +1,14 @@
-from django.urls import include, path
 from django.contrib import admin
+from django.urls import include, path
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
 from rest_framework import routers, permissions
 
-from backend.testapi import views as test_views
 from backend.pigeonhole.apps.courses.views import CourseViewSet
+from backend.pigeonhole.apps.groups.views import GroupViewSet
 from backend.pigeonhole.apps.projects.views import ProjectViewSet
 from backend.pigeonhole.apps.submissions.views import SubmissionsViewset
-from backend.pigeonhole.apps.groups.views import GroupViewSet
 from backend.pigeonhole.apps.users.views import StudentViewSet, UserViewSet
-#from backend.pigeonhole.apps.projects import views as project_views
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
