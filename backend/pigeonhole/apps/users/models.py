@@ -6,7 +6,7 @@ from backend.pigeonhole.apps.courses.models import Course
 
 
 class Roles(models.IntegerChoices):
-    SUPERUSER = 1
+    ADMIN = 1
     TEACHER = 2
     STUDENT = 3
 
@@ -29,8 +29,8 @@ class User(AbstractUser):
         return f"{self.first_name.strip()} {self.last_name.strip()}"
 
     @property
-    def is_super(self):
-        return self.role == Roles.SUPERUSER
+    def is_admin(self):
+        return self.role == Roles.ADMIN
 
     @property
     def is_teacher(self):

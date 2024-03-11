@@ -7,17 +7,13 @@ class CanAccessProject(permissions.BasePermission):
     # to the project data.
     def has_permission(self, request, view):
         user = request.user
-        subject_id = view.kwargs.get('course_id')
-        # If the user is a teacher, grant access.
-        # if isinstance(user, Teacher):
-        #     if user.course.filter(id=subject_id).exists():
-        #         return True
-        # elif isinstance(user, Teacher) and user.is_admin:
-        #     return True
-        # # If the user is a student, grant access only to their own projects.
-        # elif isinstance(user, Student):
-        #     if user.course.filter(id=subject_id).exists():
-        #         return True
-        # elif request.user.is_superuser:
-        #     return True
+        course_id = view.kwargs.get('course_id')
+        if user.is_student:
+            if user.course.filter(course_id=course_id).exists():
+                return True
+        elif user.is_teacher:
+            if user.course.filter(course_id=course_id).exists():
+                return True
+        elif user.is_admin or user.is_superuser:
+            return True
         return False
