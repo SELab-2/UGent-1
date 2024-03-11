@@ -3,21 +3,25 @@ from backend.pigeonhole.apps.users.models import Teacher, Student
 
 
 class CanAccessProject(permissions.BasePermission):
-    # Custom permission class to determine if the currect user has access
-    # to the project data.
     def has_permission(self, request, view):
         user = request.user
         subject_id = view.kwargs.get('course_id')
-        # If the user is a teacher, grant access.
-        if isinstance(user, Teacher):
-            if user.course.filter(id=subject_id).exists():
+
+        if Teacher.objects.filter(id=user.id).exists():
+            teacher = Teacher.objects.get(id=user.id)
+
+            # Check if the teacher is assigned to the specified course
+            if teacher.course.filter(course_id=subject_id).exists():
                 return True
-        elif isinstance(user, Teacher) and user.is_admin:
-            return True
+            elif teacher.is_admin:
+                return True
+            return view.action in ['list', 'retrieve', 'create'] and teacher.course.filter(
+                course_id=subject_id).exists()
         # If the user is a student, grant access only to their own projects.
-        elif isinstance(user, Student):
-            if user.course.filter(id=subject_id).exists():
-                return True
+        elif Student.objects.filter(id=user.id).exists():
+            student = Student.objects.get(id=user.id)
+            if student.course.filter(course_id=subject_id).exists():
+                return view.action in ['list', 'retrieve']
         elif request.user.is_superuser:
             return True
         return False

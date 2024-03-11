@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Project, ProjectSerializer
+from .models import Project, ProjectSerializer, Course
 from .permissions import CanAccessProject
 
 
@@ -18,6 +18,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         course_id = kwargs.get('course_id')
         serializer = ProjectSerializer(Project.objects.filter(course_id=course_id), many=True)
+        # Check whether the course exists
+        if not Course.objects.filter(course_id=course_id).exists():
+            return Response({"message": "Course does not exist."}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
@@ -41,8 +44,17 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         course_id = kwargs.get('course_id')
         project_id = kwargs.get('pk')
+        
+        # Check whether the course exists
+        if not Course.objects.filter(course_id=course_id).exists():
+            return Response({"message": "Course does not exist."}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Check whether the project exists
+        if not Project.objects.filter(pk=project_id).exists():
+            return Response({"message": "Project does not exist."}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = ProjectSerializer(instance=Project.objects.get(pk=project_id), many=False)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):

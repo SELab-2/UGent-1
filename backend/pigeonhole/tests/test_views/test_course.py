@@ -7,6 +7,78 @@ from backend.pigeonhole.apps.courses.models import Course
 API_ENDPOINT = '/courses/'  # Updated the API_ENDPOINT
 
 
+class CourseTestAdminTeacher(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.course_data = {
+            'name': 'Test Course',
+            'description': 'This is a test course.'
+        }
+
+        self.course_not_of_teacher = Course.objects.create(name="Not of Teacher",
+                                                           description="This is not of the teacher")
+
+        self.course = Course.objects.create(**self.course_data)
+
+        # Create a regular user (teacher)
+        self.user = User.objects.create_user(
+            username="teacher_username",
+            email="test@gmail.com",
+            first_name="Kermit",
+            last_name="The Frog",
+        )
+
+        # Create a Teacher instance and use .set() to assign the course
+        self.teacher = Teacher.objects.create(id=self.user, is_admin=True)
+        self.teacher.course.set([self.course])
+
+        self.client.force_authenticate(user=self.user)
+
+    def test_create_course(self):
+        response = self.client.post(API_ENDPOINT, self.course_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Course.objects.count(), 3)
+
+    def test_update_course(self):
+        updated_data = {
+            'name': 'Updated Course',
+            'description': 'This course has been updated.'
+        }
+        response = self.client.put(f'{API_ENDPOINT}{self.course.course_id}/', updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.course.refresh_from_db()
+        self.assertEqual(self.course.name, updated_data['name'])
+        self.assertEqual(self.course.description, updated_data['description'])
+
+    def test_update_course_not_of_teacher(self):
+        updated_data = {
+            'name': 'Updated Course',
+            'description': 'This course has been updated.'
+        }
+        response = self.client.put(f'{API_ENDPOINT}{self.course_not_of_teacher.course_id}/', updated_data,
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.course_not_of_teacher.refresh_from_db()
+        self.assertEqual(self.course_not_of_teacher.name, updated_data['name'])
+        self.assertEqual(self.course_not_of_teacher.description, updated_data['description'])
+
+    def test_delete_course(self):
+        response = self.client.delete(f'{API_ENDPOINT}{self.course.course_id}/')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Course.objects.count(), 1)
+
+    def test_delete_course_not_of_teacher(self):
+        response = self.client.delete(f'{API_ENDPOINT}{self.course_not_of_teacher.course_id}/')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Course.objects.count(), 1)
+
+    def test_list_courses(self):
+        response = self.client.get(API_ENDPOINT)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), Course.objects.count())
+
+
 class CourseTestTeacher(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -18,7 +90,8 @@ class CourseTestTeacher(TestCase):
 
         self.course = Course.objects.create(**self.course_data)
 
-        self.course_not_of_teacher = Course.objects.create(name="Not of Teacher", description="This is not of the teacher")
+        self.course_not_of_teacher = Course.objects.create(name="Not of Teacher",
+                                                           description="This is not of the teacher")
 
         # Create a regular user (teacher)
         self.user = User.objects.create_user(
@@ -51,13 +124,13 @@ class CourseTestTeacher(TestCase):
         self.assertEqual(self.course.name, updated_data['name'])
         self.assertEqual(self.course.description, updated_data['description'])
 
-    # TODO
     def test_update_course_not_of_teacher(self):
         updated_data = {
             'name': 'Updated Course',
             'description': 'This course has been updated.'
         }
-        response = self.client.put(f'{API_ENDPOINT}{self.course_not_of_teacher.course_id}/', updated_data, format='json')
+        response = self.client.put(f'{API_ENDPOINT}{self.course_not_of_teacher.course_id}/', updated_data,
+                                   format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_course(self):
@@ -65,7 +138,6 @@ class CourseTestTeacher(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Course.objects.count(), 1)
 
-    # TODO 
     def test_delete_course_not_of_teacher(self):
         response = self.client.delete(f'{API_ENDPOINT}{self.course_not_of_teacher.course_id}/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -73,7 +145,7 @@ class CourseTestTeacher(TestCase):
     def test_list_courses(self):
         response = self.client.get(API_ENDPOINT)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data), Course.objects.count())
 
     def test_retrieve_course(self):
         response = self.client.get(f'{API_ENDPOINT}{self.course.course_id}/')
@@ -132,7 +204,7 @@ class CourseTestStudent(TestCase):
     def test_list_courses(self):
         response = self.client.get(API_ENDPOINT)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data), 2)
 
 
 class CourseTestUnauthorized(TestCase):
@@ -170,4 +242,4 @@ class CourseTestUnauthorized(TestCase):
     def test_list_courses(self):
         response = self.client.get(API_ENDPOINT)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data), Course.objects.count())
