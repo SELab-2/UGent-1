@@ -107,7 +107,7 @@ class ProjectTestAdminTeacher(TestCase):
             },
             format='json'
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(Project.objects.count(), 1)
 
     def test_retrieve_project_invalid_course(self):
@@ -121,16 +121,42 @@ class ProjectTestAdminTeacher(TestCase):
             API_ENDPOINT + f'100/projects/'
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
+
     # test with invalid project
-    
+
     def test_retrieve_invalid_project(self):
         response = self.client.get(
             API_ENDPOINT + f'{self.course.course_id}/projects/100/'
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
 
+    def test_update_invalid_project(self):
+        response = self.client.patch(
+            API_ENDPOINT + f'{self.course.course_id}/projects/100/',
+            {
+                "name": "Updated Test Project",
+                "description": "Updated Test Project Description",
+                "course_id": self.course.course_id
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_partial_update_invalid_project(self):
+        response = self.client.patch(
+            API_ENDPOINT + f'{self.course.course_id}/projects/100/',
+            {
+                "name": "Updated Test Project"
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_invalid_project(self):
+        response = self.client.delete(
+            API_ENDPOINT + f'{self.course.course_id}/projects/100/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 class ProjectTestTeacher(TestCase):
     def setUp(self):
@@ -280,14 +306,15 @@ class ProjectTestTeacher(TestCase):
             API_ENDPOINT + f'{self.course_not_of_teacher.course_id}/projects/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
+
     # test with invalid project
-    
+
     def test_retrieve_invalid_project(self):
         response = self.client.get(
             API_ENDPOINT + f'{self.course.course_id}/projects/100/'
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
 class ProjectTestStudent(TestCase):
     def setUp(self):
@@ -334,7 +361,6 @@ class ProjectTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.count(), 1)
-        
 
     def test_retrieve_project(self):
         response = self.client.get(
@@ -362,14 +388,14 @@ class ProjectTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.get(project_id=self.project.project_id).name, "Test Project")
-        
+
     def test_delete_project(self):
         response = self.client.delete(
             API_ENDPOINT + f'{self.course.course_id}/projects/{self.project.project_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.count(), 1)
-        
+
     def test_partial_update_project(self):
         response = self.client.patch(
             API_ENDPOINT + f'{self.course.course_id}/projects/{self.project.project_id}/',
@@ -380,10 +406,9 @@ class ProjectTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.get(project_id=self.project.project_id).name, "Test Project")
-        
-        
+
     # tests with an invalid course
-    
+
     def test_create_project_invalid_course(self):
         response = self.client.post(
             API_ENDPOINT + f'100/projects/',
@@ -396,21 +421,21 @@ class ProjectTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.count(), 1)
-        
+
     def test_retrieve_project_invalid_course(self):
         response = self.client.get(
             API_ENDPOINT + f'100/projects/{self.project.project_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
+
     def test_list_projects_invalid_course(self):
         response = self.client.get(
             API_ENDPOINT + f'100/projects/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
+
     # tests with a course not of the student
-    
+
     def test_create_project_course_not_of_student(self):
         response = self.client.post(
             API_ENDPOINT + f'{self.course_not_of_student.course_id}/projects/',
@@ -423,21 +448,19 @@ class ProjectTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.count(), 1)
-        
-        
+
     def test_retrieve_project_course_not_of_student(self):
         response = self.client.get(
             API_ENDPOINT + f'{self.course_not_of_student.course_id}/projects/{self.project.project_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
+
     def test_list_projects_course_not_of_student(self):
         response = self.client.get(
             API_ENDPOINT + f'{self.course_not_of_student.course_id}/projects/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
-        
+
     def test_update_project_course_not_of_student(self):
         response = self.client.patch(
             API_ENDPOINT + f'{self.course_not_of_student.course_id}/projects/{self.project.project_id}/',
@@ -450,15 +473,15 @@ class ProjectTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.get(project_id=self.project.project_id).name, "Test Project")
-        
+
     # test with invalid project
-    
+
     def test_retrieve_invalid_project(self):
         response = self.client.get(
             API_ENDPOINT + f'{self.course.course_id}/projects/100/'
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
+
     def test_update_invalid_project(self):
         response = self.client.patch(
             API_ENDPOINT + f'{self.course.course_id}/projects/100/',
@@ -470,7 +493,7 @@ class ProjectTestStudent(TestCase):
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
+
     def test_delete_invalid_project(self):
         response = self.client.delete(
             API_ENDPOINT + f'{self.course.course_id}/projects/100/'
