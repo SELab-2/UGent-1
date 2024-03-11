@@ -2,11 +2,11 @@ from rest_framework import permissions
 
 
 class CanAccessProject(permissions.BasePermission):
-    # Custom permission class to determine if the currect user has access
-    # to the project data.
+    # Custom user class to check if the user can join a group.
     def has_permission(self, request, view):
         user = request.user
         course_id = view.kwargs.get('course_id')
+
         if user.is_admin or user.is_superuser:
             return True
         elif user.is_teacher:
