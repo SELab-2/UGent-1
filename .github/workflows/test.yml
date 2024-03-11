@@ -19,4 +19,4 @@ jobs:
           pip install -r ./backend/requirements.txt
       - name: Running Django tests
         run: |
-          sh run ./backend/runtests.sh
+          sh ./backend/runtests.sh
