@@ -36,7 +36,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def list(self, request, *args, **kwargs):
-        if request.user.is_admin or request.user.is_superuser
+        if request.user.is_admin or request.user.is_superuser:
             serializer = CourseSerializer(self.queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         if request.user.is_teacher or request.user.is_student:
