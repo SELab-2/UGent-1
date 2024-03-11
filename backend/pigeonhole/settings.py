@@ -63,6 +63,8 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
 ]
 
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:3000', 'https://sel2-1.ugent.be']
+
 CORS_ALLOW_METHODS = [
     "DELETE",
     "GET",
