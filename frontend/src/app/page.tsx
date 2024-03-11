@@ -1,11 +1,11 @@
 import React from 'react';
-import LoginForm from '@/components/ui/LoginForm';
+import LoginCard from '@/app/components/LoginCard';
 
 
 const Login = () => {
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            <LoginForm/>
+            <LoginCard/>
         </main>
     )
 }
