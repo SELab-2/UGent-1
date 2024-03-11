@@ -1,0 +1,23 @@
+name: Backend test CI
+
+on:
+  - pull_request
+
+jobs:
+  flake8:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Running Django tests
+        working-directory: ./
+        run: |
+          sh run backend/runtests.sh
