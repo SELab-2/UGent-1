@@ -97,6 +97,7 @@ class ProjectTestAdminTeacher(TestCase):
         self.assertEqual(Project.objects.get(project_id=self.project.project_id).name, "Updated Test Project")
 
     # tests with an invalid course
+    
     def test_create_project_invalid_course(self):
         response = self.client.post(
             API_ENDPOINT + f'100/projects/',
@@ -109,7 +110,40 @@ class ProjectTestAdminTeacher(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(Project.objects.count(), 1)
-
+    
+    """TODO
+    def test_update_project_invalid_course(self):
+        response = self.client.patch(
+            API_ENDPOINT + f'100/projects/{self.project.project_id}/',
+            {
+                "name": "Updated Test Project",
+                "description": "Updated Test Project Description",
+                "course_id": 100
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(Project.objects.get(project_id=self.project.project_id).name, "Test Project")
+    """
+    def test_delete_project_invalid_course(self):
+        response = self.client.delete(
+            API_ENDPOINT + f'100/projects/{self.project.project_id}/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(Project.objects.count(), 1)
+    
+    """TODO
+    def test_partial_update_project_invalid_course(self):
+        response = self.client.patch(
+            API_ENDPOINT + f'100/projects/{self.project.project_id}/',
+            {
+                "name": "Updated Test Project"
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(Project.objects.get(project_id=self.project.project_id).name, "Test Project")
+    """
     def test_retrieve_project_invalid_course(self):
         response = self.client.get(
             API_ENDPOINT + f'100/projects/{self.project.project_id}/'
