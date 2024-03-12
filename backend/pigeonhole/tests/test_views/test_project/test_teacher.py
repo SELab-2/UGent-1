@@ -44,7 +44,8 @@ class ProjectTestTeacher(TestCase):
             {
                 "name": "Test Project 2",
                 "description": "Test Project 2 Description",
-                "course_id": self.course.course_id
+                "course_id": self.course.course_id,
+                "number_of_groups": 4,
             },
             format='json'
         )
