@@ -20,7 +20,7 @@ class Submissions(models.Model):
 
     objects = models.Manager()
 
-    # submission_nr is automatically assigned and unique per group, and 
+    # submission_nr is automatically assigned and unique per group, and
     # increments
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.submission_id:
