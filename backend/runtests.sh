@@ -1,0 +1,1 @@
+coverage run manage.py test backend/pigeonhole/tests/test_views

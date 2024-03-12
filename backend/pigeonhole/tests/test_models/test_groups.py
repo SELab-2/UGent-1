@@ -1,6 +1,6 @@
 from django.test import TestCase
 from backend.pigeonhole.apps.courses.models import Course
-from backend.pigeonhole.apps.users.models import User, Student, Teacher
+from backend.pigeonhole.apps.users.models import User
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 
@@ -34,9 +34,9 @@ class GroupTestCase(TestCase):
         )
 
         # Create teacher and student using the created users
-        teacher = Teacher.objects.create(id=teacher_user)
-        student = Student.objects.create(id=student_user, number=1234)
-        student2 = Student.objects.create(id=student_user2, number=5678)
+        teacher = User.objects.create(id=teacher_user)
+        student = User.objects.create(id=student_user, number=1234)
+        student2 = User.objects.create(id=student_user2, number=5678)
 
         # Create course
         course = Course.objects.create(name="Math", description="Mathematics")
@@ -47,6 +47,7 @@ class GroupTestCase(TestCase):
         project = Project.objects.create(
             name="Project",
             course_id=course,
+            deadline="2021-12-12 12:12:12",
             description="Project Description",
         )
 
@@ -67,8 +68,8 @@ class GroupTestCase(TestCase):
 
     def test_group_student_relation(self):
         group = Group.objects.get(group_nr=1)
-        student = Student.objects.get(id__email="student@gmail.com")
-        student2 = Student.objects.get(id__email="student2@gmail.com")
+        student = User.objects.get(id__email="student@gmail.com")
+        student2 = User.objects.get(id__email="student2@gmail.com")
         self.assertIn(student, group.student.all())
         self.assertIn(student2, group.student.all())
 

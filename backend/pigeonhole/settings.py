@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'backend.pigeonhole.apps.projects',
     'backend.pigeonhole.apps.submissions',
     'backend.pigeonhole.apps.groups',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +62,8 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
 ]
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:3000', 'https://sel2-1.ugent.be']
 
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -165,3 +168,11 @@ MEDIA_ROOT = BASE_DIR / 'uploads'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Basic': {
+            'type': 'basic'
+        }
+    }
+}

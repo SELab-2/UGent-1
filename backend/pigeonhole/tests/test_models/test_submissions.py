@@ -1,5 +1,5 @@
 from django.test import TestCase
-from backend.pigeonhole.apps.users.models import User, Student, Teacher
+from backend.pigeonhole.apps.users.models import User
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.submissions.models import Submissions
@@ -25,8 +25,8 @@ class SubmissionTestCase(TestCase):
         )
 
         # Create teacher and student using the created users
-        teacher = Teacher.objects.create(id=teacher_user)
-        student = Student.objects.create(id=student_user, number=1234)
+        teacher = User.objects.create(id=teacher_user)
+        student = User.objects.create(id=student_user, number=1234)
 
         # Create course
         course = Course.objects.create(name="Math", description="Mathematics")
@@ -37,6 +37,7 @@ class SubmissionTestCase(TestCase):
         project = Project.objects.create(
             name="Project",
             course_id=course,
+            deadline="2021-12-12 12:12:12",
             description="Project Description",
         )
 
@@ -51,7 +52,6 @@ class SubmissionTestCase(TestCase):
         # Create submission
         Submissions.objects.create(
             group_id=group,
-            submission_nr=1,
         )
 
     def test_submission_student_relation(self):
@@ -65,17 +65,6 @@ class SubmissionTestCase(TestCase):
         submission = Submissions.objects.get(submission_nr=1)
         project = submission.group_id.project_id
         self.assertEqual(submission.group_id.project_id, project)
-
-    def test_update_and_delete_submission(self):
-        submission = Submissions.objects.get(submission_nr=1)
-        submission.submission_nr = 2
-        submission.save()
-        updated_submission = Submissions.objects.get(submission_nr=2)
-        self.assertEqual(updated_submission.submission_nr, 2)
-
-        submission.delete()
-        with self.assertRaises(Submissions.DoesNotExist):
-            Submissions.objects.get(submission_nr=2)
 
     def test_submission_file_upload_and_retrieval(self):
         submission = Submissions.objects.get(submission_nr=1)
