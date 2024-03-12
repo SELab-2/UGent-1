@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import action
 
 from backend.pigeonhole.apps.users.models import User
 from .models import Course, CourseSerializer
@@ -36,6 +36,10 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def list(self, request, *args, **kwargs):
+        serializer = CourseSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def my_list(self, request, *args, **kwargs):
         if request.user.is_admin or request.user.is_superuser:
             serializer = CourseSerializer(self.queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -68,4 +72,3 @@ class CourseViewSet(viewsets.ModelViewSet):
         user = User.objects.get(id=request.user.id)
         user.course.add(course)
         return Response(status=status.HTTP_200_OK)
-
