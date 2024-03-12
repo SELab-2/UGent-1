@@ -1,10 +1,11 @@
-from django.contrib import admin
-from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import routers, permissions
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from backend.pigeonhole.apps.courses.views import CourseViewSet
 from backend.pigeonhole.apps.groups.views import GroupViewSet
@@ -35,11 +36,13 @@ router.register(r'courses/(?P<course_id>[^/.]+)/projects/(?P<project_id>[^/.]+)/
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path("admin/", admin.site.urls),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+                  path('', include(router.urls)),
+                  path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+                  path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+                  path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+                  path("admin/", admin.site.urls),
+                  path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+                  path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += router.urls
