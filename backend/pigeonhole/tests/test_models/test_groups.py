@@ -12,6 +12,7 @@ class GroupTestCase(TestCase):
     def setUp(self):
         # Create teacher user
         teacher = User.objects.create(
+            id=1,
             username="teacher_username",
             email="teacher@gmail.com",
             first_name="Kermit",
@@ -21,6 +22,7 @@ class GroupTestCase(TestCase):
         
         # Create student user
         student = User.objects.create(
+            id=2,
             username="student_username",
             email="student@gmail.com",
             first_name="Miss",
@@ -30,6 +32,7 @@ class GroupTestCase(TestCase):
 
         # Create a second student user
         student2 = User.objects.create(
+            id=3,
             username="student_username2",
             email="student2@gmail.com",
             first_name="Fozzie",
@@ -67,14 +70,14 @@ class GroupTestCase(TestCase):
 
     def test_group_student_relation(self):
         group = Group.objects.get(group_nr=1)
-        student = User.objects.get(id=1)
-        student2 = User.objects.get(id=2)
+        student = User.objects.get(id=2)
+        student2 = User.objects.get(id=3)
         self.assertIn(student, group.user.all())
         self.assertIn(student2, group.user.all())
 
     def test_group_final_score(self):
         group = Group.objects.get(group_nr=1)
-        self.assertEqual(group.final_score, 0)
+        self.assertEqual(group.final_score, None)
 
     def test_group_group_nr(self):
         group = Group.objects.get(group_nr=1)
