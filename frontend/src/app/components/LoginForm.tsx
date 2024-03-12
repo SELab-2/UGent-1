@@ -28,8 +28,8 @@ const LoginForm = () => {
     return (
         <div>
             <TextField
-                label="Email"
-                autoComplete="email"
+                label="Username"
+                autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 fullWidth
