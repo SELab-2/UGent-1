@@ -7,15 +7,15 @@ from backend.pigeonhole.apps.groups.models import Group
 # Create your models here.
 class Submissions(models.Model):
     submission_id = models.BigAutoField(primary_key=True)
-    group_id = models.ForeignKey(Group, on_delete=models.CASCADE, blank=False)
-    submission_nr = models.IntegerField()
+    group_id = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True)
+    submission_nr = models.IntegerField(blank=True)
     file = models.FileField(upload_to='uploads/submissions/files/' +
                                       str(group_id) + '/' + str(submission_nr) + '/',
                             null=True, blank=False, max_length=255)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True, blank=True)
     output_test = models.FileField(upload_to='uploads/submissions/outputs/' +
                                              str(group_id) + '/' + str(submission_nr) +
-                                             '/output_test/', null=True, blank=False,
+                                             '/output_test/', null=True, blank=True,
                                    max_length=255)
 
     objects = models.Manager()
@@ -32,6 +32,15 @@ class Submissions(models.Model):
 
 
 class SubmissionsSerializer(serializers.ModelSerializer):
+    submission_nr = serializers.IntegerField(read_only=True)
+    output_test = serializers.FileField(read_only=True)
+
     class Meta:
         model = Submissions
         fields = ['submission_id', 'group_id', 'file', 'timestamp', 'submission_nr', 'output_test']
+        read_only_fields = ['group_id']
+
+    def save(self, **kwargs):
+        group_id = self.context['view'].kwargs.get('group_id')
+        self.validated_data['group_id'] = Group.objects.get(pk=group_id)
+        return super().save(**kwargs)
