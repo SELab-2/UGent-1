@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 
 from backend.pigeonhole.apps.courses.models import Course
@@ -12,13 +12,10 @@ class Roles(models.IntegerChoices):
 
 class User(AbstractUser):
     id = models.BigAutoField(primary_key=True)
-    email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=150)
     course = models.ManyToManyField(Course)
     role = models.IntegerField(choices=Roles.choices, default=Roles.STUDENT)
 
-    objects = models.Manager()
+    objects = UserManager()
 
     class Meta(AbstractUser.Meta):
         db_table = "auth_user"
