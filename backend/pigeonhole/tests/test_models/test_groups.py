@@ -11,32 +11,31 @@ from backend.pigeonhole.apps.projects.models import Project
 class GroupTestCase(TestCase):
     def setUp(self):
         # Create teacher user
-        teacher_user = User.objects.create_user(
+        teacher = User.objects.create(
             username="teacher_username",
             email="teacher@gmail.com",
             first_name="Kermit",
-            last_name="The Frog"
+            last_name="The Frog",
+            role=2
         )
+        
         # Create student user
-        student_user = User.objects.create_user(
+        student = User.objects.create(
             username="student_username",
             email="student@gmail.com",
             first_name="Miss",
-            last_name="Piggy"
+            last_name="Piggy",
+            role=3
         )
 
         # Create a second student user
-        student_user2 = User.objects.create_user(
+        student2 = User.objects.create(
             username="student_username2",
             email="student2@gmail.com",
             first_name="Fozzie",
-            last_name="Bear"
+            last_name="Bear",
+            role=3
         )
-
-        # Create teacher and student using the created users
-        teacher = User.objects.create(id=teacher_user)
-        student = User.objects.create(id=student_user, number=1234)
-        student2 = User.objects.create(id=student_user2, number=5678)
 
         # Create course
         course = Course.objects.create(name="Math", description="Mathematics")
@@ -44,22 +43,22 @@ class GroupTestCase(TestCase):
         student.course.add(course)
 
         # Create project
-        project = Project.objects.create(
+        Project.objects.create(
             name="Project",
             course_id=course,
             deadline="2021-12-12 12:12:12",
             description="Project Description",
+            number_of_groups=2,
+            group_size=2
         )
-
-        # Create group
+        # get group with id 1
         group = Group.objects.create(
             group_nr=1,
-            project_id=project,
-            final_score=0,
+            project_id=Project.objects.get(name="Project"),
         )
 
         # Add students to the group
-        group.student.set([student, student2])
+        group.user.set([student, student2])
 
     def test_group_project_relation(self):
         group = Group.objects.get(group_nr=1)
@@ -68,10 +67,10 @@ class GroupTestCase(TestCase):
 
     def test_group_student_relation(self):
         group = Group.objects.get(group_nr=1)
-        student = User.objects.get(id__email="student@gmail.com")
-        student2 = User.objects.get(id__email="student2@gmail.com")
-        self.assertIn(student, group.student.all())
-        self.assertIn(student2, group.student.all())
+        student = User.objects.get(id=1)
+        student2 = User.objects.get(id=2)
+        self.assertIn(student, group.user.all())
+        self.assertIn(student2, group.user.all())
 
     def test_group_final_score(self):
         group = Group.objects.get(group_nr=1)

@@ -10,23 +10,21 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 class SubmissionTestCase(TestCase):
     def setUp(self):
         # Create teacher user
-        teacher_user = User.objects.create_user(
+        teacher = User.objects.create(
             username="teacher_username",
             email="teacher@gmail.com",
             first_name="Kermit",
-            last_name="The Frog"
+            last_name="The Frog",
+            role=2
         )
         # Create student user
-        student_user = User.objects.create_user(
+        student = User.objects.create(
             username="student_username",
             email="student@gmail.com",
             first_name="Miss",
-            last_name="Piggy"
+            last_name="Piggy",
+            role=3
         )
-
-        # Create teacher and student using the created users
-        teacher = User.objects.create(id=teacher_user)
-        student = User.objects.create(id=student_user, number=1234)
 
         # Create course
         course = Course.objects.create(name="Math", description="Mathematics")
@@ -47,7 +45,7 @@ class SubmissionTestCase(TestCase):
         )
 
         # Add student to the group
-        group.student.set([student])
+        group.user.set([student])
 
         # Create submission
         Submissions.objects.create(
@@ -56,10 +54,10 @@ class SubmissionTestCase(TestCase):
 
     def test_submission_student_relation(self):
         submission = Submissions.objects.get(submission_nr=1)
-        student = submission.group_id.student.first()
-        self.assertEqual(submission.group_id.student.count(), 1)
-        self.assertEqual(submission.group_id.student.first(), student)
-        self.assertEqual(submission.group_id.student.first().id, student.id)
+        student = submission.group_id.user.first()
+        self.assertEqual(submission.group_id.user.count(), 1)
+        self.assertEqual(submission.group_id.user.first(), student)
+        self.assertEqual(submission.group_id.user.first().id, student.id)
 
     def test_submission_project_relation(self):
         submission = Submissions.objects.get(submission_nr=1)

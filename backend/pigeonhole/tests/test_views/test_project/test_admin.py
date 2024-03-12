@@ -5,6 +5,7 @@ from rest_framework.test import APIClient
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.users.models import User
+from backend.pigeonhole.apps.groups.models import Group
 
 API_ENDPOINT = '/courses/'
 
@@ -36,18 +37,40 @@ class ProjectTestAdminTeacher(TestCase):
         self.client.force_authenticate(self.admin)
 
     def test_create_project(self):
+        # Assuming API_ENDPOINT is defined elsewhere in your test setup
+        # and self.course.course_id is correctly set up to point to an existing course
+
+        # Make a POST request to create a new project
         response = self.client.post(
             API_ENDPOINT + f'{self.course.course_id}/projects/',
             {
                 "name": "Test Project 2",
                 "description": "Test Project 2 Description",
-                "course_id": self.course.course_id
+                "course_id": self.course.course_id,
+                "number_of_groups": 4,
             },
             format='json'
         )
+
+        # Check that the response status code is 201 CREATED
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Check that the number of projects has increased by 1
+        # This assumes that there was already one project before this test
         self.assertEqual(Project.objects.count(), 2)
-        self.assertEqual(Project.objects.get(project_id=2).name, "Test Project 2")
+        
+        # test whether 4 group objects are created
+        self.assertEqual(Group.objects.count(), 4)
+
+        # Retrieve the newly created project
+        # Since we're creating a new project, it should be the last one in the list
+        # However, it's safer to filter by name or another unique field
+        # For demonstration, I'll use the name "Test Project 2"
+        new_project = Project.objects.get(name="Test Project 2")
+
+        # Check that the name of the newly created project is correct
+        self.assertEqual(new_project.name, "Test Project 2")
+
 
     def test_retrieve_project(self):
         response = self.client.get(

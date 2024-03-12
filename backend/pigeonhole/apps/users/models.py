@@ -17,7 +17,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=150)
     course = models.ManyToManyField(Course)
-    role = models.IntegerField(choices=Roles.choices, default=Roles.STUDENT)
+    role = models.IntegerField(choices=Roles.choices, default=Roles.ADMIN)
 
     objects = models.Manager()
 

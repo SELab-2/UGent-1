@@ -18,7 +18,7 @@ class Group(models.Model):
 
     # a student can only be in one group per project
     def clean(self):
-        for student in self.student.all():
+        for student in self.user.all():
             existing_groups = Group.objects.filter(
                 project_id=self.project_id, student=student).exclude(
                 group_id=self.group_id)
