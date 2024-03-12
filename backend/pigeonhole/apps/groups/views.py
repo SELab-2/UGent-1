@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -28,6 +29,12 @@ class GroupViewSet(viewsets.ModelViewSet):
 
         queryset = self.queryset.filter(project_id=project_id)
         serializer = self.get_serializer(queryset, many=True)
+        if request.user.is_student:
+            for group in serializer.data:
+                print(request.user.id)
+                if request.user.id not in group["user"]:
+                    del group["final_score"]
+                    del group["feedback"]
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, *args, **kwargs):
@@ -54,7 +61,7 @@ class GroupViewSet(viewsets.ModelViewSet):
         group_nr = kwargs.get('group_nr')
         get_object_or_404(Course, course_id=course_id)
         get_object_or_404(Project, project_id=project_id)
-        group = get_object_or_404(Group, group_nr=group_nr)
+        group = get_object_or_404(Group, group_nr=group_nr, project_id=project_id)
         serializer = GroupSerializer(instance=group, data=request.data, partial=False)
         if serializer.is_valid():
             serializer.save()
@@ -66,7 +73,7 @@ class GroupViewSet(viewsets.ModelViewSet):
         group_nr = kwargs.get('group_nr')
         get_object_or_404(Course, course_id=course_id)
         get_object_or_404(Project, project_id=project_id)
-        group = get_object_or_404(Group, group_nr=group_nr)
+        group = get_object_or_404(Group, group_nr=group_nr, project_id=project_id)
         serializer = GroupSerializer(instance=group, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -77,3 +84,16 @@ class GroupViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return Response({"message": "You can't delete groups"}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def join_group(self, request, *args, **kwargs):
+        # TODO hier nog checks toevoegen, maar je kan een group joinen
+        course_id = kwargs.get('course_id')
+        project_id = kwargs.get('project_id')
+        group_nr = kwargs.get('group_nr')
+        get_object_or_404(Course, course_id=course_id)
+        get_object_or_404(Project, project_id=project_id)
+        group = get_object_or_404(Group, project_id=project_id, group_nr=group_nr)
+
+        group.user.add(request.user)
+        return Response(status=status.HTTP_200_OK)

@@ -13,7 +13,7 @@ class Group(models.Model):
     user = models.ManyToManyField(User)
     feedback = models.TextField(null=True)
     final_score = models.IntegerField(null=True, blank=True)
-    visible = models.BooleanField(null=False, default=True)
+    visible = models.BooleanField(null=False, default=False)
 
     objects = models.Manager()
 
