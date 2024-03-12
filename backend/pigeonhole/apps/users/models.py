@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from rest_framework import serializers
 
@@ -19,7 +19,7 @@ class User(AbstractUser):
     course = models.ManyToManyField(Course)
     role = models.IntegerField(choices=Roles.choices, default=Roles.ADMIN)
 
-    objects = models.Manager()
+    objects = UserManager()
 
     class Meta(AbstractUser.Meta):
         db_table = "auth_user"
