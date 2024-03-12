@@ -12,7 +12,7 @@ def get_upload_to(self, filename):
 
 
 def get_upload_to_test(self, filename):
-    return None # TODO
+    return None # TODO implement this
 
 # Create your models here.
 class Submissions(models.Model):
