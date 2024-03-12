@@ -17,6 +17,9 @@ class Group(models.Model):
 
     objects = models.Manager()
 
+    def __str__(self):
+        return str(self.id)
+
     # a student can only be in one group per project
     def clean(self):
         for student in self.user.all():
