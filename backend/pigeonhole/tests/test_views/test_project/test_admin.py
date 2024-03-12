@@ -37,10 +37,6 @@ class ProjectTestAdminTeacher(TestCase):
         self.client.force_authenticate(self.admin)
 
     def test_create_project(self):
-        # Assuming API_ENDPOINT is defined elsewhere in your test setup
-        # and self.course.course_id is correctly set up to point to an existing course
-
-        # Make a POST request to create a new project
         response = self.client.post(
             API_ENDPOINT + f'{self.course.course_id}/projects/',
             {
@@ -51,24 +47,10 @@ class ProjectTestAdminTeacher(TestCase):
             },
             format='json'
         )
-
-        # Check that the response status code is 201 CREATED
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        # Check that the number of projects has increased by 1
-        # This assumes that there was already one project before this test
         self.assertEqual(Project.objects.count(), 2)
-
-        # test whether 4 group objects are created
         self.assertEqual(Group.objects.count(), 4)
-
-        # Retrieve the newly created project
-        # Since we're creating a new project, it should be the last one in the list
-        # However, it's safer to filter by name or another unique field
-        # For demonstration, I'll use the name "Test Project 2"
         new_project = Project.objects.get(name="Test Project 2")
-
-        # Check that the name of the newly created project is correct
         self.assertEqual(new_project.name, "Test Project 2")
 
     def test_retrieve_project(self):

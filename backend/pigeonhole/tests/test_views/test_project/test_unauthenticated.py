@@ -102,7 +102,7 @@ class ProjectTestUnauthenticated(TestCase):
 
     def test_retrieve_project_invalid_course_unauthenticated(self):
         response = self.client.get(
-            API_ENDPOINT + '100/projects/{self.project.project_id}/'
+            API_ENDPOINT + f'100/projects/{self.project.project_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

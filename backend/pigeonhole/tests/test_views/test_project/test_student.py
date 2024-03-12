@@ -40,7 +40,7 @@ class ProjectTestStudent(TestCase):
 
     def test_create_project(self):
         response = self.client.post(
-            API_ENDPOINT + '{self.course.course_id}/projects/',
+            API_ENDPOINT + f'{self.course.course_id}/projects/',
             {
                 "name": "Test Project 2",
                 "description": "Test Project 2 Description",
