@@ -11,6 +11,9 @@ def get_upload_to(self, filename):
     return 'submissions/' + str(self.group_id.group_id) + '/' + str(self.submission_nr) + '/input.' + match.group(1)
 
 
+def get_upload_to_test(self, filename):
+    return None # TODO
+
 # Create your models here.
 class Submissions(models.Model):
     submission_id = models.BigAutoField(primary_key=True)
