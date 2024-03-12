@@ -14,6 +14,10 @@ class SubmissionsViewset(viewsets.ModelViewSet):
     serializer_class = SubmissionsSerializer
     permission_classes = [IsAuthenticated]
 
+    @property
+    def allowed_methods(self):
+        return ['GET', 'POST']
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -31,3 +35,4 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
