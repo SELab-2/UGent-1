@@ -7,6 +7,8 @@ from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.groups.models import Group, GroupSerializer
 from backend.pigeonhole.apps.projects.models import Project
 
+# TODO tests for score/max_score
+
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()

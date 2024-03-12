@@ -8,6 +8,7 @@ from .models import Project, ProjectSerializer, Course
 from .permissions import CanAccessProject
 
 # TODO hier nog zorgen als een project niet visible is, dat de students het niet kunnen zien.
+# TODO tests for visibility and deadline
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
