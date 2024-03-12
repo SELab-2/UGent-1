@@ -40,7 +40,7 @@ class ProjectTestStudent(TestCase):
 
     def test_create_project(self):
         response = self.client.post(
-            API_ENDPOINT + f'{self.course.course_id}/projects/',
+            API_ENDPOINT + '{self.course.course_id}/projects/',
             {
                 "name": "Test Project 2",
                 "description": "Test Project 2 Description",
@@ -100,7 +100,7 @@ class ProjectTestStudent(TestCase):
 
     def test_create_project_invalid_course(self):
         response = self.client.post(
-            API_ENDPOINT + f'100/projects/',
+            API_ENDPOINT + '100/projects/',
             {
                 "name": "Test Project 2",
                 "description": "Test Project 2 Description",
@@ -119,7 +119,7 @@ class ProjectTestStudent(TestCase):
 
     def test_list_projects_invalid_course(self):
         response = self.client.get(
-            API_ENDPOINT + f'100/projects/'
+            API_ENDPOINT + '100/projects/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

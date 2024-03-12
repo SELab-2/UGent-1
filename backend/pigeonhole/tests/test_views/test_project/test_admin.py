@@ -120,7 +120,7 @@ class ProjectTestAdminTeacher(TestCase):
 
     def test_create_project_invalid_course(self):
         response = self.client.post(
-            API_ENDPOINT + f'100/projects/',
+            API_ENDPOINT + '100/projects/',
             {
                 "name": "Test Project 2",
                 "description": "Test Project 2 Description",
@@ -170,7 +170,7 @@ class ProjectTestAdminTeacher(TestCase):
 
     def test_list_projects_invalid_course(self):
         response = self.client.get(
-            API_ENDPOINT + f'100/projects/'
+            API_ENDPOINT + '100/projects/'
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
