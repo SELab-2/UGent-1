@@ -27,7 +27,6 @@ class Group(models.Model):
                 project_id=self.project_id, student=student).exclude(
                 group_id=self.group_id)
             if existing_groups.exists():
-                print("fout")
                 raise ValidationError(f"Student {student} is already part of "
                                       "another group in this project.")
 

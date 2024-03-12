@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class CanAccessProject(permissions.BasePermission):
+class CanAccessGroup(permissions.BasePermission):
     # Custom user class to check if the user can join a group.
     def has_permission(self, request, view):
         user = request.user
