@@ -2,7 +2,8 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from backend.pigeonhole.apps.users.models import User, UserSerializer
+from backend.pigeonhole.apps.users.models import User
+from backend.pigeonhole.apps.users.serializers import UserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):

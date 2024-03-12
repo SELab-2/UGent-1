@@ -3,25 +3,13 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.settings import api_settings
 
-from backend.pigeonhole.apps.users.models import User, Student, Teacher
+from backend.pigeonhole.apps.users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'e_mail', 'first_name', 'last_name']
-
-
-class StudentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Student
-        fields = ['number', 'course', 'id']
-
-
-class TeacherSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Teacher
-        fields = ['course', 'id', 'is_admin', 'is_assistent']
+        fields = ['id', 'email', 'first_name', 'last_name', 'course', 'role']
 
 
 class LoginSerializer(TokenObtainPairSerializer):

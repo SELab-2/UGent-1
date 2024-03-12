@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from rest_framework import serializers
 
 from backend.pigeonhole.apps.courses.models import Course
 
@@ -39,9 +38,3 @@ class User(AbstractUser):
     @property
     def is_student(self):
         return self.role == Roles.STUDENT
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'course', 'role']
