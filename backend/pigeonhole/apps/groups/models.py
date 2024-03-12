@@ -13,6 +13,7 @@ class Group(models.Model):
     user = models.ManyToManyField(User)
     feedback = models.TextField(null=True)
     final_score = models.IntegerField(null=True, blank=True)
+    visible = models.BooleanField(null=False, default=True)
 
     objects = models.Manager()
 
@@ -26,6 +27,7 @@ class Group(models.Model):
                 project_id=self.project_id, student=student).exclude(
                 group_id=self.group_id)
             if existing_groups.exists():
+                print("fout")
                 raise ValidationError(f"Student {student} is already part of "
                                       "another group in this project.")
 
@@ -44,4 +46,23 @@ class Group(models.Model):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ["group_id", "group_nr", "final_score", "project_id", "user", "feedback"]
+        fields = ["group_id", "group_nr", "final_score", "project_id", "user", "feedback", "visible"]
+
+    def get_visible_data(self):
+        # remove certain fields if visible is false.
+        data = self.data.copy()
+        if not self.instance.visible:
+            if 'final_score' in data:
+                del data['final_score']
+            if 'feedback' in data:
+                del data['feedback']
+        return data
+
+    def get_other_group(self):
+        # remove certain fields if visible is false.
+        data = self.data.copy()
+        if 'final_score' in data:
+            del data['final_score']
+        if 'feedback' in data:
+            del data['feedback']
+        return data
