@@ -14,9 +14,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Test',
             fields=[
-                ('project_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='projects.project')),
+                ('project_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                 primary_key=True, serialize=False, to='projects.project')),
                 ('test_nr', models.IntegerField()),
-                ('test_file_type', models.FileField(max_length=255, null=True, upload_to='uploads/projects/<django.db.models.fields.related.ForeignKey>/<django.db.models.fields.IntegerField>')),
+                ('test_file_type', models.FileField(max_length=255, null=True, upload_to=
+                'uploads/projects/<django.db.models.fields.related.ForeignKey>/<django.db.models.fields.IntegerField>')),
             ],
         ),
         migrations.RemoveField(

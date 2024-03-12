@@ -52,7 +52,7 @@ class UserTestCase(TestCase):
                 role=3
             )
 
-    # TODO 
+    # TODO
     def test_user_correct_email(self):
         with self.assertRaises(Exception):
             User.objects.create(
