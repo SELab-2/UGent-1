@@ -1,24 +1,35 @@
 "use client";
-import {createTheme} from '@mui/material/styles';
+import {createTheme, PaletteOptions} from '@mui/material/styles';
+import {Palette} from '@mui/material/styles/createPalette';
+
+declare module '@mui/material/styles/createPalette' {
+    interface Palette {
+        failure?: Palette['primary'];
+    }
+
+    interface PaletteOptions {
+        failure?: PaletteOptions['primary'];
+    }
+}
 
 const loginTheme = createTheme({
     palette: {
         background: {
             default: '#f4f5fd'
         },
-        primary:{
-            main:'#1E64C8',
-            contrastText:'#FFFFFF'
+        primary: {
+            main: '#1E64C8',
+            contrastText: '#FFFFFF'
         },
-        secondary:{
-            main:'#D0E4FF',
-            contrastText:'#001D36'
+        secondary: {
+            main: '#D0E4FF',
+            contrastText: '#001D36'
         },
-        failure:{
-            main:'#E15E5E'
+        failure: {
+            main: '#E15E5E'
         },
-        success:{
-            main:'#7DB47C'
+        success: {
+            main: '#7DB47C'
         }
     },
     typography: {
@@ -50,21 +61,21 @@ const loginTheme = createTheme({
 });
 
 export const theme = createTheme({
-    palette:{
-        primary:{
-            main:'#1E64C8',
-            contrastText:'#FFFFFF'
+    palette: {
+        primary: {
+            main: '#1E64C8',
+            contrastText: '#FFFFFF'
         },
-        secondary:{
-            main:'#D0E4FF',
-            contrastText:'#001D36'
+        secondary: {
+            main: '#D0E4FF',
+            contrastText: '#001D36'
         },
-        background:{
-            default:'#f4f5fd',
+        background: {
+            default: '#f4f5fd',
         },
-        text:{
-            primary:'#001D36',
-            secondary:'#FFFFFF'
+        text: {
+            primary: '#001D36',
+            secondary: '#FFFFFF'
         },
     },
 });
