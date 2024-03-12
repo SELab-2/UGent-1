@@ -6,6 +6,9 @@ class CourseUserPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.user.is_admin or request.user.is_superuser:
             return True
+        
+        if request.user.is_teacher:
+            return True
 
         if request.user.is_student or request.user.is_teacher:
             return view.action in ['list', 'retrieve']
