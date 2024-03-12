@@ -23,7 +23,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ["project_id", "course_id", "name", "description", "deadline", "visible", "number_of_groups",
-                  "group_size", "max_score", "file_structure", "max_score"]
+                  "group_size", "max_score", "file_structure"]
 
 
 class Test(models.Model):
