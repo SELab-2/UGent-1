@@ -7,7 +7,6 @@ import loginTheme from '../../styles/theme';
 
 const LoginCard: React.FC = () => {
     return (
-        <ThemeProvider theme={loginTheme}>
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
                 <Box
@@ -44,7 +43,6 @@ const LoginCard: React.FC = () => {
                     </form>
                 </Box>
             </Container>
-        </ThemeProvider>
     );
 };
 

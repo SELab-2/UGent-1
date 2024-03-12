@@ -6,12 +6,20 @@ const loginTheme = createTheme({
         background: {
             default: '#f4f5fd'
         },
-        primary: {
-            main: '#1976d2',
+        primary:{
+            main:'#1E64C8',
+            contrastText:'#FFFFFF'
         },
-        secondary: {
-            main: '#9c27b0',
+        secondary:{
+            main:'#D0E4FF',
+            contrastText:'#001D36'
         },
+        failure:{
+            main:'#E15E5E'
+        },
+        success:{
+            main:'#7DB47C'
+        }
     },
     typography: {
         fontFamily: 'Quicksand, sans-serif',
@@ -37,6 +45,26 @@ const loginTheme = createTheme({
                 fullWidth: true,
                 style: {margin: '10px 0'},
             },
+        },
+    },
+});
+
+export const theme = createTheme({
+    palette:{
+        primary:{
+            main:'#1E64C8',
+            contrastText:'#FFFFFF'
+        },
+        secondary:{
+            main:'#D0E4FF',
+            contrastText:'#001D36'
+        },
+        background:{
+            default:'#f4f5fd',
+        },
+        text:{
+            primary:'#001D36',
+            secondary:'#FFFFFF'
         },
     },
 });
