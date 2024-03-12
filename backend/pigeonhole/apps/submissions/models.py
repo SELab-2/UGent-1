@@ -1,6 +1,5 @@
 from django.db import models
 from rest_framework import serializers
-from django.core.exceptions import ValidationError
 
 from backend.pigeonhole.apps.groups.models import Group
 
@@ -30,6 +29,7 @@ class Submissions(models.Model):
                 models.Max('submission_nr'))['submission_nr__max'] or 0
             self.submission_nr = max_submission_nr + 1
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+
 
 class SubmissionsSerializer(serializers.ModelSerializer):
     class Meta:

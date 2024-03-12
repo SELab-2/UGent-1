@@ -4,9 +4,10 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Project, ProjectSerializer, Course
 from backend.pigeonhole.apps.groups.models import Group
+from .models import Project, ProjectSerializer, Course
 from .permissions import CanAccessProject
+
 
 # TODO hier nog zorgen als een project niet visible is, dat de students het niet kunnen zien.
 # TODO tests for visibility and deadline
@@ -34,10 +35,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
             serializer = ProjectSerializer(data=request.data)
             if serializer.is_valid():
-                project = serializer.save() # Save the project and get the instance
+                project = serializer.save()  # Save the project and get the instance
                 # make NUMBER OF GROUP groups
                 for i in range(serializer.validated_data['number_of_groups']):
-                    group = Group.objects.create(group_nr=i+1, project_id=project) # Assign the Project instance
+                    group = Group.objects.create(group_nr=i + 1, project_id=project)  # Assign the Project instance
                     group.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:

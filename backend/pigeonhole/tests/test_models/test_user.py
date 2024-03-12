@@ -15,7 +15,7 @@ class UserTestCase(TestCase):
             last_name="The Frog",
             role=2
         )
-        
+
         # Create student user
         User.objects.create(
             id=2,
@@ -33,7 +33,7 @@ class UserTestCase(TestCase):
         self.assertEqual(student[0].first_name, "Kermit")
         self.assertEqual(student[0].last_name, "The Frog")
         self.assertEqual(student[0].role, 2)
-        
+
     def test_teacher_fields(self):
         teacher = User.objects.get(id=2),
         self.assertEqual(teacher[0].username, "student_username")
@@ -41,7 +41,7 @@ class UserTestCase(TestCase):
         self.assertEqual(teacher[0].first_name, "Miss")
         self.assertEqual(teacher[0].last_name, "Piggy")
         self.assertEqual(teacher[0].role, 3)
-        
+
     def test_user_name_length_validation(self):
         with self.assertRaises(Exception):
             User.objects.create(
@@ -51,7 +51,7 @@ class UserTestCase(TestCase):
                 last_name="Piggy",
                 role=3
             )
-    
+
     # TODO 
     def test_user_correct_email(self):
         with self.assertRaises(Exception):
@@ -62,7 +62,7 @@ class UserTestCase(TestCase):
                 last_name="Piggy",
                 role=3
             )
-            
+
     def test_user_role_validation(self):
         with self.assertRaises(Exception):
             User.objects.create(
@@ -72,7 +72,3 @@ class UserTestCase(TestCase):
                 last_name="Piggy",
                 role=4
             )
-            
-            
-            
-                                   

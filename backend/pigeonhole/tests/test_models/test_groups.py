@@ -19,7 +19,7 @@ class GroupTestCase(TestCase):
             last_name="The Frog",
             role=2
         )
-        
+
         # Create student user
         student = User.objects.create(
             id=2,

@@ -27,7 +27,7 @@ class CourseTestCase(TestCase):
             last_name="Piggy",
             role=3
         )
-        
+
         # Create course
         course = Course.objects.create(name="Math", description="Mathematics")
         teacher.course.add(course)

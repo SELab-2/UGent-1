@@ -1,6 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from rest_framework import serializers
-from django.core.exceptions import ValidationError
 
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.users.models import User

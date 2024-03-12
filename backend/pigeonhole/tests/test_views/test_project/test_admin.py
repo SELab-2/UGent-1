@@ -58,7 +58,7 @@ class ProjectTestAdminTeacher(TestCase):
         # Check that the number of projects has increased by 1
         # This assumes that there was already one project before this test
         self.assertEqual(Project.objects.count(), 2)
-        
+
         # test whether 4 group objects are created
         self.assertEqual(Group.objects.count(), 4)
 
@@ -70,7 +70,6 @@ class ProjectTestAdminTeacher(TestCase):
 
         # Check that the name of the newly created project is correct
         self.assertEqual(new_project.name, "Test Project 2")
-
 
     def test_retrieve_project(self):
         response = self.client.get(

@@ -22,7 +22,7 @@ class CompleteTestAdmin(TestCase):
             last_name="LastName",
             role=2  # Teacher role
         )
-        
+
         # Create a student user
         self.student = User.objects.create(
             username="student_username",
@@ -86,5 +86,3 @@ class CompleteTestAdmin(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Submission.objects.count(), 1)
         self.assertEqual(Submission.objects.get(submission_id=1).submission, "Test Submission")
-
-    
