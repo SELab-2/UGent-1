@@ -161,3 +161,21 @@ class ProjectTestTeacher(TestCase):
             API_ENDPOINT + f'{self.course.course_id}/projects/100/'
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_update_project_invalid_project(self):
+        response = self.client.patch(
+            API_ENDPOINT + f'{self.course.course_id}/projects/100/',
+            {
+                "name": "Updated Test Project",
+                "description": "Updated Test Project Description",
+                "course_id": self.course.course_id
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_delete_project_invalid_project(self):
+        response = self.client.delete(
+            API_ENDPOINT + f'{self.course.course_id}/projects/100/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
