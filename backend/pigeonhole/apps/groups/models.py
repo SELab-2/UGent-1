@@ -66,3 +66,17 @@ class GroupSerializer(serializers.ModelSerializer):
         if 'feedback' in data:
             del data['feedback']
         return data
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+
+        # Check if the user is a student and the group is not visible
+        if request and request.user.is_student and not instance.visible:
+            # Hide sensitive information for students
+            if 'final_score' in data:
+                del data['final_score']
+            if 'feedback' in data:
+                del data['feedback']
+
+        return data
