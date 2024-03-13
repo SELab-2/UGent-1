@@ -1,6 +1,8 @@
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 
+from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.submissions.models import Submissions, SubmissionsSerializer
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
 
@@ -13,14 +15,24 @@ class SubmissionsViewset(viewsets.ModelViewSet):
     serializer_class = SubmissionsSerializer
     permission_classes = [IsAuthenticated & CanAccessSubmission]
 
-    @property
-    def allowed_methods(self):
-        if self.request.user.is_student:
-            return ['GET', 'POST']
-        else:
-            return ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+    @action(detail=False, methods=['POST'])
+    def submit(self, request, *args, **kwargs):
+        submission = self.get_submission()
+        serializer = SubmissionsSerializer(submission, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def list(self, request, *args, **kwargs):
-        if request.user.is_student:
-            self.queryset = Submissions.objects.filter(group_id__members=request.user)
-        return super().list(request, *args, **kwargs)
+    @action(detail=True, methods=['GET'])
+    def get_submission(self, request, *args, **kwargs):
+        submission = self.get_object()
+        return Response(SubmissionsSerializer(submission).data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['GET'])
+    def get_all_submissions(self, request, *args, **kwargs):
+        user = request.user
+        groups = Group.objects.filter(users=user)
+        submissions = Submissions.objects.filter(group_id__in=groups)
+        if not submissions:
+            return Response({"message": "No submissions found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(SubmissionsSerializer(submissions, many=True).data, status=status.HTTP_200_OK)
