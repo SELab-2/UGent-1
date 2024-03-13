@@ -4,8 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from backend.pigeonhole.apps.courses.models import CourseSerializer
-from backend.pigeonhole.apps.projects.models import ProjectSerializer
 from backend.pigeonhole.apps.projects.models import Project
+from backend.pigeonhole.apps.projects.models import ProjectSerializer
 from .models import Course
 from .permissions import CourseUserPermissions
 
