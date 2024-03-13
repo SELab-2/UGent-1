@@ -31,9 +31,15 @@ class ProjectTestStudent(TestCase):
 
         self.student.course.set([self.course])
 
-        self.project = Project.objects.create(
+        self.invisible_project = Project.objects.create(
             name="Test Project",
             course_id=self.course
+        )
+        
+        self.visible_project = Project.objects.create(
+            name="Test Project 2",
+            course_id=self.course,
+            visible=True
         )
 
         self.project_not_of_student = Project.objects.create(
@@ -54,15 +60,21 @@ class ProjectTestStudent(TestCase):
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Project.objects.count(), 2)
+        self.assertEqual(Project.objects.count(), 3)
 
-    def test_retrieve_project(self):
+    def test_retrieve_visible_project(self):
         response = self.client.get(
-            API_ENDPOINT + f'{self.project.project_id}/'
+            API_ENDPOINT + f'{self.visible_project.project_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data.get('name'), self.project.name)
-
+        self.assertEqual(response.data['name'], "Test Project 2")
+        
+    def test_retrieve_invisible_project(self):
+        response = self.client.get(
+            API_ENDPOINT + f'{self.invisible_project.project_id}/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)   
+        
     def test_list_projects(self):
         response = self.client.get(
             API_ENDPOINT
@@ -70,9 +82,9 @@ class ProjectTestStudent(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(len(response.data), 1)
 
-    def test_update_project(self):
+    def test_update_visible_project(self):
         response = self.client.patch(
-            API_ENDPOINT + f'{self.project.project_id}/',
+            API_ENDPOINT + f'{self.visible_project.project_id}/',
             {
                 "name": "Updated Test Project",
                 "description": "Updated Test Project Description",
@@ -81,25 +93,56 @@ class ProjectTestStudent(TestCase):
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Project.objects.get(project_id=self.project.project_id).name, "Test Project")
-
-    def test_delete_project(self):
-        response = self.client.delete(
-            API_ENDPOINT + f'{self.project.project_id}/'
+        self.assertEqual(Project.objects.get(project_id=self.visible_project.project_id).name, "Test Project 2")
+        
+    def test_update_invisible_project(self):
+        response = self.client.patch(
+            API_ENDPOINT + f'{self.invisible_project.project_id}/',
+            {
+                "name": "Updated Test Project",
+                "description": "Updated Test Project Description",
+                "course_id": self.course.course_id
+            },
+            format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Project.objects.count(), 2)
+        self.assertEqual(Project.objects.get(project_id=self.invisible_project.project_id).name, "Test Project")
 
-    def test_partial_update_project(self):
+    def test_delete_visible_project(self):
+        response = self.client.delete(
+            API_ENDPOINT + f'{self.visible_project.project_id}/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(Project.objects.count(), 3)
+        
+    def test_delete_invisible_project(self):
+        response = self.client.delete(
+            API_ENDPOINT + f'{self.invisible_project.project_id}/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(Project.objects.count(), 3)
+        
+    def test_partial_update_visible_project(self):
         response = self.client.patch(
-            API_ENDPOINT + f'{self.project.project_id}/',
+            API_ENDPOINT + f'{self.visible_project.project_id}/',
             {
                 "name": "Updated Test Project"
             },
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Project.objects.get(project_id=self.project.project_id).name, "Test Project")
+        self.assertEqual(Project.objects.get(project_id=self.visible_project.project_id).name, "Test Project 2")
+        
+    def test_partial_update_invisible_project(self):
+        response = self.client.patch(
+            API_ENDPOINT + f'{self.invisible_project.project_id}/',
+            {
+                "name": "Updated Test Project"
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(Project.objects.get(project_id=self.invisible_project.project_id).name, "Test Project")
 
     # tests with a course not of the student
 
@@ -114,7 +157,7 @@ class ProjectTestStudent(TestCase):
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Project.objects.count(), 2)
+        self.assertEqual(Project.objects.count(), 3)
 
     def test_retrieve_project_course_not_of_student(self):
         response = self.client.get(
@@ -130,7 +173,7 @@ class ProjectTestStudent(TestCase):
 
     def test_update_project_course_not_of_student(self):
         response = self.client.patch(
-            API_ENDPOINT + f'{self.project.project_id}/',
+            API_ENDPOINT + f'{self.invisible_project.project_id}/',
             {
                 "name": "Updated Test Project",
                 "description": "Updated Test Project Description",
@@ -139,17 +182,17 @@ class ProjectTestStudent(TestCase):
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Project.objects.get(project_id=self.project.project_id).name, "Test Project")
+        self.assertEqual(Project.objects.get(project_id=self.invisible_project.project_id).name, "Test Project")
 
     def test_retrieve_invalid_project(self):
         response = self.client.get(
-            API_ENDPOINT + f'{self.project.project_id}6165498/'
+            API_ENDPOINT + f'{self.invisible_project.project_id}6165498/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_invalid_project(self):
         response = self.client.patch(
-            API_ENDPOINT + f'{self.project.project_id}6841684/',
+            API_ENDPOINT + f'{self.invisible_project.project_id}6841684/',
             {
                 "name": "Updated Test Project",
                 "description": "Updated Test Project Description",
@@ -161,6 +204,6 @@ class ProjectTestStudent(TestCase):
 
     def test_delete_invalid_project(self):
         response = self.client.delete(
-            API_ENDPOINT + f'{self.project.project_id}681854/'
+            API_ENDPOINT + f'{self.invisible_project.project_id}681854/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
