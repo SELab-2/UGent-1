@@ -22,7 +22,7 @@ class Group(models.Model):
 
     # a student can only be in one group per project
     def clean(self):
-        if self.user.exists(): # Only validate if there are users
+        if self.user.exists():  # Only validate if there are users
             for student in self.user.all():
                 existing_groups = Group.objects.filter(
                     project_id=self.project_id, user=student).exclude(
