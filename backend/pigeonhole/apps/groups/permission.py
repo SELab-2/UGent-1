@@ -10,8 +10,9 @@ class CanAccessGroup(permissions.BasePermission):
             return True
         elif user.is_teacher:
             if user.course.filter(course_id=course_id).exists():
-                return True
+                return view.action in ['retrieve', 'join',
+                                       'leave', 'get_submissions']
         elif user.is_student:
             if user.course.filter(course_id=course_id).exists():
-                return view.action in ['list', 'retrieve', 'join', 'leave']
+                return view.action in ['retrieve', 'get_submissions']
         return False
