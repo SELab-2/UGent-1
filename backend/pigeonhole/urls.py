@@ -35,7 +35,7 @@ router.register(r'submissions', SubmissionsViewset)
 router.register(r'courses/(?P<course_id>[^/.]+)/projects', ProjectViewSet)
 router.register(r'courses/(?P<course_id>[^/.]+)/projects/(?P<project_id>[^/.]+)/groups', GroupViewSet)
 
-owpats = [
+overwritten_auth_patterns = [
     path(
             "callback",
             AuthenticateCallbackView.as_view(),
@@ -63,7 +63,7 @@ urlpatterns = [
                   path("admin/", admin.site.urls),
                   path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
                   path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-                  path('auth/', include((owpats, 'microsoft_auth')), name=None),
+                  path('auth/', include((overwritten_auth_patterns, 'microsoft_auth')), name=None),
                   path('microsoft/', include('microsoft_auth.urls', namespace='microsoft')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
