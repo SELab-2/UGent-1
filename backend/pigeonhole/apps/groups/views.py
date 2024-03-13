@@ -20,8 +20,8 @@ class GroupViewSet(viewsets.ModelViewSet):
     def join(self, request, pk=None):
         group = self.get_object()
         user = request.user
-        if group.members.count() < group.project.max_group_size:
-            group.members.add(user)
+        if group.user.count() < group.project.max_group_size:
+            group.user.add(user)
             group.save()
             return Response({'message': 'User joined group'}, status=status.HTTP_200_OK)
         else:
@@ -32,6 +32,13 @@ class GroupViewSet(viewsets.ModelViewSet):
     def leave(self, request, pk=None):
         group = self.get_object()
         user = request.user
-        group.members.remove(user)
+        group.user.remove(user)
         group.save()
         return Response({'message': 'User left group'}, status=status.HTTP_200_OK)
+
+    # get all submissions for a group
+    @action(detail=True, methods=['get'])
+    def get_submissions(self, request, pk=None):
+        group = self.get_object()
+        submissions = group.submission_set.all()
+        return Response({'submissions': submissions}, status=status.HTTP_200_OK)

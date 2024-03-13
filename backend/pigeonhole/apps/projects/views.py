@@ -49,9 +49,3 @@ class ProjectViewSet(viewsets.ModelViewSet):
         project = self.get_object()
         groups = Group.objects.filter(project_id=project)
         return Response(GroupSerializer(groups, many=True).data, status=status.HTTP_200_OK)
-
-    @action(detail=True, methods=['get'])
-    def get_my_groups(self, request, *args, **kwargs):
-        project = self.get_object()
-        groups = Group.objects.filter(project_id=project, user=request.user)
-        return Response(GroupSerializer(groups, many=True).data, status=status.HTTP_200_OK)

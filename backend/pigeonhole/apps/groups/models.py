@@ -22,7 +22,7 @@ class Group(models.Model):
 
     # a student can only be in one group per project
     def clean(self):
-        if self.user.exists(): # Only validate if there are users
+        if self.user.exists():  # Only validate if there are users
             for student in self.user.all():
                 existing_groups = Group.objects.filter(
                     project_id=self.project_id, user=student).exclude(
@@ -48,25 +48,6 @@ class GroupSerializer(serializers.ModelSerializer):
         model = Group
         fields = ["group_id", "group_nr", "final_score", "project_id", "user", "feedback", "visible"]
 
-    def get_visible_data(self):
-        # remove certain fields if visible is false.
-        data = self.data.copy()
-        if not self.instance.visible:
-            if 'final_score' in data:
-                del data['final_score']
-            if 'feedback' in data:
-                del data['feedback']
-        return data
-
-    def get_other_group(self):
-        # remove certain fields if visible is false.
-        data = self.data.copy()
-        if 'final_score' in data:
-            del data['final_score']
-        if 'feedback' in data:
-            del data['feedback']
-        return data
-    
     def to_representation(self, instance):
         data = super().to_representation(instance)
         request = self.context.get('request')
@@ -78,5 +59,4 @@ class GroupSerializer(serializers.ModelSerializer):
                 del data['final_score']
             if 'feedback' in data:
                 del data['feedback']
-
         return data

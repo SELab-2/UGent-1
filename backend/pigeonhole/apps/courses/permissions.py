@@ -19,5 +19,4 @@ class CourseUserPermissions(permissions.BasePermission):
 
         if request.user.is_student:
             return view.action in ['list', 'retrieve']
-
         return False
