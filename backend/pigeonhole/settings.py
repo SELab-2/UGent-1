@@ -54,7 +54,7 @@ INSTALLED_APPS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend'
+    'django.contrib.auth.backends.ModelBackend',
     'microsoft_auth.backends.MicrosoftAuthenticationBackend',
 ]
 
