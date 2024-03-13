@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
+from microsoft_auth.views import AuthenticateCallbackView
 from rest_framework import routers, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -43,6 +44,8 @@ urlpatterns = [
                   path("admin/", admin.site.urls),
                   path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
                   path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+                  path('auth/callback/', AuthenticateCallbackView.as_view(), name='microsoft_auth_callback'),
+                  path('microsoft/', include('microsoft_auth.urls', namespace='microsoft')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += router.urls

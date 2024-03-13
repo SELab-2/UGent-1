@@ -35,21 +35,33 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
+    'backend.pigeonhole.apps.courses',
+    'backend.pigeonhole.apps.groups',
+    'backend.pigeonhole.apps.projects',
+    'backend.pigeonhole.apps.submissions',
+    'backend.pigeonhole.apps.users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
-    'rest_framework',
-    "corsheaders",
-    'backend.pigeonhole.apps.users',
-    'backend.pigeonhole.apps.courses',
-    'backend.pigeonhole.apps.projects',
-    'backend.pigeonhole.apps.submissions',
-    'backend.pigeonhole.apps.groups',
     'drf_yasg',
+    'microsoft_auth',
+    'rest_framework',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend'
+    'microsoft_auth.backends.MicrosoftAuthenticationBackend',
+]
+
+MICROSOFT_AUTH_CLIENT_ID = os.environ.get("OAUTH_CLIENT_ID")
+MICROSOFT_AUTH_CLIENT_SECRET = os.environ.get("OAUTH_CLIENT_SECRET")
+MICROSOFT_AUTH_TENANT_ID = os.environ.get("OAUTH_TENANT_ID")
+MICROSOFT_AUTH_LOGIN_TYPE = 'ma'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -88,10 +100,11 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'microsoft_auth.context_processors.microsoft',
             ],
         },
     },
