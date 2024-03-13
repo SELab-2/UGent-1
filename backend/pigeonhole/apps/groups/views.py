@@ -35,3 +35,10 @@ class GroupViewSet(viewsets.ModelViewSet):
         group.user.remove(user)
         group.save()
         return Response({'message': 'User left group'}, status=status.HTTP_200_OK)
+
+    # get all submissions for a group
+    @action(detail=True, methods=['get'])
+    def get_submissions(self, request, pk=None):
+        group = self.get_object()
+        submissions = group.submission_set.all()
+        return Response({'submissions': submissions}, status=status.HTTP_200_OK)
