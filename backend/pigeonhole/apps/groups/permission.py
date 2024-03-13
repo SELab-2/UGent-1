@@ -6,7 +6,6 @@ class CanAccessGroup(permissions.BasePermission):
     def has_permission(self, request, view):
         user = request.user
         course_id = view.kwargs.get('course_id')
-
         if user.is_admin or user.is_superuser:
             return True
         elif user.is_teacher:
@@ -14,5 +13,5 @@ class CanAccessGroup(permissions.BasePermission):
                 return True
         elif user.is_student:
             if user.course.filter(course_id=course_id).exists():
-                return True
+                return view.action in ['list', 'retrieve', 'join', 'leave']
         return False

@@ -48,25 +48,6 @@ class GroupSerializer(serializers.ModelSerializer):
         model = Group
         fields = ["group_id", "group_nr", "final_score", "project_id", "user", "feedback", "visible"]
 
-    def get_visible_data(self):
-        # remove certain fields if visible is false.
-        data = self.data.copy()
-        if not self.instance.visible:
-            if 'final_score' in data:
-                del data['final_score']
-            if 'feedback' in data:
-                del data['feedback']
-        return data
-
-    def get_other_group(self):
-        # remove certain fields if visible is false.
-        data = self.data.copy()
-        if 'final_score' in data:
-            del data['final_score']
-        if 'feedback' in data:
-            del data['feedback']
-        return data
-    
     def to_representation(self, instance):
         data = super().to_representation(instance)
         request = self.context.get('request')
@@ -78,5 +59,4 @@ class GroupSerializer(serializers.ModelSerializer):
                 del data['final_score']
             if 'feedback' in data:
                 del data['feedback']
-
         return data
