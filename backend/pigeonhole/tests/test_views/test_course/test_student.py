@@ -63,8 +63,19 @@ class CourseTestStudent(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Course.objects.count(), 1)
 
+    def test_retrieve_course(self):
+        response = self.client.get(f'{API_ENDPOINT}{self.course.course_id}/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        content_json = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(content_json["name"], "Test Course")
+        self.assertEqual(content_json["description"], "This is a test course.")
+
     def test_list_courses(self):
         response = self.client.get(API_ENDPOINT)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         content_json = json.loads(response.content.decode("utf-8"))
         self.assertEqual(content_json["count"], 1)
+
+    def test_retrieve_course_not_exist(self):
+        response = self.client.get(f'{API_ENDPOINT}100/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
