@@ -15,4 +15,12 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
     @property
     def allowed_methods(self):
-        return ['GET', 'POST']
+        if self.request.user.is_student:
+            return ['GET', 'POST']
+        else:
+            return ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+
+    def list(self, request, *args, **kwargs):
+        if request.user.is_student:
+            self.queryset = Submissions.objects.filter(group_id__members=request.user)
+        return super().list(request, *args, **kwargs)

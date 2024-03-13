@@ -6,13 +6,18 @@ class CanAccessSubmission(permissions.BasePermission):
     # to the submission data.
     def has_permission(self, request, view):
         user = request.user
-        submission_id = view.kwargs.get('submission_id')
+        group_id = view.kwargs.get('group_id')
+        project_id = view.kwargs.get("project_id")
+        course_id = view.kwargs.get("course_id")
         if user.is_admin or user.is_superuser:
             return True
         elif user.is_teacher:
-            if user.submission.filter(submission_id=submission_id).exists():
+            course = Course.objects.get(course_id=course_id)
+            project = Project.objects.get(project_id=project_id)
+            if course.teachers.filter(user=user).exists() and project.course_id == course:
                 return True
         elif user.is_student:
-            if user.submission.filter(submission_id=submission_id).exists():
-                return view.action in ['list', 'retrieve']
+            group = Group.objects.get(group_id=group_id)
+            if group.users.filter(user=user).exists():
+                return view.action in ['list', 'retrieve', 'create']
         return False
