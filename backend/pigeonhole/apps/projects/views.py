@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db import transaction
@@ -42,3 +43,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
         headers = self.get_success_headers(serializer.data)
         return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @action(detail=True, methods=['get'])
+    def get_groups(self, request, *args, **kwargs):
+        project = self.get_object()
+        groups = Group.objects.filter(project_id=project)
+        return Response(GroupSerializer(groups, many=True).data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get'])
+    def get_my_groups(self, request, *args, **kwargs):
+        project = self.get_object()
+        groups = Group.objects.filter(project_id=project, user=request.user)
+        return Response(GroupSerializer(groups, many=True).data, status=status.HTTP_200_OK)
