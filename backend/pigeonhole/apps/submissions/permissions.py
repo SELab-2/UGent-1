@@ -21,3 +21,4 @@ class CanAccessSubmission(permissions.BasePermission):
             if group.users.filter(user=user).exists():
                 return view.action in ['list', 'retrieve', 'create']
         return False
+
