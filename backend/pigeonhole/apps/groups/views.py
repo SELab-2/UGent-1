@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from backend.pigeonhole.apps.groups.models import Group, GroupSerializer
+from backend.pigeonhole.apps.submissions.models import Submissions
 from .permission import CanAccessGroup
 
 
@@ -36,5 +37,5 @@ class GroupViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def get_submissions(self, request, pk=None):
         group = self.get_object()
-        submissions = group.submission_set.all()
+        submissions = Submissions.objects.filter(group_id=group).all()
         return Response({'submissions': submissions}, status=status.HTTP_200_OK)
