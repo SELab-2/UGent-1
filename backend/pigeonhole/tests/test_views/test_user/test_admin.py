@@ -64,7 +64,7 @@ class UserTestAdmin(TestCase):
         self.student.refresh_from_db()
         self.assertEqual(self.student.first_name, updated_data['first_name'])
 
-    def test_delete_course(self):
+    def test_delete_user(self):
         user_id = User.objects.get(username="user2").id
         response = self.client.delete(f'{API_ENDPOINT}{user_id}/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

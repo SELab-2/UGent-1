@@ -1,7 +1,5 @@
 from rest_framework import permissions
 
-from backend.pigeonhole.apps.users.models import User
-
 
 class UserPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -11,8 +9,8 @@ class UserPermissions(permissions.BasePermission):
         if request.user.is_teacher or request.user.is_student:
             if view.action in ['list', 'retrieve']:  # TODO: can teachers create and destroy users?
                 return True
-            elif view.action in ['update', 'partial_update', 'destroy'] and User.objects.filter(
-                    id=request.user.id).exists():
+            # user can only update their own user
+            elif view.action in ['update', 'partial_update'] and request.user.pk == int(view.kwargs['pk']):
                 return True
 
         return False
