@@ -17,12 +17,11 @@ class CanAccessGroup(permissions.BasePermission):
                 return Response(status=status.HTTP_404_NOT_FOUND)
             return False
 
-        project_id = Group.objects.get(group_id=group_id).project_id
+        project_id = Group.objects.get(group_id=group_id).project_id.project_id
         if not Project.objects.filter(project_id=project_id).exists():
             if user.is_admin or user.is_superuser:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             return False
-
         course_id = Project.objects.get(project_id=project_id).course_id.course_id
         if user.is_admin or user.is_superuser:
             return True

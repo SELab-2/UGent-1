@@ -17,8 +17,8 @@ class SubmissionTestAdmin(TestCase):
         self.client = APIClient()
 
         self.admin = User.objects.create(
-            username="admin_username",
-            email="test@gmail.com",
+            username="admin_username1",
+            email="test1@gmail.com",
             first_name="Kermit",
             last_name="The Frog",
             role=1
@@ -53,7 +53,7 @@ class SubmissionTestAdmin(TestCase):
     def test_submit_submission(self):
         test_file = SimpleUploadedFile("test_file.txt", b"file_content")
         response = self.client.post(
-            API_ENDPOINT + f'submissions',
+            API_ENDPOINT + f'submissions/',
             {
                 "file": test_file,
                 "group_id": self.group.group_id
@@ -62,6 +62,7 @@ class SubmissionTestAdmin(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Submissions.objects.count(), 2)
+        self.assertEqual(1, 2)
 
     def test_retrieve_submission(self):
         response = self.client.get(
