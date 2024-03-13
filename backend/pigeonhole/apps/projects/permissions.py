@@ -14,5 +14,5 @@ class CanAccessProject(permissions.BasePermission):
                 return True
         elif user.is_student:
             if user.course.filter(course_id=course_id).exists():
-                return view.action in ['list', 'retrieve']
+                return view.action in ['list', 'retrieve', 'get_my_groups', 'get_groups']
         return False

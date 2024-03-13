@@ -41,3 +41,23 @@ class GroupViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     """
+
+    @action(detail=True, methods=['post'])
+    def join(self, request, pk=None):
+        group = self.get_object()
+        user = request.user
+        if group.members.count() < group.project.max_group_size:
+            group.members.add(user)
+            group.save()
+            return Response({'message': 'User joined group'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'Group is full'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # leave a group
+    @action(detail=True, methods=['post'])
+    def leave(self, request, pk=None):
+        group = self.get_object()
+        user = request.user
+        group.members.remove(user)
+        group.save()
+        return Response({'message': 'User left group'}, status=status.HTTP_200_OK)
