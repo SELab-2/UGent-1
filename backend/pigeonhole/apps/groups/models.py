@@ -10,7 +10,7 @@ class Group(models.Model):
     group_id = models.BigAutoField(primary_key=True)
     group_nr = models.IntegerField(blank=True, null=True)
     project_id = models.ForeignKey(Project, on_delete=models.CASCADE)
-    user = models.ManyToManyField(User)
+    user = models.ManyToManyField(User, blank=True)
     feedback = models.TextField(null=True)
     final_score = models.IntegerField(null=True, blank=True)
     visible = models.BooleanField(null=False, default=False)
@@ -22,13 +22,14 @@ class Group(models.Model):
 
     # a student can only be in one group per project
     def clean(self):
-        for student in self.user.all():
-            existing_groups = Group.objects.filter(
-                project_id=self.project_id, student=student).exclude(
-                group_id=self.group_id)
-            if existing_groups.exists():
-                raise ValidationError(f"Student {student} is already part of "
-                                      "another group in this project.")
+        if self.user.exists(): # Only validate if there are users
+            for student in self.user.all():
+                existing_groups = Group.objects.filter(
+                    project_id=self.project_id, user=student).exclude(
+                    group_id=self.group_id)
+                if existing_groups.exists():
+                    raise ValidationError(f"Student {student} is already part of "
+                                          "another group in this project.")
 
     # a student can only be in one group per project, group_nr is
     # automatically assigned and unique per project

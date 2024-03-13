@@ -29,7 +29,7 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'courses', CourseViewSet)
-router.register(r'courses/(?P<course_id>[^/.]+)/projects', ProjectViewSet)
+router.register(r'projects', ProjectViewSet)
 router.register(r'groups', GroupViewSet)
 router.register(r'courses/(?P<course_id>[^/.]+)/'
                 r'projects/(?P<project_id>[^/.]+)/'

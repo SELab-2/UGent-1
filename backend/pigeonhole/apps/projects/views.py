@@ -1,42 +1,44 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
+from django.db import transaction
 from backend.pigeonhole.apps.groups.models import Group
+from backend.pigeonhole.apps.groups.models import GroupSerializer
 from .models import Project, ProjectSerializer, Course
 from .permissions import CanAccessProject
 
-
-# TODO hier nog zorgen als een project niet visible is, dat de students het niet kunnen zien.
-# TODO tests for visibility and deadline
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated & CanAccessProject]
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
-        course_id = kwargs.get('course_id')
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        if request.user.is_teacher or request.user.is_admin or request.user.is_superuser:
-            # Check whether the course exists
-            get_object_or_404(Course, course_id=course_id)
+        number_of_groups = serializer.validated_data.get('number_of_groups', 0)
+        project = serializer.save()
 
-            serializer = ProjectSerializer(data=request.data)
-            if serializer.is_valid():
-                project = serializer.save()  # Save the project and get the instance
-                # make NUMBER OF GROUP groups
-                for i in range(serializer.validated_data['number_of_groups']):
-                    group = Group.objects.create(group_nr=i + 1, project_id=project)  # Assign the Project instance
-                    group.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"message": "You are not allowed to create a new project."},
-                        status=status.HTTP_400_BAD_REQUEST)
+        groups = []
+        for i in range(number_of_groups):
+            group_data = {
+                'project_id': project.project_id,
+                'user': [],  # You may add users here if needed
+                'feedback': None,
+                'final_score': None,
+                'visible': False,  # Adjust visibility as needed
+            }
+            group_serializer = GroupSerializer(data=group_data)
+            group_serializer.is_valid(raise_exception=True)
+            groups.append(group_serializer.save())
 
+        # You may return the newly created groups if needed
+        groups_data = GroupSerializer(groups, many=True).data
+        response_data = serializer.data
+        response_data['groups'] = groups_data
 
-
-
+        headers = self.get_success_headers(serializer.data)
+        return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)

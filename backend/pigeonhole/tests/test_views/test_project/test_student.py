@@ -1,6 +1,8 @@
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
+# reverse
+from django.urls import reverse
 
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.projects.models import Project
@@ -40,7 +42,7 @@ class ProjectTestStudent(TestCase):
 
     def test_create_project(self):
         response = self.client.post(
-            API_ENDPOINT + f'{self.course.course_id}/projects/',
+            reverse('project-list', kwargs={'course_id': self.course.course_id}),
             {
                 "name": "Test Project 2",
                 "description": "Test Project 2 Description",
