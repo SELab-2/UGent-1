@@ -29,11 +29,9 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'courses', CourseViewSet)
-router.register(r'courses/(?P<course_id>[^/.]+)/projects', ProjectViewSet)
+router.register(r'projects', ProjectViewSet)
 router.register(r'courses/(?P<course_id>[^/.]+)/projects/(?P<project_id>[^/.]+)/groups', GroupViewSet)
-router.register(r'courses/(?P<course_id>[^/.]+)/'
-                r'projects/(?P<project_id>[^/.]+)/'
-                r'groups/(?P<group_id>[^/.]+)/submissions', SubmissionsViewset)
+router.register(r'submissions', SubmissionsViewset)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
@@ -45,6 +43,7 @@ urlpatterns = [
                   path("admin/", admin.site.urls),
                   path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
                   path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+                  path('api/', include(router.urls)),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += router.urls
