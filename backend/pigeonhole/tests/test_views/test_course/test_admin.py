@@ -1,3 +1,5 @@
+import json
+
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -74,4 +76,5 @@ class CourseTestAdminTeacher(TestCase):
     def test_list_courses(self):
         response = self.client.get(API_ENDPOINT)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), Course.objects.count())
+        content_json = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(content_json["count"], 2)
