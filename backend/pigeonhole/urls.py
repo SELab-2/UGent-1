@@ -4,9 +4,10 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from microsoft_auth.views import AuthenticateCallbackView
+from microsoft_auth.views import AuthenticateCallbackView, AuthenticateCallbackRedirect, to_ms_redirect
 from rest_framework import routers, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.urls import urlpatterns as drf_urlpatterns
 
 from backend.pigeonhole.apps.courses.views import CourseViewSet
 from backend.pigeonhole.apps.groups.views import GroupViewSet
@@ -34,6 +35,24 @@ router.register(r'submissions', SubmissionsViewset)
 router.register(r'courses/(?P<course_id>[^/.]+)/projects', ProjectViewSet)
 router.register(r'courses/(?P<course_id>[^/.]+)/projects/(?P<project_id>[^/.]+)/groups', GroupViewSet)
 
+owpats = [
+    path(
+            "callback",
+            AuthenticateCallbackView.as_view(),
+            name="auth-callback",
+        ),
+        path(
+            "from-auth-redirect",
+            AuthenticateCallbackRedirect.as_view(),
+            name="from-auth-redirect",
+        ),
+        path(
+            "to-auth-redirect",
+            to_ms_redirect,
+            name="to-auth-redirect",
+        ),
+]
+
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
@@ -44,7 +63,7 @@ urlpatterns = [
                   path("admin/", admin.site.urls),
                   path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
                   path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-                  path('auth/callback/', AuthenticateCallbackView.as_view(), name='microsoft_auth_callback'),
+                  path('auth/', include((owpats, 'microsoft_auth')), name=None),
                   path('microsoft/', include('microsoft_auth.urls', namespace='microsoft')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -185,3 +185,5 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+REDIRECT_URI = "https://localhost:8000/auth/callback/"
