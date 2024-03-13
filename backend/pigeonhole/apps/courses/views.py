@@ -15,6 +15,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated, CourseUserPermissions]
 
+    def perform_create(self, serializer):
+        course = serializer.save()
+        user = self.request.user
+        user.course.add(course)
+
     @action(detail=True, methods=['post'])
     def join_course(self, request, *args, **kwargs):
         course = self.get_object()
@@ -30,7 +35,6 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # give a list of all projects in the course
     @action(detail=True, methods=['GET'])
     def get_projects(self, request, *args, **kwargs):
         course = self.get_object()

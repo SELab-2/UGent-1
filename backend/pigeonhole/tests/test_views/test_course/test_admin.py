@@ -39,6 +39,7 @@ class CourseTestAdminTeacher(TestCase):
         response = self.client.post(API_ENDPOINT, self.course_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Course.objects.count(), 3)
+        self.assertEqual(self.teacher.course.count(), 2)
 
     def test_update_course(self):
         updated_data = {
