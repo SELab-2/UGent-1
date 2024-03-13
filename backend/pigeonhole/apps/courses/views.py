@@ -4,8 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from backend.pigeonhole.apps.courses.models import CourseSerializer
-from backend.pigeonhole.apps.projects.models import ProjectSerializer
 from backend.pigeonhole.apps.projects.models import Project
+from backend.pigeonhole.apps.projects.models import ProjectSerializer
 from .models import Course
 from .permissions import CourseUserPermissions
 
@@ -14,6 +14,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated, CourseUserPermissions]
+
+    def perform_create(self, serializer):
+        course = serializer.save()
+        user = self.request.user
+        user.course.add(course)
 
     @action(detail=True, methods=['post'])
     def join_course(self, request, *args, **kwargs):
@@ -30,7 +35,6 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # give a list of all projects in the course
     @action(detail=True, methods=['GET'])
     def get_projects(self, request, *args, **kwargs):
         course = self.get_object()

@@ -29,9 +29,9 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'courses', CourseViewSet)
+router.register(r'projects', ProjectViewSet)
+router.register(r'groups', GroupViewSet)
 router.register(r'submissions', SubmissionsViewset)
-router.register(r'courses/(?P<course_id>[^/.]+)/projects', ProjectViewSet)
-router.register(r'courses/(?P<course_id>[^/.]+)/projects/(?P<project_id>[^/.]+)/groups', GroupViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

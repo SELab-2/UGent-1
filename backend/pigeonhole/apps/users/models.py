@@ -16,7 +16,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=150)
-    course = models.ManyToManyField(Course)
+    course = models.ManyToManyField(Course)  # TODO: Add blank=True
     role = models.IntegerField(choices=Roles.choices, default=Roles.ADMIN)
 
     objects = UserManager()

@@ -10,8 +10,6 @@ from backend.pigeonhole.apps.users.models import User
 API_ENDPOINT = '/courses/'
 
 
-# TODO
-
 class CourseTestTeacher(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -42,6 +40,7 @@ class CourseTestTeacher(TestCase):
         response = self.client.post(API_ENDPOINT, self.course_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Course.objects.count(), 3)
+        self.assertEqual(self.teacher.course.count(), 2)
 
     def test_update_course(self):
         updated_data = {
@@ -83,3 +82,7 @@ class CourseTestTeacher(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], self.course.name)
         self.assertEqual(response.data['description'], self.course.description)
+
+    def test_retrieve_course_not_exist(self):
+        response = self.client.get(f'{API_ENDPOINT}100/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
