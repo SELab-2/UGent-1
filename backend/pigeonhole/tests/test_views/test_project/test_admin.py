@@ -1,11 +1,13 @@
+import json
+
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from backend.pigeonhole.apps.courses.models import Course
+from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.users.models import User
-from backend.pigeonhole.apps.groups.models import Group
 
 API_ENDPOINT = '/projects/'
 
@@ -65,7 +67,8 @@ class ProjectTestAdminTeacher(TestCase):
             API_ENDPOINT
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        content_json = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(content_json["count"], 1)
 
     def test_update_project(self):
         response = self.client.patch(
