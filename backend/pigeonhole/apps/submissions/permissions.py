@@ -19,7 +19,7 @@ class CanAccessSubmission(permissions.BasePermission):
                         return Response(status=status.HTTP_404_NOT_FOUND)
                     return False
                 group = Group.objects.get(group_id=group_id)
-                if user in group.user:
+                if group.user.filter(id=user.id).exists():
                     return True
                 else:
                     return False
@@ -33,9 +33,9 @@ class CanAccessSubmission(permissions.BasePermission):
             if user.is_admin or user.is_superuser:
                 return True
             elif user.is_teacher:
-                if user in group.user:
+                if group.user.filter(id=user.id).exists():
                     return view.action in ['retrieve']
             elif user.is_student:
-                if user in group.user:
+                if group.user.filter(id=user.id).exists():
                     return view.action in ['retrieve', 'create']
             return False
