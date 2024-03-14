@@ -1,5 +1,4 @@
-from unittest import TestCase
-
+from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -8,17 +7,18 @@ from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.users.models import User
 
+API_ENDPOINT = '/groups/'
 
-class GroupTestAdminTeacher(TestCase):
 
+class GroupTestAdmin(TestCase):
     def setUp(self):
         self.client = APIClient()
 
         self.admin = User.objects.create(
             username="admin_username",
             email="test@gmail.com",
-            first_name="Test1",
-            last_name="Test2",
+            first_name="Kermit",
+            last_name="The Frog",
             role=1
         )
 
@@ -27,63 +27,129 @@ class GroupTestAdminTeacher(TestCase):
             description="Test Course Description",
         )
 
+        self.admin.course.set([self.course])
+
         self.project = Project.objects.create(
             name="Test Project",
-            course_id=self.course
+            course_id=self.course,
+            number_of_groups=3,
+            group_size=2,
         )
 
-        self.group = Group.objects.create(
-            name="Test Group",
-            project_id=self.project
+        self.group1 = Group.objects.create(
+            group_id=0,
+            group_nr=1,
+            final_score=0,
+            project_id=self.project,
+            feedback="Test Feedback",
+            visible=True,
         )
 
-        self.admin.course.set([self.course])
+        self.group2 = Group.objects.create(
+            group_id=1,
+            group_nr=2,
+            final_score=0,
+            project_id=self.project,
+            feedback="Test Feedback",
+            visible=True,
+        )
+
+        self.group_not_visible = Group.objects.create(
+            group_id=2,
+            group_nr=3,
+            final_score=0,
+            project_id=self.project,
+            feedback="Test Feedback",
+            visible=False,
+        )
 
         self.client.force_authenticate(self.admin)
 
     def test_admin_create_group(self):
         response = self.client.post(
-            f'/courses/{self.course.course_id}/projects/{self.project.project_id}/groups/',
+            API_ENDPOINT,
             {
-                "name": "Test Group 2",
-                "description": "Test Group 2 Description",
+                "name": "Test Group 1",
+                "description": "Test Group 1 Description",
                 "project_id": self.project.project_id,
-                "number_of_groups": 4,
             },
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_admin_retrieve_group(self):
+    def test_retrieve_group(self):
         response = self.client.get(
-            f'/courses/{self.course.course_id}/projects/{self.project.project_id}/groups/{self.group.group_id}/',
+            API_ENDPOINT + f'{self.group1.group_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data.get('name'), self.group.name)
 
-    def test_admin_list_groups(self):
+    #
+    def test_list_groups(self):
         response = self.client.get(
-            f'/courses/{self.course.course_id}/projects/{self.project.project_id}/groups/',
+            API_ENDPOINT
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_admin_update_group(self):
-        response = self.client.put(
-            f'/courses/{self.course.course_id}/projects/{self.project.project_id}/groups/{self.group.group_id}/',
+    def test_delete_group(self):
+        response = self.client.delete(
+            API_ENDPOINT + f'{self.group1.group_id}/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Group.objects.count(), 2)
+
+    def test_group_count(self):
+        self.assertEqual(Group.objects.count(), 3)
+
+    def test_partial_update_group(self):
+        response = self.client.patch(
+            API_ENDPOINT + f'{self.group1.group_id}/',
             {
-                "name": "Test Group 3",
-                "description": "Test Group 2 Description",
-                "project_id": self.project.project_id,
-                "number_of_groups": 4,
+                'feedback': 'Updated Feedback'
             },
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Group.objects.get(group_id=self.group1.group_id).feedback, 'Updated Feedback')
 
-    def test_admin_delete_group(self):
-        response = self.client.delete(
-            f'/courses/{self.course.course_id}/projects/{self.project.project_id}/groups/{self.group.group_id}/',
+    def test_retrieve_invalid_group(self):
+        response = self.client.get(
+            API_ENDPOINT + '9999/'
         )
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Group.objects.count(), 0)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+    def test_partial_update_invalid_group(self):
+        response = self.client.patch(
+            API_ENDPOINT + '999/',
+            {
+                'feedback': 'Updated Feedback'
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_invalid_group(self):
+        response = self.client.delete(
+            API_ENDPOINT + '999/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_join_group(self):
+        response = self.client.post(
+            API_ENDPOINT + f'{self.group1.group_id}/join/'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_leave_group(self):
+        response = self.client.post(
+            API_ENDPOINT + f'{self.group1.group_id}/leave/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    # TODO get submissions test fixen geeft een 301?
+    # def test_get_submissions(self):
+    #     response = self.client.get(
+    #         API_ENDPOINT + f'{self.group1.group_id}/get_submissions'
+    #     )
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from backend.pigeonhole.apps.groups.models import Group, GroupSerializer
 from backend.pigeonhole.apps.submissions.models import Submissions
 from .permission import CanAccessGroup
+from ..projects.models import Project
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -17,7 +18,8 @@ class GroupViewSet(viewsets.ModelViewSet):
     def join(self, request, pk=None):
         group = self.get_object()
         user = request.user
-        if group.user.count() < group.project.max_group_size:
+        project = Project.objects.get(project_id=group.project_id)
+        if group.user.count() < project.max_group_size:
             group.user.add(user)
             group.save()
             return Response({'message': 'User joined group'}, status=status.HTTP_200_OK)

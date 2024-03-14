@@ -1,6 +1,7 @@
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
+import json
 
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.projects.models import Project
@@ -35,7 +36,7 @@ class ProjectTestStudent(TestCase):
             name="Test Project",
             course_id=self.course
         )
-        
+
         self.project_not_of_teacher = Project.objects.create(
             name="Test Project",
             course_id=self.course_not_of_teacher
@@ -98,7 +99,7 @@ class ProjectTestStudent(TestCase):
             API_ENDPOINT + f'{invisible_project.project_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
     # test with invalid project
 
     def test_retrieve_invalid_project(self):
@@ -126,13 +127,13 @@ class ProjectTestStudent(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     # test with project not of teacher
-    
+
     def test_retrieve_project_not_of_teacher(self):
         response = self.client.get(
             API_ENDPOINT + f'{self.project_not_of_teacher.project_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
+
     def test_update_project_not_of_teacher(self):
         response = self.client.patch(
             API_ENDPOINT + f'{self.project_not_of_teacher.project_id}/',
@@ -144,19 +145,17 @@ class ProjectTestStudent(TestCase):
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
+
     def test_delete_project_not_of_teacher(self):
         response = self.client.delete(
             API_ENDPOINT + f'{self.project_not_of_teacher.project_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        
-    def test_partial_update_project_not_of_teacher(self):
-        response = self.client.patch(
-            API_ENDPOINT + f'{self.project_not_of_teacher.project_id}/',
-            {
-                "name": "Updated Test Project"
-            },
-            format='json'
+
+    def get_groups_of_project(self):
+        response = self.client.get(
+            API_ENDPOINT + f'{self.project.project_id}/get_groups/'
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        content_json = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(content_json["count"], 0)
