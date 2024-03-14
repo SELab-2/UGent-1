@@ -145,9 +145,8 @@ class GroupTestTeacher(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    # TODO get submissions test fixen geeft een 301?
-    # def test_get_submissions(self):
-    #     response = self.client.get(
-    #         API_ENDPOINT + f'{self.group1.group_id}/get_submissions'
-    #     )
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_get_group_submission(self):
+        response = self.client.get(
+            API_ENDPOINT + f'{self.group1.group_id}/get_submissions/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
