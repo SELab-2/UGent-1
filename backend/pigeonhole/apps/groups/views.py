@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from backend.pigeonhole.apps.groups.models import Group, GroupSerializer
-from backend.pigeonhole.apps.submissions.models import Submissions
+from backend.pigeonhole.apps.submissions.models import Submissions, SubmissionsSerializer
 from .permission import CanAccessGroup
 from ..projects.models import Project
 
@@ -40,5 +40,5 @@ class GroupViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def get_submissions(self, request, pk=None):
         group = self.get_object()
-        submissions = Submissions.objects.filter(group_id=group).all()
-        return Response({'submissions': submissions}, status=status.HTTP_200_OK)
+        submissions = Submissions.objects.filter(group_id=group.group_id)
+        return Response(SubmissionsSerializer(submissions, many=True).data, status=status.HTTP_200_OK)
