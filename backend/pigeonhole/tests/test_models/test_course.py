@@ -1,7 +1,8 @@
+from django.db.utils import DataError
 from django.test import TestCase
+
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.users.models import User
-from django.db.utils import DataError
 
 
 # python3 manage.py test backend/

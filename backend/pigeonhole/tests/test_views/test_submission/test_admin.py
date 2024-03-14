@@ -53,7 +53,7 @@ class SubmissionTestAdmin(TestCase):
     def test_submit_submission(self):
         test_file = SimpleUploadedFile("test_file.txt", b"file_content")
         response = self.client.post(
-            API_ENDPOINT + f'submissions/',
+            API_ENDPOINT + 'submissions/',
             {
                 "file": test_file,
                 "group_id": self.group.group_id

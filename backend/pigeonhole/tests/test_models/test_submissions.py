@@ -1,10 +1,11 @@
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
-from backend.pigeonhole.apps.users.models import User
+
 from backend.pigeonhole.apps.courses.models import Course
+from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.submissions.models import Submissions
-from backend.pigeonhole.apps.groups.models import Group
-from django.core.files.uploadedfile import SimpleUploadedFile
+from backend.pigeonhole.apps.users.models import User
 
 
 class SubmissionTestCase(TestCase):
