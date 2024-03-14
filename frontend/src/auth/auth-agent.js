@@ -4,7 +4,7 @@ class AuthAgent {
 
     login(username, password) {
         return axios
-            .post("http://127.0.0.1:8000/auth/login/", {
+            .post("http://localhost:8000/auth/login/", {
                 username,
                 password
             })
