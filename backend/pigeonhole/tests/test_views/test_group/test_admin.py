@@ -10,7 +10,7 @@ from backend.pigeonhole.apps.users.models import User
 API_ENDPOINT = '/groups/'
 
 
-class GroupTestAdminTeacher(TestCase):
+class GroupTestAdmin(TestCase):
     def setUp(self):
         self.client = APIClient()
 
@@ -90,44 +90,66 @@ class GroupTestAdminTeacher(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    # def test_update_group(self):
-    #     response = self.client.patch(
-    #         API_ENDPOINT + f'{self.group1.group_id}/',
-    #         {
-    #             'feedback': 'Updated Feedback'
-    #         },
-    #         format='json'
-    #     )
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(Group.objects.get(group_id=self.group1.group_id), 'Updated Feedback')
-    #
-    # def test_delete_group(self):
-    #     count = 5
-    #     groups = Group.objects.filter(project_id=self.project.project_id)
-    #     for group in groups:
-    #         response = self.client.delete(
-    #             API_ENDPOINT + f'{group.group_id}/'
-    #         )
-    #         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #         self.assertEqual(Group.objects.count(), count-1)
-    #
-    # def test_group_count(self):
-    #     self.assertEqual(Group.objects.count(), 3)
+    def test_delete_group(self):
+        response = self.client.delete(
+            API_ENDPOINT + f'{self.group1.group_id}/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Group.objects.count(), 2)
 
-    # def test_partial_update_group(self):
-    #     response = self.client.patch(
-    #         API_ENDPOINT + f'{self.project.project_id}/',
-    #         {
-    #             "name": "Updated Test Project"
-    #         },
-    #         format='json'
+    def test_group_count(self):
+        self.assertEqual(Group.objects.count(), 3)
+
+    def test_partial_update_group(self):
+        response = self.client.patch(
+            API_ENDPOINT + f'{self.group1.group_id}/',
+            {
+                'feedback': 'Updated Feedback'
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Group.objects.get(group_id=self.group1.group_id).feedback, 'Updated Feedback')
+
+    def test_retrieve_invalid_group(self):
+        response = self.client.get(
+            API_ENDPOINT + '9999/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+    def test_partial_update_invalid_group(self):
+        response = self.client.patch(
+            API_ENDPOINT + '999/',
+            {
+                'feedback': 'Updated Feedback'
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_invalid_group(self):
+        response = self.client.delete(
+            API_ENDPOINT + '999/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_join_group(self):
+        response = self.client.post(
+            API_ENDPOINT + f'{self.group1.group_id}/join/'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_leave_group(self):
+        response = self.client.post(
+            API_ENDPOINT + f'{self.group1.group_id}/leave/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    # TODO get submissions test fixen geeft een 301?
+    # def test_get_submissions(self):
+    #     response = self.client.get(
+    #         API_ENDPOINT + f'{self.group1.group_id}/get_submissions'
     #     )
     #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(Project.objects.get(project_id=self.project.project_id).name, "Updated Test Project")
-    #
-    # def test_retrieve_invalid_group(self):
-    #     response = self.client.get(
-    #         API_ENDPOINT + '9999/'
-    #     )
-    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    #
