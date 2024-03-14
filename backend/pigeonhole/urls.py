@@ -4,10 +4,8 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from microsoft_auth.views import AuthenticateCallbackView, AuthenticateCallbackRedirect, to_ms_redirect
 from rest_framework import routers, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from rest_framework.urls import urlpatterns as drf_urlpatterns
 
 from backend.pigeonhole.apps.courses.views import CourseViewSet
 from backend.pigeonhole.apps.groups.views import GroupViewSet
