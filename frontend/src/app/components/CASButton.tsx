@@ -7,6 +7,7 @@ const CASButton = () => {
     const handleCASLogin = (): void => {
         // Implement CAS login logic here
         console.log('Login with CAS');
+        window.location.href = "http://localhost:8000/microsoft/to-auth-redirect?next=/redirect/homepage"
     };
 
     return (

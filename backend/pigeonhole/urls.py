@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path as urlpath
+from django.shortcuts import redirect
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import routers, permissions
@@ -33,16 +34,23 @@ router.register(r'projects', ProjectViewSet)
 router.register(r'groups', GroupViewSet)
 router.register(r'submissions', SubmissionsViewset)
 
+def to_frontend(request, path):
+    return redirect(f"{settings.FRONTEND_URL}/{path}")
+
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-                  path('', include(router.urls)),
-                  path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-                  path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-                  path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-                  path("admin/", admin.site.urls),
-                  path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-                  path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+                  urlpath('', include(router.urls)),
+                  urlpath('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+                  urlpath('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+                  urlpath('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+                  urlpath("admin/", admin.site.urls),
+                  urlpath('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+                  urlpath('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+                  urlpath('microsoft/', include('microsoft_auth.urls', namespace='microsoft')),
+                  urlpath('redirect/<path:path>', to_frontend, name='redirect'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
 
 urlpatterns += router.urls
