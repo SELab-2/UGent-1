@@ -83,7 +83,6 @@ class GroupTestAdmin(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    #
     def test_list_groups(self):
         response = self.client.get(
             API_ENDPOINT

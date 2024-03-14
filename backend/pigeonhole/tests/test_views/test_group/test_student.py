@@ -79,9 +79,21 @@ class GroupTestStudent(TestCase):
 
     def test_retrieve_group(self):
         response = self.client.get(
+            API_ENDPOINT + f'{self.group2.group_id}/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # test whether feedback and final_score are visbile
+        self.assertEqual(response.data['feedback'], "Test Feedback")
+        self.assertEqual(response.data['final_score'], 0)
+
+    def test_score_not_visible_in_other_group(self):
+        response = self.client.get(
             API_ENDPOINT + f'{self.group1.group_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # test whether feedback and final_score are not vin response
+        self.assertNotIn('feedback', response.data)
+        self.assertNotIn('final_score', response.data)
 
     def test_list_groups(self):
         response = self.client.get(
@@ -143,9 +155,14 @@ class GroupTestStudent(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     """
-    def test_join_group(self):
+    def test_leave_and_join_group(self):
         response = self.client.post(
-            API_ENDPOINT + f'{self.group1.group_id}/join/'
+            API_ENDPOINT + f'{self.group2.group_id}/leave/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.post(
+            API_ENDPOINT + f'{self.group2.group_id}/join/'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     """
