@@ -23,6 +23,10 @@ class CanAccessSubmission(permissions.BasePermission):
                     return True
                 else:
                     return False
+            elif user.is_admin or user.is_superuser:
+                return True
+            else:
+                return False
         else:
             group_id = int(view.kwargs.get('pk'))
             if not Group.objects.filter(group_id=group_id).exists():

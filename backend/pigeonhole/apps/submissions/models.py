@@ -1,4 +1,4 @@
-import re
+import os
 
 from django.db import models
 from rest_framework import serializers
@@ -7,8 +7,8 @@ from backend.pigeonhole.apps.groups.models import Group
 
 
 def get_upload_to(self, filename):
-    match = re.search(r'\.(\w+)$', filename)
-    return 'submissions/' + str(self.group_id.group_id) + '/' + str(self.submission_nr) + '/input.' + match.group(1)
+    return 'submissions/' + str(self.group_id.group_id) + '/' + str(self.submission_nr) + '/input' + \
+        os.path.splitext(filename)[1]
 
 
 def get_upload_to_test(self, filename):
