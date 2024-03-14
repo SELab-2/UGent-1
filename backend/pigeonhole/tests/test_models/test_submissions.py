@@ -1,32 +1,31 @@
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
-from backend.pigeonhole.apps.users.models import User, Student, Teacher
+
 from backend.pigeonhole.apps.courses.models import Course
+from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.submissions.models import Submissions
-from backend.pigeonhole.apps.groups.models import Group
-from django.core.files.uploadedfile import SimpleUploadedFile
+from backend.pigeonhole.apps.users.models import User
 
 
 class SubmissionTestCase(TestCase):
     def setUp(self):
         # Create teacher user
-        teacher_user = User.objects.create_user(
+        teacher = User.objects.create(
             username="teacher_username",
             email="teacher@gmail.com",
             first_name="Kermit",
-            last_name="The Frog"
+            last_name="The Frog",
+            role=2
         )
         # Create student user
-        student_user = User.objects.create_user(
+        student = User.objects.create(
             username="student_username",
             email="student@gmail.com",
             first_name="Miss",
-            last_name="Piggy"
+            last_name="Piggy",
+            role=3
         )
-
-        # Create teacher and student using the created users
-        teacher = Teacher.objects.create(id=teacher_user)
-        student = Student.objects.create(id=student_user, number=1234)
 
         # Create course
         course = Course.objects.create(name="Math", description="Mathematics")
@@ -37,6 +36,7 @@ class SubmissionTestCase(TestCase):
         project = Project.objects.create(
             name="Project",
             course_id=course,
+            deadline="2021-12-12 12:12:12",
             description="Project Description",
         )
 
@@ -46,36 +46,24 @@ class SubmissionTestCase(TestCase):
         )
 
         # Add student to the group
-        group.student.set([student])
+        group.user.set([student])
 
         # Create submission
         Submissions.objects.create(
             group_id=group,
-            submission_nr=1,
         )
 
     def test_submission_student_relation(self):
         submission = Submissions.objects.get(submission_nr=1)
-        student = submission.group_id.student.first()
-        self.assertEqual(submission.group_id.student.count(), 1)
-        self.assertEqual(submission.group_id.student.first(), student)
-        self.assertEqual(submission.group_id.student.first().id, student.id)
+        student = submission.group_id.user.first()
+        self.assertEqual(submission.group_id.user.count(), 1)
+        self.assertEqual(submission.group_id.user.first(), student)
+        self.assertEqual(submission.group_id.user.first().id, student.id)
 
     def test_submission_project_relation(self):
         submission = Submissions.objects.get(submission_nr=1)
         project = submission.group_id.project_id
         self.assertEqual(submission.group_id.project_id, project)
-
-    def test_update_and_delete_submission(self):
-        submission = Submissions.objects.get(submission_nr=1)
-        submission.submission_nr = 2
-        submission.save()
-        updated_submission = Submissions.objects.get(submission_nr=2)
-        self.assertEqual(updated_submission.submission_nr, 2)
-
-        submission.delete()
-        with self.assertRaises(Submissions.DoesNotExist):
-            Submissions.objects.get(submission_nr=2)
 
     def test_submission_file_upload_and_retrieval(self):
         submission = Submissions.objects.get(submission_nr=1)

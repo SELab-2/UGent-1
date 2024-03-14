@@ -1,17 +1,56 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
+from django.shortcuts import redirect
+from django.urls import include, path as urlpath
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import routers, permissions
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from backend.testapi import views
+from backend.pigeonhole.apps.courses.views import CourseViewSet
+from backend.pigeonhole.apps.groups.views import GroupViewSet
+from backend.pigeonhole.apps.projects.views import ProjectViewSet
+from backend.pigeonhole.apps.submissions.views import SubmissionsViewset
+from backend.pigeonhole.apps.users.views import UserViewSet
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="My API",
+        default_version='v1',
+        description="My API description",
+        terms_of_service="https://www.example.com/terms/",
+        contact=openapi.Contact(email="contact@example.com"),
+        license=openapi.License(name="Awesome License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
+router.register(r'users', UserViewSet)
+router.register(r'courses', CourseViewSet)
+router.register(r'projects', ProjectViewSet)
+router.register(r'groups', GroupViewSet)
+router.register(r'submissions', SubmissionsViewset)
+
+
+def to_frontend(request, path):
+    return redirect(f"{settings.FRONTEND_URL}/{path}")
+
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-]
+                  urlpath('', include(router.urls)),
+                  urlpath('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+                  urlpath('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+                  urlpath('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+                  urlpath("admin/", admin.site.urls),
+                  urlpath('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+                  urlpath('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+                  urlpath('microsoft/', include('microsoft_auth.urls', namespace='microsoft')),
+                  urlpath('redirect/<path:path>', to_frontend, name='redirect'),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += router.urls

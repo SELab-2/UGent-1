@@ -3,15 +3,18 @@ import React, {useState} from 'react';
 import {Button, IconButton, InputAdornment, TextField} from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import AuthAgent from "../../auth/auth-agent";
 
 const LoginForm = () => {
-    const [email, setEmail] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     const handleLogin = (): void => {
-        // Implement your login logic here
-        console.log('Login with:', email, password);
+        AuthAgent.login(username, password).then((data) => {
+            console.log("Logged in")
+            console.log(data)
+        })
     };
 
     const handleClickShowPassword = () => {
@@ -25,10 +28,10 @@ const LoginForm = () => {
     return (
         <div>
             <TextField
-                label="Email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                label="Username"
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 fullWidth
             />
             <TextField

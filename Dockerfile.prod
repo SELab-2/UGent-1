@@ -57,6 +57,9 @@ COPY ./backend/entrypoint.prod.sh .
 RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
 RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
+# copy scripts
+COPY scripts ./scripts
+
 # copy manage.py
 COPY manage.py .
 
@@ -67,10 +70,10 @@ RUN chmod +x  $APP_HOME/entrypoint.prod.sh
 
 
 # chown all the files to the app user
-RUN chown -R app:app $APP_HOME/
+#RUN chown -R app:app $APP_HOME/
 
 # change to the app user
-USER app
+#USER app
 
 # run entrypoint.prod.sh
 ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]

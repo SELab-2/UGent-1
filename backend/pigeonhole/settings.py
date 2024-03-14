@@ -25,8 +25,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default="foo")
 # SECURITY WARNING: don't run with debug turned on in production!
 
 DEBUG = int(os.environ.get("DEBUG", default=0))
+FRONTEND_URL = os.environ.get("FRONTEND_URL", default="http://localhost:3000")
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="127.0.0.1").split(" ")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="127.0.0.1 example.com").split(" ")
 
 if not DEBUG:
     USE_X_FORWARDED_HOST = True
@@ -35,20 +36,34 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
+    'backend.pigeonhole.apps.courses',
+    'backend.pigeonhole.apps.groups',
+    'backend.pigeonhole.apps.projects',
+    'backend.pigeonhole.apps.submissions',
+    'backend.pigeonhole.apps.users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
+    'django_extensions',
+    'drf_yasg',
+    'microsoft_auth',
     'rest_framework',
-    "corsheaders",
-    'backend.pigeonhole.apps.users',
-    'backend.pigeonhole.apps.courses',
-    'backend.pigeonhole.apps.projects',
-    'backend.pigeonhole.apps.submissions',
-    'backend.pigeonhole.apps.groups',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'microsoft_auth.backends.MicrosoftAuthenticationBackend',
+]
+
+MICROSOFT_AUTH_CLIENT_ID = os.environ.get("OAUTH_CLIENT_ID")
+MICROSOFT_AUTH_CLIENT_SECRET = os.environ.get("OAUTH_CLIENT_SECRET")
+MICROSOFT_AUTH_TENANT_ID = os.environ.get("OAUTH_TENANT_ID")
+MICROSOFT_AUTH_LOGIN_TYPE = 'ma'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -61,6 +76,8 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
 ]
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:3000', 'https://sel2-1.ugent.be']
 
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -81,14 +98,15 @@ ROOT_URLCONF = 'backend.pigeonhole.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'microsoft_auth.context_processors.microsoft',
             ],
         },
     },
@@ -160,3 +178,13 @@ MEDIA_ROOT = BASE_DIR / 'uploads'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Basic': {
+            'type': 'basic'
+        }
+    }
+}
+
+SITE_URL = "http://localhost:8000"

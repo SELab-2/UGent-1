@@ -1,29 +1,29 @@
 from django.test import TestCase
-from backend.pigeonhole.apps.users.models import User, Student, Teacher
+from backend.pigeonhole.apps.users.models import User
 from backend.pigeonhole.apps.courses.models import Course
-from backend.pigeonhole.apps.projects.models import Project, Conditions, AllowedExtension, ForbiddenExtension
+from backend.pigeonhole.apps.projects.models import Project, Test
 
 
 class ConditionsTestCase(TestCase):
     def setUp(self):
         # Create teacher user
-        teacher_user = User.objects.create_user(
+        teacher = User.objects.create(
+            id=1,
             username="teacher_username",
             email="teacher@gmail.com",
             first_name="Kermit",
-            last_name="The Frog"
+            last_name="The Frog",
+            role=2
         )
         # Create student user
-        student_user = User.objects.create_user(
+        student = User.objects.create(
+            id=2,
             username="student_username",
             email="student@gmail.com",
             first_name="Miss",
-            last_name="Piggy"
+            last_name="Piggy",
+            role=3
         )
-
-        # Create teacher and student using the created users
-        teacher = Teacher.objects.create(id=teacher_user)
-        student = Student.objects.create(id=student_user, number=1234)
 
         # Create course
         course = Course.objects.create(name="Math", description="Mathematics")
@@ -38,7 +38,7 @@ class ConditionsTestCase(TestCase):
         )
 
         # Create conditions
-        self.conditions = Conditions.objects.create(
+        self.conditions = Test.objects.create(
             submission_id=project,
             condition="Condition 1",
             deadline="2021-12-12 12:12:12",
@@ -46,17 +46,6 @@ class ConditionsTestCase(TestCase):
             test_file_type="txt"
         )
 
-        # Create allowed extension
-        AllowedExtension.objects.create(
-            project_id=project,
-            extension=123
-        )
-
-        # Create forbidden extension
-        ForbiddenExtension.objects.create(
-            project_id=project,
-            extension=456
-        )
 
     def test_conditions_submission_relation(self):
         self.assertEqual(self.conditions.submission_id, Project.objects.get(name="Project"))
@@ -69,7 +58,7 @@ class ConditionsTestCase(TestCase):
 
     def test_create_conditions_without_submission(self):
         with self.assertRaises(Exception):
-            Conditions.objects.create(
+            Test.objects.create(
                 condition="Condition 2",
                 deadline="2021-12-12 12:12:12",
                 test_file_location="path/to/test",

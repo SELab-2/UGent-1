@@ -1,7 +1,8 @@
-from django.test import TestCase
-from backend.pigeonhole.apps.courses.models import Course
-from backend.pigeonhole.apps.users.models import User, Student, Teacher
 from django.db.utils import DataError
+from django.test import TestCase
+
+from backend.pigeonhole.apps.courses.models import Course
+from backend.pigeonhole.apps.users.models import User
 
 
 # python3 manage.py test backend/
@@ -10,23 +11,23 @@ from django.db.utils import DataError
 class CourseTestCase(TestCase):
     def setUp(self):
         # Create teacher user
-        teacher_user = User.objects.create_user(
+        teacher = User.objects.create(
+            id=1,
             username="teacher_username",
             email="teacher@gmail.com",
             first_name="Kermit",
-            last_name="The Frog"
+            last_name="The Frog",
+            role=2
         )
         # Create student user
-        student_user = User.objects.create_user(
+        student = User.objects.create(
+            id=2,
             username="student_username",
             email="student@gmail.com",
             first_name="Miss",
-            last_name="Piggy"
+            last_name="Piggy",
+            role=3
         )
-
-        # Create teacher and student using the created users
-        teacher = Teacher.objects.create(id=teacher_user)
-        student = Student.objects.create(id=student_user, number=1234)
 
         # Create course
         course = Course.objects.create(name="Math", description="Mathematics")
@@ -34,7 +35,7 @@ class CourseTestCase(TestCase):
         student.course.add(course)
 
     def test_course_teacher_relationship(self):
-        teacher = Teacher.objects.get(id__email="teacher@gmail.com")
+        teacher = User.objects.get(id=1)
         course = Course.objects.get(name="Math")
         self.assertIn(course, teacher.course.all())
         course_alter_ego = teacher.course.get(name="Math")
@@ -42,7 +43,7 @@ class CourseTestCase(TestCase):
         self.assertTrue(course_alter_ego, "Mathematics")
 
     def test_course_students_relationship(self):
-        student = Student.objects.get(id__email="student@gmail.com")
+        student = User.objects.get(id=2)
         course = Course.objects.get(name="Math")
         self.assertIn(course, student.course.all())
         course_alter_ego = student.course.get(name="Math")
