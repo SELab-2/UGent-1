@@ -62,6 +62,7 @@ class GroupTestStudent(TestCase):
             feedback="Test Feedback",
             visible=False,
         )
+        self.group_not_visible.user.add(self.student)
 
         self.client.force_authenticate(self.student)
 
@@ -128,7 +129,7 @@ class GroupTestStudent(TestCase):
 
     def test_leave_group_not_joined(self):
         response = self.client.post(
-            API_ENDPOINT + f'{self.group_not_visible.group_id}/leave/'
+            API_ENDPOINT + f'{self.group1.group_id}/leave/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -154,6 +155,14 @@ class GroupTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_retreive_group_invisible(self):
+        response = self.client.get(
+            API_ENDPOINT + f'{self.group_not_visible.group_id}/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn('feedback', response.data)
+        self.assertNotIn('final_score', response.data)
+
     def test_leave_and_join_group(self):
         response = self.client.post(
             API_ENDPOINT + f'{self.group2.group_id}/leave/'
@@ -165,3 +174,4 @@ class GroupTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.group2.user.count(), 1)
+
