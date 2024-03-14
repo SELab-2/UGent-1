@@ -101,7 +101,7 @@ class CourseTestAdminTeacher(TestCase):
     def test_delete_course_not_exist(self):
         response = self.client.delete(f'{API_ENDPOINT}100/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
+
     def test_get_projects_of_course(self):
         response = self.client.get(
             API_ENDPOINT + f'{self.course.course_id}/get_projects/'

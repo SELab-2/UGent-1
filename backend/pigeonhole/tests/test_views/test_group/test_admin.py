@@ -117,7 +117,6 @@ class GroupTestAdmin(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-
     def test_partial_update_invalid_group(self):
         response = self.client.patch(
             API_ENDPOINT + '999/',
