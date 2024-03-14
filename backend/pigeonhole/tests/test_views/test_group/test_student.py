@@ -154,7 +154,6 @@ class GroupTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-
     def test_leave_and_join_group(self):
         response = self.client.post(
             API_ENDPOINT + f'{self.group2.group_id}/leave/'
@@ -166,4 +165,3 @@ class GroupTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.group2.user.count(), 1)
-

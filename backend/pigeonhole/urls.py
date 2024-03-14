@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path as urlpath
 from django.shortcuts import redirect
+from django.urls import include, path as urlpath
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import routers, permissions
@@ -34,8 +34,10 @@ router.register(r'projects', ProjectViewSet)
 router.register(r'groups', GroupViewSet)
 router.register(r'submissions', SubmissionsViewset)
 
+
 def to_frontend(request, path):
     return redirect(f"{settings.FRONTEND_URL}/{path}")
+
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
@@ -50,7 +52,5 @@ urlpatterns = [
                   urlpath('microsoft/', include('microsoft_auth.urls', namespace='microsoft')),
                   urlpath('redirect/<path:path>', to_frontend, name='redirect'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
 
 urlpatterns += router.urls
