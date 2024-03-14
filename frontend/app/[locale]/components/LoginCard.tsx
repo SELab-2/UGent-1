@@ -1,6 +1,6 @@
 import React from 'react';
-import {Box, Container, CssBaseline, Typography} from '@mui/material';
-import CASButton from "@/app/components/CASButton";
+import { Box, Container, CssBaseline } from '@mui/material';
+import CASButton from "./CASButton";
 import Image from 'next/image';
 import logo from '../../../public/logo.png'
 

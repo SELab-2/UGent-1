@@ -1,5 +1,5 @@
 import Document, {Head, Html, Main, NextScript} from 'next/document';
-import {PRIMARY_COLOR} from "../src/lib/utils";
+import {PRIMARY_COLOR} from "../lib/utils";
 
 class MyDocument extends Document {
     render() {
