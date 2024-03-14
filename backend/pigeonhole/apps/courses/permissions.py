@@ -12,9 +12,10 @@ class CourseUserPermissions(permissions.BasePermission):
         if request.user.is_teacher:
             if view.action in ['create', 'list', 'retrieve']:
                 return True
-            elif view.action in ['update', 'partial_update', 'destroy', 'get_projects'] and User.objects.filter(id=request.user.id,
-                                                                                                course=view.kwargs[
-                                                                                                    'pk']).exists():
+            elif view.action in ['update', 'partial_update', 'destroy', 'get_projects'] and User.objects.filter(
+                    id=request.user.id,
+                    course=view.kwargs[
+                        'pk']).exists():
                 return True
             return
 
