@@ -1,7 +1,3 @@
-from rest_framework import status
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from datetime import datetime
 
 from rest_framework import viewsets, status
@@ -40,7 +36,6 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

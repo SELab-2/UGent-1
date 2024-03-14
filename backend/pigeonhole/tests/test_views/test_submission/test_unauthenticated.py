@@ -84,7 +84,6 @@ class SubmissionTestTeacher(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-
     def test_cant_retreive_submissions_of_different_course(self):
         response = self.client.get(
             API_ENDPOINT + str(self.submission_not_of_student.submission_id) + '/'

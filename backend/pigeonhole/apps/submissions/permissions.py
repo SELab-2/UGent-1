@@ -37,8 +37,7 @@ class CanAccessSubmission(permissions.BasePermission):
                 if user.is_admin or user.is_superuser:
                     return Response(status=status.HTTP_404_NOT_FOUND)
                 elif user.is_teacher:
-                    if teacher_courses.filter(course_id=course).exists():
-                        return True
+                    return True
                 return False
             group = Group.objects.get(group_id=group_id)
             if user.is_admin or user.is_superuser:
