@@ -8,9 +8,9 @@ import initTranslations from "../../i18n";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
-function HomePage({params: {locale}}) {
+function HomePage({params: {locale}} : {params: {locale: any}}) {
     const [courses, setCourses] = useState([]); // Initialize courses as an empty array
-    const [translations, setTranslations] = useState({t: (key) => key}); // Default 't' function
+    const [translations, setTranslations] = useState({t: (key: any) => key}); // Default 't' function
 
     useEffect(() => {
         const initialize = async () => {
@@ -50,7 +50,7 @@ function HomePage({params: {locale}}) {
                 {/* Render the list of course names */}
                 <Box>
                     {courses.map(course => (
-                        <Typography key={course.course_id} variant="h5">{course.name}</Typography>
+                        <Typography key={course['course_id']} variant="h5">{course['name']}</Typography>
                     ))}
                 </Box>
             </Box>
