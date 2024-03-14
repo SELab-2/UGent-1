@@ -1,6 +1,7 @@
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
+import json
 
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.projects.models import Project
@@ -35,7 +36,7 @@ class ProjectTestStudent(TestCase):
             name="Test Project",
             course_id=self.course
         )
-        
+
         self.visible_project = Project.objects.create(
             name="Test Project 2",
             course_id=self.course,
@@ -68,13 +69,13 @@ class ProjectTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], "Test Project 2")
-        
+
     def test_retrieve_invisible_project(self):
         response = self.client.get(
             API_ENDPOINT + f'{self.invisible_project.project_id}/'
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)   
-        
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_list_projects(self):
         response = self.client.get(
             API_ENDPOINT
@@ -94,7 +95,7 @@ class ProjectTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.get(project_id=self.visible_project.project_id).name, "Test Project 2")
-        
+
     def test_update_invisible_project(self):
         response = self.client.patch(
             API_ENDPOINT + f'{self.invisible_project.project_id}/',
@@ -114,14 +115,14 @@ class ProjectTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.count(), 3)
-        
+
     def test_delete_invisible_project(self):
         response = self.client.delete(
             API_ENDPOINT + f'{self.invisible_project.project_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.count(), 3)
-        
+
     def test_partial_update_visible_project(self):
         response = self.client.patch(
             API_ENDPOINT + f'{self.visible_project.project_id}/',
@@ -132,7 +133,7 @@ class ProjectTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Project.objects.get(project_id=self.visible_project.project_id).name, "Test Project 2")
-        
+
     def test_partial_update_invisible_project(self):
         response = self.client.patch(
             API_ENDPOINT + f'{self.invisible_project.project_id}/',
@@ -207,3 +208,11 @@ class ProjectTestStudent(TestCase):
             API_ENDPOINT + f'{self.invisible_project.project_id}681854/'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def get_groups_of_project(self):
+        response = self.client.get(
+            API_ENDPOINT + f'{self.project.project_id}/get_groups/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        content_json = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(content_json["count"], 0)
