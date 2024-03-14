@@ -23,20 +23,22 @@ const LoginCard: React.FC = () => {
             >
                 <Box
                     sx={{
-                        height: 120, // Adjust this value as needed for your layout
+                        height: 120,
                         width: '100%',
                         display: 'flex',
                         justifyContent: 'center',
-                        alignItems: 'center', // This will center the image vertically
+                        alignItems: 'center',
                     }}
                 >
                     <Image
                         alt="logo"
                         src={logo}
-                        layout="intrinsic" // This tells Next.js to use the image's intrinsic size
-                        objectFit="contain" // This prevents the image from being stretched
-                        width={200} // Set the width of your image here
-                        height={100} // Set the height of your image here
+                        style={{
+                            width: 200,
+                            height: 200,
+                            objectFit: 'contain',
+                        }}
+                        fill={false}
                     />
                 </Box>
                 <form style={{width: '100%', marginTop: 1}} noValidate>
