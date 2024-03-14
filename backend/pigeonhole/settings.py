@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default="foo")
 
 DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="127.0.0.1").split(" ")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="127.0.0.1 example.com").split(" ")
 
 if not DEBUG:
     USE_X_FORWARDED_HOST = True

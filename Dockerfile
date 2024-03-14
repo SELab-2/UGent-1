@@ -25,6 +25,9 @@ RUN chmod +x /usr/src/app/entrypoint.sh
 # copy manage.py
 COPY manage.py .
 
+# copy scripts
+COPY scripts ./scripts
+
 # copy project
 COPY backend ./backend
 

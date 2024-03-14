@@ -15,6 +15,8 @@ fi
 #python manage.py makemigrations
 python manage.py migrate
 
+python manage.py runscript push_site
+
 python manage.py createsuperuser --noinput --email $DJANGO_SUPERUSER_EMAIL
 
 exec "$@"
