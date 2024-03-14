@@ -28,6 +28,14 @@ class CourseViewSet(viewsets.ModelViewSet):
         user.course.add(course)
         return Response(status=status.HTTP_200_OK)
 
+    # def leave_course(self, request, *args, **kwargs):
+    #     course = self.get_object()
+    #     user = request.user
+    #
+    #     user.course.remove(course)
+    #     return Response(status=status.HTTP_200_OK)
+    # TODO implement leave_course (dont forget to leave all groups as well)
+
     @action(detail=False, methods=['GET'])
     def get_selected_courses(self, request, *args, **kwargs):
         user = request.user

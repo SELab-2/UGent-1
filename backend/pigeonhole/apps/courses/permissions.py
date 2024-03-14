@@ -9,6 +9,9 @@ class CourseUserPermissions(permissions.BasePermission):
         if request.user.is_admin or request.user.is_superuser:
             return True
 
+        if view.action in ['join_course', 'get_selected_courses']:
+            return True
+
         if request.user.is_teacher:
             if view.action in ['create', 'list', 'retrieve']:
                 return True
