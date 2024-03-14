@@ -36,5 +36,10 @@ class CanAccessGroup(permissions.BasePermission):
                 return view.action in ['retrieve', 'get_submissions', 'update', 'partial_update']
         elif user.is_student:
             if user.course.filter(course_id=course_id).exists():
-                return view.action in ['retrieve', 'join', 'leave']
+                # check if the user is already in the group
+                if Group.objects.get(group_id=group_id).user.filter(id=user.id).exists():
+                    return view.action in ['retrieve', 'get_submissions', 'leave']
+                elif Group.objects.get(group_id=group_id).user.count() < Project.objects.get(
+                        project_id=project_id).group_size:
+                    return view.action in ['retrieve', 'get_submissions', 'join']
         return False
