@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
-from backend.pigeonhole.apps.users.models import User
 from backend.pigeonhole.apps.courses.models import Course
+from backend.pigeonhole.apps.users.models import User
 
 
 class CourseUserPermissions(permissions.BasePermission):
