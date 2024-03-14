@@ -1,5 +1,6 @@
 from django.test import TestCase
-from backend.pigeonhole.apps.users.models import User, Student, Teacher
+
+from backend.pigeonhole.apps.users.models import User
 
 
 # python3 manage.py test backend/
@@ -7,66 +8,68 @@ from backend.pigeonhole.apps.users.models import User, Student, Teacher
 class UserTestCase(TestCase):
     def setUp(self):
         # Create teacher user
-        teacher_user = User.objects.create_user(
+        User.objects.create(
+            id=1,
             username="teacher_username",
             email="teacher@gmail.com",
             first_name="Kermit",
-            last_name="The Frog"
+            last_name="The Frog",
+            role=2
         )
+
         # Create student user
-        student_user = User.objects.create_user(
+        User.objects.create(
+            id=2,
             username="student_username",
             email="student@gmail.com",
             first_name="Miss",
-            last_name="Piggy"
+            last_name="Piggy",
+            role=3
         )
 
-        # Create teacher and student using the created users
-        Teacher.objects.create(id=teacher_user)
-        Student.objects.create(id=student_user, number=1234)
+    def test_student_fields(self):
+        student = User.objects.get(id=1),
+        self.assertEqual(student[0].username, "teacher_username")
+        self.assertEqual(student[0].email, "teacher@gmail.com")
+        self.assertEqual(student[0].first_name, "Kermit")
+        self.assertEqual(student[0].last_name, "The Frog")
+        self.assertEqual(student[0].role, 2)
 
-    def test_student(self):
-        student = Student.objects.get(id__email="student@gmail.com")
-        self.assertEqual(student.id.email, "student@gmail.com")
-        self.assertEqual(student.number, 1234)
+    def test_teacher_fields(self):
+        teacher = User.objects.get(id=2),
+        self.assertEqual(teacher[0].username, "student_username")
+        self.assertEqual(teacher[0].email, "student@gmail.com"),
+        self.assertEqual(teacher[0].first_name, "Miss")
+        self.assertEqual(teacher[0].last_name, "Piggy")
+        self.assertEqual(teacher[0].role, 3)
 
-        # update student number
-        student.number = 5678
-        student.save()
-        student = Student.objects.get(id__email="student@gmail.com")
-        self.assertEqual(student.number, 5678)
-
-        # delete student
-        student.delete()
-        with self.assertRaises(Student.DoesNotExist):
-            Student.objects.get(id__email="student@gmail.com")
-
-    def test_teacher(self):
-        teacher = Teacher.objects.get(id__email="teacher@gmail.com")
-        self.assertEqual(teacher.id.email, "teacher@gmail.com")
-        self.assertEqual(teacher.is_admin, False)
-
-        # update teacher is_admin
-        teacher.is_admin = True
-        teacher.save()
-        teacher = Teacher.objects.get(id__email="teacher@gmail.com")
-        self.assertEqual(teacher.is_admin, True)
-
-        self.assertEqual(teacher.is_assistant, False)
-        # update teacher is_assistent
-        teacher.is_assistant = True
-        teacher.save()
-        teacher = Teacher.objects.get(id__email="teacher@gmail.com")
-        self.assertEqual(teacher.is_assistant, True)
-        # delete teacher
-        teacher.delete()
-        with self.assertRaises(Teacher.DoesNotExist):
-            Teacher.objects.get(id__email="teacher@gmail.com")
-
-    def test_create_student_without_user(self):
+    def test_user_name_length_validation(self):
         with self.assertRaises(Exception):
-            Student.objects.create(number=1234)
+            User.objects.create(
+                username="A" * 300,
+                email="student@gmail.com",
+                first_name="Miss",
+                last_name="Piggy",
+                role=3
+            )
 
-    def test_create_teacher_without_user(self):
+    # TODO
+    def test_user_correct_email(self):
         with self.assertRaises(Exception):
-            Teacher.objects.create(is_admin=True, is_assistent=True)
+            User.objects.create(
+                username="student_username",
+                email="studentgmail.com",
+                first_name="Miss",
+                last_name="Piggy",
+                role=3
+            )
+
+    def test_user_role_validation(self):
+        with self.assertRaises(Exception):
+            User.objects.create(
+                username="student_username",
+                email="student@gmail.com",
+                first_name="Miss",
+                last_name="Piggy",
+                role=4
+            )
