@@ -3,11 +3,13 @@ import React from 'react'
 import SchoolIcon from "@mui/icons-material/School";
 import {Button} from "@mui/material";
 
+const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+
 const CASButton = () => {
     const handleCASLogin = (): void => {
         // Implement CAS login logic here
         console.log('Login with CAS');
-        window.location.href = "http://localhost:8000/microsoft/to-auth-redirect?next=/redirect/homepage"
+        window.location.href = backend_url + "/microsoft/to-auth-redirect?next=/redirect/homepage"
     };
 
     return (

@@ -20,3 +20,6 @@ backendtest:
 
 backendshell:
 	docker exec -it pigeonhole-backend sh
+
+frontshell:
+	docker exec -it pigeonhole-frontend sh
