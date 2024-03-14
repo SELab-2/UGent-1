@@ -12,16 +12,16 @@ from backend.pigeonhole.apps.users.models import User
 API_ENDPOINT = '/submissions/'
 
 
-class SubmissionTestAdmin(TestCase):
+class SubmissionTestTeacher(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-        self.admin = User.objects.create(
-            username="admin_username1",
-            email="test1@gmail.com",
+        self.teacher = User.objects.create(
+            username="teacher_username",
+            email="test@gmail.com",
             first_name="Kermit",
             last_name="The Frog",
-            role=1
+            role=2
         )
 
         self.course = Course.objects.create(
@@ -29,11 +29,25 @@ class SubmissionTestAdmin(TestCase):
             description="Test Course Description",
         )
 
-        self.admin.course.set([self.course])
+        self.course_not_of_teacher = Course.objects.create(
+            name="Test Course 2",
+        )
+
+        self.teacher.course.set([self.course])
 
         self.project = Project.objects.create(
             name="Test Project",
             course_id=self.course
+        )
+
+        self.project_not_of_teacher = Project.objects.create(
+            name="Test Project 2",
+            course_id=self.course_not_of_teacher
+        )
+
+        self.group_not_of_teacher = Group.objects.create(
+            group_nr=2,
+            project_id=self.project_not_of_teacher
         )
 
         self.group = Group.objects.create(
@@ -41,70 +55,58 @@ class SubmissionTestAdmin(TestCase):
             project_id=self.project
         )
 
-        self.group_not_of_admin = Group.objects.create(
-            group_nr=2,
-            project_id=self.project
-        )
-
-        self.group.user.set([self.admin])
-
         self.submission = Submissions.objects.create(
             group_id=self.group,
             file=SimpleUploadedFile("test_file.txt", b"file_content")
         )
 
-        self.client.force_authenticate(self.admin)
+        self.submission_not_of_teacher = Submissions.objects.create(
+            group_id=self.group_not_of_teacher,
+            file=SimpleUploadedFile("test_file2.txt", b"file_content2")
+        )
 
-    def check_setup(self):
-        self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(Course.objects.count(), 1)
-        self.assertEqual(Project.objects.count(), 1)
-        self.assertEqual(Group.objects.count(), 1)
-        self.assertEqual(Submissions.objects.count(), 1)
+        self.client.force_authenticate(self.teacher)
 
-    def test_submit_submission(self):
+    def test_cant_create_submission(self):
         test_file = SimpleUploadedFile("test_file.txt", b"file_content")
         response = self.client.post(API_ENDPOINT,
                                     {
                                         "file": test_file,
-                                        "group_id": self.group.group_id
+                                        "group_id": self.group
                                     }
                                     )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Submissions.objects.count(), 2)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_submit_submission_in_different_group(self):
+    def test_cant_create_invalid_submission(self):
         test_file = SimpleUploadedFile("test_file.txt", b"file_content")
         response = self.client.post(API_ENDPOINT,
                                     {
                                         "file": test_file,
-                                        "group_id": self.group_not_of_admin.group_id
+                                        "group_id": 489454134561
                                     }
                                     )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Submissions.objects.count(), 2)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_retrieve_submission(self):
+    def test_retrieve_submissions(self):
         response = self.client.get(
             API_ENDPOINT + str(self.submission.submission_id) + '/'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data.get("submission_id"), self.submission.submission_id)
 
-    # tests with an invalid submission
+    def test_retriev_invalid_submissions(self):
+        with self.assertRaises(Submissions.DoesNotExist):
+            self.client.get(
+                API_ENDPOINT + str(489454134561) + '/'
+            )
 
-    def test_create_submission_invalid_group(self):
-        response = self.client.post(
-            API_ENDPOINT,
-            {
-                "group_id": 95955351,
-                "file": SimpleUploadedFile("test_file.txt", b"file_content")
-            },
-            format='json'
+    def test_cant_retreive_submissions_of_different_course(self):
+        response = self.client.get(
+            API_ENDPOINT + str(self.submission_not_of_teacher.submission_id) + '/'
         )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_update_not_possible(self):
+    def test_cant_update_submission(self):
         response = self.client.put(
             API_ENDPOINT + str(self.submission.submission_id) + '/',
             {
@@ -123,8 +125,8 @@ class SubmissionTestAdmin(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_update_not_possible_invalid(self):
-        with self.assertRaises(Exception):
+    def test_cant_update_invalid_submission(self):
+        with self.assertRaises(Submissions.DoesNotExist):
             self.client.put(
                 API_ENDPOINT + '4561313516/',
                 {
@@ -141,14 +143,17 @@ class SubmissionTestAdmin(TestCase):
                 },
             )
 
-    def test_delete_submission_not_possible(self):
+    def test_cant_delete_submission(self):
         response = self.client.delete(
             API_ENDPOINT + str(self.submission.submission_id) + '/'
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_delete_submission_invalid(self):
-        with self.assertRaises(Exception):
+    def test_cant_delete_invalid_submission(self):
+        with self.assertRaises(Submissions.DoesNotExist):
             self.client.delete(
-                API_ENDPOINT + '4563153/'
+                API_ENDPOINT + '4561313516/',
+            )
+            self.client.delete(
+                API_ENDPOINT + '4563153/',
             )
