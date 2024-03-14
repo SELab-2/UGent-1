@@ -115,3 +115,21 @@ class CourseTestAdminTeacher(TestCase):
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['name'], self.project.name)
         self.assertEqual(response.data[0]['course_id'], self.course.course_id)
+
+    # test with invalid course
+
+    def get_projects_invalid_course(self):
+        response = self.client.get(f'{API_ENDPOINT}100/projects/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def get_projects_invalid_course_not_exist(self):
+        response = self.client.get(f'{API_ENDPOINT}100/projects/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_course_not_exist(self):
+        updated_data = {
+            'name': 'Updated Course',
+            'description': 'This course has been updated.'
+        }
+        response = self.client.put(f'{API_ENDPOINT}100/', updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
