@@ -5,6 +5,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from backend.pigeonhole.apps.groups.models import Group
+from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.submissions.models import Submissions, SubmissionsSerializer
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
 
