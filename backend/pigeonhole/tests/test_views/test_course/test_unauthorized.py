@@ -46,3 +46,7 @@ class CourseTestUnauthorized(TestCase):
     def test_list_courses(self):
         response = self.client.get(API_ENDPOINT)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_projects(self):
+        response = self.client.get(f'{API_ENDPOINT}{self.course.course_id}/get_projects/')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

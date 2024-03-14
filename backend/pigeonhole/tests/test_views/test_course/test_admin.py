@@ -6,6 +6,7 @@ from rest_framework.test import APIClient
 
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.users.models import User
+from backend.pigeonhole.apps.projects.models import Project
 
 API_ENDPOINT = '/courses/'
 
@@ -32,6 +33,12 @@ class CourseTestAdminTeacher(TestCase):
             last_name="The Frog",
             role=1,
         )
+
+        self.project = Project.objects.create(
+            name="Test Project",
+            course_id=self.course
+        )
+
         self.teacher.course.set([self.course])
         self.client.force_authenticate(user=self.teacher)
 
@@ -102,10 +109,9 @@ class CourseTestAdminTeacher(TestCase):
         response = self.client.delete(f'{API_ENDPOINT}100/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    # def test_get_projects_of_course(self):
-    #     response = self.client.get(
-    #         API_ENDPOINT + f'{self.course.course_id}/get_projects/'
-    #     )
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     content_json = json.loads(response.content.decode("utf-8"))
-    #     self.assertEqual(content_json["count"], 0)
+    def get_projects(self):
+        response = self.client.get(f'{API_ENDPOINT}{self.course.course_id}/projects/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], self.project.name)
+        self.assertEqual(response.data[0]['course_id'], self.course.course_id)

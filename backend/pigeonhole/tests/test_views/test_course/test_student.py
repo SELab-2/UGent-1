@@ -6,6 +6,7 @@ from rest_framework.test import APIClient
 
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.users.models import User
+from backend.pigeonhole.apps.projects.models import Project
 
 API_ENDPOINT = '/courses/'
 
@@ -29,6 +30,14 @@ class CourseTestStudent(TestCase):
 
         self.course = Course.objects.create(**self.course_data)
 
+        self.course_not_of_student = Course.objects.create(name="Not of Student",
+                                                           description="This is not of the student")
+
+        self.project = Project.objects.create(
+            name="Test Project",
+            course_id=self.course
+        )
+
         # Provide a value for the "number" field when creating the Student instance
         self.student = User.objects.create(
             username="student",
@@ -45,7 +54,7 @@ class CourseTestStudent(TestCase):
     def test_create_course(self):
         response = self.client.post(API_ENDPOINT, self.course_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Course.objects.count(), 1)
+        self.assertEqual(Course.objects.count(), 2)
 
     def test_update_course(self):
         updated_data = {
@@ -61,7 +70,7 @@ class CourseTestStudent(TestCase):
     def test_delete_course(self):
         response = self.client.delete(f'{API_ENDPOINT}{self.course.course_id}/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Course.objects.count(), 1)
+        self.assertEqual(Course.objects.count(), 2)
 
     def test_retrieve_course(self):
         response = self.client.get(f'{API_ENDPOINT}{self.course.course_id}/')
@@ -74,8 +83,21 @@ class CourseTestStudent(TestCase):
         response = self.client.get(API_ENDPOINT)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         content_json = json.loads(response.content.decode("utf-8"))
-        self.assertEqual(content_json["count"], 1)
+        self.assertEqual(content_json["count"], 2)
 
     def test_retrieve_course_not_exist(self):
         response = self.client.get(f'{API_ENDPOINT}100/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def get_projects(self):
+        response = self.client.get(f'{API_ENDPOINT}{self.course.course_id}/projects/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], self.project.name)
+        self.assertEqual(response.data[0]['course_id'], self.course.course_id)
+
+    def get_project_of_course_not_of_student(self):
+        response = self.client.get(f'{API_ENDPOINT}{self.course_not_of_student.course_id}/projects/')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(len(response.data), 0)
+        self.assertEqual(response.data, [])

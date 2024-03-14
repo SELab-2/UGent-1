@@ -42,4 +42,8 @@ class CanAccessGroup(permissions.BasePermission):
                 elif Group.objects.get(group_id=group_id).user.count() < Project.objects.get(
                         project_id=project_id).group_size:
                     return view.action in ['retrieve', 'get_submissions', 'join']
+                elif view.action in ['join']:
+                    return Response({'message': 'Group is full'}, status=status.HTTP_400_BAD_REQUEST)
+                elif view.action in ['leave']:
+                    return Response({'message': 'User is not in the group'}, status=status.HTTP_400_BAD_REQUEST)
         return False
