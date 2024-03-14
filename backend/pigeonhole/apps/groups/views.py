@@ -16,10 +16,11 @@ class GroupViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def join(self, request, pk=None):
-        group = self.get_object()
+        group_id = pk
+        group = Group.objects.get(group_id=group_id)
         user = request.user
-        project = Project.objects.get(project_id=group.project_id)
-        if group.user.count() < project.max_group_size:
+        project = Project.objects.get(project_id=group.project_id.project_id)
+        if group.user.count() < project.group_size:
             group.user.add(user)
             group.save()
             return Response({'message': 'User joined group'}, status=status.HTTP_200_OK)
