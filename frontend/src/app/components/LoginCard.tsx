@@ -1,7 +1,6 @@
 import React from 'react';
 import {Box, Container, CssBaseline, Typography} from '@mui/material';
 import CASButton from "@/app/components/CASButton";
-import LoginForm from "@/app/components/LoginForm";
 import Image from 'next/image';
 import logo from '../../../public/logo.png'
 
@@ -41,23 +40,7 @@ const LoginCard: React.FC = () => {
                         fill={false}
                     />
                 </Box>
-                <form style={{width: '100%', marginTop: 1}} noValidate>
-                    <LoginForm></LoginForm>
-                    <Box
-                        sx={{
-                            my: 1,
-                            display: 'flex',
-                            alignItems: 'center',
-                            width: '100%',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Typography variant="caption" component="div" color="text.secondary">
-                            OR
-                        </Typography>
-                    </Box>
-                    <CASButton></CASButton>
-                </form>
+                <CASButton></CASButton>
             </Box>
         </Container>
     );
