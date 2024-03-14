@@ -1,12 +1,13 @@
+from django.db import transaction
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.db import transaction
+
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.groups.models import GroupSerializer
-from .models import Project, ProjectSerializer, Course
+from .models import Project, ProjectSerializer
 from .permissions import CanAccessProject
 
 

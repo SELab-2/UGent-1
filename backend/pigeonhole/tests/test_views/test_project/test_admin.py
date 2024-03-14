@@ -134,3 +134,11 @@ class ProjectTestAdminTeacher(TestCase):
             API_ENDPOINT + '100/'
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def get_groups_of_project(self):
+        response = self.client.get(
+            API_ENDPOINT + f'{self.project.project_id}/get_groups/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        content_json = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(content_json["count"], 0)

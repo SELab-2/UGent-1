@@ -1,7 +1,8 @@
 from django.test import TestCase
-from backend.pigeonhole.apps.users.models import User
+
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.projects.models import Project
+from backend.pigeonhole.apps.users.models import User
 
 
 class ProjectTestCase(TestCase):

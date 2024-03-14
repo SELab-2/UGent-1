@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from backend.pigeonhole.apps.users.models import User
 
 

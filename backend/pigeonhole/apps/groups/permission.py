@@ -24,7 +24,7 @@ class CanAccessGroup(permissions.BasePermission):
             return False
         course_id = Project.objects.get(project_id=project_id).course_id.course_id
         if user.is_admin or user.is_superuser:
-            return True
+            return view.action not in ['join', 'leave']
         elif user.is_teacher:
             if user.course.filter(course_id=course_id).exists():
                 return view.action in ['retrieve', 'get_submissions', 'update', 'partial_update']

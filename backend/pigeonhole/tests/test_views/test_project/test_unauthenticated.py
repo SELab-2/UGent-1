@@ -120,3 +120,9 @@ class ProjectTestUnauthenticated(TestCase):
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_groups_of_project_unauthenticated(self):
+        response = self.client.get(
+            API_ENDPOINT + f'{self.project.project_id}/get_groups/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
