@@ -10,7 +10,7 @@ const CASButton = () => {
     const handleCASLogin = (): void => {
         // Implement CAS login logic here
         console.log('Login with CAS');
-        window.location.href = backend_url + "/microsoft/to-auth-redirect?next=" + redirect_url + "/homepage"
+        window.location.href = backend_url + "/microsoft/to-auth-redirect?next=" + redirect_url + "/home"
     };
 
     return (
