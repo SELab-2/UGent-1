@@ -25,6 +25,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default="foo")
 # SECURITY WARNING: don't run with debug turned on in production!
 
 DEBUG = int(os.environ.get("DEBUG", default=0))
+FRONTEND_URL = os.environ.get("FRONTEND_URL", default="http://localhost:3000")
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="127.0.0.1 example.com").split(" ")
 
