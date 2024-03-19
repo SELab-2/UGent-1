@@ -1,61 +1,67 @@
-"use client";
-import React, {useEffect, useState} from 'react';
-import axios from 'axios';
-import NavBar from "../components/NavBar";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import initTranslations from "../../i18n";
+import React from 'react';
+import {Grid} from '@mui/material';
+import NavBar from '../components/NavBar'; // Adjust the import path as needed
+import CourseCard from '../components/CourseCard';
 
-const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+const dummyData = [
+    {
+        courseName: 'Course 1',
+        teacherName: 'Teacher Name',
+        projects: [
+            {name: 'Sample project 1', deadline: 'dd-mm-yyyy', submissions: 'x/y'},
+            {name: 'Sample project 2', deadline: 'dd-mm-yyyy', submissions: 'x/y'}
+        ]
+    },
+    {
+        courseName: 'Course 2',
+        teacherName: 'Teacher Name',
+        projects: [
+            {name: 'Sample project 1', deadline: 'dd-mm-yyyy', submissions: 'x/y'},
+            {name: 'Sample project 2', deadline: 'dd-mm-yyyy', submissions: 'x/y'}
+        ]
+    },
+    {
+        courseName: 'Course 3',
+        teacherName: 'Teacher Name',
+        projects: [
+            {name: 'Sample project 1', deadline: 'dd-mm-yyyy', submissions: 'x/y'},
+            {name: 'Sample project 2', deadline: 'dd-mm-yyyy', submissions: 'x/y'}
+        ]
+    },
+    {
+        courseName: 'Course 4',
+        teacherName: 'Teacher Name',
+        projects: [
+            {name: 'Sample project 1', deadline: 'dd-mm-yyyy', submissions: 'x/y'},
+            {name: 'Sample project 2', deadline: 'dd-mm-yyyy', submissions: 'x/y'}
+        ]
+    },
+    {
+        courseName: 'Course 5',
+        teacherName: 'Teacher Name',
+        projects: [
+            {name: 'Sample project 1', deadline: 'dd-mm-yyyy', submissions: 'x/y'},
+            {name: 'Sample project 2', deadline: 'dd-mm-yyyy', submissions: 'x/y'}
+        ]
+    },
+];
 
-function HomePage({params: {locale}} : {params: {locale: any}}) {
-    const [courses, setCourses] = useState([]); // Initialize courses as an empty array
-    const [translations, setTranslations] = useState({t: (key: any) => key}); // Default 't' function
-
-    useEffect(() => {
-        const initialize = async () => {
-            const translations = await initTranslations(locale, ['common']);
-            setTranslations(translations);
-        };
-
-        initialize();
-    }, [locale]);
-
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const response = await axios.get(backend_url + "/courses", {withCredentials: true});
-                if (response.data && Array.isArray(response.data.results)) {
-                    setCourses(response.data.results); // Set courses to the results array
-                } else {
-                    console.error("Unexpected response structure:", response.data);
-                    // Optionally handle unexpected structure
-                }
-            } catch (error) {
-                console.error("There was an error fetching the courses:", error);
-                // Optionally handle the error, e.g., by setting an error message
-            }
-        };
-
-        fetchCourses();
-    }, []);
-
+const HomePage = () => {
     return (
-        <div>
+        <>
             <NavBar/>
-            <Box sx={{marginTop: '64px'}}>
-                <Typography variant="h3">
-                    {translations.t("courses")}
-                </Typography>
-                {/* Render the list of course names */}
-                <Box>
-                    {courses.map(course => (
-                        <Typography key={course['course_id']} variant="h5">{course['name']}</Typography>
-                    ))}
-                </Box>
-            </Box>
-        </div>
+            <Grid container justifyContent="center" alignItems="flex-start" spacing={2} sx={{paddingTop: '100px'}}>
+                {dummyData.map((course, index) => (
+                    <CourseCard
+                        key={index}
+                        courseName={course.courseName}
+                        teacherName={course.teacherName}
+                        projects={course.projects}
+                    />
+                ))}
+            </Grid>
+        </>
     );
-}
+};
 
 export default HomePage;
