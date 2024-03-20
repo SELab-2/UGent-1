@@ -153,3 +153,19 @@ class CourseTestAdminTeacher(TestCase):
     def test_join_course_not_exist(self):
         response = self.client.post(f'{API_ENDPOINT}56152/join_course/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_leave_course(self):
+        self.client.post(f'{API_ENDPOINT}{self.course_not_of_admin2.course_id}/join_course/')
+        self.assertEqual(self.admin.course.count(), 2)
+        response = self.client.post(f'{API_ENDPOINT}{self.course_not_of_admin2.course_id}/leave_course/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.admin.course.count(), 1)
+
+    def test_leave_course_not_joined(self):
+        response = self.client.post(f'{API_ENDPOINT}{self.course_not_of_admin2.course_id}/leave_course/')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(self.admin.course.count(), 1)
+
+    def test_leave_course_not_exist(self):
+        response = self.client.post(f'{API_ENDPOINT}56152/leave_course/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
