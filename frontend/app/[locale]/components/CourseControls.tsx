@@ -1,23 +1,23 @@
 "use client";
 import React, {useState} from 'react';
-import {Box, Button, MenuItem, Select} from '@mui/material';
+import {Box, Button, MenuItem, Select, SelectChangeEvent} from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ArchiveIcon from '@mui/icons-material/Archive';
 
 const CourseControls = () => {
     const currentYear = new Date().getFullYear();
-    const academicYear = (currentYear - 1) + '-' + currentYear.toString().slice(-2);
+    const academicYear = `${currentYear - 1}-${currentYear.toString().slice(-2)}`;
     const [selectedYear, setSelectedYear] = useState(academicYear);
 
-    const handleYearChange = (event) => {
-        setSelectedYear(event.target.value);
+    const handleYearChange = (event: SelectChangeEvent) => {
+        setSelectedYear(event.target.value as string);
     };
 
     const years = [
-        (currentYear - 2) + '-' + (currentYear - 1).toString().slice(-2),
+        `${currentYear - 2}-${(currentYear - 1).toString().slice(-2)}`,
         academicYear,
-        currentYear + '-' + (currentYear + 1).toString().slice(-2)
+        `${currentYear}-${(currentYear + 1).toString().slice(-2)}`
     ];
 
     return (
