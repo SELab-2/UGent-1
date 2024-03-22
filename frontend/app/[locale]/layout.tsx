@@ -1,7 +1,7 @@
 import React from 'react'
 import {AppRouterCacheProvider} from '@mui/material-nextjs/v13-appRouter';
 import {ThemeProvider} from '@mui/material/styles';
-import loginTheme from '../../styles/theme';
+import baseTheme from '../../styles/theme';
 
 export const metadata = {
     title: 'Next.js',
@@ -14,7 +14,7 @@ export default function RootLayout(props: React.PropsWithChildren<{}>) {
         <html lang="en">
         <body>
         <AppRouterCacheProvider>
-            <ThemeProvider theme={loginTheme}>
+            <ThemeProvider theme={baseTheme}>
                 {children}
             </ThemeProvider>
         </AppRouterCacheProvider>

@@ -12,7 +12,7 @@ declare module '@mui/material/styles/createPalette' {
     }
 }
 
-export const theme = createTheme({
+export const baseTheme = createTheme({
     palette: {
         primary: {
             main: '#1E64C8',
@@ -30,7 +30,9 @@ export const theme = createTheme({
             secondary: '#FFFFFF'
         },
     },
+});
 
+export const CourseCardTheme = createTheme(baseTheme, {
     components: {
         MuiCard: {
             styleOverrides: {
@@ -78,4 +80,4 @@ export const theme = createTheme({
     }
 });
 
-export default theme;
+export default baseTheme;
