@@ -22,6 +22,15 @@ export type Course = {
     description: string;
 }
 
+export type User = {
+    id: number;
+    username: string,
+    email: string,
+    first_name: string,
+    last_name: string,
+    role: number
+} 
+
 async function getListRequest(path: string){
     try {
         const response = await axios.get(backend_url + path, {withCredentials: true});
@@ -63,4 +72,8 @@ async function getListRequest(path: string){
 
 export async function getCourses() {
     return (await getListRequest('/courses'));
+}
+
+export async function getUsers() {
+    return (await getListRequest('/users'));
 }
