@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Box, Container, CssBaseline, Typography, Checkbox, TextField, Button } from '@mui/material';
+import { Box, Container, CssBaseline, Checkbox, TextField, Button } from '@mui/material';
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
-import CustomCheckmarkIcon from './CustomCheckmarkIcon';
 import checkMarkImage from './check-mark.png';
 
 const RootContainer = styled(Container)(({ theme }) => ({
