@@ -48,6 +48,7 @@ function Userpage({params: {locale}} : {params: {locale: any}}) {
                     {/* use ListView component */}
                     <Box>
                         <ListView
+                            admin={true}
                             headers={headers}
                             values={users.map(user => [user.username, user.email, user.role])}
                         />

@@ -41,7 +41,6 @@ const TableRow = styled('tr')(({ theme }) => ({
     },
     '&:nth-child(odd)': {
       backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.primary.contrastText,
     },
   }));
   
@@ -78,9 +77,9 @@ const CheckBoxWithCustomCheck = () => {
    
 
 const SearchBar = styled(TextField)({
-  marginBottom: '16px',
-  width: 'calc(100% - 32px)',
-});
+    marginBottom: '16px',
+    width: '50%', // Adjust the width to cover only 50% of the container
+   });
 
 const RemoveButton = styled(Button)({
   marginBottom: '16px',
@@ -95,7 +94,7 @@ interface ListViewProps {
   values: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({ headers, values }) => {
+const ListView: NextPage<ListViewProps> = ({ admin, headers, values }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -128,9 +127,11 @@ const ListView: NextPage<ListViewProps> = ({ headers, values }) => {
         value={searchTerm}
         onChange={e => setSearchTerm(e.target.value)}
       />
-      <RemoveButton variant="contained" color="error" size="small">
-        Remove
-      </RemoveButton>
+      {admin && ( // Conditionally render the RemoveButton based on the admin prop
+        <RemoveButton variant="contained" color="error" size="small">
+          Remove
+        </RemoveButton>
+      )}
       <Table>
         <thead>
           <tr>
