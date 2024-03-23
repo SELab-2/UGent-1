@@ -41,10 +41,7 @@ function Userpage({params: {locale}} : {params: {locale: any}}) {
     return (
         <div>
             <NavBar />
-            <Box sx={{ marginTop: '64px' }}>
-                <Typography variant="h3">
-                    {translations.t("users")}
-                </Typography>
+            <Box sx={{ marginTop: '32px' }}>
                 {/* Render the list of course names */}
                 <Typography variant="h5">{error?.message}</Typography>
                 <Box>
@@ -52,7 +49,7 @@ function Userpage({params: {locale}} : {params: {locale: any}}) {
                     <Box>
                         <ListView
                             headers={headers}
-                            values={users.map(user => [user.name, user.email, user.role])}
+                            values={users.map(user => [user.username, user.email, user.role])}
                         />
                     </Box>
                 </Box>
