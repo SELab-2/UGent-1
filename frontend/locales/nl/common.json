@@ -1,10 +1,10 @@
 {
-    "test": "Nederlands: Hallo wereld!",
-    "courses": "Mijn Cursussen",
-    "project": "Project",
-    "deadline": "Deadline",
-    "submissions": "Indieningen",
-    "filter_courses": "Filter Cursussen",
-    "create_course": "Maak Cursus",
-    "view_archive": "Bekijk Archief"
+  "test": "Nederlands: Hallo wereld!",
+  "courses": "Mijn Cursussen",
+  "project": "Project",
+  "deadline": "Deadline",
+  "submissions": "Indieningen",
+  "filter_courses": "Filter Cursussen",
+  "create_course": "Maak Cursus",
+  "view_archive": "Bekijk Archief"
 }
