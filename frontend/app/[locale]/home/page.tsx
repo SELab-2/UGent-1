@@ -46,7 +46,7 @@ function HomePage({params: {locale}} : {params: {locale: any}}) {
                 <Typography variant="h5">{error?.message}</Typography>
                 <Box>
                     {courses.map(course => (
-                        <Typography key={course['course_id']} variant="h5">{course['name']}</Typography>
+                        <Typography key={course.course_id} variant="h5">{course.name}</Typography>
                     ))}
                 </Box>
             </Box>
