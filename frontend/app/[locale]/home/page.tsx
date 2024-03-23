@@ -1,8 +1,10 @@
+"use server";
 import React from 'react';
-import {Grid} from '@mui/material';
+import {Box, Container, Grid} from '@mui/material';
 import NavBar from '../components/NavBar';
 import CourseCard from '../components/CourseCard';
 import CourseControls from '../components/CourseControls';
+import initTranslations from "../../i18n";
 
 const dummyData = [
     {
@@ -47,23 +49,46 @@ const dummyData = [
     },
 ];
 
-const HomePage = () => {
+type HomePageProps = {
+    params: {
+        locale: string;
+    };
+};
+
+async function HomePage({params: {locale}}: HomePageProps) {
+    const {t} = await initTranslations(locale, ['common']);
+
     return (
         <>
             <NavBar/>
-            <CourseControls />
-            <Grid container justifyContent="center" alignItems="flex-start" spacing={2} sx={{paddingTop: '100px'}}>
-                {dummyData.map((course, index) => (
-                    <CourseCard
-                        key={index}
-                        courseName={course.courseName}
-                        teacherName={course.teacherName}
-                        projects={course.projects}
+            <Box sx={{position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#fff'}}>
+                <Container>
+                    <CourseControls
+                        locale={locale}
                     />
-                ))}
-            </Grid>
+                </Container>
+            </Box>
+            <Container sx={{
+                pt: 2,
+                pb: 4,
+                maxHeight: 'calc(100vh - 180px)',
+                overflowY: 'auto'
+            }}>
+                <Grid container justifyContent="center" alignItems="flex-start" spacing={2}>
+                    {dummyData.map((course, index) => (
+                        <Grid item xs={12} sm={6} md={4} key={index}>
+                            <CourseCard
+                                courseName={course.courseName}
+                                teacherName={course.teacherName}
+                                projects={course.projects}
+                                t={t}
+                            />
+                        </Grid>
+                    ))}
+                </Grid>
+            </Container>
         </>
     );
-};
+}
 
 export default HomePage;

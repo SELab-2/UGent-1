@@ -1,4 +1,10 @@
 {
     "test": "English: Hello world!",
-    "courses": "My courses"
+    "courses": "My Courses",
+    "project": "Project",
+    "deadline": "Deadline",
+    "submissions": "Submissions",
+    "filter_courses": "Filter Courses",
+    "create_course": "Create Course",
+    "view_archive": "View Archive"
 }

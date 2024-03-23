@@ -23,9 +23,10 @@ type CourseCardProps = {
     courseName: string;
     teacherName: string;
     projects: Project[];
+    t: (key: string) => string;
 };
 
-const CourseCard: React.FC<CourseCardProps> = ({courseName, teacherName, projects}) => {
+const CourseCard: React.FC<CourseCardProps> = ({courseName, teacherName, projects, t}) => {
     return (
         <ThemeProvider theme={CourseCardTheme}>
             <Card>
@@ -40,9 +41,9 @@ const CourseCard: React.FC<CourseCardProps> = ({courseName, teacherName, project
                         <Table aria-label="simple table" size="small">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Project</TableCell>
-                                    <TableCell align="right">Deadline</TableCell>
-                                    <TableCell align="right">Submissions</TableCell>
+                                    <TableCell>{t("project")}</TableCell>
+                                    <TableCell align="right">{t("deadline")}</TableCell>
+                                    <TableCell align="right">{t("submissions")}</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -70,5 +71,6 @@ const CourseCard: React.FC<CourseCardProps> = ({courseName, teacherName, project
         </ThemeProvider>
     );
 };
+
 
 export default CourseCard;
