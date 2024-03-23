@@ -24,9 +24,26 @@ class CourseViewSet(viewsets.ModelViewSet):
     def join_course(self, request, *args, **kwargs):
         course = self.get_object()
         user = request.user
+        if course.open_course:
+            user.course.add(course)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'Invite token required.'}, status=status.HTTP_403_FORBIDDEN)
 
-        user.course.add(course)
-        return Response(status=status.HTTP_200_OK)
+    @action(detail=True, methods=['post'], url_path='join_course_with_token/(?P<invite_token>[^/.]+)')
+    def join_course_with_token(self, request, *args, **kwargs):
+        course = self.get_object()
+        user = request.user
+        invite_token = kwargs.get('invite_token')
+
+        print("given token: " + str(invite_token))
+        print("course token: " + str(course.invite_token))
+        if invite_token == course.invite_token:
+            user.course.add(course)
+            return Response({'message': 'Successfully joined the course with invitation token.'},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid invitation token.'}, status=status.HTTP_400_BAD_REQUEST)
 
     # def leave_course(self, request, *args, **kwargs):
     #     course = self.get_object()
