@@ -1,16 +1,17 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import axios from 'axios';
-import NavBar from "../components/NavBar";
+import NavBar from "@app/[locale]/components/NavBar";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import initTranslations from "../../i18n";
+import initTranslations from "@app/i18n";
+import { getCourses, APIError, Course } from '@lib/api';
 
-const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+
 
 function HomePage({params: {locale}} : {params: {locale: any}}) {
-    const [courses, setCourses] = useState([]); // Initialize courses as an empty array
+    const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
     const [translations, setTranslations] = useState({t: (key: any) => key}); // Default 't' function
+    const [error, setError] = useState<APIError | null>(null);
 
     useEffect(() => {
         const initialize = async () => {
@@ -23,18 +24,12 @@ function HomePage({params: {locale}} : {params: {locale: any}}) {
 
     useEffect(() => {
         const fetchCourses = async () => {
-            try {
-                const response = await axios.get(backend_url + "/courses", {withCredentials: true});
-                if (response.data && Array.isArray(response.data.results)) {
-                    setCourses(response.data.results); // Set courses to the results array
-                } else {
-                    console.error("Unexpected response structure:", response.data);
-                    // Optionally handle unexpected structure
-                }
-            } catch (error) {
-                console.error("There was an error fetching the courses:", error);
-                // Optionally handle the error, e.g., by setting an error message
+            try{
+                setCourses(await getCourses());
+            }catch(error){
+                if(error instanceof APIError) setError(error);
             }
+            
         };
 
         fetchCourses();
@@ -48,6 +43,7 @@ function HomePage({params: {locale}} : {params: {locale: any}}) {
                     {translations.t("courses")}
                 </Typography>
                 {/* Render the list of course names */}
+                <Typography variant="h5">{error?.message}</Typography>
                 <Box>
                     {courses.map(course => (
                         <Typography key={course['course_id']} variant="h5">{course['name']}</Typography>
