@@ -46,7 +46,7 @@ const CourseUserpage = ({ params: { locale, id } }: { params: { locale: any, id:
             admin={true}
             headers={headers}
             // Filter users based on the course ID if available
-            values={id ? users.filter(user => user.course.includes(parseInt(id))).filter(user => user.role === 3).map(user => [user.first_name + ' ' + user.last_name, user.email, 3]) : []}
+            values={id ? users.filter(user => user.course.includes(parseInt(id))).filter(user => user.role === 1).map(user => [user.first_name + ' ' + user.last_name, user.email, 3]) : []}
             secondvalues={id ? users.filter(user => user.course.includes(parseInt(id))).filter(user => user.role === 2).map(user => [user.first_name + ' ' + user.last_name, user.email, 2]) : []}
           />
         </Box>

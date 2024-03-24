@@ -134,40 +134,39 @@ const ListView: NextPage<ListViewProps> = ({ admin, headers, values, secondvalue
       )}
       <Button onClick={() => setSecondValuesOn(!secondvalueson)}>Toggle Second Values</Button>
       <Table>
-        <thead>
-          <tr>
-            <th>Select</th>
-            {headers.map((header, index) => (
-              <th key={index}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-        {currentValues.map((row, index) => (
-          <TableRow key={index}>
-            {Array.isArray(row) && row.map((cell, cellIndex) => (
-              <React.Fragment key={cellIndex}>
-                {cellIndex === 0 && (
-                  (currentValues.length > 0 && !secondvalueson) || (secondvalues?.length > 0 && secondvalueson) ? 
-                    <td>
-                      <CheckBoxWithCustomCheck checked={false} />
-                    </td>
-                  : null
-                )}
-                {!secondvalueson && (
-                  <td key={cellIndex}>{cell}</td>
-                )}
-                {secondvalueson && secondvalues && (
-                  <td key={cellIndex}>
-                    {secondvalues[index] && secondvalues[index][cellIndex]}
-                  </td>
-                )}
-              </React.Fragment>
-            ))}
-          </TableRow>
+  <thead>
+    <tr>
+      <th>Select</th>
+      {headers.map((header, index) => (
+        <th key={index}>{header}</th>
+      ))}
+    </tr>
+  </thead>
+  <tbody>
+    {currentValues.map((row, index) => (
+      <TableRow key={index}>
+        {Array.isArray(row) && row.map((cell, cellIndex) => (
+          <React.Fragment key={cellIndex}>
+            {cellIndex === 0 && (
+              <td>
+                {secondvalueson ? <CheckBoxWithCustomCheck checked={false} /> : null}
+                {!secondvalueson ? <CheckBoxWithCustomCheck checked={false} /> : null}
+              </td>
+            )}
+            {!secondvalueson && (
+              <td key={cellIndex}>{cell}</td>
+            )}
+            {secondvalueson && secondvalues && (
+              <td key={cellIndex}>
+                {secondvalues[index] && secondvalues[index][cellIndex]}
+              </td>
+            )}
+          </React.Fragment>
         ))}
-        </tbody>
-      </Table>
+      </TableRow>
+    ))}
+  </tbody>
+</Table>
       {totalPages > 1 && (
         <Box>
           <Button
