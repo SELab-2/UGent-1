@@ -131,7 +131,7 @@ interface ListViewProps {
   secondvalues?: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({ admin, headers, values, secondvalues }) => {
+const ListView: NextPage<ListViewProps> = ({ admin, headers, values, secondvalues, tablenames }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [secondvalueson, setSecondValuesOn] = useState(false); 
@@ -175,12 +175,13 @@ const ListView: NextPage<ListViewProps> = ({ admin, headers, values, secondvalue
           Remove
         </RemoveButton>
       )}
+      {tablenames && (
       <ToggleButton onClick={handleToggleSecondValues} selected={secondvalueson}>
-        <span>First Values</span>
-        {/* bit of horizontal space */ }
+        <span>{tablenames[0]}</span>
         <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span>Second Values</span>
+        <span>{tablenames[1]}</span>
       </ToggleButton>
+      )}
       <Table>
         <thead>
           <tr>
@@ -194,7 +195,7 @@ const ListView: NextPage<ListViewProps> = ({ admin, headers, values, secondvalue
           {rows.map((row, index) => (
             <TableRow key={index}>
               <td>
-                {secondvalueson && <CheckBoxWithCustomCheck checked={false} />}
+                { <CheckBoxWithCustomCheck checked={false} />}
               </td>
               {row.map((cell, cellIndex) => (
                 <td key={cellIndex}>{cell}</td>

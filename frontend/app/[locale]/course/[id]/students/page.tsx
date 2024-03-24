@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import initTranslations from '@app/i18n';
 import { getUsers, APIError, User } from '@lib/api';
 
-const CourseUserpage = ({ params: { locale, id } }: { params: { locale: any, id: string } }) => {
+const CourseStudentpage = ({ params: { locale, id } }: { params: { locale: any, id: string } }) => {
   const [users, setUsers] = React.useState<User[]>([]);
   const [translations, setTranslations] = React.useState({ t: (key: any) => key });
   const [error, setError] = React.useState<APIError | null>(null);
@@ -43,12 +43,9 @@ const CourseUserpage = ({ params: { locale, id } }: { params: { locale: any, id:
         <Typography variant="h5">{error?.message}</Typography>
         <Box>
           <ListView
-            admin={true}
+            admin={false}
             headers={headers}
-            tablenames={['Students', 'Teachers']}
-            // Filter users based on the course ID if available
             values={id ? users.filter(user => user.course.includes(parseInt(id))).filter(user => user.role === 3).map(user => [user.first_name + ' ' + user.last_name, user.email, 3]) : []}
-            secondvalues={id ? users.filter(user => user.course.includes(parseInt(id))).filter(user => user.role === 2).map(user => [user.first_name + ' ' + user.last_name, user.email, 2]) : []}
           />
         </Box>
       </Box>
@@ -56,4 +53,4 @@ const CourseUserpage = ({ params: { locale, id } }: { params: { locale: any, id:
   );
 };
 
-export default CourseUserpage;
+export default CourseStudentpage;
