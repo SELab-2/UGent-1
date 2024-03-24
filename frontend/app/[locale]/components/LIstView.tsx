@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Container, CssBaseline, Checkbox, TextField, Button } from '@mui/material';
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
@@ -91,6 +91,7 @@ const RemoveButton = styled(Button)({
 interface ListViewProps {
   headers: string[];
   values: (string | number)[][];
+  secondvalues?: (string | number)[][];
 }
 
 const ListView: NextPage<ListViewProps> = ({ admin, headers, values, secondvalues }) => {
@@ -98,9 +99,17 @@ const ListView: NextPage<ListViewProps> = ({ admin, headers, values, secondvalue
   const [currentPage, setCurrentPage] = useState(1);
   const [secondvalueson, setSecondValuesOn] = useState(false); 
   const itemsPerPage = 10;
-  const totalItems = values.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const [totalPages, setTotalPages] = useState(Math.ceil(values.length / itemsPerPage));
+  const [rows, setRows] = useState<(string | number)[][]>([]);
 
+  useEffect(() => {
+    const totalItems = secondvalueson ? secondvalues?.length : values.length;
+    setTotalPages(Math.ceil(totalItems / itemsPerPage));
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setRows(secondvalueson ? secondvalues?.slice(startIndex, endIndex) : values.slice(startIndex, endIndex));
+  }, [currentPage, searchTerm, secondvalues, secondvalueson, values]);
+  
   const handleChangePage = (direction: 'next' | 'prev') => {
     if (direction === 'next') {
       setCurrentPage(currentPage + 1);
@@ -109,13 +118,9 @@ const ListView: NextPage<ListViewProps> = ({ admin, headers, values, secondvalue
     }
   };
 
-  const filteredValues = values.filter(value =>
-    value.some(cell => (cell ?? '').toString().toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentValues = filteredValues.slice(startIndex, endIndex);
+  const handleToggleSecondValues = () => {
+    setSecondValuesOn(!secondvalueson);
+  };
 
   return (
     <RootContainer component="main">
@@ -127,46 +132,34 @@ const ListView: NextPage<ListViewProps> = ({ admin, headers, values, secondvalue
         value={searchTerm}
         onChange={e => setSearchTerm(e.target.value)}
       />
-      {admin && ( // Conditionally render the RemoveButton based on the admin prop
+      {admin && (
         <RemoveButton variant="contained" color="error" size="small">
           Remove
         </RemoveButton>
       )}
-      <Button onClick={() => setSecondValuesOn(!secondvalueson)}>Toggle Second Values</Button>
+      <Button onClick={handleToggleSecondValues}>Toggle Second Values</Button>
       <Table>
-  <thead>
-    <tr>
-      <th>Select</th>
-      {headers.map((header, index) => (
-        <th key={index}>{header}</th>
-      ))}
-    </tr>
-  </thead>
-  <tbody>
-    {currentValues.map((row, index) => (
-      <TableRow key={index}>
-        {Array.isArray(row) && row.map((cell, cellIndex) => (
-          <React.Fragment key={cellIndex}>
-            {cellIndex === 0 && (
+        <thead>
+          <tr>
+            <th>Select</th>
+            {headers.map((header, index) => (
+              <th key={index}>{header}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, index) => (
+            <TableRow key={index}>
               <td>
-                {secondvalueson ? <CheckBoxWithCustomCheck checked={false} /> : null}
-                {!secondvalueson ? <CheckBoxWithCustomCheck checked={false} /> : null}
+                {secondvalueson && <CheckBoxWithCustomCheck checked={false} />}
               </td>
-            )}
-            {!secondvalueson && (
-              <td key={cellIndex}>{cell}</td>
-            )}
-            {secondvalueson && secondvalues && (
-              <td key={cellIndex}>
-                {secondvalues[index] && secondvalues[index][cellIndex]}
-              </td>
-            )}
-          </React.Fragment>
-        ))}
-      </TableRow>
-    ))}
-  </tbody>
-</Table>
+              {row.map((cell, cellIndex) => (
+                <td key={cellIndex}>{cell}</td>
+              ))}
+            </TableRow>
+          ))}
+        </tbody>
+      </Table>
       {totalPages > 1 && (
         <Box>
           <Button
@@ -185,6 +178,5 @@ const ListView: NextPage<ListViewProps> = ({ admin, headers, values, secondvalue
       )}
     </RootContainer>
   );
-};
-
+}
 export default ListView;
