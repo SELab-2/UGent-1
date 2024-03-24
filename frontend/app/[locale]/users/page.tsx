@@ -5,12 +5,11 @@ import ListView from "@app/[locale]/components/ListView";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import initTranslations from "@app/i18n";
-import { getUsers, APIError, User } from '@lib/api';
+import {getUsers, APIError, User} from '@lib/api';
 
 
-
-function Userpage({params: {locale}} : {params: {locale: any}}) {
-    const [users, setUsers] = useState<User[]>([]); 
+function Userpage({params: {locale}}: { params: { locale: any } }) {
+    const [users, setUsers] = useState<User[]>([]);
     const [translations, setTranslations] = useState({t: (key: any) => key});
     const [error, setError] = useState<APIError | null>(null);
 
@@ -25,12 +24,12 @@ function Userpage({params: {locale}} : {params: {locale: any}}) {
 
     useEffect(() => {
         const fetchUsers = async () => {
-            try{
+            try {
                 setUsers(await getUsers());
-            }catch(error){
-                if(error instanceof APIError) setError(error);
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
             }
-            
+
         };
 
         fetchUsers();
@@ -40,8 +39,8 @@ function Userpage({params: {locale}} : {params: {locale: any}}) {
 
     return (
         <div>
-            <NavBar />
-            <Box sx={{ marginTop: '32px' }}>
+            <NavBar/>
+            <Box sx={{marginTop: '32px'}}>
                 {/* Render the list of course names */}
                 <Typography variant="h5">{error?.message}</Typography>
                 <Box>

@@ -6,54 +6,54 @@ import ListView from '../../../components/ListView';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import initTranslations from '@app/i18n';
-import { getUsers, APIError, User } from '@lib/api';
+import {getUsers, APIError, User} from '@lib/api';
 
-const CourseStudentpage = ({ params: { locale, id } }: { params: { locale: any, id: string } }) => {
-  const [users, setUsers] = React.useState<User[]>([]);
-  const [translations, setTranslations] = React.useState({ t: (key: any) => key });
-  const [error, setError] = React.useState<APIError | null>(null);
+const CourseStudentpage = ({params: {locale, id}}: { params: { locale: any, id: string } }) => {
+    const [users, setUsers] = React.useState<User[]>([]);
+    const [translations, setTranslations] = React.useState({t: (key: any) => key});
+    const [error, setError] = React.useState<APIError | null>(null);
 
-  React.useEffect(() => {
-    const initialize = async () => {
-      const translations = await initTranslations(locale, ['common']);
-      setTranslations(translations);
-    };
+    React.useEffect(() => {
+        const initialize = async () => {
+            const translations = await initTranslations(locale, ['common']);
+            setTranslations(translations);
+        };
 
-    initialize();
-  }, [locale]);
+        initialize();
+    }, [locale]);
 
-  React.useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setUsers(await getUsers());
-      } catch (error) {
-        if (error instanceof APIError) setError(error);
-      }
-    };
+    React.useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                setUsers(await getUsers());
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
+            }
+        };
 
-    fetchUsers();
-  }, []);
+        fetchUsers();
+    }, []);
 
 
-  // TODO action function to invite
+    // TODO action function to invite
 
-  const headers = ['Name', 'Email', 'Role']; 
+    const headers = ['Name', 'Email', 'Role'];
 
-  return (
-    <div>
-      <NavBar />
-      <Box sx={{ marginTop: '32px' }}>
-        <Typography variant="h5">{error?.message}</Typography>
-        <Box>
-          <ListView
-            admin={false}
-            headers={headers}
-            values={id ? users.filter(user => user.role === 2).map(user => [user.first_name + ' ' + user.last_name, user.email, 2]) : []}
-          />
-        </Box>
-      </Box>
-    </div>
-  );
+    return (
+        <div>
+            <NavBar/>
+            <Box sx={{marginTop: '32px'}}>
+                <Typography variant="h5">{error?.message}</Typography>
+                <Box>
+                    <ListView
+                        admin={false}
+                        headers={headers}
+                        values={id ? users.filter(user => user.role === 2).map(user => [user.first_name + ' ' + user.last_name, user.email, 2]) : []}
+                    />
+                </Box>
+            </Box>
+        </div>
+    );
 };
 
 export default CourseStudentpage;

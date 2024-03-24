@@ -4,11 +4,10 @@ import NavBar from "@app/[locale]/components/NavBar";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import initTranslations from "@app/i18n";
-import { getCourses, APIError, Course } from '@lib/api';
+import {getCourses, APIError, Course} from '@lib/api';
 
 
-
-function HomePage({params: {locale}} : {params: {locale: any}}) {
+function HomePage({params: {locale}}: { params: { locale: any } }) {
     const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
     const [translations, setTranslations] = useState({t: (key: any) => key}); // Default 't' function
     const [error, setError] = useState<APIError | null>(null);
@@ -24,12 +23,12 @@ function HomePage({params: {locale}} : {params: {locale: any}}) {
 
     useEffect(() => {
         const fetchCourses = async () => {
-            try{
+            try {
                 setCourses(await getCourses());
-            }catch(error){
-                if(error instanceof APIError) setError(error);
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
             }
-            
+
         };
 
         fetchCourses();
