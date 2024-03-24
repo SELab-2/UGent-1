@@ -28,7 +28,8 @@ export type User = {
     email: string,
     first_name: string,
     last_name: string,
-    role: number
+    role: number,
+    course: Course[],
 } 
 
 async function getListRequest(path: string){

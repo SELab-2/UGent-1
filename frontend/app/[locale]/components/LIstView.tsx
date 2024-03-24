@@ -93,9 +93,10 @@ interface ListViewProps {
   values: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({ admin, headers, values }) => {
+const ListView: NextPage<ListViewProps> = ({ admin, headers, values, secondvalues }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [secondvalueson, setSecondValuesOn] = useState(false); 
   const itemsPerPage = 10;
   const totalItems = values.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -131,6 +132,7 @@ const ListView: NextPage<ListViewProps> = ({ admin, headers, values }) => {
           Remove
         </RemoveButton>
       )}
+      <Button onClick={() => setSecondValuesOn(!secondvalueson)}>Toggle Second Values</Button>
       <Table>
         <thead>
           <tr>
@@ -141,16 +143,29 @@ const ListView: NextPage<ListViewProps> = ({ admin, headers, values }) => {
           </tr>
         </thead>
         <tbody>
-          {currentValues.map((row, index) => (
-            <TableRow key={index}>
-              <td>
-                <CheckBoxWithCustomCheck checked={false} /> {/* Use the custom checkbox component */}
-              </td>
-              {row.map((cell, cellIndex) => (
-                <td key={cellIndex}>{cell}</td>
-              ))}
-            </TableRow>
-          ))}
+        {currentValues.map((row, index) => (
+          <TableRow key={index}>
+            {Array.isArray(row) && row.map((cell, cellIndex) => (
+              <React.Fragment key={cellIndex}>
+                {cellIndex === 0 && (
+                  (currentValues.length > 0 && !secondvalueson) || (secondvalues?.length > 0 && secondvalueson) ? 
+                    <td>
+                      <CheckBoxWithCustomCheck checked={false} />
+                    </td>
+                  : null
+                )}
+                {!secondvalueson && (
+                  <td key={cellIndex}>{cell}</td>
+                )}
+                {secondvalueson && secondvalues && (
+                  <td key={cellIndex}>
+                    {secondvalues[index] && secondvalues[index][cellIndex]}
+                  </td>
+                )}
+              </React.Fragment>
+            ))}
+          </TableRow>
+        ))}
         </tbody>
       </Table>
       {totalPages > 1 && (
