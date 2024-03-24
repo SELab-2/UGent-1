@@ -136,17 +136,18 @@ const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues
     const itemsPerPage = 10;
     const [totalPages, setTotalPages] = useState(Math.ceil(values.length / itemsPerPage));
     const [rows, setRows] = useState<(string | number)[][]>([]);
-    const theme = useTheme();
 
     useEffect(() => {
-        const totalItems = secondvalueson ? secondvalues?.length : values.length;
-        setTotalPages(Math.ceil(totalItems / itemsPerPage));
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        setRows(secondvalueson ? secondvalues?.slice(startIndex, endIndex) : values.slice(startIndex, endIndex));
-    }, [currentPage, searchTerm, secondvalues, secondvalueson, values]);
+      const totalItems = secondvalueson ? secondvalues?.length : values.length;
+      setTotalPages(Math.ceil(totalItems / itemsPerPage));
+      const filteredRows = secondvalueson ? secondvalues : values;
+      const filteredAndSlicedRows = filteredRows
+  .filter(row => row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())))
+  .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+      setRows(filteredAndSlicedRows);
+  }, [currentPage, searchTerm, secondvalues, secondvalueson, values]);
 
-    const handleChangePage = (direction: 'next' | 'prev') => {
+  const handleChangePage = (direction: 'next' | 'prev') => {
         if (direction === 'next') {
             setCurrentPage(currentPage + 1);
         } else {
