@@ -33,3 +33,12 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ['course_id', 'name', 'open_course', 'description', 'invite_token']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+
+        if request and request.user.is_student:
+            if 'invite_token' in data:
+                del data['invite_token']
+        return data

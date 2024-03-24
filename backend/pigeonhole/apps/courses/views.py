@@ -36,14 +36,12 @@ class CourseViewSet(viewsets.ModelViewSet):
         user = request.user
         invite_token = kwargs.get('invite_token')
 
-        print("given token: " + str(invite_token))
-        print("course token: " + str(course.invite_token))
         if invite_token == course.invite_token:
             user.course.add(course)
-            return Response({'message': 'Successfully joined the course with invitation token.'},
+            return Response({'message': 'Successfully joined the course with invite token.'},
                             status=status.HTTP_200_OK)
         else:
-            return Response({'error': 'Invalid invitation token.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid invite token.'}, status=status.HTTP_400_BAD_REQUEST)
 
     # def leave_course(self, request, *args, **kwargs):
     #     course = self.get_object()
