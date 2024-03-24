@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from backend.pigeonhole.apps.courses.models import CourseSerializer
+from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.projects.models import ProjectSerializer
 from .models import Course
@@ -28,13 +29,22 @@ class CourseViewSet(viewsets.ModelViewSet):
         user.course.add(course)
         return Response(status=status.HTTP_200_OK)
 
-    # def leave_course(self, request, *args, **kwargs):
-    #     course = self.get_object()
-    #     user = request.user
-    #
-    #     user.course.remove(course)
-    #     return Response(status=status.HTTP_200_OK)
-    # TODO implement leave_course (dont forget to leave all groups as well)
+    @action(detail=True, methods=['post'])
+    def leave_course(self, request, *args, **kwargs):
+        course = self.get_object()
+        user = request.user
+        if course in user.course.all():
+            projects = Project.objects.filter(course_id=course.course_id)
+            for project in projects:
+                groups = Group.objects.filter(project_id=project.project_id)
+                for group in groups:
+                    if user in group.user.all():
+                        group.user.remove(user)
+                        group.save()
+            user.course.remove(course)
+        else:
+            return Response({'message': 'User is not in course'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['GET'])
     def get_selected_courses(self, request, *args, **kwargs):
