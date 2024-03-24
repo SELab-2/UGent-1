@@ -24,11 +24,16 @@ class CourseViewSet(viewsets.ModelViewSet):
     def join_course(self, request, *args, **kwargs):
         course = self.get_object()
         user = request.user
-        if course.open_course:
+
+        if request.user.is_student:
+            if course.open_course:
+                user.course.add(course)
+                return Response(status=status.HTTP_200_OK)
+            else:
+                return Response({'message': 'Invite token required.'}, status=status.HTTP_403_FORBIDDEN)
+        else:
             user.course.add(course)
             return Response(status=status.HTTP_200_OK)
-        else:
-            return Response({'message': 'Invite token required.'}, status=status.HTTP_403_FORBIDDEN)
 
     @action(detail=True, methods=['post'], url_path='join_course_with_token/(?P<invite_token>[^/.]+)')
     def join_course_with_token(self, request, *args, **kwargs):
