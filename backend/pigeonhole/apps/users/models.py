@@ -45,3 +45,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'first_name', 'last_name', 'course', 'role']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+
+        if request and request.user.is_student and instance != request.user:
+            if 'course' in data:
+                del data['course']
+        return data
