@@ -1,4 +1,9 @@
 {
     "test": "English: Hello world!",
-    "courses": "My courses"
+    "courses": "My courses",
+    "my_profile": "My profile",
+    "settings": "Settings",
+    "logout": "Log out",
+    "github": "GitHub",
+    "manual": "Manual"
 }

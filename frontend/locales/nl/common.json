@@ -1,4 +1,9 @@
 {
     "test": "Nederlands: Hallo wereld!",
-    "courses": "Mijn cursussen"
+    "courses": "Mijn cursussen",
+    "my_profile": "Mijn profiel",
+    "settings": "Instellingen",
+    "logout": "Uitloggen",
+    "github": "GitHub",
+    "manual": "Handleiding"
 }
