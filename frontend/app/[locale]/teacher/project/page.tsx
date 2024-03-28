@@ -1,6 +1,6 @@
 "use client";
 import React, {useState} from 'react';
-import NavBar from "../../../components/NavBar"
+import NavBar from "../../components/NavBar"
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {Avatar, Grid, IconButton, Link, List, ListItem, ListItemAvatar, TextField} from "@mui/material";
@@ -8,19 +8,49 @@ import Tooltip from '@mui/material/Tooltip';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import DescriptionIcon from '@mui/icons-material/Description';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import BottomBar from "../../components/BottomBar";
+import {DateCalendar} from '@mui/x-date-pickers/DateCalendar';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {TimePicker} from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import axios from 'axios';
 
-// const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
-function ProjectDetailPage({params: {locale}}: { params: { locale: any } }) {
+const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+
+function ProjectDetailPage({params: {locale}, mode}: { params: { locale: any }, mode: 'create' | 'edit' }) {
     console.log(locale);
     const [fields, setFields] = useState(['']);
     const [title, setTitle] = useState('Project 1');
-    const [assignement, setAssignement] = useState('Lorem\n\nIpsum\n');
+    const [assignement, setAssignement] = useState('Lorem\nIpsum\n');
     const [groupAmount, setGroupAmount] = useState(1);
     const [groupSize, setGroupSize] = useState(1);
     const [conditions, setConditions] = useState(['']);
     const [testfiles, setTestfiles] = useState(["Dockerfile",
         "Testfile"]);
+    const [visible, setVisible] = useState(true);
+    const [datetime, setDatetime] = React.useState(dayjs());
+
+    React.useEffect(() => {
+        if (mode === 'edit') {
+            const response = axios.get(backend_url + "/courses", {withCredentials: true});
+            console.log(response)
+        }
+    })
+
+    const handleFileChange = (event: any) => {
+        const newFiles = [...testfiles];
+        const parsed_filename = event.target.value.split("\\").pop();
+        newFiles.push(parsed_filename);
+        setTestfiles(newFiles);
+    }
+
+    const handleUpload = () => {
+        document.getElementById("fileInput")?.click();
+    }
 
     const handleTitleChange = (event: any) => {
         setTitle(event.target.value);
@@ -31,13 +61,25 @@ function ProjectDetailPage({params: {locale}}: { params: { locale: any } }) {
     }
 
     const handleGroupAmountChange = (event: any) => {
-        if ((event.target.value >= 1 && event.target.value <= 1000) || event.target.value === '') {
+        if (event.target.value === '') {
+            setGroupAmount(event.target.value);
+        } else if (event.target.value < 1) {
+            setGroupAmount(1);
+        } else if (event.target.value > 1000) {
+            setGroupAmount(1000);
+        } else if (event.target.value < 1000 || event.target.value >= 1) {
             setGroupAmount(event.target.value);
         }
     }
 
     const handleGroupSizeChange = (event: any) => {
-        if ((event.target.value >= 1 && event.target.value <= 20) || event.target.value === '') {
+        if (event.target.value === '') {
+            setGroupSize(event.target.value);
+        } else if (event.target.value < 1) {
+            setGroupSize(1);
+        } else if (event.target.value > 20) {
+            setGroupSize(20);
+        } else if (event.target.value < 20 || event.target.value >= 1) {
             setGroupSize(event.target.value);
         }
     }
@@ -107,13 +149,13 @@ function ProjectDetailPage({params: {locale}}: { params: { locale: any } }) {
             <NavBar/>
             <Box
                 display="grid"
-                gridTemplateColumns="59% 41%"
+                gridTemplateColumns="65% 35%"
                 height="100vh"
             >
-                <Box sx={{marginTop: '64px', padding: '50px 50px 50px 100px'}}>
+                <Box sx={{marginTop: '20px', padding: '50px 50px 50px 100px'}}>
 
                     {/* Title */}
-                    <Typography variant="h4"
+                    <Typography variant="h5"
                                 style={{fontWeight: 'bold', fontFamily: 'Inter', padding: '0', margin: '0 0 5px 0'}}>
                         {"Title"}
                     </Typography>
@@ -124,10 +166,11 @@ function ProjectDetailPage({params: {locale}}: { params: { locale: any } }) {
                         onChange={handleTitleChange}
                         value={title}
                         helperText={isTitleEmpty ? "Title is required" : ""}
+                        size="small"
                     />
 
                     {/* assignment */}
-                    <Typography variant="h4" style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '20px 0 0 0'}}>
+                    <Typography variant="h5" style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '5px 0 0 0'}}>
                         {"Assignment"}
                     </Typography>
                     <Box sx={{maxWidth: '60%'}}>
@@ -138,11 +181,12 @@ function ProjectDetailPage({params: {locale}}: { params: { locale: any } }) {
                             onChange={handleAssignementChange}
                             value={assignement}
                             helperText={isAssignementEmpty ? "Assignment is required" : ""}
+                            size="small"
                         />
                     </Box>
 
                     {/* Required Files */}
-                    <Typography variant="h4" style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '20px 0 0 0'}}>
+                    <Typography variant="h5" style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '5px 0 0 0'}}>
                         {"Required Files"}
                         <Tooltip title={
                             <Typography variant="body1" style={{fontFamily: 'Inter'}}>
@@ -166,17 +210,17 @@ function ProjectDetailPage({params: {locale}}: { params: { locale: any } }) {
                             <TextField
                                 key={index}
                                 variant="outlined"
-                                sx={{width: '40%', marginBottom: '10px'}}
+                                sx={{width: '40%'}}
                                 value={field}
                                 onChange={(event) => handleFieldChange(index, event)}
-                                margin={'normal'}
                                 defaultValue={"/extra/verslag.pdf , *.py"}
+                                size="small"
                             />
                         ))}
                     </Box>
 
                     {/* Conditions */}
-                    <Typography variant="h4" style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '20px 0 0 0'}}>
+                    <Typography variant="h5" style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '5px 0 0 0'}}>
                         {"Conditions"}
                         <Tooltip title={
                             <Typography variant="body1" style={{fontFamily: 'Inter'}}>
@@ -204,12 +248,13 @@ function ProjectDetailPage({params: {locale}}: { params: { locale: any } }) {
                                 value={condition}
                                 onChange={(event) => handleConditionsChange(index, event)}
                                 margin={'normal'}
+                                size="small"
                             />
                         ))}
                     </Box>
 
                     {/* Groups */}
-                    <Typography variant="h4" style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '20px 0 0 0'}}>
+                    <Typography variant="h5" style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '5px 0 0 0'}}>
                         {"Groups"}
                         <Tooltip title={
                             <Typography variant="body1" style={{fontFamily: 'Inter'}}>
@@ -238,6 +283,7 @@ function ProjectDetailPage({params: {locale}}: { params: { locale: any } }) {
                                 value={groupAmount}
                                 onChange={handleGroupAmountChange}
                                 style={{margin: '0px'}}
+                                size="small"
                             />
                         </Grid>
                         <Grid item xs={6}>
@@ -247,12 +293,13 @@ function ProjectDetailPage({params: {locale}}: { params: { locale: any } }) {
                                 value={groupSize}
                                 onChange={handleGroupSizeChange}
                                 style={{margin: '0px'}}
+                                size="small"
                             />
                         </Grid>
                     </Grid>
 
                     {/* Testfiles */}
-                    <Typography variant="h4" style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '20px 0 0 0'}}>
+                    <Typography variant="h5" style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '5px 0 0 0'}}>
                         {"Testfiles"}
                     </Typography>
                     <List dense={true}>
@@ -284,8 +331,16 @@ function ProjectDetailPage({params: {locale}}: { params: { locale: any } }) {
                             </ListItem>
                         ))}
                     </List>
+
+                    {/* Upload Testfile */}
+                    <input
+                        id="fileInput"
+                        type="file"
+                        style={{display: 'none'}}
+                        onChange={handleFileChange}
+                    />
                     <button
-                        onClick={() => console.log("CLICK")}
+                        onClick={() => handleUpload()}
                         style={{
                             backgroundColor: '#D0E4FF',
                             padding: '15px 30px',
@@ -299,8 +354,86 @@ function ProjectDetailPage({params: {locale}}: { params: { locale: any } }) {
                         Upload
                     </button>
                 </Box>
-                <Box bgcolor="#ddd"></Box>
+                <Box sx={{marginTop: '64px', padding: '50px 50px 50px 100px'}}>
+                    <Grid container spacing={1} alignItems={"center"} justifyContent={"space-between"}>
+                        <Grid display={"flex"}>
+                            {
+                                visible ? (
+                                    <IconButton onClick={() => setVisible(!visible)}>
+                                        <VisibilityIcon/>
+                                    </IconButton>
+                                ) : (
+                                    <IconButton onClick={() => setVisible(!visible)}>
+                                        <VisibilityOffIcon/>
+                                    </IconButton>
+                                )
+                            }
+                        </Grid>
+                        <Grid style={{padding: '10px'}}>
+                            <button
+                                onClick={() => console.log("clicked")}
+                                style={{
+                                    backgroundColor: '#D0E4FF',
+                                    padding: '5px 30px',
+                                    borderRadius: '20px',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    fontWeight: 'bold',
+                                    fontSize: '1.2em',
+                                }}
+                            >
+                                Save
+                            </button>
+                        </Grid>
+                        <Grid style={{padding: '10px'}}>
+                            <button
+                                onClick={() => console.log("clicked")}
+                                style={{
+                                    backgroundColor: '#D0E4FF',
+                                    padding: '5px 30px',
+                                    borderRadius: '20px',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    fontWeight: 'bold',
+                                    fontSize: '1.2em',
+                                }}
+                            >
+                                Cancel
+                            </button>
+                        </Grid>
+                        <Grid style={{padding: '10px'}}>
+                            <button
+                                onClick={() => console.log("clicked")}
+                                style={{
+                                    backgroundColor: '#E15E5E',
+                                    padding: '5px 30px',
+                                    borderRadius: '20px',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    fontWeight: 'bold',
+                                    fontSize: '1.2em',
+                                    color: 'white'
+                                }}
+                            >
+                                Remove
+                            </button>
+                        </Grid>
+                    </Grid>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DateCalendar
+                            value={datetime}
+                            onChange={(event) => setDatetime(event)}
+                            minDate={dayjs()}/>
+                        <TimePicker
+                            value={datetime}
+                            onChange={(event) => {
+                                if (event != null) setDatetime(event);
+                            }}
+                        />
+                    </LocalizationProvider>
+                </Box>
             </Box>
+            <BottomBar/>
         </div>
     );
 }
