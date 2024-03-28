@@ -1,6 +1,6 @@
 "use client";
-import React, {useState} from 'react';
-import NavBar from "../../components/NavBar"
+import React, {useEffect, useState} from 'react';
+import NavBar from "../../../components/NavBar"
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {Avatar, Grid, IconButton, Link, List, ListItem, ListItemAvatar, TextField} from "@mui/material";
@@ -10,7 +10,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import BottomBar from "../../components/BottomBar";
+import BottomBar from "../../../components/BottomBar";
 import {DateCalendar} from '@mui/x-date-pickers/DateCalendar';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -21,8 +21,9 @@ import axios from 'axios';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
-function ProjectDetailPage({params: {locale}, mode}: { params: { locale: any }, mode: 'create' | 'edit' }) {
+function ProjectDetailPage({params: {locale, id}}: { params: { locale: any , id: number}}) {
     console.log(locale);
+    console.log(id);
     const [fields, setFields] = useState(['']);
     const [title, setTitle] = useState('Project 1');
     const [assignement, setAssignement] = useState('Lorem\nIpsum\n');
@@ -34,12 +35,24 @@ function ProjectDetailPage({params: {locale}, mode}: { params: { locale: any }, 
     const [visible, setVisible] = useState(true);
     const [datetime, setDatetime] = React.useState(dayjs());
 
-    React.useEffect(() => {
-        if (mode === 'edit') {
-            const response = axios.get(backend_url + "/courses", {withCredentials: true});
-            console.log(response)
-        }
-    })
+    useEffect(() => {
+        const fetchProject = async () => {
+            try {
+                const response = await axios.get(backend_url + "/courses", {withCredentials: true});
+                if (response.data && Array.isArray(response.data.results)) {
+                    console.log(response.data.results)
+                } else {
+                    console.error("Unexpected response structure:", response.data);
+                    // Optionally handle unexpected structure
+                }
+            } catch (error) {
+                console.error("There was an error fetching the courses:", error);
+                // Optionally handle the error, e.g., by setting an error message
+            }
+        };
+
+        fetchProject();
+    }, []);
 
     const handleFileChange = (event: any) => {
         const newFiles = [...testfiles];
