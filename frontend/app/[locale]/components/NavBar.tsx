@@ -17,8 +17,22 @@ const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 const NavBar = () => {
     const { t } = useTranslation();
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    //Function that handles the bottom menu items
+    const handleBottomItems = (event: React.MouseEvent<HTMLElement>, button:string) => {
         //TODO: handle bottom menu items
+        switch (button) {
+            case t('manual'):
+                //TODO: Implement manual logic
+                break;
+            case t('github'):
+                window.location.href = 'https://github.com/SELab-2/UGent-1'
+                break;
+            case t('my_profile'):
+                //TODO: Implement my profile logic
+                break;
+            case t('logout'):
+                doLogout();
+        }
     };
     const doLogout = (): void => {
         // Implement CAS login logic here
@@ -36,7 +50,7 @@ const NavBar = () => {
     const DrawerList = (
         <Box sx={{ width: 250 }}
              role="presentation"
-             onClick={toggleDrawer(false)}
+             onClick={toggleDrawer(open)}
              display="flex"
              flexDirection="column"
              justifyContent="space-between"
@@ -55,7 +69,7 @@ const NavBar = () => {
             <List>
                 {[t('manual'), t('github'), t('my_profile'), t('logout')].map((text, index) => (
                     <ListItem key={text} disablePadding>
-                        <ListItemButton>
+                        <ListItemButton onClick={(event) => handleBottomItems(event, text)}>
                             <ListItemIcon>
                                 {index === 0 ? <QuestionMarkIcon /> :
                                     index === 1 ? <GitHubIcon /> :
