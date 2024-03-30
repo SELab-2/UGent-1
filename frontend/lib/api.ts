@@ -1,5 +1,6 @@
 
 import axios, { AxiosError } from 'axios';
+import { get } from 'http';
 import { ApiError } from 'next/dist/server/api-utils';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
@@ -57,6 +58,15 @@ export type Group = {
     name: string;
     user: number[];
 
+}
+
+export type UserData = {
+    id: number;
+    emai: string;
+    first_name: string;
+    last_name: string;
+    course: number[];
+    role: Role;
 }
 
 async function getRequest(path: string){
@@ -141,4 +151,10 @@ export async function getGroup(id: number) : Promise<Group>{
 
 export async function getGroups() : Promise<Group[]>{
     return (await getListRequest('/groups'));
+}
+
+export async function getUserData() : Promise<UserData>{
+    let user : UserData = await getRequest('/users/current');
+    console.log(user);
+    return user;
 }
