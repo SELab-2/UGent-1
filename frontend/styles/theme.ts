@@ -80,4 +80,33 @@ export const CourseCardTheme = createTheme(baseTheme, {
     }
 });
 
+const ProfileCardTheme = createTheme(baseTheme, {
+    components: {
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    maxWidth: '345px',
+                    margin: 'auto',
+                    marginTop: '16px',
+                    marginBottom: '16px',
+                    boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)',
+                    borderRadius: '10px',
+                },
+            },
+        },
+        MuiCardContent: {
+            styleOverrides: {
+                root: {
+                    // Update the padding here
+                    padding: '20px', // This padding is inside the card
+                    '&:last-child': {
+                        paddingBottom: '20px', // Ensures that the padding applies to the bottom of the card content as well
+                    },
+                },
+            },
+        },
+        // ...additional overrides for other components
+    },
+});
+
 export default baseTheme;
