@@ -9,6 +9,11 @@ class UserPermissions(permissions.BasePermission):
         if request.user.is_teacher or request.user.is_student:
             if view.action in ["list", "retrieve"]:
                 return True
+            # user can only update their own user
+            elif view.action in ["update", "partial_update"] and request.user.pk == int(
+                view.kwargs["pk"]
+            ):
+                return True
             elif view.action in ["add_course_to_user", "remove_course_from_user"]:
                 return request.user.is_teacher or (
                     request.user.is_student

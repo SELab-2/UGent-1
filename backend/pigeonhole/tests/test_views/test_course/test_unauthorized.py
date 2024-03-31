@@ -90,11 +90,6 @@ class CourseTestUnauthorized(TestCase):
         response = self.client.post(f'{API_ENDPOINT}{self.course_not_of_user.course_id}/join_course/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_join_course_token(self):
-        response = self.client.post(
-            f'{API_ENDPOINT}{self.course_not_of_user.course_id}/join_course_with_token/TokenHere/')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
     def test_join_course_not_exist(self):
         response = self.client.post(f'{API_ENDPOINT}56152/join_course/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

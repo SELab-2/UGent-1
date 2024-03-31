@@ -33,7 +33,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             return Response({"message": "Project not found"}, status=status.HTTP_404_NOT_FOUND)
 
         if project.deadline and datetime.now() > project.deadline:
-            return Response({"message": "Deadline expired"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Deadline expired"}, status=status.HTTP_410_GONE)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
