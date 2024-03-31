@@ -4,12 +4,13 @@ import NavBar from "@app/[locale]/components/NavBar";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import initTranslations from "@app/i18n";
-import { getCourses, APIError, Course } from '@lib/api';
+import { getCourses, APIError, Course, UserData, getUserData } from '@lib/api';
 
 
 
 function HomePage({params: {locale}} : {params: {locale: any}}) {
     const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
+    const [user, setUser] = useState<UserData | null>(null);
     const [translations, setTranslations] = useState({t: (key: any) => key}); // Default 't' function
     const [error, setError] = useState<APIError | null>(null);
 
@@ -23,9 +24,13 @@ function HomePage({params: {locale}} : {params: {locale: any}}) {
     }, [locale]);
 
     useEffect(() => {
+        
+
         const fetchCourses = async () => {
             try{
                 setCourses(await getCourses());
+                setUser(await getUserData());
+                console.log(user);
             }catch(error){
                 if(error instanceof APIError) setError(error);
             }
@@ -49,6 +54,12 @@ function HomePage({params: {locale}} : {params: {locale: any}}) {
                         <Typography key={course.course_id} variant="h5">{course.name}</Typography>
                     ))}
                 </Box>
+                
+                {user && 
+                <ul>
+                    <li><b>first name: </b>{user.first_name}</li>
+                    <li><b>courses: </b>{user.course.join(', ')}</li>
+                </ul>}
             </Box>
         </div>
     );

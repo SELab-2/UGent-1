@@ -153,8 +153,34 @@ export async function getGroups() : Promise<Group[]>{
     return (await getListRequest('/groups'));
 }
 
+let userData : UserData | undefined = undefined;
+
 export async function getUserData() : Promise<UserData>{
-    let user : UserData = await getRequest('/users/current');
-    console.log(user);
-    return user;
+    if(userData){
+        return userData;
+    }else if(localStorage.getItem('user')){
+        let user : UserData = JSON.parse(localStorage.getItem('user') as string);
+        userData = user;
+        return user;
+    }else{
+        let user : UserData = await getRequest('/users/current');
+        localStorage.setItem('user', JSON.stringify(user));
+        console.log(user);
+        return user;
+    }
+}
+
+export async function logOut(){
+    userData = undefined;
+    localStorage.removeItem('user');
+    window.location.href = backend_url + "/auth/logout";
+}
+
+export async function isLoggedIn(){
+    try{
+        await getUserData();
+        return true;
+    }catch(error){
+        return false;
+    }
 }
