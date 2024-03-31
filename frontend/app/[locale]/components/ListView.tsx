@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {Box, Container, CssBaseline, Checkbox, TextField, Button} from '@mui/material';
-import {styled} from '@mui/system';
-import {NextPage} from 'next';
+import React, { useState, useEffect } from 'react';
+import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } from '@mui/material';
+import { styled } from '@mui/system';
+import { NextPage } from 'next';
 import checkMarkImage from './check-mark.png';
-import {useTheme} from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 
 const RootContainer = styled(Container)(({theme}) => ({
@@ -108,6 +110,23 @@ const CheckBoxWithCustomCheck = () => {
         </GreenCheckbox>
     );
 };
+const WhiteSquareIcon = () => (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+       <rect width="12" height="12" fill="white"/>
+    </svg>
+   );
+   
+   const WhiteTriangleUpIcon = () => (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+       <path d="M6 12L12 0L0 0L6 12Z" fill="white"/>
+    </svg>
+   );
+   
+   const WhiteTriangleDownIcon = () => (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+       <path d="M6 0L12 12L0 12L6 0Z" fill="white"/>
+    </svg>
+   );
 
 
 const SearchBar = styled(TextField)({
@@ -136,6 +155,7 @@ const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues
     const itemsPerPage = 10;
     const [totalPages, setTotalPages] = useState(Math.ceil(values.length / itemsPerPage));
     const [rows, setRows] = useState<(string | number)[][]>([]);
+    const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
 
     useEffect(() => {
       const totalItems = secondvalueson ? secondvalues?.length : values.length;
@@ -154,6 +174,24 @@ const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues
             setCurrentPage(currentPage - 1);
         }
     };
+
+    const handleSort = (key: string) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const sortedRows = [...rows].sort((a, b) => {
+        if (a[headers.indexOf(sortConfig.key)] < b[headers.indexOf(sortConfig.key)]) {
+            return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (a[headers.indexOf(sortConfig.key)] > b[headers.indexOf(sortConfig.key)]) {
+            return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+    });
 
     const handleToggleSecondValues = () => {
         setSecondValuesOn(!secondvalueson);
@@ -175,7 +213,8 @@ const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues
                     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
                     checkboxes.forEach((checkbox, index) => {
                         if ((checkbox as HTMLInputElement).checked) {
-                            const courseId = parseInt(values[index][0].toString());
+                            // if secondvalues are on, use the secondvalues array
+                            const courseId = secondvalueson ? secondvalues[index][0] : values[index][0];
                             if (!isNaN(courseId)) {
                                 action(courseId);
                             } else {
@@ -196,26 +235,31 @@ const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues
                     <span>{tablenames[1]}</span>
                 </ToggleButton>
             )}
-            <Table>
+               <Table>
                 <thead>
-                <tr>
-                    <th>Select</th>
-                    {headers.map((header, index) => (
-                        <th key={index}>{header}</th>
-                    ))}
-                </tr>
+                    <tr>
+                        <th>Select</th>
+                        {headers.map((header, index) => (
+                            <th key={index}>
+                                <IconButton size="small" onClick={() => handleSort(header)}>
+                                    {sortConfig.key === header ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon /> : <WhiteTriangleDownIcon />) : <WhiteSquareIcon />}
+                                </IconButton>
+                                {header}
+                            </th>
+                        ))}
+                    </tr>
                 </thead>
                 <tbody>
-                {rows.map((row, index) => (
-                    <TableRow key={index}>
-                        <td>
-                            {<CheckBoxWithCustomCheck checked={false}/>}
-                        </td>
-                        {row.map((cell, cellIndex) => (
-                            <td key={cellIndex}>{cell}</td>
-                        ))}
-                    </TableRow>
-                ))}
+                    {sortedRows.map((row, index) => (
+                        <TableRow key={index}>
+                            <td>
+                                {<CheckBoxWithCustomCheck checked={false}/>}
+                            </td>
+                            {row.map((cell, cellIndex) => (
+                                <td key={cellIndex}>{cell}</td>
+                            ))}
+                        </TableRow>
+                    ))}
                 </tbody>
             </Table>
             {totalPages > 1 && (

@@ -73,8 +73,8 @@ async function getListRequest(path: string) {
 async function add_course_to_user_request(user_id: number, course_id: number) {
     try {
         const response = await axios.post(
-            `${backend_url}/users/${user_id}/add_course_to_user`, 
-            { course_id: course_id }, 
+            `${backend_url}/users/${user_id}/add_course_to_user/`, 
+            {course_id: course_id},
             { withCredentials: true }
         );
 
@@ -89,7 +89,7 @@ async function add_course_to_user_request(user_id: number, course_id: number) {
             throw error;
         }
     } catch (axioserror: AxiosError | unknown) {
-        console.error("There was an error fetching the courses:", axioserror);
+        console.error("There was an error", axioserror);
         const error: APIError = new APIError();
         if (axioserror instanceof AxiosError) {
             error.status = axioserror.response?.status;
@@ -108,8 +108,9 @@ async function add_course_to_user_request(user_id: number, course_id: number) {
 
 async function remove_course_from_user_request(user_id: number, course_id: number) {
     try {
-        const response = await axios.delete(
-            `${backend_url}/users/${user_id}/remove_course_from_user/${course_id}`, 
+        const response = await axios.post(
+            `${backend_url}/users/${user_id}/remove_course_from_user/`, 
+            {course_id: course_id},
             { withCredentials: true }
         );
 
@@ -124,7 +125,7 @@ async function remove_course_from_user_request(user_id: number, course_id: numbe
             throw error;
         }
     } catch (axioserror: AxiosError | unknown) {
-        console.error("There was an error fetching the courses:", axioserror);
+        console.error("There was an error", axioserror);
         const error: APIError = new APIError();
         if (axioserror instanceof AxiosError) {
             error.status = axioserror.response?.status;

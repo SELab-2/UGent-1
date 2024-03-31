@@ -47,9 +47,11 @@ const CourseUserpage = ({params: {locale, id}}: { params: { locale: any, id: str
                         admin={true}
                         headers={headers}
                         tablenames={['Students', 'Teachers']}
+                        action_name={'Remove from course'}
+                        action={async (user_id: number) => remove_course_from_user(user_id, id)}
                         // Filter users based on the course ID if available
-                        values={id ? users.filter(user => user.course.includes(parseInt(id))).filter(user => user.role === 3).map(user => [user.first_name + ' ' + user.last_name, user.email, 3]) : []}
-                        secondvalues={id ? users.filter(user => user.course.includes(parseInt(id))).filter(user => user.role === 2).map(user => [user.first_name + ' ' + user.last_name, user.email, 2]) : []}
+                        values={id ? users.filter(user => user.course.includes(parseInt(id))).filter(user => user.role === 3).map(user => [user.id, user.first_name + ' ' + user.last_name, user.email, 3]) : []}
+                        secondvalues={id ? users.filter(user => user.course.includes(parseInt(id))).filter(user => user.role === 2).map(user => [user.id, user.first_name + ' ' + user.last_name, user.email, 2]) : []}
                     />
                 </Box>
             </Box>
