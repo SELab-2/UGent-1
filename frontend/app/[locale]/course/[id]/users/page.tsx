@@ -6,7 +6,8 @@ import ListView from '../../../components/ListView';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import initTranslations from '@app/i18n';
-import {getUsers, APIError, User} from '@lib/api';
+import {getUsers, APIError, User, remove_course_from_user} from '@lib/api';
+
 
 const CourseUserpage = ({params: {locale, id}}: { params: { locale: any, id: string } }) => {
     const [users, setUsers] = React.useState<User[]>([]);
