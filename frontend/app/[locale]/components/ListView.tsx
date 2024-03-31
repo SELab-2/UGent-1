@@ -129,7 +129,7 @@ interface ListViewProps {
     secondvalues?: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues, tablenames}) => {
+const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues, tablenames, action, action_name}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [secondvalueson, setSecondValuesOn] = useState(false);
@@ -169,10 +169,25 @@ const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
             />
-            {admin && (
-                <RemoveButton variant="contained" color="error" size="small">
-                    Remove
-                </RemoveButton>
+            {admin && action && (
+                <RemoveButton
+                onClick={() => {
+                    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach((checkbox, index) => {
+                        if ((checkbox as HTMLInputElement).checked) {
+                            const courseId = parseInt(values[index][0].toString());
+                            if (!isNaN(courseId)) {
+                                action(courseId);
+                            } else {
+                                console.error("Invalid course ID:", values[index][0]);
+                            }
+                        }
+                    });
+                }}
+            >
+                {action_name || 'Remove'}
+            </RemoveButton>
+            
             )}
             {tablenames && (
                 <ToggleButton onClick={handleToggleSecondValues} selected={secondvalueson}>

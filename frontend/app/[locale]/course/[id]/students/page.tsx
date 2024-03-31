@@ -1,8 +1,8 @@
 // "use client" directive should be at the beginning of the file
 "use client";
 import React from 'react';
-import NavBar from '../../../components/NavBar';
-import ListView from '../../../components/ListView';
+import NavBar from "@app/[locale]/components/NavBar";
+import ListView from "@app/[locale]/components/ListView";
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import initTranslations from '@app/i18n';
