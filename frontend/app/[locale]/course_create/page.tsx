@@ -26,7 +26,7 @@ function CourseCreatePage({ params: { locale } }: { params: { locale: any } }) {
         const formDataObject = Object.fromEntries(formData.entries());
         console.log(formDataObject)
         try {
-            await axios.post(backend_url + "/courses", formDataObject, { withCredentials: true });
+            await axios.post(backend_url + "/courses/", formDataObject, { withCredentials: true });
             alert('Course created successfully!');
         } catch (error) {
             console.error("There was an error creating the course:", error);
