@@ -21,26 +21,38 @@ import axios from 'axios';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
-function ProjectDetailPage({params: {locale, id}}: { params: { locale: any , id: number}}) {
-    console.log(locale);
-    console.log(id);
+function ProjectDetailPage({params: {locale, id}}: { params: { locale: any , id: any}}) {
+    // console.log(locale);
+    // console.log(id);
     const [fields, setFields] = useState(['']);
     const [title, setTitle] = useState('Project 1');
-    const [assignement, setAssignement] = useState('Lorem\nIpsum\n');
+    const [description, setDescription] = useState('Lorem\nIpsum\n');
     const [groupAmount, setGroupAmount] = useState(1);
     const [groupSize, setGroupSize] = useState(1);
     const [conditions, setConditions] = useState(['']);
     const [testfiles, setTestfiles] = useState(["Dockerfile",
         "Testfile"]);
     const [visible, setVisible] = useState(true);
-    const [datetime, setDatetime] = React.useState(dayjs());
+    const [deadline, setDeadline] = React.useState(dayjs());
 
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const response = await axios.get(backend_url + "/courses", {withCredentials: true});
+                const response = await axios.get(backend_url + "/projects", {withCredentials: true});
                 if (response.data && Array.isArray(response.data.results)) {
-                    console.log(response.data.results)
+                    // console.log(response.data.results)
+                    for (const project of response.data.results) {
+                        console.log("proejct:")
+                        console.log(project.project_id)
+                        console.log(id)
+                        console.log(project)
+                        if (project.project_id === +id) {
+                            console.log("found project")
+                            setDeadline(dayjs(project.deadline))
+                            setDescription(project.description)
+
+                        }
+                    }
                 } else {
                     console.error("Unexpected response structure:", response.data);
                     // Optionally handle unexpected structure
@@ -70,7 +82,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any , id:
     };
 
     const handleAssignementChange = (event: any) => {
-        setAssignement(event.target.value);
+        setDescription(event.target.value);
     }
 
     const handleGroupAmountChange = (event: any) => {
@@ -98,7 +110,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any , id:
     }
 
     const isTitleEmpty = !title
-    const isAssignementEmpty = !assignement
+    const isAssignementEmpty = !description
 
     const handleFieldChange = (index: number, event: any) => {
         const newFields = [...fields];
@@ -192,7 +204,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any , id:
                             multiline={true}
                             error={isAssignementEmpty}
                             onChange={handleAssignementChange}
-                            value={assignement}
+                            value={description}
                             helperText={isAssignementEmpty ? "Assignment is required" : ""}
                             size="small"
                         />
@@ -434,13 +446,13 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any , id:
                     </Grid>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DateCalendar
-                            value={datetime}
-                            onChange={(event) => setDatetime(event)}
+                            value={deadline}
+                            onChange={(event) => setDeadline(event)}
                             minDate={dayjs()}/>
                         <TimePicker
-                            value={datetime}
+                            value={deadline}
                             onChange={(event) => {
-                                if (event != null) setDatetime(event);
+                                if (event != null) setDeadline(event);
                             }}
                         />
                     </LocalizationProvider>
