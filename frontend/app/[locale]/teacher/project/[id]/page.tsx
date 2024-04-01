@@ -43,14 +43,18 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any , id:
                     // console.log(response.data.results)
                     for (const project of response.data.results) {
                         console.log("proejct:")
-                        console.log(project.project_id)
+                        console.log(project["project_id"])
                         console.log(id)
                         console.log(project)
-                        if (project.project_id === +id) {
+                        if (project["project_id"] === +id) {
                             console.log("found project")
-                            setDeadline(dayjs(project.deadline))
+                            setDeadline(dayjs(project["deadline"]))
                             setDescription(project.description)
-
+                            setFields(project["file_structure"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
+                            setGroupSize(project["group_size"])
+                            setTitle(project["name"])
+                            setGroupAmount(project["number_of_groups"])
+                            setVisible(project["visible"])
                         }
                     }
                 } else {
@@ -63,8 +67,8 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any , id:
             }
         };
 
-        fetchProject();
-    }, []);
+        fetchProject().then(() => console.log("Project fetched"));
+    }, [id]);
 
     const handleFileChange = (event: any) => {
         const newFiles = [...testfiles];

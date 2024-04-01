@@ -15,15 +15,15 @@ class Project(models.Model):
     max_score = models.IntegerField(null=True, blank=True)
     number_of_groups = models.IntegerField(default=5)
     group_size = models.IntegerField(default=1)
-    file_structure = models.CharField(max_length=1024, null=True)
-    max_score = models.IntegerField(null=True, blank=True)
+    file_structure = models.TextField(blank=True, null=True)
+    conditions = models.TextField(blank=True, null=True)
 
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ["project_id", "course_id", "name", "description", "deadline", "visible", "number_of_groups",
-                  "group_size", "max_score", "file_structure"]
+                  "group_size", "max_score", "file_structure", "conditions"]
 
 
 class Test(models.Model):
