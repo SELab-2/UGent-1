@@ -5,5 +5,8 @@
     "settings": "Instellingen",
     "logout": "Uitloggen",
     "github": "GitHub",
-    "manual": "Handleiding"
+    "manual": "Handleiding",
+    "edit_course": "Cursus bewerken",
+    "description": "Beschrijving",
+    "projects": "Projecten"
 }

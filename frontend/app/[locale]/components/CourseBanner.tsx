@@ -3,6 +3,7 @@
 import React from 'react';
 import {useTranslation} from "react-i18next";
 import {Box, Typography} from "@mui/material";
+import EditCourseButton from "@app/[locale]/components/EditCourseButton";
 
 const CourseBanner = () => {
     const { t } = useTranslation();
@@ -17,7 +18,7 @@ const CourseBanner = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: '200px',
-                width: "calc(100% - 50px)",
+                width: "calc(100% - 40px)",
                 borderRadius: '16px',
                 marginTop: 50,
                 margin: "0 auto",
@@ -49,15 +50,7 @@ const CourseBanner = () => {
                 alignItems="flex-start"
                 textAlign="left"
             >
-                <Typography
-                    variant="h6"
-                    paddingY={2}
-                    sx={{
-                        color: 'white',
-                    }}
-                >
-                    Button placeholder
-                </Typography>
+                <EditCourseButton />
             </Box>
         </Box>
     )

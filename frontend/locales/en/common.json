@@ -5,5 +5,8 @@
     "settings": "Settings",
     "logout": "Log out",
     "github": "GitHub",
-    "manual": "Manual"
+    "manual": "Manual",
+    "edit_course": "Edit course",
+    "description": "Description",
+    "projects": "Projects"
 }
