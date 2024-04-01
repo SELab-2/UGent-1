@@ -27,7 +27,7 @@ export type Project = {
     file_structure: string;
 }
 
-export async function getObjectByIdRequest(path: string, object_id: number) {
+async function getObjectByIdRequest(path: string, object_id: number) {
     try {
         const response = await axios.get(backend_url + path + "/" + object_id, {withCredentials: true});
         if (response.status === 200) {
@@ -105,6 +105,6 @@ async function getListRequest(path: string) {
     }
 }
 
-export async function get_project_by_id(project_id: number) {
+export async function getProjectById(project_id: number) {
     return (await getObjectByIdRequest('/projects', project_id))
 }
