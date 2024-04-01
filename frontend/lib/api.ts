@@ -14,11 +14,24 @@ export class APIError {
     trace: unknown;
 }
 
+export type Project = {
+    project_id: number;
+    course_id: number;
+    name: string;
+    description: string;
+    deadline: string;
+    visible: boolean;
+    number_of_groups: number;
+    group_size: number;
+    max_score: number;
+    file_structure: string;
+}
+
 export async function getObjectByIdRequest(path: string, object_id: number) {
     try {
         const response = await axios.get(backend_url + path + "/" + object_id, {withCredentials: true});
         if (response.status === 200) {
-            return response.data.results;
+            return response.data;
         } else if (response?.data?.detail) {
             console.error("Unexpected response structure:", response.data);
             const error: APIError = new APIError();
