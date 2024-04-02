@@ -77,7 +77,6 @@ MIDDLEWARE = [
 ]
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:3000', 'https://sel2-1.ugent.be']
-#CSRF_USE_SESSIONS = True
 
 CORS_ALLOW_METHODS = [
     "DELETE",
