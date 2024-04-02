@@ -7,9 +7,13 @@ import Box from "@mui/material/Box";
 import initTranslations from "../../i18n";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+const getCookieValue = (name : string) => (
+    document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
+)
 
 function CourseCreatePage({ params: { locale } }: { params: { locale: any } }) {
     const [translations, setTranslations] = useState({ t: (key: any) => key });
+    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
 
     useEffect(() => {
         const initialize = async () => {

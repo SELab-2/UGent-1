@@ -21,7 +21,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated, CourseUserPermissions]
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    #authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
     def perform_create(self, serializer):
         course = serializer.save()
