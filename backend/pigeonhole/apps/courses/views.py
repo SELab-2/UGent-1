@@ -9,19 +9,11 @@ from backend.pigeonhole.apps.projects.models import ProjectSerializer
 from .models import Course
 from .permissions import CourseUserPermissions
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication 
-
-class CsrfExemptSessionAuthentication(SessionAuthentication):
-
-    def enforce_csrf(self, request):
-        return  # To not perform the csrf check previously happening
-
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated, CourseUserPermissions]
-    #authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
     def perform_create(self, serializer):
         course = serializer.save()
