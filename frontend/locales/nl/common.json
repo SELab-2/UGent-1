@@ -8,5 +8,8 @@
     "manual": "Handleiding",
     "edit_course": "Cursus bewerken",
     "description": "Beschrijving",
-    "projects": "Projecten"
+    "projects": "Projecten",
+    "add_project": "Project toevoegen",
+    "details": "Details",
+    "no_courses": "Geen cursussen om weer te geven."
 }

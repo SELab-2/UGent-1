@@ -8,5 +8,8 @@
     "manual": "Manual",
     "edit_course": "Edit course",
     "description": "Description",
-    "projects": "Projects"
+    "projects": "Projects",
+    "add_project": "Add project",
+    "details": "Details",
+    "no_courses": "No courses to display."
 }

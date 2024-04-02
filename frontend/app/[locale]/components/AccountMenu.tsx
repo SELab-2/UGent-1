@@ -13,12 +13,34 @@ import Tooltip from '@mui/material/Tooltip';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
+import {APIError, getCourses, getUserData, UserData} from "@lib/api";
+import {useEffect, useState} from "react";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 export default function AccountMenu() {
+    const [user, setUser] = useState<UserData | null>(null);
+    const [error, setError] = useState<APIError | null>(null);
     const { t } = useTranslation()
+
+    useEffect(() => {
+
+
+        const fetchCourses = async () => {
+            try{
+                setUser(await getUserData());
+                console.log(user);
+            }catch(error){
+                if(error instanceof APIError) setError(error);
+            }
+
+        };
+
+        fetchCourses();
+    }, []);
+
+
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -34,7 +56,6 @@ export default function AccountMenu() {
         setAnchorEl(null);
         window.location.href = backend_url + "/auth/logout";
     };
-    //TODO: Replace Sample Name with actual account details!!
     return (
         <React.Fragment>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -56,7 +77,7 @@ export default function AccountMenu() {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
-                        <Typography variant="body1" sx={{ whiteSpace: 'nowrap'}}>Sample Name</Typography>
+                        <Typography variant="body1" sx={{ whiteSpace: 'nowrap'}}>{user?.first_name + " " + user?.last_name}</Typography>
                     </Button>
                 </Tooltip>
             </Box>

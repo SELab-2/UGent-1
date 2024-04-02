@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import {AppBar, IconButton, Toolbar, Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer} from '@mui/material';
@@ -11,24 +11,38 @@ import HomeButton from "./HomeButton";
 import LanguageSelect from "./LanguageSelect";
 import AccountMenu from "./AccountMenu";
 import {useTranslation} from "react-i18next";
+import {APIError, Course, getCourses} from "@lib/api";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 const NavBar = () => {
+    const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
+    const [error, setError] = useState<APIError | null>(null);
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try{
+                setCourses(await getCourses());
+            }catch(error){
+                if(error instanceof APIError) setError(error);
+            }
+
+        };
+
+        fetchCourses();
+    }, []);
     const { t } = useTranslation();
 
     //Function that handles the bottom menu items
     const handleBottomItems = (event: React.MouseEvent<HTMLElement>, button:string) => {
-        //TODO: handle bottom menu items
         switch (button) {
             case t('manual'):
-                //TODO: Implement manual logic
+                //TODO: Route to manual page(in wiki or separate page?)
                 break;
             case t('github'):
                 window.location.href = 'https://github.com/SELab-2/UGent-1'
                 break;
             case t('my_profile'):
-                //TODO: Implement my profile logic
+                //TODO: Route to profile page
                 break;
             case t('logout'):
                 doLogout();
@@ -45,7 +59,7 @@ const NavBar = () => {
         setOpen(newOpen);
     };
 
-    const courses = ["Course1", "Course2", "Course3", "Course4"];
+    //const courses = ["Course1", "Course2", "Course3", "Course4"];
 
     const DrawerList = (
         <Box sx={{ width: 250 }}
@@ -57,13 +71,24 @@ const NavBar = () => {
              overflow='auto'
         >
             <List>
-                {courses.map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
+                {courses.length > 0 ? (
+                    courses.map((course) => (
+                        <ListItem key={course.course_id} disablePadding>
+                            <ListItemButton>
+                                <ListItemText primary={course.name} />
+                            </ListItemButton>
+                        </ListItem>
+                    ))
+                ) : (
+                    <ListItem>
+                        <ListItemText
+                            primary={t("no_courses")}
+                            sx={{
+                                color: 'text.disabled'
+                            }}
+                        />
                     </ListItem>
-                ))}
+                )}
             </List>
             <Divider />
             <List>
