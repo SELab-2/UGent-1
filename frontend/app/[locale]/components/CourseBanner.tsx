@@ -1,13 +1,32 @@
 "use client"
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {Box, Typography} from "@mui/material";
 import EditCourseButton from "@app/[locale]/components/EditCourseButton";
+import {APIError, Course, getCourse} from "@lib/api";
 
-const CourseBanner = () => {
-    const { t } = useTranslation();
-    const course_title = "Sample Course"
+interface CourseBannerProps {
+    course_id: number;
+}
+
+const CourseBanner = ({course_id}: CourseBannerProps) => {
+    const [course, setCourse] = useState<Course | null>(null);
+    const [error, setError] = useState<APIError | null>(null);
+    const {t} = useTranslation();
+
+    useEffect(() => {
+        const fetchCourse = async () => {
+            try {
+                setCourse(await getCourse(course_id));
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
+            }
+
+        };
+
+        fetchCourse();
+    }, []);
 
     return (
         <Box
@@ -39,7 +58,7 @@ const CourseBanner = () => {
                         color: 'white',
                     }}
                 >
-                    {course_title}
+                    {course?.name}
                 </Typography>
             </Box>
             <Box

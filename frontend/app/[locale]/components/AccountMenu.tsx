@@ -14,7 +14,7 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {useTranslation} from "react-i18next";
-import {APIError, getCourses, getUserData, UserData} from "@lib/api";
+import {APIError, getUserData, UserData} from "@lib/api";
 import {useEffect, useState} from "react";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
@@ -25,8 +25,6 @@ export default function AccountMenu() {
     const { t } = useTranslation()
 
     useEffect(() => {
-
-
         const fetchCourses = async () => {
             try{
                 setUser(await getUserData());

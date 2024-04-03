@@ -11,5 +11,8 @@
     "projects": "Projecten",
     "add_project": "Project toevoegen",
     "details": "Details",
-    "no_courses": "Geen cursussen om weer te geven."
+    "no_courses": "Geen cursussen om weer te geven.",
+    "no_description": "Geen beschrijving gegeven",
+    "view_students": "Bekijk studenten",
+    "view_co_teachers": "Bekijk mede-docenten"
 }

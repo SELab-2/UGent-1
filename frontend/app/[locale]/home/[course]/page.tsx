@@ -1,4 +1,3 @@
-import React from 'react'
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import Box from "@mui/material/Box";
@@ -7,11 +6,13 @@ import NavBar from "@app/[locale]/components/NavBar";
 import Footer from "@app/[locale]/components/Footer";
 import CourseBanner from "@app/[locale]/components/CourseBanner";
 import AddProjectButton from "@app/[locale]/components/AddProjectButton";
+import CourseDetails from "@app/[locale]/components/CourseDetails";
 import {Button} from "@mui/material";
+import React from "react";
 
 const i18nNamespaces = ['common']
 
-export default async function Course({params: {locale, course}}: { params: { locale: any, course: string } }) {
+export default async function Course({params: {locale, course}}: { params: { locale: any, course: number } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
     const project_selected = false
@@ -25,20 +26,14 @@ export default async function Course({params: {locale, course}}: { params: { loc
             namespaces={i18nNamespaces}
         >
             <NavBar/>
-            <Box sx={{marginTop: '64px', padding: 5}}>
-                <CourseBanner/>
-                <Typography
-                    variant="h3"
-                    sx={{
-                        fontWeight: 'medium',
-                        marginTop: 2
-                    }}
-                >
-                    {t('description')}
-                </Typography>
-                <Typography variant="h6">
-                    {desc_mock}
-                </Typography>
+            <Box
+                sx={{
+                    marginTop: '64px',
+                    padding: 5
+                }}
+            >
+                <CourseBanner course_id={course}/>
+                <CourseDetails course_id={course}/>
                 <Typography
                     variant="h3"
                     sx={{
@@ -54,7 +49,7 @@ export default async function Course({params: {locale, course}}: { params: { loc
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         width: "calc(100% - 40px)",
-                        paddingX: 2,
+
                     }}
                 >
                     <AddProjectButton/>
@@ -71,8 +66,38 @@ export default async function Course({params: {locale, course}}: { params: { loc
                     </Button>
                 </Box>
                 <h1>
-                    {course}
+                    {"Project List placeholder, course_id: " + course}
                 </h1>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        width: '100%',
+                        gap: 2,
+                    }}
+                >
+                    <Button
+                        variant="contained"
+                        color='secondary'
+                        sx={{
+                            width: 'fit-content',
+                            color: 'secondary.contrastText',
+                        }}
+                    >
+                        {t("view_students")}
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color='secondary'
+                        sx={{
+                            width: 'fit-content',
+                            color: 'secondary.contrastText',
+                        }}
+                    >
+                        {t("view_co_teachers")}
+                    </Button>
+                </Box>
             </Box>
             <Footer/>
         </TranslationsProvider>
