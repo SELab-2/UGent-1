@@ -1,17 +1,14 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, {useEffect, useState} from 'react';
 import NavBar from "../components/NavBar";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import initTranslations from "../../i18n";
+import {postForm} from '@lib/api';
 
-const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 function CourseCreatePage({ params: { locale } }: { params: { locale: any } }) {
     const [translations, setTranslations] = useState({ t: (key: any) => key });
     const [selectedImage, setSelectedImage] = useState('/path/to/default-image.jpg'); // TODO Default image
-
 
     useEffect(() => {
         const initialize = async () => {
@@ -36,50 +33,48 @@ function CourseCreatePage({ params: { locale } }: { params: { locale: any } }) {
             reader.readAsDataURL(imageFile);
         }
     };
-
-    const handleSubmit = async (event: any) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const formDataObject = Object.fromEntries(formData.entries());
-        console.log(formDataObject)
-        try {
-            await axios.post(backend_url + "/courses/", formDataObject, { withCredentials: true });
-            alert('Course created successfully!');
-        } catch (error) {
-            console.error("There was an error creating the course:", error);
-            alert('An error occurred. Please try again later.');
-        }
-    };
-
+    // TODO is choicebox still needed?
+    // TODO save and remove button don't work
     return (
         <div>
             <NavBar />
-            <Box sx={{ marginTop: '64px' }} style={{ marginLeft: '40px', marginRight: '40px', marginTop: '100px'  }}>
-                <form onSubmit={handleSubmit}>
-                    <Box sx={{ marginTop: '16px' }}>
-                        <label htmlFor="name" style={{ fontSize: '32px', fontFamily: 'Arial, sans-serif', color: 'darkblue' }}>{translations.t("Course name")}</label><br />
-                        <input type="text" id="name" name="name" required style={{ fontSize: '16px', fontFamily: 'Arial, sans-serif' }} />
-                    </Box>
-                    <Box sx={{marginTop: '32px', overflow: 'auto'}} style={{height: '200px'}}>
-                        <label htmlFor="banner" style={{fontSize: '32px', fontFamily: 'Arial, sans-serif', color: 'darkblue'}}>{translations.t("Banner")}</label><br/>
-                        <img src={selectedImage} alt="Profile Image" style={{width: '100%', height: 'auto'}}/>
-                    </Box>
-                    <Box sx={{marginTop: '16px'}}>
-                        <label htmlFor="profileImage" style={{
-                            cursor: 'pointer',
-                            color: 'black', display: 'inline-block', padding: '8px 16px', border: '1px solid lightblue', borderRadius: '4px', backgroundColor: 'lightblue', color: 'darkblue', fontFamily: 'Arial, sans-serif' }}>
-                            Select image
-                            <input type="file" id="profileImage" name="profileImage" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
-                        </label>
-                    </Box>
-                    <Box sx={{ marginTop: '16px' }}>
-                        <label htmlFor="description" style={{ fontSize: '32px', fontFamily: 'Arial, sans-serif', color: 'darkblue' }}>{translations.t("Description")}</label><br />
-                        <textarea id="description" name="description" rows={6} required style={{width: '100%', fontFamily: 'Arial, sans-serif', color: 'darkblue', }}/>
-                    </Box>
-                    <Box sx={{ marginTop: '16px' }}>
-                        <button type="submit" style={{backgroundColor: 'blue', color: 'darkblue', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontFamily: 'Arial, sans-serif'}}>{translations.t("Save")}</button>
-                    </Box>
-                </form>
+            <Box sx={{ marginTop: '64px', position: 'relative' }}>
+                <button style={{backgroundColor: 'red', color: 'white', padding: '8px 16px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontFamily: 'Arial, sans-serif', position: 'absolute', top: '20px', right: '20px', fontSize: '16px' }}>Remove course</button>
+                <Box sx={{ marginLeft: '70px', marginRight: '70px', marginTop: '100px' }}>
+                    <form onSubmit={postForm("/courses/")}>
+                        <Box sx={{ marginTop: '16px' }}>
+                            <label htmlFor="name" style={{ fontSize: '32px', fontFamily: 'Arial, sans-serif', color: 'darkblue', marginBottom: '-10px', display: 'block'  }}>{translations.t("Course name")}</label><br />
+                            <input type="text" id="name" name="name" required style={{ fontSize: '20px', fontFamily: 'Arial, sans-serif', borderRadius: '6px', height: '30px', width: '220px' }} />
+                        </Box>
+                        <Box sx={{ marginTop: '16px', overflow: 'auto', borderRadius: '12px' }} style={{ height: '200px' }}>
+                            <label htmlFor="banner" style={{ fontSize: '32px', fontFamily: 'Arial, sans-serif', color: 'darkblue' }}>{translations.t("Banner")}</label><br />
+                            <img src={selectedImage} alt="Profile Image" style={{ width: '100%', height: 'auto', borderRadius: '12px' }}/>
+                        </Box>
+                        <Box sx={{marginTop: '16px'}}>
+                            <label htmlFor="profileImage" style={{
+                                cursor: 'pointer',
+                                color: 'black', display: 'inline-block', padding: '8px 16px', border: '1px solid lightblue', borderRadius: '4px', backgroundColor: 'lightblue', color: 'darkblue', fontFamily: 'Arial, sans-serif' }}>
+                                Select image
+                                <input type="file" id="profileImage" name="profileImage" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+                            </label>
+                        </Box>
+                        <Box sx={{ marginTop: '16px' }}>
+                            <label htmlFor="description" style={{ fontSize: '32px', fontFamily: 'Arial, sans-serif', color: 'darkblue', marginBottom: '-10px', display: 'block' }}>{translations.t("Description")}</label><br />
+                            <textarea id="description" name="description" rows={5} required style={{width: '100%', fontFamily: 'Arial, sans-serif', color: 'darkblue', borderRadius: '6px', padding: '10px' }}/>
+                        </Box>
+                        <Box sx={{ marginTop: '16px' }}>
+                            <label htmlFor="choice" style={{ fontSize: '32px', fontFamily: 'Arial, sans-serif', color: 'darkblue', marginBottom: '-10px', display: 'block' }}>Access</label><br />
+                            <select id="choice" name="choice" style={{ fontSize: '20px', fontFamily: 'Arial, sans-serif', borderRadius: '6px', padding: '5px' }}>
+                                <option value="option1">Request access</option>
+                                <option value="option2">Option 2</option>
+                                <option value="option3">Option 3</option>
+                            </select>
+                        </Box>
+                        <Box sx={{ marginTop: '16px', position: 'absolute' }}>
+                            <button type="submit" style={{backgroundColor: 'blue', color: 'white', padding: '8px 16px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontFamily: 'Arial, sans-serif', fontSize: '16px', marginTop: '80px' }}>{translations.t("Save course")}</button>
+                        </Box>
+                    </form>
+                </Box>
             </Box>
         </div>
     );
