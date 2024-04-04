@@ -1,14 +1,12 @@
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import {Box, Typography, Button} from "@mui/material";
 import NavBar from "@app/[locale]/components/NavBar";
 import Footer from "@app/[locale]/components/Footer";
 import CourseBanner from "@app/[locale]/components/CourseBanner";
 import AddProjectButton from "@app/[locale]/components/AddProjectButton";
 import CourseDetails from "@app/[locale]/components/CourseDetails";
-import {Button} from "@mui/material";
-import React from "react";
+import ProjectTableTeacher from "@app/[locale]/components/ProjectTableTeacher";
 
 const i18nNamespaces = ['common']
 
@@ -43,28 +41,7 @@ export default async function Course({params: {locale, course}}: { params: { loc
                 >
                     {t('projects')}
                 </Typography>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        width: "calc(100% - 40px)",
-
-                    }}
-                >
-                    <AddProjectButton/>
-                    <Button
-                        variant="contained"
-                        color='secondary'
-                        disabled={!project_selected}
-                        sx={{
-                            width: 'fit-content',
-                            color: 'secondary.contrastText',
-                        }}
-                    >
-                        {t("details")}
-                    </Button>
-                </Box>
+                <ProjectTableTeacher />
                 <h1>
                     {"Project List placeholder, course_id: " + course}
                 </h1>
