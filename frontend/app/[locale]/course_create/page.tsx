@@ -8,7 +8,7 @@ import {postForm} from '@lib/api';
 
 function CourseCreatePage({ params: { locale } }: { params: { locale: any } }) {
     const [translations, setTranslations] = useState({ t: (key: any) => key });
-    const [selectedImage, setSelectedImage] = useState('/path/to/default-image.jpg'); // TODO Default image
+    const [selectedImage, setSelectedImage] = useState('./ugent_banner.png'); // TODO move image to resources
 
     useEffect(() => {
         const initialize = async () => {
@@ -19,7 +19,7 @@ function CourseCreatePage({ params: { locale } }: { params: { locale: any } }) {
         initialize();
     }, [locale]);
 
-    const handleImageUpload = (event: any) => {
+    const handleImageUpload = (event: any) => { //TODO should be able to select the right part of the image
         const imageFile = event.target.files[0];
         const reader = new FileReader();
 
@@ -35,6 +35,7 @@ function CourseCreatePage({ params: { locale } }: { params: { locale: any } }) {
     };
     // TODO is choicebox still needed?
     // TODO save and remove button don't work
+    // TODO better colours
     return (
         <div>
             <NavBar />
@@ -46,9 +47,9 @@ function CourseCreatePage({ params: { locale } }: { params: { locale: any } }) {
                             <label htmlFor="name" style={{ fontSize: '32px', fontFamily: 'Arial, sans-serif', color: 'darkblue', marginBottom: '-10px', display: 'block'  }}>{translations.t("Course name")}</label><br />
                             <input type="text" id="name" name="name" required style={{ fontSize: '20px', fontFamily: 'Arial, sans-serif', borderRadius: '6px', height: '30px', width: '220px' }} />
                         </Box>
-                        <Box sx={{ marginTop: '16px', overflow: 'auto', borderRadius: '12px' }} style={{ height: '200px' }}>
+                        <Box sx={{ marginTop: '16px',borderRadius: '12px' }} style={{ height: '250px' }}>
                             <label htmlFor="banner" style={{ fontSize: '32px', fontFamily: 'Arial, sans-serif', color: 'darkblue' }}>{translations.t("Banner")}</label><br />
-                            <img src={selectedImage} alt="Profile Image" style={{ width: '100%', height: 'auto', borderRadius: '12px' }}/>
+                            <img src={selectedImage} alt="Profile Image" style={{ width: '100%', height: '220px',objectFit: 'cover', objectPosition: 'center', borderRadius: '12px' }}/>
                         </Box>
                         <Box sx={{marginTop: '16px'}}>
                             <label htmlFor="profileImage" style={{
