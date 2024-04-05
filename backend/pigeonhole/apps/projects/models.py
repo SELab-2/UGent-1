@@ -17,13 +17,14 @@ class Project(models.Model):
     group_size = models.IntegerField(default=1)
     file_structure = models.TextField(blank=True, null=True)
     conditions = models.TextField(blank=True, null=True)
+    test_files = models.TextField(blank=True, null=True)
 
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ["project_id", "course_id", "name", "description", "deadline", "visible", "number_of_groups",
-                  "group_size", "max_score", "file_structure", "conditions"]
+                  "group_size", "max_score", "file_structure", "conditions", "test_files"]
 
 
 class Test(models.Model):

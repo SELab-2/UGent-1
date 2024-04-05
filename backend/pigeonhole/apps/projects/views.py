@@ -10,11 +10,18 @@ from backend.pigeonhole.apps.groups.models import GroupSerializer
 from .models import Project, ProjectSerializer
 from .permissions import CanAccessProject
 
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated & CanAccessProject]
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
