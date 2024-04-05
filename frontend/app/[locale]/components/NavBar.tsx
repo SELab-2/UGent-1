@@ -1,19 +1,22 @@
-"use client";
 import React from 'react';
+
 import MenuIcon from '@mui/icons-material/Menu';
-import {AppBar, Button, IconButton, Toolbar, Typography} from '@mui/material';
+import {AppBar, IconButton, Toolbar, Typography} from '@mui/material';
+import {Button} from "@mui/material";
+import { logOut } from '@lib/api';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 const NavBar = () => {
     const doLogout = (): void => {
         // Implement CAS login logic here
-        window.location.href = backend_url + "/auth/logout";
+        logOut();
+                
     };
 
     return (
         <AppBar position="fixed">
-            <Toolbar sx={{justifyContent: 'space-between', left: 0, right: 0}}>
+            <Toolbar sx={{ justifyContent: 'space-between', left: 0, right: 0 }}>
                 <IconButton
                     size="large"
                     edge="start"
