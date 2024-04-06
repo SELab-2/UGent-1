@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from backend.pigeonhole.apps.courses.models import CourseSerializer
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.projects.models import ProjectSerializer
+from backend.pigeonhole.apps.users.models import User, UserSerializer, Roles
 from .models import Course
 from .permissions import CourseUserPermissions
 
@@ -48,3 +49,9 @@ class CourseViewSet(viewsets.ModelViewSet):
         course = self.get_object()
         projects = Project.objects.filter(course_id=course)
         return Response(ProjectSerializer(projects, many=True).data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['GET'])
+    def get_teachers(self, request, *args, **kwargs):
+        course = self.get_object()
+        teachers = User.objects.filter(course=course, role__in=[Roles.TEACHER, Roles.ADMIN])
+        return Response(UserSerializer(teachers, many=True).data, status=status.HTTP_200_OK)

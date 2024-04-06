@@ -93,3 +93,7 @@ class CourseTestUnauthorized(TestCase):
     def test_join_course_not_exist(self):
         response = self.client.post(f'{API_ENDPOINT}56152/join_course/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_teachers(self):
+        response = self.client.get(f'{API_ENDPOINT}{self.course.course_id}/get_teachers/')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
