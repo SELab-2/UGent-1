@@ -222,7 +222,8 @@ export async function add_course_to_user(user_id: number, course_id: number) {
 
 export async function remove_course_from_user(user_id: number, course_id: number) {
     return (await remove_course_from_user_request(user_id, course_id));
-    
+}
+
 export async function getProject(id: number) : Promise<Project>{
     return (await getRequest(`/projects/${id}`));
 }
