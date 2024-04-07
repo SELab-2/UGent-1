@@ -42,7 +42,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     const [groupAmount, setGroupAmount] = useState(1);
     const [groupSize, setGroupSize] = useState(1);
     const [conditions, setConditions] = useState(['']);
-    const [testfiles, setTestfiles] = useState([""]);
+    const [testfilesName, setTestfilesName] = useState([""]);
     const [visible, setVisible] = useState(true);
     const [deadline, setDeadline] = React.useState(dayjs());
     const [score, setScore] = useState(0);
@@ -57,6 +57,23 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     const isGroupAmountEmpty = !groupAmount
     const isGroupSizeEmpty = !groupSize
 
+    async function setTestFils(project: { [x: string]: string; }) {
+        const zip = new JSZip();
+        const test_files_zip = await axios.get(project["test_files"], {
+            withCredentials: true,
+            responseType: 'blob'
+        });
+        const zipData = await zip.loadAsync(test_files_zip.data);
+        const testfiles_name: string[] = [];
+        const testfiles_data: JSZipObject[] = [];
+        zipData.forEach((relativePath, file) => {
+            testfiles_data.push(file);
+            testfiles_name.push(relativePath);
+        });
+        setTestfilesName(testfiles_name);
+        setTestfilesData(testfiles_data);
+    }
+
     useEffect(() => {
         const fetchProject = async () => {
             try {
@@ -69,25 +86,13 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                 setTitle(project["name"])
                 setGroupAmount(project["number_of_groups"])
                 setVisible(project["visible"])
+                await setTestFils(project);
+                setScore(+project["max_score"]);
+                setCourseId(+project["course_id"]);
                 if (project["conditions"] != null) {
                     setConditions(project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
                 }
-                const zip = new JSZip();
-                const test_files_zip = await axios.get(project["test_files"], {
-                    withCredentials: true,
-                    responseType: 'blob'
-                });
-                const zipData = await zip.loadAsync(test_files_zip.data);
-                const testfiles_name: string[] = [];
-                const testfiles_data: JSZipObject[] = [];
-                zipData.forEach((relativePath, file) => {
-                    testfiles_data.push(file);
-                    testfiles_name.push(relativePath);
-                });
-                setTestfiles(testfiles_name);
-                setTestfilesData(testfiles_data);
-                setScore(+project["max_score"]);
-                setCourseId(+project["course_id"]);
+
                 setLoading(false);
             } catch (error) {
                 console.error("There was an error fetching the courses:", error);
@@ -112,13 +117,13 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
         const zipFileBlob = await zip.generateAsync({type: "blob"});
         zip = new JSZip();
         const zipData = await zip.loadAsync(zipFileBlob);
-        const testfiles_name: string[] = [...testfiles];
+        const testfiles_name: string[] = [...testfilesName];
         const testfiles_data: JSZipObject[] = [...testfilesData];
         zipData.forEach((relativePath, file) => {
             testfiles_data.push(file);
             testfiles_name.push(relativePath);
         });
-        setTestfiles(testfiles_name);
+        setTestfilesName(testfiles_name);
         setTestfilesData(testfiles_data);
         console.log(testfiles_data);
     }
@@ -475,16 +480,16 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                                 {"Testfiles"}
                             </Typography>
                             <List dense={true}>
-                                {testfiles.map((testfile, index) => (
+                                {testfilesName.map((testfile, index) => (
                                     <ListItem
                                         secondaryAction={
                                             <IconButton
                                                 edge="end"
                                                 aria-label="delete"
                                                 onClick={() => {
-                                                    const newTestfiles = [...testfiles];
+                                                    const newTestfiles = [...testfilesName];
                                                     newTestfiles.splice(index, 1);
-                                                    setTestfiles(newTestfiles);
+                                                    setTestfilesName(newTestfiles);
                                                 }}
                                             >
                                                 <DeleteIcon/>
