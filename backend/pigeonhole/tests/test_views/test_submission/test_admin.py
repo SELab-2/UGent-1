@@ -14,7 +14,7 @@ API_ENDPOINT = '/submissions/'
 
 class SubmissionTestAdmin(TestCase):
     def setUp(self):
-        self.client = APIClient()
+        self.client = APIClient()  # client
 
         self.admin = User.objects.create(
             username="admin_username1",
