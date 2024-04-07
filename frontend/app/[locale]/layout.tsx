@@ -21,7 +21,7 @@ export default function RootLayout(props: React.PropsWithChildren<{}>) {
                 }
             }
         }
-        // loggedInCheck();
+        loggedInCheck();
     }, []);
 
     return (
