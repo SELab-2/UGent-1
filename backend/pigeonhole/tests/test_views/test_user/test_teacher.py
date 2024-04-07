@@ -95,7 +95,7 @@ class UserTestTeacher(TestCase):
         response = self.client.get(f'{API_ENDPOINT}{self.teacher.id}/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['first_name'], self.teacher.first_name)
-        
+
     def test_add_course_to_user(self):
         response = self.client.post(
             f"{API_ENDPOINT}{self.student.id}/add_course_to_user/",

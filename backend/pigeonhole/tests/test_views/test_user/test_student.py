@@ -52,7 +52,7 @@ class UserTestStudent(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(User.objects.count(), 2)
 
-    """TODO update fix 
+    """TODO update fix
     def test_update_self(self):
         updated_data = {
             'username': 'user1',
@@ -110,7 +110,7 @@ class UserTestStudent(TestCase):
         self.student.refresh_from_db()
         self.assertEqual(self.student.course.count(), 1)
         self.assertEqual(self.student.course.first().course_id, self.course.course_id)
-    
+
     def test_remove_course_from_user(self):
         self.student.course.add(self.course.course_id)
         response = self.client.post(
