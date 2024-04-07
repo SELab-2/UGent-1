@@ -32,8 +32,9 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(
             {"status": "Course removed successfully"}, status=status.HTTP_200_OK
         )
+
     def get_object(self):
-        pk = self.kwargs.get('pk')
+        pk = self.kwargs.get("pk")
 
         if pk == "current":
             return self.request.user
