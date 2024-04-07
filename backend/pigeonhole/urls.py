@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
 from django.urls import include, path as urlpath
 from drf_yasg import openapi
@@ -48,6 +49,8 @@ urlpatterns = [
                   urlpath('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
                   urlpath("admin/", admin.site.urls),
                   urlpath('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+                  urlpath('auth/logout', auth_views.LogoutView.as_view(next_page=settings.FRONTEND_URL),
+                          name='authlogout'),
                   urlpath('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
                   urlpath('microsoft/', include('microsoft_auth.urls', namespace='microsoft')),
                   urlpath('redirect/<path:path>', to_frontend, name='redirect'),
