@@ -1,4 +1,5 @@
-import React from 'react';
+"use client";
+import React, {useEffect, useState} from 'react';
 import {ThemeProvider} from '@mui/material/styles';
 import {CourseCardTheme} from '../../../styles/theme';
 import {
@@ -12,21 +13,44 @@ import {
     TableRow,
     Typography,
 } from '@mui/material';
-
-type Project = {
-    name: string;
-    deadline: string;
-    submissions: number;
-};
+import {APIError, getProjectsFromCourse, getTeachersFromCourse, Project} from "@lib/api";
 
 type CourseCardProps = {
+    courseId: number;
     courseName: string;
-    teacherName: string;
-    projects: Project[];
-    t: (key: string) => string;
 };
 
-const CourseCard: React.FC<CourseCardProps> = ({courseName, teacherName, projects, t}) => {
+const CourseCard: React.FC<CourseCardProps> = ({courseId, courseName}) => {
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [teachers, setTeachers] = useState<String[]>([]);
+    const [error, setError] = useState<APIError | null>(null);
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                setProjects(await getProjectsFromCourse(courseId));
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
+            }
+
+        };
+
+        fetchProjects();
+    }, [courseId]);
+
+    useEffect(() => {
+        const fetchTeachers = async () => {
+            try {
+                setTeachers(await getTeachersFromCourse(courseId));
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
+            }
+
+        };
+
+        fetchTeachers();
+    }, [courseId]);
+
     return (
         <ThemeProvider theme={CourseCardTheme}>
             <Card>
@@ -34,16 +58,16 @@ const CourseCard: React.FC<CourseCardProps> = ({courseName, teacherName, project
                     <Typography variant="h6" component="div" gutterBottom>
                         {courseName}
                     </Typography>
-                    <Typography color="text.text" gutterBottom>
-                        {teacherName}
+                    <Typography color="text.text" gutterBottom style={{whiteSpace: 'pre-line'}}>
+                        {teachers.join('\n')}
                     </Typography>
                     <TableContainer>
                         <Table aria-label="simple table" size="small">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>{t("project")}</TableCell>
-                                    <TableCell align="right">{t("deadline")}</TableCell>
-                                    <TableCell align="right">{t("submissions")}</TableCell>
+                                    <TableCell>{"project"}</TableCell>
+                                    <TableCell align="right">{"deadline"}</TableCell>
+                                    <TableCell align="right">{"submissions"}</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -53,13 +77,13 @@ const CourseCard: React.FC<CourseCardProps> = ({courseName, teacherName, project
                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                     >
                                         <TableCell component="th" scope="row">
-                                            {project.name}
+                                            {project['name']}
                                         </TableCell>
                                         <TableCell align="right">
-                                            {project.deadline}
+                                            {project['deadline']}
                                         </TableCell>
                                         <TableCell align="right">
-                                            {project.submissions}
+                                            {'x'}
                                         </TableCell>
                                     </TableRow>
                                 ))}
