@@ -42,6 +42,7 @@ class CourseTestStudent(TestCase):
                                                                   open_course=False)
         self.project = Project.objects.create(
             name="Test Project",
+            deadline="2021-12-12 12:12:12",
             course_id=self.course
         )
 

@@ -35,7 +35,8 @@ class ConditionsTestCase(TestCase):
         project = Project.objects.create(
             name="Project",
             course_id=course,
-            description="Project Description"
+            description="Project Description",
+            deadline="2024-04-01 15:13",
         )
 
         # Create conditions
