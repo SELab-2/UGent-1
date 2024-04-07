@@ -156,3 +156,18 @@ class CourseTestStudent(TestCase):
     def test_join_course_not_exist(self):
         response = self.client.post(f'{API_ENDPOINT}56152/join_course/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_teachers(self):
+        response = self.client.get(f'{API_ENDPOINT}{self.course.course_id}/get_teachers/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    def test_get_teachers_of_course_not_of_student(self):
+        response = self.client.get(f'{API_ENDPOINT}{self.course_not_of_student.course_id}/get_teachers/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+        self.assertEqual(response.data, [])
+
+    def test_get_teachers_course_not_exists(self):
+        response = self.client.get(f'{API_ENDPOINT}100/get_teachers/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
