@@ -7,13 +7,13 @@ import Box from "@mui/material/Box";
 import initTranslations from "../../../i18n";
 import ugent_banner from "@app/[locale]/course/ugent_banner.png"; // TODO move image to resources
 
+
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 function CourseEditPage({ params: { locale, id } }: { params: { locale: any, id: string } }) {
     const [translations, setTranslations] = useState({ t: (key: any) => key });
     const [courseData, setCourseData] = useState({ name: '', description: '' });
     const [selectedImage, setSelectedImage] = useState(ugent_banner);
-
 
     useEffect(() => {
         const initialize = async () => {
@@ -82,7 +82,6 @@ function CourseEditPage({ params: { locale, id } }: { params: { locale: any, id:
 
     // TODO is choicebox still needed?
     // TODO save and remove button don't work
-    // TODO add translations (and style)
     return (
         <div>
             <NavBar/>
@@ -99,7 +98,7 @@ function CourseEditPage({ params: { locale, id } }: { params: { locale: any, id:
                     top: '20px',
                     right: '20px',
                     fontSize: '16px'
-                }}>Remove course
+                }}>{translations.t("Remove course")}
                 </button>
                 <Box sx={{marginLeft: '70px', marginRight: '70px', marginTop: '100px'}}>
                     <form onSubmit={handleSubmit}>
@@ -142,8 +141,7 @@ function CourseEditPage({ params: { locale, id } }: { params: { locale: any, id:
                                 backgroundColor: 'lightblue',
                                 color: '#1E64C8',
                                 fontFamily: 'Arial, sans-serif'
-                            }}>
-                                Select image
+                            }}>{translations.t("Select image")}
                                 <input type="file" id="Image" name="Image" accept="image/*" onChange={handleImageUpload}
                                        style={{display: 'none'}}/>
                             </label>
@@ -171,14 +169,14 @@ function CourseEditPage({ params: { locale, id } }: { params: { locale: any, id:
                                 color: '#1E64C8',
                                 marginBottom: '-10px',
                                 display: 'block'
-                            }}>Access</label><br/>
+                            }}>{translations.t("Access")}</label><br/>
                             <select id="choice" name="choice" style={{
                                 fontSize: '20px',
                                 fontFamily: 'Arial, sans-serif',
                                 borderRadius: '6px',
                                 padding: '5px'
                             }}>
-                                <option value="option1">Request access</option>
+                                <option value="option1">{translations.t("Request access")}</option>
                                 <option value="option2">Option 2</option>
                                 <option value="option3">Option 3</option>
                             </select>

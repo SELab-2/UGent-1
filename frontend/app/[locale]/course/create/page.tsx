@@ -1,8 +1,8 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import NavBar from "../components/NavBar";
+import NavBar from "../../components/NavBar";
 import Box from "@mui/material/Box";
-import initTranslations from "../../i18n";
+import initTranslations from "../../../i18n";
 import {postForm} from '@lib/api';
 import ugent_banner from "@app/[locale]/course/ugent_banner.png"; // TODO move image to resources
 
@@ -40,7 +40,6 @@ function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
     };
     // TODO is choicebox still needed?
     // TODO save and cancel button don't work
-    // TODO add translations (and style)
 
     return (
         <div>
@@ -58,7 +57,7 @@ function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
                     top: '20px',
                     right: '20px',
                     fontSize: '16px'
-                }}>Cancel
+                }}>{translations.t("Cancel")}
                 </button>
                 <Box sx={{marginLeft: '70px', marginRight: '70px', marginTop: '100px'}}>
                     <form onSubmit={postForm("/courses/")}>
@@ -102,7 +101,7 @@ function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
                                 color: '#1E64C8',
                                 fontFamily: 'Arial, sans-serif'
                             }}>
-                                Select image
+                                {translations.t("Select image")}
                                 <input type="file" id="Image" name="Image" accept="image/*" onChange={handleImageUpload}
                                        style={{display: 'none'}}/>
                             </label>
@@ -137,7 +136,7 @@ function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
                                 borderRadius: '6px',
                                 padding: '5px'
                             }}>
-                                <option value="option1">Request access</option>
+                                <option value="option1">{translations.t("Request access")}</option>
                                 <option value="option2">Option 2</option>
                                 <option value="option3">Option 3</option>
                             </select>
