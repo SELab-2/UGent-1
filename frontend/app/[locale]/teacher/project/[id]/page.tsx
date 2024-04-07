@@ -57,30 +57,20 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const response1 = await axios.get(backend_url + "/projects/" + id + "/", {withCredentials: true});
-                console.log(response1)
-                const response = await axios.get(backend_url + "/projects", {withCredentials: true});
-                if (response.data && Array.isArray(response.data.results)) {
-                    for (const project of response.data.results) {
-                        if (project["project_id"] === +id) {
-                            setDeadline(dayjs(project["deadline"]))
-                            setDescription(project.description)
-                            setFiles(project["file_structure"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
-                            setGroupSize(project["group_size"])
-                            setTitle(project["name"])
-                            setGroupAmount(project["number_of_groups"])
-                            setVisible(project["visible"])
-                            setConditions(project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
-                            setTestfiles(project["test_files"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
-                            setLoading(false);
-                            setScore(+project["max_score"]);
-                            setCourseId(+project["course_id"]);
-                        }
-                    }
-                } else {
-                    console.error("Unexpected response structure:", response.data);
-                    // Optionally handle unexpected structure
-                }
+                const response = await axios.get(backend_url + "/projects/" + id + "/", {withCredentials: true});
+                const project = response.data
+                setDeadline(dayjs(project["deadline"]))
+                setDescription(project.description)
+                setFiles(project["file_structure"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
+                setGroupSize(project["group_size"])
+                setTitle(project["name"])
+                setGroupAmount(project["number_of_groups"])
+                setVisible(project["visible"])
+                setConditions(project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
+                setTestfiles(project["test_files"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
+                setLoading(false);
+                setScore(+project["max_score"]);
+                setCourseId(+project["course_id"]);
             } catch (error) {
                 console.error("There was an error fetching the courses:", error);
                 // Optionally handle the error, e.g., by setting an error message
@@ -570,7 +560,6 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                                     value={deadline}
                                     onChange={(event) => {
                                         if (event != null) setDeadline(event);
-                                        console.log(event)
                                     }}
                                 />
                             </LocalizationProvider>
