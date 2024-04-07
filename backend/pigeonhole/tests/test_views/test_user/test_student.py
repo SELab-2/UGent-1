@@ -110,7 +110,7 @@ class UserTestStudent(TestCase):
         self.student.refresh_from_db()
         self.assertEqual(self.student.course.count(), 1)
         self.assertEqual(self.student.course.first().course_id, self.course.course_id)
-    
+
     def test_remove_course_from_user(self):
         self.student.course.add(self.course.course_id)
         response = self.client.post(
