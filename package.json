@@ -1,6 +1,9 @@
 {
   "dependencies": {
     "@mui/x-date-pickers": "^7.0.0",
-    "dayjs": "^1.11.10"
+    "@types/file-saver": "^2.0.7",
+    "dayjs": "^1.11.10",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1"
   }
 }

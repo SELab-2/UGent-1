@@ -4,6 +4,10 @@ from rest_framework import serializers
 from backend.pigeonhole.apps.courses.models import Course
 
 
+def get_upload_to(self, filename):
+    return 'projects/' + str(self.project_id) + '/' + filename
+
+
 class Project(models.Model):
     objects = models.Manager()
     project_id = models.BigAutoField(primary_key=True)
@@ -17,7 +21,7 @@ class Project(models.Model):
     group_size = models.IntegerField(default=1)
     file_structure = models.TextField(blank=True, null=True)
     conditions = models.TextField(blank=True, null=True)
-    test_files = models.TextField(blank=True, null=True)
+    test_files = models.FileField(blank=True, null=True, upload_to=get_upload_to)
 
 
 class ProjectSerializer(serializers.ModelSerializer):

@@ -5,7 +5,9 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {
     Avatar,
-    Dialog, DialogActions, DialogContent,
+    Dialog,
+    DialogActions,
+    DialogContent,
     DialogTitle,
     Grid,
     IconButton,
@@ -28,25 +30,26 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {TimePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import axios from 'axios';
+import JSZip, {JSZipObject} from "jszip";
 
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: any } }) {
-    const [files, setFiles] = useState(['']);
+    const [files, setFiles] = useState([null]);
     const [title, setTitle] = useState('Project 1');
     const [description, setDescription] = useState('Lorem\nIpsum\n');
     const [groupAmount, setGroupAmount] = useState(1);
     const [groupSize, setGroupSize] = useState(1);
     const [conditions, setConditions] = useState(['']);
-    const [testfiles, setTestfiles] = useState(["Dockerfile",
-        "Testfile"]);
+    const [testfiles, setTestfiles] = useState([""]);
     const [visible, setVisible] = useState(true);
     const [deadline, setDeadline] = React.useState(dayjs());
     const [score, setScore] = useState(0);
     const [loading, setLoading] = useState(true);
     const [confirmRemove, setConfirmRemove] = useState(false);
     const [courseId, setCourseId] = useState(0);
+    const [testfilesData, setTestfilesData] = useState<JSZipObject[]>([]);
 
     const isTitleEmpty = !title
     const isAssignmentEmpty = !description
@@ -66,11 +69,26 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                 setTitle(project["name"])
                 setGroupAmount(project["number_of_groups"])
                 setVisible(project["visible"])
-                setConditions(project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
-                setTestfiles(project["test_files"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
-                setLoading(false);
+                if (project["conditions"] != null) {
+                    setConditions(project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
+                }
+                const zip = new JSZip();
+                const test_files_zip = await axios.get(project["test_files"], {
+                    withCredentials: true,
+                    responseType: 'blob'
+                });
+                const zipData = await zip.loadAsync(test_files_zip.data);
+                const testfiles_name: string[] = [];
+                const testfiles_data: JSZipObject[] = [];
+                zipData.forEach((relativePath, file) => {
+                    testfiles_data.push(file);
+                    testfiles_name.push(relativePath);
+                });
+                setTestfiles(testfiles_name);
+                setTestfilesData(testfiles_data);
                 setScore(+project["max_score"]);
                 setCourseId(+project["course_id"]);
+                setLoading(false);
             } catch (error) {
                 console.error("There was an error fetching the courses:", error);
                 // Optionally handle the error, e.g., by setting an error message
@@ -80,11 +98,29 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
         fetchProject().then(() => console.log("Project fetched"));
     }, [id]);
 
-    const handleFileChange = (event: any) => {
-        const newFiles = [...testfiles];
-        const parsed_filename = event.target.value.split("\\").pop();
-        newFiles.push(parsed_filename);
-        setTestfiles(newFiles);
+    const handleFileChange = async (event: any) => {
+        let zip = new JSZip();
+        for (let i = 0; i < event.target.files.length; i++) {
+            const file = event.target.files[i];
+            const fileReader = new FileReader();
+            fileReader.onload = function (e) {
+                zip.file(file.name, e.target?.result as ArrayBuffer);
+            };
+            fileReader.readAsArrayBuffer(file);
+        }
+
+        const zipFileBlob = await zip.generateAsync({type: "blob"});
+        zip = new JSZip();
+        const zipData = await zip.loadAsync(zipFileBlob);
+        const testfiles_name: string[] = [...testfiles];
+        const testfiles_data: JSZipObject[] = [...testfilesData];
+        zipData.forEach((relativePath, file) => {
+            testfiles_data.push(file);
+            testfiles_name.push(relativePath);
+        });
+        setTestfiles(testfiles_name);
+        setTestfilesData(testfiles_data);
+        console.log(testfiles_data);
     }
     const handleGroupAmountChange = (event: any) => {
         if (event.target.value === '') {
@@ -128,7 +164,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
         setFiles(newFields);
 
         if (index === files.length - 1 && event.target.value !== '') {
-            setFiles([...newFields, '']);
+            // setFiles([...newFields, '']);
         } else if (event.target.value === '' && index < files.length - 1) {
             newFields.splice(index, 1);
             setFiles(newFields);
@@ -148,7 +184,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
         }
     }
 
-    const handleSave = () => {
+    const handleSave = async () => {
         let message = "The following fields are required:\n";
 
         if (isTitleEmpty) message += "- Title\n";
@@ -163,19 +199,28 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
             alert(message);
             return;
         } else {
-            axios.put(backend_url + "/projects/" + id + "/", {
-                name: title,
-                description: description,
-                max_score: score,
-                number_of_groups: groupAmount,
-                group_size: groupSize,
-                deadline: deadline.format(),
-                file_structure: files.join(","),
-                conditions: conditions.join(","),
-                test_files: testfiles.join(","),
-                visible: visible,
-                course_id: courseId
-            }, {withCredentials: true}).then((response) => {
+            const zip = new JSZip();
+            testfilesData.forEach((file) => {
+                zip.file(file.name, file.async("blob"));
+            });
+
+            const zipFileBlob = await zip.generateAsync({type: "blob"});
+            const formData = new FormData();
+            const zipFile = new File([zipFileBlob], "test_files.zip");
+            formData.append("test_files", zipFile);
+            formData.append("name", title);
+            formData.append("description", description);
+            formData.append("max_score", score.toString());
+            formData.append("number_of_groups", groupAmount.toString());
+            formData.append("group_size", groupSize.toString());
+            formData.append("deadline", deadline.format());
+            formData.append("file_structure", files.join(","));
+            formData.append("conditions", conditions.join(","));
+            formData.append("visible", visible.toString());
+            formData.append("course_id", courseId.toString());
+
+            axios.put(backend_url + "/projects/" + id + "/", formData
+                , {withCredentials: true}).then((response) => {
                 console.log(response);
             }).catch((error) => {
                 console.log(error);
@@ -196,10 +241,10 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
         
         There are 2 options for adding files:
         1. Add a specific file: /extra/verslag.pdf
-        -> in this case the file verslag.pdf is required in the directory extra
+        - in this case the file verslag.pdf is required in the directory extra
         
-        2. Add a file type: *.py
-        -> in this case the only file type allowed will be python files
+        2. Add a file type: src/*.py
+        - in this case the only file type allowed in the src directory will be python files
     `
 
     const group_info = `
@@ -553,7 +598,6 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                                     value={deadline}
                                     onChange={(event) => {
                                         setDeadline(event)
-                                        console.log(event)
                                     }}
                                     minDate={dayjs()}/>
                                 <TimePicker
