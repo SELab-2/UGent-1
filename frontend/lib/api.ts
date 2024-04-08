@@ -149,11 +149,11 @@ export async function getProjects() : Promise<Project[]>{
 }
 
 export async function getProjectsFromCourse(id: number): Promise<Project[]>{
-    return (await getListRequest('/course/' + id + '/get_projects'))
+    return (await getListRequest('/courses/' + id + '/get_projects'))
 }
 
 export async function getTeachersFromCourse(id: number): Promise<String[]>{
-    return (await getListRequest('/course/' + id + '/get_teachers'))
+    return (await getListRequest('/courses/' + id + '/get_teachers'))
 }
 
 export async function getGroup(id: number) : Promise<Group>{
