@@ -11,13 +11,14 @@ import {Button} from "@mui/material";
 
 const i18nNamespaces = ['common']
 
-export default async function Course({params: {locale, course}}: { params: { locale: any, course: string } }) {
+export default async function Course({params: {locale, course}, searchParams: {token}}:
+                                         { params: { locale: any, course: string }, searchParams: { token: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
     const project_selected = false
 
     const desc_mock = "This is a mock description for the course, it should be replaced with the actual course description. It should be a brief description of the course."
-
+    console.log(token)
     return (
         <TranslationsProvider
             resources={resources}
