@@ -1,4 +1,5 @@
 from datetime import datetime
+import pytz
 
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
@@ -32,8 +33,9 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         if not project:
             return Response({"message": "Project not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        if project.deadline and datetime.now() > project.deadline:
-            return Response({"message": "Deadline expired"}, status=status.HTTP_410_GONE)
+        now_naive = datetime.now().replace(tzinfo=pytz.UTC)  # Making it timezone-aware in UTC
+        if project.deadline and now_naive > project.deadline:
+            return Response({"message": "Deadline expired"}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
