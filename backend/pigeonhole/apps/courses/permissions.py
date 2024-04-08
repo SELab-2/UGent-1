@@ -9,7 +9,7 @@ class CourseUserPermissions(permissions.BasePermission):
         if request.user.is_admin or request.user.is_superuser:
             return True
 
-        if view.action in ['join_course', 'get_selected_courses', 'get_teachers']:
+        if view.action in ['join_course', 'get_selected_courses', 'join_course_with_token', 'leave_course']:
             return True
 
         if request.user.is_teacher:
@@ -20,7 +20,7 @@ class CourseUserPermissions(permissions.BasePermission):
                     course=view.kwargs[
                         'pk']).exists():
                 return True
-            return
+            return False
 
         if request.user.is_student:
             if view.action == 'get_projects':

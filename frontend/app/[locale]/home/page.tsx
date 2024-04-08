@@ -7,10 +7,10 @@ import CourseCard from '../components/CourseCard';
 import CourseControls from '../components/CourseControls';
 import initTranslations from "../../i18n";
 
-function HomePage({params: {locale}}: { params: { locale: any } }) {
+function HomePage({params: {locale}} : {params: {locale: any}}) {
     const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
     const [user, setUser] = useState<UserData | null>(null);
-    const [translations, setTranslations] = useState({t: (key: any) => key});
+    const [translations, setTranslations] = useState({t: (key: any) => key}); // Default 't' function
     const [error, setError] = useState<APIError | null>(null);
 
     useEffect(() => {
@@ -23,14 +23,17 @@ function HomePage({params: {locale}}: { params: { locale: any } }) {
     }, [locale]);
 
     useEffect(() => {
+        
+
         const fetchCourses = async () => {
-            try {
+            try{
                 setCourses(await getCourses());
                 setUser(await getUserData());
-            } catch (error) {
-                if (error instanceof APIError) setError(error);
+                console.log(user);
+            }catch(error){
+                if(error instanceof APIError) setError(error);
             }
-
+            
         };
 
         fetchCourses();

@@ -10,13 +10,12 @@ class Project(models.Model):
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=256)
     description = models.TextField()
-    deadline = models.DateTimeField(null=True, blank=True)
+    deadline = models.DateTimeField()
     visible = models.BooleanField(default=False)
-    max_score = models.IntegerField(null=True, blank=True)
+    max_score = models.IntegerField(default=10)
     number_of_groups = models.IntegerField(default=5)
     group_size = models.IntegerField(default=1)
     file_structure = models.CharField(max_length=1024, null=True)
-    max_score = models.IntegerField(null=True, blank=True)
 
 
 class ProjectSerializer(serializers.ModelSerializer):

@@ -26,6 +26,9 @@ class CourseTestTeacher(TestCase):
                                                            description="This is not of the teacher")
         self.course_not_of_teacher2 = Course.objects.create(name="Not of Teacher 2",
                                                             description="This is not of the teacher 2")
+        self.course_not_of_teacher_closed = Course.objects.create(name="Not of Student 2",
+                                                                  description="This is not of the student 2",
+                                                                  open_course=False)
 
         self.teacher = User.objects.create(
             username="teacher_username",
@@ -37,6 +40,7 @@ class CourseTestTeacher(TestCase):
 
         self.project = Project.objects.create(
             name="Test Project",
+            deadline="2021-12-12 12:12:12",
             course_id=self.course
         )
 
@@ -47,7 +51,7 @@ class CourseTestTeacher(TestCase):
     def test_create_course(self):
         response = self.client.post(API_ENDPOINT, self.course_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Course.objects.count(), 4)
+        self.assertEqual(Course.objects.count(), 5)
         self.assertEqual(self.teacher.course.count(), 2)
 
     def test_update_course(self):
@@ -84,7 +88,7 @@ class CourseTestTeacher(TestCase):
     def test_delete_course(self):
         response = self.client.delete(f'{API_ENDPOINT}{self.course.course_id}/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Course.objects.count(), 2)
+        self.assertEqual(Course.objects.count(), 3)
 
     def test_delete_course_not_of_teacher(self):
         response = self.client.delete(f'{API_ENDPOINT}{self.course_not_of_teacher.course_id}/')
@@ -94,7 +98,7 @@ class CourseTestTeacher(TestCase):
         response = self.client.get(API_ENDPOINT)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         content_json = json.loads(response.content.decode("utf-8"))
-        self.assertEqual(content_json["count"], 3)
+        self.assertEqual(content_json["count"], 4)
 
     def test_retrieve_course(self):
         response = self.client.get(f'{API_ENDPOINT}{self.course.course_id}/')
@@ -156,20 +160,25 @@ class CourseTestTeacher(TestCase):
         response = self.client.post(f'{API_ENDPOINT}56152/join_course/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_get_teachers(self):
-        response1 = self.client.post(f'{API_ENDPOINT}{self.course_not_of_teacher2.course_id}/join_course/')
-        self.assertEqual(response1.status_code, status.HTTP_200_OK)
-        response = self.client.get(f'{API_ENDPOINT}{self.course.course_id}/get_teachers/')
+    def test_leave_course(self):
+        self.client.post(f'{API_ENDPOINT}{self.course_not_of_teacher2.course_id}/join_course/')
+        self.assertEqual(self.teacher.course.count(), 2)
+        response = self.client.post(f'{API_ENDPOINT}{self.course_not_of_teacher2.course_id}/leave_course/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['id'], self.teacher.id)
+        self.assertEqual(self.teacher.course.count(), 1)
 
-    def test_get_teachers_of_course_not_of_teacher(self):
-        response = self.client.get(f'{API_ENDPOINT}{self.course_not_of_teacher.course_id}/get_teachers/')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 0)
-        self.assertEqual(response.data, [])
+    def test_leave_course_not_joined(self):
+        self.assertEqual(self.teacher.course.count(), 1)
+        response = self.client.post(f'{API_ENDPOINT}{self.course_not_of_teacher2.course_id}/leave_course/')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(self.teacher.course.count(), 1)
 
-    def test_get_teachers_not_exists(self):
-        response = self.client.get(f'{API_ENDPOINT}100/get_teachers/')
+    def test_leave_course_not_exist(self):
+        response = self.client.post(f'{API_ENDPOINT}56152/leave_course/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_join_course_closed(self):
+        self.assertEqual(self.teacher.course.count(), 1)
+        response = self.client.post(f'{API_ENDPOINT}{self.course_not_of_teacher_closed.course_id}/join_course/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.teacher.course.count(), 2)
