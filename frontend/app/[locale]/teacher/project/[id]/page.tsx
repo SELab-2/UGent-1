@@ -2,14 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import NavBar from "../../../components/NavBar"
 import Box from "@mui/material/Box";
-import {Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton} from "@mui/material";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import BottomBar from "../../../components/BottomBar";
-import {DateCalendar} from '@mui/x-date-pickers/DateCalendar';
-import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {TimePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import axios from 'axios';
 import JSZip, {JSZipObject} from "jszip";
@@ -20,6 +13,9 @@ import Conditions from './conditions';
 import Groups from "./groups";
 import TestFiles from './testfiles';
 import UploadTestFile from "./uploadButton";
+import FinishButtons from './finishbuttons';
+import Deadline from "@app/[locale]/teacher/project/[id]/deadline";
+import RemoveDialog from './removedialog';
 
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
@@ -45,23 +41,6 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     const isScoreEmpty = !score
     const isGroupAmountEmpty = !groupAmount
     const isGroupSizeEmpty = !groupSize
-
-    async function setTestFiles(project: { [x: string]: string; }) {
-        const zip = new JSZip();
-        const test_files_zip = await axios.get(project["test_files"], {
-            withCredentials: true,
-            responseType: 'blob'
-        });
-        const zipData = await zip.loadAsync(test_files_zip.data);
-        const testfiles_name: string[] = [];
-        const testfiles_data: JSZipObject[] = [];
-        zipData.forEach((relativePath, file) => {
-            testfiles_data.push(file);
-            testfiles_name.push(relativePath);
-        });
-        setTestfilesName(testfiles_name);
-        setTestfilesData(testfiles_data);
-    }
 
     useEffect(() => {
         const fetchProject = async () => {
@@ -91,6 +70,23 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
 
         fetchProject().then(() => console.log("Project fetched"));
     }, [id]);
+
+    async function setTestFiles(project: { [x: string]: string; }) {
+        const zip = new JSZip();
+        const test_files_zip = await axios.get(project["test_files"], {
+            withCredentials: true,
+            responseType: 'blob'
+        });
+        const zipData = await zip.loadAsync(test_files_zip.data);
+        const testfiles_name: string[] = [];
+        const testfiles_data: JSZipObject[] = [];
+        zipData.forEach((relativePath, file) => {
+            testfiles_data.push(file);
+            testfiles_name.push(relativePath);
+        });
+        setTestfilesName(testfiles_name);
+        setTestfilesData(testfiles_data);
+    }
 
     const handleSave = async () => {
         let message = "The following fields are required:\n";
@@ -166,135 +162,11 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                             {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData)}
                         </Box>
                         <Box sx={{marginTop: '64px', padding: '50px 50px 50px 100px'}}>
-                            <Grid container spacing={1} alignItems={"center"} justifyContent={"space-between"}>
-                                <Grid display={"flex"}>
-                                    {
-                                        visible ? (
-                                            <IconButton onClick={() => setVisible(!visible)}>
-                                                <VisibilityIcon/>
-                                            </IconButton>
-                                        ) : (
-                                            <IconButton onClick={() => setVisible(!visible)}>
-                                                <VisibilityOffIcon/>
-                                            </IconButton>
-                                        )
-                                    }
-                                </Grid>
-                                <Grid style={{padding: '10px'}}>
-                                    <button
-                                        onClick={handleSave}
-                                        style={{
-                                            backgroundColor: '#D0E4FF',
-                                            padding: '5px 30px',
-                                            borderRadius: '20px',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                            fontWeight: 'bold',
-                                            fontSize: '1.2em',
-                                        }}
-                                    >
-                                        Save
-                                    </button>
-                                </Grid>
-                                <Grid style={{padding: '10px'}}>
-                                    <button
-                                        // TODO switch to correct URL
-                                        onClick={() => window.location.href = "/home"}
-                                        style={{
-                                            backgroundColor: '#D0E4FF',
-                                            padding: '5px 30px',
-                                            borderRadius: '20px',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                            fontWeight: 'bold',
-                                            fontSize: '1.2em',
-                                        }}
-                                    >
-                                        Cancel
-                                    </button>
-                                </Grid>
-                                <Grid style={{padding: '10px'}}>
-                                    <button
-                                        onClick={() => setConfirmRemove(true)}
-                                        style={{
-                                            backgroundColor: '#E15E5E',
-                                            padding: '5px 30px',
-                                            borderRadius: '20px',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                            fontWeight: 'bold',
-                                            fontSize: '1.2em',
-                                            color: 'white'
-                                        }}
-                                    >
-                                        Remove
-                                    </button>
-                                </Grid>
-                            </Grid>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DateCalendar
-                                    value={deadline}
-                                    onChange={(event) => {
-                                        setDeadline(event)
-                                    }}
-                                    minDate={dayjs()}/>
-                                <TimePicker
-                                    value={deadline}
-                                    onChange={(event) => {
-                                        if (event != null) setDeadline(event);
-                                    }}
-                                />
-                            </LocalizationProvider>
+                            {FinishButtons(visible, setVisible, handleSave, setConfirmRemove)}
+                            {Deadline(deadline, setDeadline)}
                         </Box>
                     </Box>
-                    <Dialog open={confirmRemove} style={{padding: '10px'}}>
-                        <Box textAlign={"center"}>
-                            <DialogTitle>
-                                Remove this project?
-                            </DialogTitle>
-                        </Box>
-                        <DialogContent>
-                            <Box textAlign={"center"} color={"grey"}>
-                                This action cannot be undone
-                            </Box>
-                        </DialogContent>
-                        <DialogActions>
-                            <Box textAlign={"center"} gap={2}>
-                                <button
-                                    onClick={handle_remove}
-                                    style={{
-                                        backgroundColor: '#D0E4FF',
-                                        padding: '15px 30px',
-                                        marginLeft: '15px',
-                                        marginBottom: '15px',
-                                        borderRadius: '20px',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        fontWeight: 'bold',
-                                        fontSize: '1.2em',
-                                    }}
-                                >
-                                    Remove
-                                </button>
-                                <button
-                                    onClick={() => setConfirmRemove(false)}
-                                    style={{
-                                        backgroundColor: '#D0E4FF',
-                                        padding: '15px 30px ',
-                                        marginLeft: '30px',
-                                        marginRight: '15px',
-                                        borderRadius: '20px',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        fontWeight: 'bold',
-                                        fontSize: '1.2em',
-                                    }}
-                                >
-                                    Cancel
-                                </button>
-                            </Box>
-                        </DialogActions>
-                    </Dialog>
+                    {RemoveDialog(confirmRemove, handle_remove, setConfirmRemove)}
                 </div>
             )}
             <BottomBar/>
