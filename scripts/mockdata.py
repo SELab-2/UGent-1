@@ -214,6 +214,7 @@ def run():
         name='SELab 2 project',
         course_id=course_5,
         deadline='2021-12-12 12:12:14',
+        visible=True,
         number_of_groups=1,
         group_size=8
     )
@@ -222,6 +223,7 @@ def run():
         name='AI project',
         course_id=course_1,
         deadline='2021-12-12 12:12:14',
+        visible=True,
         number_of_groups=4,
         group_size=2
     )
