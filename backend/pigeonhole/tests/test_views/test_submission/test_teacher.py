@@ -43,12 +43,13 @@ class SubmissionTestTeacher(TestCase):
 
         self.project_not_of_teacher = Project.objects.create(
             name="Test Project 2",
-            course_id=self.course_not_of_teacher
+            course_id=self.course_not_of_teacher,
+            deadline="2021-12-12 12:12:12",
         )
 
         self.group_not_of_teacher = Group.objects.create(
             group_nr=2,
-            project_id=self.project_not_of_teacher
+            project_id=self.project_not_of_teacher,
         )
 
         self.group = Group.objects.create(
