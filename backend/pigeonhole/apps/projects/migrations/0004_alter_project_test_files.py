@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='test_files',
-            field=models.FileField(blank=True, null=True, upload_to=
-            'projects/<django.db.models.fields.BigAutoField>/tests/'),
+            field=models.FileField(blank=True, null=True,
+                                   upload_to='projects/<django.db.models.fields.BigAutoField>/tests/'),
         ),
     ]

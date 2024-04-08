@@ -21,8 +21,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True,
                                            serialize=False, verbose_name='ID')),
-                ('file', models.FileField(blank=True, null=True, upload_to=
-                backend.pigeonhole.apps.projects.models.get_upload_to)),
+                ('file', models.FileField(blank=True, null=True,
+                                          upload_to=backend.pigeonhole.apps.projects.models.get_upload_to)),
                 ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
                                               to='projects.project')),
             ],

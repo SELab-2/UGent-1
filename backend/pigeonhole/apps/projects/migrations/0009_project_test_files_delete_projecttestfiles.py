@@ -14,8 +14,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='project',
             name='test_files',
-            field=models.FileField(blank=True, null=True, upload_to=
-            backend.pigeonhole.apps.projects.models.get_upload_to),
+            field=models.FileField(blank=True, null=True,
+                                   upload_to=backend.pigeonhole.apps.projects.models.get_upload_to),
         ),
         migrations.DeleteModel(
             name='ProjectTestFiles',
