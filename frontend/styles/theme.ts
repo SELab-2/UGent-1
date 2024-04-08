@@ -37,6 +37,9 @@ const loginTheme = createTheme({
         h4: {
             fontWeight: 700,
         },
+        h1: {
+            fontWeight: 400,
+        },
     },
     components: {
         MuiTextField: {

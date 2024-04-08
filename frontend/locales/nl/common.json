@@ -1,4 +1,15 @@
 {
     "test": "Nederlands: Hallo wereld!",
-    "courses": "Mijn cursussen"
+    "courses": "Mijn cursussen",
+    "my_profile": "Mijn profiel",
+    "settings": "Instellingen",
+    "logout": "Uitloggen",
+    "github": "GitHub",
+    "manual": "Handleiding",
+    "edit_course": "Cursus bewerken",
+    "description": "Beschrijving",
+    "projects": "Projecten",
+    "add_project": "Project toevoegen",
+    "details": "Details",
+    "no_courses": "Geen cursussen om weer te geven."
 }
