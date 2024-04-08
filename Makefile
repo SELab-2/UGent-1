@@ -12,7 +12,7 @@ superuser:
 	docker exec -it pigeonhole-backend python manage.py createsuperuser
 
 mockdata:
-    docker exec -it pigeonhole-backend python manage.py mockdata
+	docker exec -it pigeonhole-backend python manage.py mockdata
 
 reset:
 	docker image prune -af
@@ -26,3 +26,7 @@ backendshell:
 
 frontshell:
 	docker exec -it pigeonhole-frontend sh
+
+componenttest:
+	docker exec -it pigeonhole-frontend npx jest
+
