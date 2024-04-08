@@ -4,7 +4,6 @@ import {Box, Typography, Button} from "@mui/material";
 import NavBar from "@app/[locale]/components/NavBar";
 import Footer from "@app/[locale]/components/Footer";
 import CourseBanner from "@app/[locale]/components/CourseBanner";
-import AddProjectButton from "@app/[locale]/components/AddProjectButton";
 import CourseDetails from "@app/[locale]/components/CourseDetails";
 import ProjectTableTeacher from "@app/[locale]/components/ProjectTableTeacher";
 
