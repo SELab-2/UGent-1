@@ -145,6 +145,10 @@ export async function getProjects() : Promise<Project[]>{
     return (await getListRequest('/projects'));
 }
 
+export async function getProjectsForCourse(course_id: number) : Promise<Project[]>{
+    return (await getRequest(`/courses/${course_id}/get_projects`));
+}
+
 export async function getGroup(id: number) : Promise<Group>{
     return (await getRequest(`/groups/${id}`));
 }

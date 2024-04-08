@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Table,
     TableBody,
@@ -11,30 +11,51 @@ import {
     Paper,
     Checkbox,
     Button,
-    Box
+    Box,
+    Typography
 } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {useTranslation} from "react-i18next";
 import AddProjectButton from "@app/[locale]/components/AddProjectButton";
+import {Project, getProjectsForCourse, APIError} from "@lib/api";
 
-const rows = [
-    { projectId: 1, projectName: 'Project 1', deadline: '21/04/2024 - 15u00', visibility: 35 },
-    { projectId: 2, projectName: 'Project 2', deadline: '21/04/2024 - 15u00', visibility: 42 },
-    { projectId: 3, projectName: 'Project 3', deadline: '21/04/2024 - 15u00', visibility: 45 },
-    { projectId: 4, projectName: 'Project 4', deadline: '21/04/2024 - 15u00', visibility: 16 },
-];
-function ProjectTableTeacher() {
+interface ProjectTableTeacherProps {
+    course_id: number;
+}
+
+function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [error, setError] = useState<APIError | null>(null);
     const [selectedRow, setSelectedRow] = useState(null);
     const [selectedId, setSelectedId] = useState(null);
     const {t} = useTranslation();
 
-    const handleRowClick = (row:any) => {
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                setProjects(await getProjectsForCourse(course_id));
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
+                console.error(error);
+            }
+
+        };
+
+        fetchProjects();
+    }, [course_id]);
+
+    const handleRowClick = (row: any) => {
         setSelectedRow((prevSelectedRow) => (prevSelectedRow === row ? null : row));
         setSelectedId((prevSelectedId) => (prevSelectedId === row.projectId ? null : row.projectId));
     };
 
     const handleDetailsClick = () => {
+        //TODO: route to project details page(selectedId)
         console.log(selectedId);
     }
+
+    console.log(projects);
 
     return (
         <>
@@ -61,30 +82,45 @@ function ProjectTableTeacher() {
                     {t("details")}
                 </Button>
             </Box>
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell />
-                            <TableCell>Project Name</TableCell>
-                            <TableCell>Deadline</TableCell>
-                            <TableCell>Visibility</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.projectId} onClick={() => handleRowClick(row)} selected={selectedRow === row}>
-                                <TableCell padding="checkbox">
-                                    <Checkbox checked={selectedRow === row} />
-                                </TableCell>
-                                <TableCell>{row.projectName}</TableCell>
-                                <TableCell>{row.deadline}</TableCell>
-                                <TableCell>{row.visibility}</TableCell>
+            {projects.length === 0 ? (
+                <Typography
+                    variant="h5"
+                    sx={{
+                        color: 'text.disabled',
+                        marginTop: 2
+                    }}
+                >
+                    {t('no_projects')}
+                </Typography>
+            ) : (
+                <TableContainer component={Paper}>
+                    <Table sx={{width: "calc(100% - 40px)"}}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell/>
+                                <TableCell>Project Name</TableCell>
+                                <TableCell>Deadline</TableCell>
+                                <TableCell>Visibility</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {projects.map((row) => (
+                                <TableRow key={row.project_id} onClick={() => handleRowClick(row)}
+                                          selected={selectedRow === row}>
+                                    <TableCell padding="checkbox">
+                                        <Checkbox checked={selectedRow === row}/>
+                                    </TableCell>
+                                    <TableCell>{row.name}</TableCell>
+                                    <TableCell>{row.deadline}</TableCell>
+                                    <TableCell>
+                                        {row.visible ? <VisibilityIcon/> : <VisibilityOffIcon/>}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
         </>
     );
 }

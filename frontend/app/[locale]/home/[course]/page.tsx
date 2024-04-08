@@ -41,10 +41,7 @@ export default async function Course({params: {locale, course}}: { params: { loc
                 >
                     {t('projects')}
                 </Typography>
-                <ProjectTableTeacher />
-                <h1>
-                    {"Project List placeholder, course_id: " + course}
-                </h1>
+                <ProjectTableTeacher course_id={course} />
                 <Box
                     sx={{
                         display: 'flex',
