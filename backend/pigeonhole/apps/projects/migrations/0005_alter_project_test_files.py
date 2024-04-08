@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='test_files',
-            field=models.FileField(blank=True, null=True, upload_to=backend.pigeonhole.apps.projects.models.get_upload_to),
+            field=models.FileField(blank=True, null=True, upload_to=
+            backend.pigeonhole.apps.projects.models.get_upload_to),
         ),
     ]

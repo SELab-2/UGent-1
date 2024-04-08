@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -10,12 +11,12 @@ from backend.pigeonhole.apps.groups.models import GroupSerializer
 from .models import Project, ProjectSerializer
 from .permissions import CanAccessProject
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
 
     def enforce_csrf(self, request):
         return  # To not perform the csrf check previously happening
+
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
