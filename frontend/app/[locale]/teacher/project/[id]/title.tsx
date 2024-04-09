@@ -1,13 +1,15 @@
 import {Grid, TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import React from "react";
+import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 
 function Title(
     isTitleEmpty: boolean,
     setTitle: (value: (((prevState: string) => string) | string)) => void,
     title: string, score: number,
     isScoreEmpty: boolean,
-    setScore: (value: (((prevState: number) => number) | number)) => void
+    setScore: (value: (((prevState: number) => number) | number)) => void,
+    translations: {t: any, resources: any, locale: any, i18nNamespaces: any},
 ) {
     const handleScoreChange = (event: any) => {
         if (event.target.value === '') {
@@ -21,17 +23,17 @@ function Title(
         }
     }
 
-    return <>
+    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
         <Grid container spacing={1}>
             <Grid item xs={6} style={{margin: '0'}}>
                 <Typography variant="h5"
-                            style={{
-                                fontWeight: 'bold',
-                                fontFamily: 'Inter',
-                                padding: '0',
-                                margin: '0 0 5px 0'
-                            }}>
-                    {"Title"}
+                    style={{
+                        fontWeight: 'bold',
+                        fontFamily: 'Inter',
+                        padding: '0',
+                        margin: '0 0 5px 0'
+                    }}>
+                    {translations.t("title")}
                 </Typography>
             </Grid>
             <Grid item xs={6}>
@@ -42,7 +44,7 @@ function Title(
                                 padding: '0',
                                 margin: '0 0 5px 0'
                             }}>
-                    {"Maximale score"}
+                    {translations.t("max_score")}
                 </Typography>
             </Grid>
             <Grid item xs={6}>
@@ -52,7 +54,7 @@ function Title(
                     error={isTitleEmpty}
                     onChange={(event) => setTitle(event.target.value)}
                     value={title}
-                    helperText={isTitleEmpty ? "Title is required" : ""}
+                    helperText={isTitleEmpty ? translations.t("title_required") : ""}
                     size="small"
                 />
             </Grid>
@@ -67,11 +69,11 @@ function Title(
                     sx={{width: '100%', padding: '0', margin: '0'}}
                     size="small"
                     error={isScoreEmpty}
-                    helperText={isScoreEmpty ? "Score is required" : ""}
+                    helperText={isScoreEmpty ? translations.t("score_required") : ""}
                 />
             </Grid>
         </Grid>
-    </>;
+    </TranslationsProvider>;
 }
 
 export default Title;

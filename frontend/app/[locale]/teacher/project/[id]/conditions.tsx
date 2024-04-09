@@ -4,21 +4,12 @@ import React from "react";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Box from "@mui/material/Box";
 import {TextField} from "@mui/material";
-
-const conditions_info = `
-    Here you can add the conditions for the project.
-    
-    For example:
-    - The program needs to compile
-    - The program needs to run without errors
-    - The program needs to be written in python
-    - Execution time is less than 15 second
-    - Use the MVC pattern
-`
+import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 
 function Conditions(
     conditions: string[],
     setConditions: (value: (((prevState: string[]) => string[]) | string[])) => void,
+    translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
 ) {
     const handleConditionsChange = (index: number, event: any) => {
         const newConditions = [...conditions];
@@ -33,13 +24,13 @@ function Conditions(
         }
     }
 
-    return <>
+    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
         <Typography variant="h5"
                     style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '5px 0 0 0'}}>
-            {"Conditions"}
+            {translations.t("conditions")}
             <Tooltip title={
                 <Typography variant="body1" style={{fontFamily: 'Inter'}}>
-                    {conditions_info.split('\n').map((line, index) => (
+                    {translations.t("conditions_info").split('\n').map((line: string, index: number) => (
                         <React.Fragment key={index}>
                             {line}
                             <br/>
@@ -67,7 +58,7 @@ function Conditions(
                 />
             ))}
         </Box>
-    </>;
+    </TranslationsProvider>;
 }
 
 export default Conditions;

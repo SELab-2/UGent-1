@@ -16,9 +16,11 @@ import UploadTestFile from "./uploadButton";
 import FinishButtons from './finishbuttons';
 import Deadline from "@app/[locale]/teacher/project/[id]/deadline";
 import RemoveDialog from './removedialog';
+import initTranslations from '@app/i18n';
 
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+const i18nNamespaces = ['common']
 
 function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: any } }) {
     const [files, setFiles] = useState([null]);
@@ -31,10 +33,12 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     const [visible, setVisible] = useState(true);
     const [deadline, setDeadline] = React.useState(dayjs());
     const [score, setScore] = useState(0);
-    const [loading, setLoading] = useState(true);
+    const [loadingTranslations, setLoadingTranslations] = useState(true);
+    const [loadingProject, setLoadingProject] = useState(true);
     const [confirmRemove, setConfirmRemove] = useState(false);
     const [courseId, setCourseId] = useState(0);
     const [testfilesData, setTestfilesData] = useState<JSZipObject[]>([]);
+    const [translations, setTranslations] = useState({t: null, resources: null, locale: null, i18nNamespaces: [""]})
 
     const isTitleEmpty = !title
     const isAssignmentEmpty = !description
@@ -49,7 +53,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                 const project = response.data
                 setDeadline(dayjs(project["deadline"]))
                 setDescription(project.description)
-                setFiles([...project["file_structure"].split(",").map((item: string) => item.trim().replace(/"/g, '')), ""])
+                setFiles(project["file_structure"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
                 setGroupSize(project["group_size"])
                 setTitle(project["name"])
                 setGroupAmount(project["number_of_groups"])
@@ -60,16 +64,19 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                 if (project["conditions"] != null) {
                     setConditions(project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
                 }
-
-                setLoading(false);
             } catch (error) {
                 console.error("There was an error fetching the courses:", error);
-                // Optionally handle the error, e.g., by setting an error message
             }
         };
 
-        fetchProject().then(() => console.log("Project fetched"));
-    }, [id]);
+        const fetchTranslations = async () => {
+            const {t, resources} = await initTranslations(locale, i18nNamespaces)
+            setTranslations({t, resources, locale, i18nNamespaces})
+        }
+
+        fetchTranslations().then(() => setLoadingTranslations(false));
+        fetchProject().then(() => setLoadingProject(false));
+    }, [id, locale, loadingTranslations]);
 
     async function setTestFiles(project: { [x: string]: string; }) {
         const zip = new JSZip();
@@ -142,8 +149,8 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
 
     return (
         <div>
-            <NavBar/>
-            {loading ? (
+            {/*<NavBar/>*/}
+            {(loadingTranslations && loadingProject) ? (
                 <div>Loading...</div>
             ) : (
                 <div>
@@ -153,16 +160,16 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                         height="100vh"
                     >
                         <Box sx={{marginTop: '20px', padding: '50px 50px 50px 100px'}}>
-                            {Title(isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore)}
-                            {Assignment(isAssignmentEmpty, setDescription, description)}
-                            {RequiredFiles(files, setFiles)}
-                            {Conditions(conditions, setConditions)}
-                            {Groups(groupAmount, isGroupAmountEmpty, groupSize, isGroupSizeEmpty, setGroupAmount, setGroupSize)}
-                            {TestFiles(testfilesName, setTestfilesName)}
-                            {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData)}
+                            {Title(isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations)}
+                            {Assignment(isAssignmentEmpty, setDescription, description, translations)}
+                            {RequiredFiles(files, setFiles, translations)}
+                            {Conditions(conditions, setConditions, translations)}
+                            {Groups(groupAmount, isGroupAmountEmpty, groupSize, isGroupSizeEmpty, setGroupAmount, setGroupSize, translations)}
+                            {TestFiles(testfilesName, setTestfilesName, translations)}
+                            {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
                         </Box>
                         <Box sx={{marginTop: '64px', padding: '50px 50px 50px 100px'}}>
-                            {FinishButtons(visible, setVisible, handleSave, setConfirmRemove)}
+                            {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations)}
                             {Deadline(deadline, setDeadline)}
                         </Box>
                     </Box>

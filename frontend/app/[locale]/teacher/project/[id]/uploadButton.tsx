@@ -1,11 +1,13 @@
 import React from "react";
 import JSZip, {JSZipObject} from "jszip";
+import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 
 function UploadTestFile(
     testfilesName: string[],
     setTestfilesName: (value: (((prevState: string[]) => string[]) | string[])) => void,
     testfilesData: JSZipObject[],
-    setTestfilesData: (value: (((prevState: JSZipObject[]) => JSZipObject[]) | JSZipObject[])) => void
+    setTestfilesData: (value: (((prevState: JSZipObject[]) => JSZipObject[]) | JSZipObject[])) => void,
+    translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
 ) {
     const handleFileChange = async (event: any) => {
         let zip = new JSZip();
@@ -31,7 +33,7 @@ function UploadTestFile(
         setTestfilesData(testfiles_data);
     }
 
-    return <>
+    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
         <input
             id="fileInput"
             type="file"
@@ -51,9 +53,9 @@ function UploadTestFile(
                 fontSize: '1.2em',
             }}
         >
-            Upload
+            {translations.t("upload")}
         </button>
-    </>;
+    </TranslationsProvider>;
 }
 
 export default UploadTestFile;

@@ -3,15 +3,7 @@ import Tooltip from "@mui/material/Tooltip";
 import React from "react";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import {Grid, TextField} from "@mui/material";
-
-const group_info = `
-    Here you can add the amount of groups and the group size.
-    
-    The amount of groups is the total amount of groups that will be created.
-    The group size is the amount of students that will be in a group.
-    
-    If the group size is set to 1, the project will be individual and the amount of groups will be ignored.
-`
+import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 
 function Groups(
     groupAmount: number,
@@ -20,6 +12,7 @@ function Groups(
     isGroupSizeEmpty: boolean,
     setGroupAmount: (value: (((prevState: number) => number) | number)) => void,
     setGroupSize: (value: (((prevState: number) => number) | number)) => void,
+    translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
 ) {
     const handleGroupAmountChange = (event: any) => {
         if (event.target.value === '') {
@@ -45,13 +38,13 @@ function Groups(
         }
     }
 
-    return <>
+    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
         <Typography variant="h5"
                     style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '5px 0 0 0'}}>
-            {"Groups"}
+            {translations.t("groups")}
             <Tooltip title={
                 <Typography variant="body1" style={{fontFamily: 'Inter'}}>
-                    {group_info.split('\n').map((line, index) => (
+                    {translations.t("group_info").split('\n').map((line: string, index: number) => (
                         <React.Fragment key={index}>
                             {line}
                             <br/>
@@ -64,10 +57,10 @@ function Groups(
         </Typography>
         <Grid container spacing={1}>
             <Grid item xs={6} style={{margin: '0'}}>
-                <Typography variant="body1" style={{margin: '0'}}>Amount of groups</Typography>
+                <Typography variant="body1" style={{margin: '0'}}>{translations.t("group_amount")}</Typography>
             </Grid>
             <Grid item xs={6}>
-                <Typography variant="body1">Group size</Typography>
+                <Typography variant="body1">{translations.t("group_size")}</Typography>
             </Grid>
             <Grid item xs={6}>
                 <TextField
@@ -78,7 +71,7 @@ function Groups(
                     style={{margin: '0px'}}
                     size="small"
                     error={isGroupAmountEmpty}
-                    helperText={isGroupAmountEmpty ? "Amount of groups is required" : ""}
+                    helperText={isGroupAmountEmpty ? translations.t("group_amount_required") : ""}
                 />
             </Grid>
             <Grid item xs={6}>
@@ -90,11 +83,11 @@ function Groups(
                     style={{margin: '0px'}}
                     size="small"
                     error={isGroupSizeEmpty}
-                    helperText={isGroupSizeEmpty ? "Group size is required" : ""}
+                    helperText={isGroupSizeEmpty ? translations.t("group_size_required") : ""}
                 />
             </Grid>
         </Grid>
-    </>;
+    </TranslationsProvider>;
 }
 
 export default Groups;
