@@ -25,11 +25,10 @@ function RequiredFiles(
     }
 
     return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
-        <Typography variant="h5"
-                    style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '5px 0 0 0'}}>
+        <Typography variant="h5" className={"typographyStyle"}>
             {translations.t("required_files")}
             <Tooltip title={
-                <Typography variant="body1" style={{fontFamily: 'Inter'}}>
+                <Typography variant="body1" className={"conditionsText"}>
                     {translations.t("required_files_info").split('\n').map((line: string, index: number) => (
                         <React.Fragment key={index}>
                             {line}
@@ -38,19 +37,15 @@ function RequiredFiles(
                     ))}
                 </Typography>
             } placement={"right"}>
-                <HelpOutlineIcon style={{fontSize: 'large', marginLeft: '5px'}}/>
+                <HelpOutlineIcon className={"conditionsHelp"}/>
             </Tooltip>
         </Typography>
-        <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-
-        }}>
+        <Box className={"conditionsBox"}>
             {files.map((field, index) => (
                 <TextField
                     key={index}
                     variant="outlined"
-                    sx={{width: '100%'}}
+                    className={"conditionsSummation"}
                     value={field}
                     onChange={(event) => handleFieldChange(index, event)}
                     defaultValue={"/extra/verslag.pdf , *.py"}

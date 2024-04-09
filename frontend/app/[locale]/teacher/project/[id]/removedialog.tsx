@@ -1,55 +1,41 @@
-import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
+import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
+import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid} from "@mui/material";
 import React from "react";
 
-function RemoveDialog(confirmRemove: boolean, handle_remove: () => void, setConfirmRemove: (value: (((prevState: boolean) => boolean) | boolean)) => void) {
-    return <Dialog open={confirmRemove} style={{padding: '10px'}}>
-        <Box textAlign={"center"}>
-            <DialogTitle>
-                Remove this project?
-            </DialogTitle>
-        </Box>
-        <DialogContent>
-            <Box textAlign={"center"} color={"grey"}>
-                This action cannot be undone
+function RemoveDialog(
+    confirmRemove: boolean,
+    handle_remove: () => void,
+    setConfirmRemove: (value: (((prevState: boolean) => boolean) | boolean)) => void,
+    translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
+) {
+    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
+        <Dialog open={confirmRemove} className={"dialogPadding"}>
+            <Box textAlign={"center"}>
+                <DialogTitle>
+                    {translations.t("remove_dialog")}
+                </DialogTitle>
             </Box>
-        </DialogContent>
-        <DialogActions>
-            <Box textAlign={"center"} gap={2}>
-                <button
-                    onClick={handle_remove}
-                    style={{
-                        backgroundColor: '#D0E4FF',
-                        padding: '15px 30px',
-                        marginLeft: '15px',
-                        marginBottom: '15px',
-                        borderRadius: '20px',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                    }}
-                >
-                    Remove
-                </button>
-                <button
-                    onClick={() => setConfirmRemove(false)}
-                    style={{
-                        backgroundColor: '#D0E4FF',
-                        padding: '15px 30px ',
-                        marginLeft: '30px',
-                        marginRight: '15px',
-                        borderRadius: '20px',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                    }}
-                >
-                    Cancel
-                </button>
-            </Box>
-        </DialogActions>
-    </Dialog>;
+            <DialogContent>
+                <Box textAlign={"center"} color={"grey"}>
+                    {translations.t("action_dialog")}
+                </Box>
+            </DialogContent>
+            <DialogActions style={{ justifyContent: 'space-between'}}>
+                    <button
+                        onClick={handle_remove}
+                        className={"dialogRemove"}
+                    >
+                        Remove
+                    </button>
+                    <button
+                        onClick={() => setConfirmRemove(false)}
+                        className={"dialogCancel"}
+                    >
+                        Cancel
+                    </button>
+            </DialogActions>
+        </Dialog>;
+    </TranslationsProvider>
 }
 
 export default RemoveDialog;

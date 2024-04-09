@@ -25,35 +25,23 @@ function Title(
 
     return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
         <Grid container spacing={1}>
-            <Grid item xs={6} style={{margin: '0'}}>
-                <Typography variant="h5"
-                    style={{
-                        fontWeight: 'bold',
-                        fontFamily: 'Inter',
-                        padding: '0',
-                        margin: '0 0 5px 0'
-                    }}>
+            <Grid item xs={6} className={"titleGrids"}>
+                <Typography variant="h5" className={"typographyStyle"}>
                     {translations.t("title")}
                 </Typography>
             </Grid>
             <Grid item xs={6}>
-                <Typography variant="h5"
-                            style={{
-                                fontWeight: 'bold',
-                                fontFamily: 'Inter',
-                                padding: '0',
-                                margin: '0 0 5px 0'
-                            }}>
+                <Typography variant="h5" className={"typographyStyle"}>
                     {translations.t("max_score")}
                 </Typography>
             </Grid>
             <Grid item xs={6}>
                 <TextField
                     variant="outlined"
-                    sx={{width: '100%', padding: '0', margin: '0'}}
                     error={isTitleEmpty}
                     onChange={(event) => setTitle(event.target.value)}
                     value={title}
+                    className={"titleGrids"}
                     helperText={isTitleEmpty ? translations.t("title_required") : ""}
                     size="small"
                 />
@@ -65,8 +53,7 @@ function Title(
                     inputProps={{min: 1, max: 100}}
                     value={score}
                     onChange={handleScoreChange}
-                    style={{margin: '0px'}}
-                    sx={{width: '100%', padding: '0', margin: '0'}}
+                    className={"titleGrids"}
                     size="small"
                     error={isScoreEmpty}
                     helperText={isScoreEmpty ? translations.t("score_required") : ""}

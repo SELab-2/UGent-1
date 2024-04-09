@@ -37,21 +37,12 @@ function UploadTestFile(
         <input
             id="fileInput"
             type="file"
-            style={{display: 'none'}}
+            className={"uploadInput"}
             onChange={handleFileChange}
         />
         <button
             onClick={() => document.getElementById("fileInput")?.click()}
-            style={{
-                backgroundColor: '#D0E4FF',
-                padding: '15px 30px',
-                marginBottom: '30px',
-                borderRadius: '20px',
-                border: 'none',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                fontSize: '1.2em',
-            }}
+            className={"uploadButton"}
         >
             {translations.t("upload")}
         </button>

@@ -17,6 +17,7 @@ import FinishButtons from './finishbuttons';
 import Deadline from "@app/[locale]/teacher/project/[id]/deadline";
 import RemoveDialog from './removedialog';
 import initTranslations from '@app/i18n';
+import './project_styles.css'
 
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
@@ -51,6 +52,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
             try {
                 const response = await axios.get(backend_url + "/projects/" + id + "/", {withCredentials: true});
                 const project = response.data
+                console.log(project)
                 setDeadline(dayjs(project["deadline"]))
                 setDescription(project.description)
                 setFiles(project["file_structure"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
@@ -65,7 +67,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                     setConditions(project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
                 }
             } catch (error) {
-                console.error("There was an error fetching the courses:", error);
+                console.error("There was an error fetching the project:", error);
             }
         };
 
@@ -159,7 +161,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                         gridTemplateColumns="65% 35%"
                         height="100vh"
                     >
-                        <Box sx={{marginTop: '20px', padding: '50px 50px 50px 100px'}}>
+                        <Box className={"pageBoxLeft"}>
                             {Title(isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations)}
                             {Assignment(isAssignmentEmpty, setDescription, description, translations)}
                             {RequiredFiles(files, setFiles, translations)}
@@ -168,12 +170,12 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                             {TestFiles(testfilesName, setTestfilesName, translations)}
                             {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
                         </Box>
-                        <Box sx={{marginTop: '64px', padding: '50px 50px 50px 100px'}}>
+                        <Box className={"pageBoxRight"}>
                             {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations)}
                             {Deadline(deadline, setDeadline)}
                         </Box>
                     </Box>
-                    {RemoveDialog(confirmRemove, handle_remove, setConfirmRemove)}
+                    {RemoveDialog(confirmRemove, handle_remove, setConfirmRemove, translations)}
                 </div>
             )}
             <BottomBar/>

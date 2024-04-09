@@ -32,5 +32,7 @@
     "upload": "Upload",
     "save": "Save",
     "cancel": "Cancel",
-    "remove": "Remove"
+    "remove": "Remove",
+    "remove_dialog": "Remove project?",
+    "action_dialog": "This action cannot be undone."
 }

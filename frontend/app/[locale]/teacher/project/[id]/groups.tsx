@@ -39,11 +39,10 @@ function Groups(
     }
 
     return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
-        <Typography variant="h5"
-                    style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '5px 0 0 0'}}>
+        <Typography variant="h5" className={"typographyStyle"}>
             {translations.t("groups")}
             <Tooltip title={
-                <Typography variant="body1" style={{fontFamily: 'Inter'}}>
+                <Typography variant="body1" className={"conditionsText"}>
                     {translations.t("group_info").split('\n').map((line: string, index: number) => (
                         <React.Fragment key={index}>
                             {line}
@@ -52,12 +51,12 @@ function Groups(
                     ))}
                 </Typography>
             } placement={"right"}>
-                <HelpOutlineIcon style={{fontSize: 'large', marginLeft: '5px'}}/>
+                <HelpOutlineIcon className={"conditionsHelp"} />
             </Tooltip>
         </Typography>
         <Grid container spacing={1}>
-            <Grid item xs={6} style={{margin: '0'}}>
-                <Typography variant="body1" style={{margin: '0'}}>{translations.t("group_amount")}</Typography>
+            <Grid item xs={6} className={"titleGrids"}>
+                <Typography variant="body1" className={"titleGrids"}>{translations.t("group_amount")}</Typography>
             </Grid>
             <Grid item xs={6}>
                 <Typography variant="body1">{translations.t("group_size")}</Typography>
@@ -68,7 +67,7 @@ function Groups(
                     inputProps={{min: 1, max: 1000}}
                     value={groupAmount}
                     onChange={handleGroupAmountChange}
-                    style={{margin: '0px'}}
+                    className={"titleGrids"}
                     size="small"
                     error={isGroupAmountEmpty}
                     helperText={isGroupAmountEmpty ? translations.t("group_amount_required") : ""}
@@ -80,7 +79,7 @@ function Groups(
                     inputProps={{min: 1, max: 20}}
                     value={groupSize}
                     onChange={handleGroupSizeChange}
-                    style={{margin: '0px'}}
+                    className={"titleGrids"}
                     size="small"
                     error={isGroupSizeEmpty}
                     helperText={isGroupSizeEmpty ? translations.t("group_size_required") : ""}

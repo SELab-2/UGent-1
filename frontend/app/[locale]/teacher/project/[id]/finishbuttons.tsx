@@ -26,52 +26,27 @@ function FinishButtons(
                     )
                 }
             </Grid>
-            <Grid style={{padding: '10px'}}>
+            <Grid className={"buttonsGrid"}>
                 <button
                     onClick={handleSave}
-                    style={{
-                        backgroundColor: '#D0E4FF',
-                        padding: '5px 20px',
-                        borderRadius: '20px',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                    }}
+                    className={"saveButton"}
                 >
                     {translations.t("save")}
                 </button>
             </Grid>
-            <Grid style={{padding: '10px'}}>
+            <Grid className={"buttonsGrid"}>
                 <button
                     // TODO switch to correct URL
                     onClick={() => window.location.href = "/home"}
-                    style={{
-                        backgroundColor: '#D0E4FF',
-                        padding: '5px 20px',
-                        borderRadius: '20px',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                    }}
+                    className={"saveButton"}
                 >
                     {translations.t("cancel")}
                 </button>
             </Grid>
-            <Grid style={{padding: '10px'}}>
+            <Grid className={"buttonsGrid"}>
                 <button
                     onClick={() => setConfirmRemove(true)}
-                    style={{
-                        backgroundColor: '#E15E5E',
-                        padding: '5px 20px',
-                        borderRadius: '20px',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                        color: 'white'
-                    }}
+                    className={"removeButton"}
                 >
                     {translations.t("remove")}
                 </button>

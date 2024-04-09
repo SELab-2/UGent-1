@@ -11,8 +11,7 @@ function TestFiles(
     translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
 ) {
     return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
-        <Typography variant="h5"
-                    style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '5px 0 0 0'}}>
+        <Typography variant="h5" className={"typographyStyle"}>
             {translations.t("test_files")}
         </Typography>
         <List dense={true}>

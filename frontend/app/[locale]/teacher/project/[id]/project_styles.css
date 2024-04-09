@@ -1,0 +1,105 @@
+.typographyStyle, .MuiTypography-h5.typographyStyle {
+    font-weight: bold !important;
+    font-family: Inter, serif !important;
+    margin: 5px 0 0 0 !important;
+}
+
+.pageBoxLeft {
+    margin-top: 20px !important;
+    padding: 50px 50px 50px 100px !important;
+}
+
+.pageBoxRight {
+    margin-top: 64px !important;
+    padding: 50px 50px 50px 100px !important;
+}
+
+.conditionsText .MuiTypography-body1.ConditionsText {
+    font-family: Inter, serif !important;
+}
+
+.conditionsHelp {
+    font-size: large !important;
+    margin-left: 5px !important;
+}
+
+.conditionsBox {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.conditionsSummation {
+    width: 100% !important;
+    margin-bottom: 10px !important;
+}
+
+.saveButton {
+    background-color: #D0E4FF !important;
+    padding: 5px 20px !important;
+    border-radius: 20px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    font-size: 1.2em !important;
+}
+
+.buttonsGrid {
+    padding: 10px !important;
+}
+
+.removeButton {
+    background-color: #E15E5E !important;
+    padding: 5px 20px !important;
+    border-radius: 20px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    font-size: 1.2em !important;
+    color: white !important;
+}
+
+.titleGrids {
+    margin: 0 !important;
+}
+
+.uploadButton {
+    background-color: #D0E4FF !important;
+    padding: 15px 30px !important;
+    margin-bottom: 30px !important;
+    border-radius: 20px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    font-size: 1.2em !important;
+}
+
+.uploadInput {
+    display: none !important;
+}
+
+.dialogPadding {
+    padding: 10px !important;
+}
+
+.dialogRemove {
+    background-color: #D0E4FF !important;
+    padding: 15px 30px !important;
+    margin-left: 15px !important;
+    border-radius: 20px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    font-size: 1.2em !important;
+}
+
+.dialogCancel {
+    background-color: #D0E4FF !important;
+    padding: 15px 30px !important;
+    margin-left: 30px !important;
+    margin-right: 15px !important;
+    border-radius: 20px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    font-size: 1.2em !important;
+}
