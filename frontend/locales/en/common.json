@@ -15,5 +15,8 @@
     "no_description": "No description given.",
     "view_students": "View students",
     "view_co_teachers": "View co-teachers",
-    "no_projects": "This course does not have any projects yet."
+    "no_projects": "This course does not have any projects yet.",
+    "project_name": "Project name",
+    "deadline": "Deadline",
+    "visibility": "Visibility"
 }

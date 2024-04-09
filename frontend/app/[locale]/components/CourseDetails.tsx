@@ -25,7 +25,7 @@ export default function CourseDetails({course_id}: CourseDetailsProps) {
         };
 
         fetchCourse();
-    }, []);
+    }, [course_id]);
 
     return (
         <>

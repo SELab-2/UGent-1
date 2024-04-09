@@ -4,13 +4,14 @@ import React, {useEffect, useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {Box, Typography} from "@mui/material";
 import EditCourseButton from "@app/[locale]/components/EditCourseButton";
-import {APIError, Course, getCourse} from "@lib/api";
+import {APIError, Course, getCourse, UserData, getUserData} from "@lib/api";
 
 interface CourseBannerProps {
     course_id: number;
 }
 
 const CourseBanner = ({course_id}: CourseBannerProps) => {
+    const [user, setUser] = useState<UserData | null>(null);
     const [course, setCourse] = useState<Course | null>(null);
     const [error, setError] = useState<APIError | null>(null);
     const {t} = useTranslation();
@@ -19,6 +20,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
         const fetchCourse = async () => {
             try {
                 setCourse(await getCourse(course_id));
+                setUser(await getUserData());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
             }
@@ -61,16 +63,18 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                     {course?.name}
                 </Typography>
             </Box>
-            <Box
-                height="100%"
-                display="flex"
-                flexDirection="column"
-                justifyContent="flex-start" // Align content at the top left horizontally
-                alignItems="flex-start"
-                textAlign="left"
-            >
-                <EditCourseButton />
-            </Box>
+            {user?.role === 2 || user?.role === 3 ? (
+                <Box
+                    height="100%"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="flex-start" // Align content at the top left horizontally
+                    alignItems="flex-start"
+                    textAlign="left"
+                >
+                    <EditCourseButton/>
+                </Box>
+            ): null}
         </Box>
     )
 }

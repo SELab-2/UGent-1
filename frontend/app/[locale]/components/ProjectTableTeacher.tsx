@@ -18,13 +18,14 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {useTranslation} from "react-i18next";
 import AddProjectButton from "@app/[locale]/components/AddProjectButton";
-import {Project, getProjectsForCourse, APIError} from "@lib/api";
+import {Project, getProjectsForCourse, APIError, UserData, getUserData} from "@lib/api";
 
 interface ProjectTableTeacherProps {
     course_id: number;
 }
 
 function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
+    const [user, setUser] = useState<UserData | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
     const [error, setError] = useState<APIError | null>(null);
     const [selectedRow, setSelectedRow] = useState(null);
@@ -35,6 +36,7 @@ function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
         const fetchProjects = async () => {
             try {
                 setProjects(await getProjectsForCourse(course_id));
+                setUser(await getUserData());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
                 console.error(error);
@@ -47,15 +49,13 @@ function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
 
     const handleRowClick = (row: any) => {
         setSelectedRow((prevSelectedRow) => (prevSelectedRow === row ? null : row));
-        setSelectedId((prevSelectedId) => (prevSelectedId === row.projectId ? null : row.projectId));
+        setSelectedId((prevSelectedId) => (prevSelectedId === row.project_id ? null : row.project_id));
     };
 
     const handleDetailsClick = () => {
-        //TODO: route to project details page(selectedId)
+        //TODO: Redirect to project details page
         console.log(selectedId);
     }
-
-    console.log(projects);
 
     return (
         <>
@@ -68,7 +68,9 @@ function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
 
                 }}
             >
-                <AddProjectButton/>
+                {user?.role === 2 || user?.role === 3 ? (
+                    <AddProjectButton/>
+                ): null}
                 <Button
                     variant="contained"
                     color='secondary'
@@ -98,9 +100,9 @@ function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
                         <TableHead>
                             <TableRow>
                                 <TableCell/>
-                                <TableCell>Project Name</TableCell>
-                                <TableCell>Deadline</TableCell>
-                                <TableCell>Visibility</TableCell>
+                                <TableCell>{t("project_name")}</TableCell>
+                                <TableCell>{t("deadline")}</TableCell>
+                                <TableCell>{t("visibility")}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
