@@ -18,13 +18,13 @@ import Deadline from "@app/[locale]/teacher/project/[id]/deadline";
 import RemoveDialog from './removedialog';
 import initTranslations from '@app/i18n';
 import './project_styles.css'
+import {getProject, Project, getTestFiles, postData, putData, updateProject, deleteProject} from "@lib/api";
 
 
-const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 const i18nNamespaces = ['common']
 
 function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: any } }) {
-    const [files, setFiles] = useState([null]);
+    const [files, setFiles] = useState<string[]>([]);
     const [title, setTitle] = useState('Project 1');
     const [description, setDescription] = useState('Lorem\nIpsum\n');
     const [groupAmount, setGroupAmount] = useState(1);
@@ -50,9 +50,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const response = await axios.get(backend_url + "/projects/" + id + "/", {withCredentials: true});
-                const project = response.data
-                console.log(project)
+                const project: Project = await getProject(id);
                 setDeadline(dayjs(project["deadline"]))
                 setDescription(project.description)
                 setFiles(project["file_structure"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
@@ -80,13 +78,10 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
         fetchProject().then(() => setLoadingProject(false));
     }, [id, locale, loadingTranslations]);
 
-    async function setTestFiles(project: { [x: string]: string; }) {
+    async function setTestFiles(project: Project) {
         const zip = new JSZip();
-        const test_files_zip = await axios.get(project["test_files"], {
-            withCredentials: true,
-            responseType: 'blob'
-        });
-        const zipData = await zip.loadAsync(test_files_zip.data);
+        const test_files_zip = await getTestFiles(project.test_files);
+        const zipData = await zip.loadAsync(test_files_zip);
         const testfiles_name: string[] = [];
         const testfiles_data: JSZipObject[] = [];
         zipData.forEach((relativePath, file) => {
@@ -132,21 +127,13 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
             formData.append("visible", visible.toString());
             formData.append("course_id", courseId.toString());
 
-            axios.put(backend_url + "/projects/" + id + "/", formData
-                , {withCredentials: true}).then((response) => {
-                console.log(response);
-            }).catch((error) => {
-                console.log(error);
-            });
+            await updateProject(id, formData).then((response) => console.log(response));
         }
     }
 
-    const handle_remove = () => {
-        axios.delete(backend_url + "/projects/" + id + "/", {withCredentials: true}).then((response) => {
-            console.log(response);
-        }).catch((error) => {
-            console.log(error);
-        });
+    const handle_remove = async () => {
+        await deleteProject(id).then((response) => console.log(response));
+        // TODO redirect
     }
 
     return (
