@@ -1,8 +1,8 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import NavBar from "../../../../components/NavBar"
+import NavBar from "../../../../../../components/NavBar"
 import Box from "@mui/material/Box";
-import BottomBar from "../../../../components/BottomBar";
+import BottomBar from "../../../../../../components/BottomBar";
 import dayjs from "dayjs";
 import JSZip, {JSZipObject} from "jszip";
 import Title from './title';
@@ -13,7 +13,7 @@ import Groups from "./groups";
 import TestFiles from './testfiles';
 import UploadTestFile from "./uploadButton";
 import FinishButtons from './finishbuttons';
-import Deadline from "@app/[locale]/teacher/project/edit/[id]/deadline";
+import Deadline from "@app/[locale]/home/course/[course_id]/project/[project_id]/edit/deadline";
 import RemoveDialog from './removedialog';
 import initTranslations from '@app/i18n';
 import './project_styles.css'
@@ -23,7 +23,7 @@ import {any} from "prop-types";
 
 const i18nNamespaces = ['common']
 
-function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: any } }) {
+function ProjectDetailPage({params: {locale, course_id, project_id}}: { params: { locale: any, course_id: any, project_id: any } }) {
     const [files, setFiles] = useState<string[]>([]);
     const [title, setTitle] = useState('Project 1');
     const [description, setDescription] = useState('Lorem\nIpsum\n');
@@ -37,7 +37,6 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     const [loadingTranslations, setLoadingTranslations] = useState(true);
     const [loadingProject, setLoadingProject] = useState(true);
     const [confirmRemove, setConfirmRemove] = useState(false);
-    const [courseId, setCourseId] = useState(0);
     const [testfilesData, setTestfilesData] = useState<JSZipObject[]>([]);
     const [translations, setTranslations] = useState({t: any, resources: null, locale: null, i18nNamespaces: [""]})
     const [isStudent, setIsStudent] = useState(false);
@@ -53,7 +52,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const project: Project = await getProject(id);
+                const project: Project = await getProject(project_id);
                 if (project.deadline !== null) setDeadline(dayjs(project["deadline"]));
                 setDescription(project.description)
                 if (project.file_structure !== null) {
@@ -67,7 +66,6 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                 setVisible(project["visible"])
                 if (project.test_files !== null) await setTestFiles(project);
                 setScore(+project["max_score"]);
-                setCourseId(+project["course_id"]);
                 if (project["conditions"] != null) {
                     const conditions_parsed = project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, ''));
                     conditions_parsed.push("");
@@ -94,7 +92,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
 
         fetchTranslations().then(() => setLoadingTranslations(false));
         fetchProject().then(() => setLoadingProject(false));
-    }, [id, locale, loadingTranslations, isStudent, loadingProject, isTeacher]);
+    }, [project_id, locale, loadingTranslations, isStudent, loadingProject, isTeacher]);
 
     async function setTestFiles(project: Project) {
         const zip = new JSZip();
@@ -146,16 +144,16 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
             formData.append("file_structure", files.join(","));
             formData.append("conditions", conditions.join(","));
             formData.append("visible", visible.toString());
-            formData.append("course_id", courseId.toString());
+            formData.append("course_id", course_id.toString());
 
-            await updateProject(id, formData).then((response) => console.log(response));
+            await updateProject(project_id, formData).then((response) => console.log(response));
             location.reload();
         }
     }
 
     const handle_remove = async () => {
-        await deleteProject(id).then((response) => console.log(response));
-        window.location.href = "/course/" + courseId + "/"
+        await deleteProject(project_id).then((response) => console.log(response));
+        window.location.href = "/course/" + course_id + "/"
     }
 
     return (
@@ -181,7 +179,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                                 {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
                             </Box>
                             <Box className={"pageBoxRight"}>
-                                {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations, courseId)}
+                                {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations, course_id)}
                                 {Deadline(deadline, setDeadline)}
                             </Box>
                         </Box>
