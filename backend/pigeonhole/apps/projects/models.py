@@ -16,7 +16,7 @@ class Project(models.Model):
     description = models.TextField()
     deadline = models.DateTimeField(null=True, blank=True)
     visible = models.BooleanField(default=False)
-    max_score = models.IntegerField(null=True, blank=True)
+    max_score = models.IntegerField(default=10)
     number_of_groups = models.IntegerField(default=5)
     group_size = models.IntegerField(default=1)
     file_structure = models.TextField(blank=True, null=True)

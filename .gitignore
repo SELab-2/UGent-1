@@ -13,4 +13,5 @@ venv/
 #deploy
 letsencrypt
 .env.prod
+node_modules
 /node_modules/

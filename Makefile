@@ -26,3 +26,7 @@ backendshell:
 
 frontshell:
 	docker exec -it pigeonhole-frontend sh
+
+componenttest:
+	docker exec -it pigeonhole-frontend npx jest
+

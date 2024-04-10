@@ -18,6 +18,7 @@ import RemoveDialog from './removedialog';
 import initTranslations from '@app/i18n';
 import './project_styles.css'
 import {getProject, Project, getTestFiles, updateProject, deleteProject, getUserData} from "@lib/api";
+import {any} from "prop-types";
 
 
 const i18nNamespaces = ['common']
@@ -29,7 +30,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     const [groupAmount, setGroupAmount] = useState(1);
     const [groupSize, setGroupSize] = useState(1);
     const [conditions, setConditions] = useState(['']);
-    const [testfilesName, setTestfilesName] = useState([""]);
+    const [testfilesName, setTestfilesName] = useState<string[]>([]);
     const [visible, setVisible] = useState(true);
     const [deadline, setDeadline] = React.useState(dayjs());
     const [score, setScore] = useState(0);
@@ -38,7 +39,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     const [confirmRemove, setConfirmRemove] = useState(false);
     const [courseId, setCourseId] = useState(0);
     const [testfilesData, setTestfilesData] = useState<JSZipObject[]>([]);
-    const [translations, setTranslations] = useState({t: null, resources: null, locale: null, i18nNamespaces: [""]})
+    const [translations, setTranslations] = useState({t: any, resources: null, locale: null, i18nNamespaces: [""]})
     const [isStudent, setIsStudent] = useState(false);
     const [isTeacher, setIsTeacher] = useState(false);
     const [loadingUser, setLoadingUser] = useState(true);
@@ -97,6 +98,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
 
     async function setTestFiles(project: Project) {
         const zip = new JSZip();
+        console.log(project.test_files)
         const test_files_zip = await getTestFiles(project.test_files);
         const zipData = await zip.loadAsync(test_files_zip);
         const testfiles_name: string[] = [];
@@ -158,7 +160,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
 
     return (
         <div>
-            {/*<NavBar/>*/}
+            <NavBar/>
             {(loadingTranslations && loadingProject && loadingUser) ? (
                 <div>Loading...</div>
             ) : (
