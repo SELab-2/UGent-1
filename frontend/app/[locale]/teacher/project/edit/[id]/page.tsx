@@ -1,8 +1,8 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import NavBar from "../../../components/NavBar"
+import NavBar from "../../../../components/NavBar"
 import Box from "@mui/material/Box";
-import BottomBar from "../../../components/BottomBar";
+import BottomBar from "../../../../components/BottomBar";
 import dayjs from "dayjs";
 import JSZip, {JSZipObject} from "jszip";
 import Title from './title';
@@ -13,7 +13,7 @@ import Groups from "./groups";
 import TestFiles from './testfiles';
 import UploadTestFile from "./uploadButton";
 import FinishButtons from './finishbuttons';
-import Deadline from "@app/[locale]/teacher/project/[id]/deadline";
+import Deadline from "@app/[locale]/teacher/project/edit/[id]/deadline";
 import RemoveDialog from './removedialog';
 import initTranslations from '@app/i18n';
 import './project_styles.css'
