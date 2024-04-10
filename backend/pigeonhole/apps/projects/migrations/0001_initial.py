@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -27,16 +26,21 @@ class Migration(migrations.Migration):
                 ('group_size', models.IntegerField(default=1)),
                 ('file_structure', models.TextField(blank=True, null=True)),
                 ('conditions', models.TextField(blank=True, null=True)),
-                ('test_files', models.FileField(blank=True, null=True, upload_to=backend.pigeonhole.apps.projects.models.get_upload_to)),
+                ('test_files', models.FileField(blank=True, null=True,
+                                                upload_to=backend.pigeonhole.apps.projects.models.get_upload_to)),
                 ('course_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='courses.course')),
             ],
         ),
         migrations.CreateModel(
             name='Test',
             fields=[
-                ('project_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='projects.project')),
+                ('project_id',
+                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False,
+                                   to='projects.project')),
                 ('test_nr', models.IntegerField()),
-                ('test_file_type', models.FileField(max_length=255, null=True, upload_to='uploads/projects/<django.db.models.fields.related.ForeignKey>/<django.db.models.fields.IntegerField>')),
+                ('test_file_type', models.FileField(max_length=255, null=True,
+                                  upload_to='uploads/projects/<django.db.models.fields.related.ForeignKey>/'
+                                            '<django.db.models.fields.IntegerField>')),
             ],
         ),
     ]
