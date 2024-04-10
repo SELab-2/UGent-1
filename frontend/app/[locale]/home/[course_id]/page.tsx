@@ -9,7 +9,7 @@ import ProjectTableTeacher from "@app/[locale]/components/ProjectTableTeacher";
 
 const i18nNamespaces = ['common']
 
-export default async function Course({params: {locale, course}}: { params: { locale: any, course: number } }) {
+export default async function Course({params: {locale, course_id}}: { params: { locale: any, course_id: number } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
     const project_selected = false
@@ -29,8 +29,8 @@ export default async function Course({params: {locale, course}}: { params: { loc
                     padding: 5
                 }}
             >
-                <CourseBanner course_id={course}/>
-                <CourseDetails course_id={course}/>
+                <CourseBanner course_id={course_id}/>
+                <CourseDetails course_id={course_id}/>
                 <Typography
                     variant="h3"
                     sx={{
@@ -40,7 +40,7 @@ export default async function Course({params: {locale, course}}: { params: { loc
                 >
                     {t('projects')}
                 </Typography>
-                <ProjectTableTeacher course_id={course} />
+                <ProjectTableTeacher course_id={course_id} />
                 <Box
                     sx={{
                         display: 'flex',

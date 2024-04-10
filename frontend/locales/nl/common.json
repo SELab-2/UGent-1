@@ -18,5 +18,6 @@
     "no_projects": "Deze cursus heeft momenteel nog geen projecten.",
     "project_name": "Projectnaam",
     "deadline": "Deadline",
-    "visibility": "Zichtbaarheid"
+    "visibility": "Zichtbaarheid",
+    "admin_page": "Beheerderspagina"
 }

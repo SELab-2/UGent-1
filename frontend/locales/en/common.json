@@ -18,5 +18,6 @@
     "no_projects": "This course does not have any projects yet.",
     "project_name": "Project name",
     "deadline": "Deadline",
-    "visibility": "Visibility"
+    "visibility": "Visibility",
+    "admin_page": "Admin page"
 }

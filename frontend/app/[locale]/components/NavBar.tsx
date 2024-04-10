@@ -2,38 +2,55 @@
 import React, {useEffect, useState} from 'react';
 
 import MenuIcon from '@mui/icons-material/Menu';
-import {AppBar, IconButton, Toolbar, Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer} from '@mui/material';
+import {
+    AppBar,
+    IconButton,
+    Toolbar,
+    Box,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Divider,
+    Drawer
+} from '@mui/material';
+import Link from "next/link";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Logout from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ConstructionIcon from '@mui/icons-material/Construction';
 import HomeButton from "./HomeButton";
 import LanguageSelect from "./LanguageSelect";
 import AccountMenu from "./AccountMenu";
 import {useTranslation} from "react-i18next";
-import {APIError, Course, getCourses} from "@lib/api";
+import {APIError, Course, getCourses, UserData, getUserData} from "@lib/api";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 const NavBar = () => {
     const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
+    const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<APIError | null>(null);
+    const {t} = useTranslation();
+
     useEffect(() => {
         const fetchCourses = async () => {
-            try{
+            try {
                 setCourses(await getCourses());
-            }catch(error){
-                if(error instanceof APIError) setError(error);
+                setUser(await getUserData());
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
             }
 
         };
 
         fetchCourses();
     }, []);
-    const { t } = useTranslation();
 
     //Function that handles the bottom menu items
-    const handleBottomItems = (event: React.MouseEvent<HTMLElement>, button:string) => {
+    const handleBottomItems = (event: React.MouseEvent<HTMLElement>, button: string) => {
         switch (button) {
             case t('manual'):
                 //TODO: Route to manual page(in wiki or separate page?)
@@ -62,7 +79,7 @@ const NavBar = () => {
     //const courses = ["Course1", "Course2", "Course3", "Course4"];
 
     const DrawerList = (
-        <Box sx={{ width: 250 }}
+        <Box sx={{width: 250}}
              role="presentation"
              onClick={toggleDrawer(open)}
              display="flex"
@@ -75,7 +92,7 @@ const NavBar = () => {
                     courses.map((course) => (
                         <ListItem key={course.course_id} disablePadding>
                             <ListItemButton>
-                                <ListItemText primary={course.name} />
+                                <ListItemText primary={course.name}/>
                             </ListItemButton>
                         </ListItem>
                     ))
@@ -90,18 +107,31 @@ const NavBar = () => {
                     </ListItem>
                 )}
             </List>
-            <Divider />
+            {user?.role === 3 ? (
+                <>
+                    <Divider/>
+                    <Link href={'/admin'} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <ConstructionIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={t("admin_page")}/>
+                        </ListItemButton>
+                    </Link>
+                </>
+            ) : null}
+            <Divider/>
             <List>
                 {[t('manual'), t('github'), t('my_profile'), t('logout')].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton onClick={(event) => handleBottomItems(event, text)}>
                             <ListItemIcon>
-                                {index === 0 ? <QuestionMarkIcon /> :
-                                    index === 1 ? <GitHubIcon /> :
-                                        index === 2 ? <AccountCircleIcon /> :
-                                            <Logout />}
+                                {index === 0 ? <QuestionMarkIcon/> :
+                                    index === 1 ? <GitHubIcon/> :
+                                        index === 2 ? <AccountCircleIcon/> :
+                                            <Logout/>}
                             </ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemText primary={text}/>
                         </ListItemButton>
                     </ListItem>
                 ))}
@@ -111,9 +141,9 @@ const NavBar = () => {
 
     return (
         <>
-            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-                <Toolbar sx={{ justifyContent: 'space-between', left: 0, right: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+            <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
+                <Toolbar sx={{justifyContent: 'space-between', left: 0, right: 0}}>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
                         <IconButton
                             size="large"
                             edge="start"
@@ -123,11 +153,11 @@ const NavBar = () => {
                         >
                             <MenuIcon/>
                         </IconButton>
-                        <HomeButton />
+                        <HomeButton/>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                        <AccountMenu />
-                        <LanguageSelect />
+                    <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
+                        <AccountMenu/>
+                        <LanguageSelect/>
                     </div>
                 </Toolbar>
             </AppBar>
@@ -135,10 +165,10 @@ const NavBar = () => {
                     onClose={toggleDrawer(false)}
                     sx={{
                         flexShrink: 0,
-                        [`& .MuiDrawer-paper`]: { boxSizing: 'border-box' },
+                        [`& .MuiDrawer-paper`]: {boxSizing: 'border-box'},
                     }}
             >
-                <Toolbar />
+                <Toolbar/>
                 {DrawerList}
             </Drawer>
         </>
