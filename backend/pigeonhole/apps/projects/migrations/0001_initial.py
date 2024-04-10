@@ -39,8 +39,9 @@ class Migration(migrations.Migration):
                                    to='projects.project')),
                 ('test_nr', models.IntegerField()),
                 ('test_file_type', models.FileField(max_length=255, null=True,
-                                  upload_to='uploads/projects/<django.db.models.fields.related.ForeignKey>/'
-                                            '<django.db.models.fields.IntegerField>')),
+                                                    upload_to='uploads/projects/'
+                                                              '<django.db.models.fields.related.ForeignKey>/'
+                                                              '<django.db.models.fields.IntegerField>')),
             ],
         ),
     ]
