@@ -11,5 +11,6 @@
     "projects": "Projecten",
     "add_project": "Project toevoegen",
     "details": "Details",
-    "no_courses": "Geen cursussen om weer te geven."
+    "no_courses": "Geen cursussen om weer te geven.",
+    "page_not_found": "Pagina niet gevonden"
 }

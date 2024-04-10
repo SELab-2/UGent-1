@@ -11,5 +11,6 @@
     "projects": "Projects",
     "add_project": "Add project",
     "details": "Details",
-    "no_courses": "No courses to display."
+    "no_courses": "No courses to display.",
+    "page_not_found": "Page not found"
 }
