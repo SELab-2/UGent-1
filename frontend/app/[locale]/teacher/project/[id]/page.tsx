@@ -4,7 +4,6 @@ import NavBar from "../../../components/NavBar"
 import Box from "@mui/material/Box";
 import BottomBar from "../../../components/BottomBar";
 import dayjs from "dayjs";
-import axios from 'axios';
 import JSZip, {JSZipObject} from "jszip";
 import Title from './title';
 import Assignment from "./assignment";
@@ -18,7 +17,7 @@ import Deadline from "@app/[locale]/teacher/project/[id]/deadline";
 import RemoveDialog from './removedialog';
 import initTranslations from '@app/i18n';
 import './project_styles.css'
-import {getProject, Project, getTestFiles, postData, putData, updateProject, deleteProject} from "@lib/api";
+import {getProject, Project, getTestFiles, updateProject, deleteProject, getUserData} from "@lib/api";
 
 
 const i18nNamespaces = ['common']
@@ -40,6 +39,9 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     const [courseId, setCourseId] = useState(0);
     const [testfilesData, setTestfilesData] = useState<JSZipObject[]>([]);
     const [translations, setTranslations] = useState({t: null, resources: null, locale: null, i18nNamespaces: [""]})
+    const [isStudent, setIsStudent] = useState(false);
+    const [isTeacher, setIsTeacher] = useState(false);
+    const [loadingUser, setLoadingUser] = useState(true);
 
     const isTitleEmpty = !title
     const isAssignmentEmpty = !description
@@ -64,6 +66,15 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                 if (project["conditions"] != null) {
                     setConditions(project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
                 }
+                await getUserData().then((response) => {
+                    if (response.role === 3) {
+                        setIsStudent(true);
+                    } else {
+                        setIsTeacher(true);
+                    }
+                });
+                if (!isStudent || !isTeacher) setLoadingUser(false);
+
             } catch (error) {
                 console.error("There was an error fetching the project:", error);
             }
@@ -76,7 +87,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
 
         fetchTranslations().then(() => setLoadingTranslations(false));
         fetchProject().then(() => setLoadingProject(false));
-    }, [id, locale, loadingTranslations]);
+    }, [id, locale, loadingTranslations, isStudent, loadingProject, isTeacher]);
 
     async function setTestFiles(project: Project) {
         const zip = new JSZip();
@@ -139,31 +150,36 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
     return (
         <div>
             {/*<NavBar/>*/}
-            {(loadingTranslations && loadingProject) ? (
+            {(loadingTranslations && loadingProject && loadingUser) ? (
                 <div>Loading...</div>
             ) : (
-                <div>
-                    <Box
-                        display="grid"
-                        gridTemplateColumns="65% 35%"
-                        height="100vh"
-                    >
-                        <Box className={"pageBoxLeft"}>
-                            {Title(isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations)}
-                            {Assignment(isAssignmentEmpty, setDescription, description, translations)}
-                            {RequiredFiles(files, setFiles, translations)}
-                            {Conditions(conditions, setConditions, translations)}
-                            {Groups(groupAmount, isGroupAmountEmpty, groupSize, isGroupSizeEmpty, setGroupAmount, setGroupSize, translations)}
-                            {TestFiles(testfilesName, setTestfilesName, translations)}
-                            {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
+                (!isStudent) ? (
+                    <div>
+                        <Box
+                            display="grid"
+                            gridTemplateColumns="65% 35%"
+                            height="100vh"
+                        >
+                            <Box className={"pageBoxLeft"}>
+                                {Title(isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations)}
+                                {Assignment(isAssignmentEmpty, setDescription, description, translations)}
+                                {RequiredFiles(files, setFiles, translations)}
+                                {Conditions(conditions, setConditions, translations)}
+                                {Groups(groupAmount, isGroupAmountEmpty, groupSize, isGroupSizeEmpty, setGroupAmount, setGroupSize, translations)}
+                                {TestFiles(testfilesName, setTestfilesName, translations)}
+                                {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
+                            </Box>
+                            <Box className={"pageBoxRight"}>
+                                {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations)}
+                                {Deadline(deadline, setDeadline)}
+                            </Box>
                         </Box>
-                        <Box className={"pageBoxRight"}>
-                            {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations)}
-                            {Deadline(deadline, setDeadline)}
-                        </Box>
-                    </Box>
-                    {RemoveDialog(confirmRemove, handle_remove, setConfirmRemove, translations)}
-                </div>
+                        {RemoveDialog(confirmRemove, handle_remove, setConfirmRemove, translations)}
+                    </div>
+                ) : (
+                    <div>Students cannot edit project</div>
+                )
+
             )}
             <BottomBar/>
         </div>
