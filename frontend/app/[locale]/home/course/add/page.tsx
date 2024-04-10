@@ -1,7 +1,7 @@
-import NavBar from "../components/NavBar";
+import NavBar from "@app/[locale]/components/NavBar";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import initTranslations from "../../i18n";
+import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import CreateCourseForm from "@app/[locale]/components/CreateCourseForm";
 
