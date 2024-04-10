@@ -1,4 +1,5 @@
-import React from 'react'
+"use client"
+import React from 'react';
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import Box from "@mui/material/Box";
@@ -8,6 +9,7 @@ import Footer from "@app/[locale]/components/Footer";
 import CourseBanner from "@app/[locale]/components/CourseBanner";
 import AddProjectButton from "@app/[locale]/components/AddProjectButton";
 import {Button} from "@mui/material";
+import { joinCourseUsingToken, APIError} from '@lib/api';
 
 const i18nNamespaces = ['common']
 
@@ -18,7 +20,19 @@ export default async function Course({params: {locale, course}, searchParams: {t
     const project_selected = false
 
     const desc_mock = "This is a mock description for the course, it should be replaced with the actual course description. It should be a brief description of the course."
-    console.log(token)
+
+
+    if (token){
+        try {
+            await joinCourseUsingToken(course, token);
+        } catch (error) {
+            if (error instanceof APIError) {
+                console.error(error.message);
+            }
+        }
+    }
+
+
     return (
         <TranslationsProvider
             resources={resources}
