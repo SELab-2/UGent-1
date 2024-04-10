@@ -9,7 +9,8 @@ function FinishButtons(
     setVisible: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     handleSave: () => Promise<void>,
     setConfirmRemove: (value: (((prevState: boolean) => boolean) | boolean)) => void,
-    translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
+    translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; },
+    course_id: number
 ) {
     return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
         <Grid container spacing={0} alignItems={"center"} justifyContent={"space-between"}>
@@ -37,7 +38,7 @@ function FinishButtons(
             <Grid className={"buttonsGrid"}>
                 <button
                     // TODO switch to correct URL
-                    onClick={() => window.location.href = "/home"}
+                    onClick={() => window.location.href = "/course/" + course_id + "/"}
                     className={"saveButton"}
                 >
                     {translations.t("cancel")}

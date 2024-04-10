@@ -34,6 +34,8 @@
     "cancel": "Annuleren",
     "remove": "Verwijderen",
     "remove_dialog": "Project verwijderen?",
-    "action_dialog": "Deze actie kan niet ongedaan worden gemaakt."
+    "action_dialog": "Deze actie kan niet ongedaan worden gemaakt.",
+    "remove_confirm": "Verwijderen",
+    "remove_cancel": "Annuleren"
 
 }

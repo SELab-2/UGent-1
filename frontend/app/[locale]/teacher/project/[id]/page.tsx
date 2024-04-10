@@ -147,12 +147,13 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
             formData.append("course_id", courseId.toString());
 
             await updateProject(id, formData).then((response) => console.log(response));
+            location.reload();
         }
     }
 
     const handle_remove = async () => {
         await deleteProject(id).then((response) => console.log(response));
-        // TODO redirect
+        window.location.href = "/course/" + courseId + "/"
     }
 
     return (
@@ -178,7 +179,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                                 {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
                             </Box>
                             <Box className={"pageBoxRight"}>
-                                {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations)}
+                                {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations, courseId)}
                                 {Deadline(deadline, setDeadline)}
                             </Box>
                         </Box>

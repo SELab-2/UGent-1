@@ -34,5 +34,7 @@
     "cancel": "Cancel",
     "remove": "Remove",
     "remove_dialog": "Remove project?",
-    "action_dialog": "This action cannot be undone."
+    "action_dialog": "This action cannot be undone.",
+    "remove_confirm": "Remove",
+    "remove_cancel": "Cancel"
 }

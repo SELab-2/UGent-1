@@ -25,13 +25,13 @@ function RemoveDialog(
                         onClick={handle_remove}
                         className={"dialogRemove"}
                     >
-                        Remove
+                        {translations.t("remove_confirm")}
                     </button>
                     <button
                         onClick={() => setConfirmRemove(false)}
                         className={"dialogCancel"}
                     >
-                        Cancel
+                        {translations.t("remove_cancel")}
                     </button>
             </DialogActions>
         </Dialog>;

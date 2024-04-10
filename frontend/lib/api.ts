@@ -323,7 +323,7 @@ export async function putData(path: string, data: any){
         }
     } catch (error) {
         const apierror : APIError = new APIError();
-        apierror.message = "error on post request";
+        apierror.message = "error on put request";
         apierror.type = ErrorType.REQUEST_ERROR;
         apierror.trace = error;
         throw apierror;
@@ -336,27 +336,9 @@ export async function deleteData(path: string){
     try {
         const response = await axios.delete(backend_url + path, { withCredentials: true });
 
-        if (response.status === 200 && response?.data) {
-            return response.data;
-        } else if(response?.data?.detail) {
-            console.error("Unexpected response structure:", response.data);
-            const error : APIError = new APIError();
-            error.status = response.status;
-            error.message = response.data.detail;
-            error.type = ErrorType.UNKNOWN;
-            error.trace = undefined;
-            throw error;
-        }else{
-            const error : APIError = new APIError();
-            error.status = response.status;
-            error.message = response.statusText;
-            error.type = ErrorType.UNKNOWN;
-            error.trace = undefined;
-            throw error;
-        }
     } catch (error) {
         const apierror : APIError = new APIError();
-        apierror.message = "error on post request";
+        apierror.message = "error on delete request";
         apierror.type = ErrorType.REQUEST_ERROR;
         apierror.trace = error;
         throw apierror;
