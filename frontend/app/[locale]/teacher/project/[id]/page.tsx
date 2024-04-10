@@ -53,18 +53,24 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
         const fetchProject = async () => {
             try {
                 const project: Project = await getProject(id);
-                setDeadline(dayjs(project["deadline"]))
+                if (project.deadline !== null) setDeadline(dayjs(project["deadline"]));
                 setDescription(project.description)
-                setFiles(project["file_structure"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
+                if (project.file_structure !== null) {
+                    const file_structure = project.file_structure.split(",").map((item: string) => item.trim().replace(/"/g, ''));
+                    file_structure.push("");
+                    setFiles(file_structure);
+                }
                 setGroupSize(project["group_size"])
                 setTitle(project["name"])
                 setGroupAmount(project["number_of_groups"])
                 setVisible(project["visible"])
-                await setTestFiles(project);
+                if (project.test_files !== null) await setTestFiles(project);
                 setScore(+project["max_score"]);
                 setCourseId(+project["course_id"]);
                 if (project["conditions"] != null) {
-                    setConditions(project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, '')))
+                    const conditions_parsed = project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, ''));
+                    conditions_parsed.push("");
+                    setConditions(conditions_parsed);
                 }
                 await getUserData().then((response) => {
                     if (response.role === 3) {
@@ -126,6 +132,8 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
             const zipFileBlob = await zip.generateAsync({type: "blob"});
             const formData = new FormData();
             const zipFile = new File([zipFileBlob], "test_files.zip");
+            files.pop();
+            conditions.pop();
             formData.append("test_files", zipFile);
             formData.append("name", title);
             formData.append("description", description);
@@ -166,7 +174,7 @@ function ProjectDetailPage({params: {locale, id}}: { params: { locale: any, id: 
                                 {RequiredFiles(files, setFiles, translations)}
                                 {Conditions(conditions, setConditions, translations)}
                                 {Groups(groupAmount, isGroupAmountEmpty, groupSize, isGroupSizeEmpty, setGroupAmount, setGroupSize, translations)}
-                                {TestFiles(testfilesName, setTestfilesName, translations)}
+                                {TestFiles(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
                                 {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
                             </Box>
                             <Box className={"pageBoxRight"}>
