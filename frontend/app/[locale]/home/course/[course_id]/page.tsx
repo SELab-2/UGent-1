@@ -11,7 +11,7 @@ import {Button} from "@mui/material";
 
 const i18nNamespaces = ['common']
 
-export default async function Course({params: {locale, course}}: { params: { locale: any, course: string } }) {
+export default async function Course({params: {locale, course_id}}: { params: { locale: any, course_id: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
     const project_selected = false
@@ -71,7 +71,7 @@ export default async function Course({params: {locale, course}}: { params: { loc
                     </Button>
                 </Box>
                 <h1>
-                    {course}
+                    {course_id}
                 </h1>
             </Box>
             <Footer/>
