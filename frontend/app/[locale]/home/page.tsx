@@ -42,7 +42,6 @@ function HomePage({params: {locale}} : {params: {locale: any}}) {
 
     return (
         <div>
-            <NavBar/>
             <Box sx={{marginTop: '64px'}}>
                 <Typography variant="h3">
                     {translations.t("courses")}

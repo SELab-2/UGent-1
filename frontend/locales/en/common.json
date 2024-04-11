@@ -1,4 +1,15 @@
 {
     "test": "English: Hello world!",
-    "courses": "My courses"
+    "courses": "My courses",
+    "my_profile": "My profile",
+    "settings": "Settings",
+    "logout": "Log out",
+    "github": "GitHub",
+    "manual": "Manual",
+    "edit_course": "Edit course",
+    "description": "Description",
+    "projects": "Projects",
+    "add_project": "Add project",
+    "details": "Details",
+    "no_courses": "No courses to display."
 }

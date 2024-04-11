@@ -29,7 +29,8 @@ class ProjectTestUnauthenticated(TestCase):
 
         self.project = Project.objects.create(
             name="Test Project",
-            course_id=self.course
+            course_id=self.course,
+            deadline="2021-12-12 12:12:12",
         )
 
     def test_create_project_unauthenticated(self):
@@ -38,7 +39,8 @@ class ProjectTestUnauthenticated(TestCase):
             {
                 "name": "Test Project 2",
                 "description": "Test Project 2 Description",
-                "course_id": self.course.course_id
+                "course_id": self.course.course_id,
+                "deadline": "2021-12-12 12:12:12",
             },
             format='json'
         )

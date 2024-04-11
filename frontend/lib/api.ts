@@ -1,3 +1,4 @@
+
 import axios, { AxiosError } from 'axios';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
@@ -110,6 +111,7 @@ async function getRequest(path: string){
         }
     }
 }
+
 
 async function getListRequest(path: string){
     const data = await getRequest(path);
