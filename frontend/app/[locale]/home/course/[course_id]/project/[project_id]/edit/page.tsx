@@ -42,6 +42,7 @@ function ProjectDetailPage({params: {locale, course_id, project_id}}: { params: 
     const [isStudent, setIsStudent] = useState(false);
     const [isTeacher, setIsTeacher] = useState(false);
     const [loadingUser, setLoadingUser] = useState(true);
+    const [hasDeadline, setHasDeadline] = useState(false);
 
     const isTitleEmpty = !title
     const isAssignmentEmpty = !description
@@ -71,6 +72,7 @@ function ProjectDetailPage({params: {locale, course_id, project_id}}: { params: 
                     conditions_parsed.push("");
                     setConditions(conditions_parsed);
                 }
+                if (project.deadline !== null) setHasDeadline(true);
                 await getUserData().then((response) => {
                     if (response.role === 3) {
                         setIsStudent(true);
@@ -140,11 +142,15 @@ function ProjectDetailPage({params: {locale, course_id, project_id}}: { params: 
             formData.append("max_score", score.toString());
             formData.append("number_of_groups", groupAmount.toString());
             formData.append("group_size", groupSize.toString());
-            formData.append("deadline", deadline.format());
             formData.append("file_structure", files.join(","));
             formData.append("conditions", conditions.join(","));
             formData.append("visible", visible.toString());
             formData.append("course_id", course_id.toString());
+            if (hasDeadline) {
+                formData.append("deadline", deadline.format());
+            } else {
+                formData.append("deadline", "");
+            }
 
             await updateProject(project_id, formData).then((response) => console.log(response));
             location.reload();
@@ -153,7 +159,7 @@ function ProjectDetailPage({params: {locale, course_id, project_id}}: { params: 
 
     const handle_remove = async () => {
         await deleteProject(project_id).then((response) => console.log(response));
-        window.location.href = "/course/" + course_id + "/"
+        window.location.href = "home/course/" + course_id + "/"
     }
 
     return (
@@ -179,8 +185,8 @@ function ProjectDetailPage({params: {locale, course_id, project_id}}: { params: 
                                 {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
                             </Box>
                             <Box className={"pageBoxRight"}>
-                                {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations, course_id)}
-                                {Deadline(deadline, setDeadline)}
+                                {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations, course_id, setHasDeadline, hasDeadline)}
+                                {Deadline(deadline, setDeadline, hasDeadline)}
                             </Box>
                         </Box>
                         {RemoveDialog(confirmRemove, handle_remove, setConfirmRemove, translations)}
