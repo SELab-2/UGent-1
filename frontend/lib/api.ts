@@ -1,9 +1,13 @@
 
 import axios, { AxiosError } from 'axios';
-import { get } from 'http';
-import { ApiError } from 'next/dist/server/api-utils';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+
+const getCookieValue = (name : string) => (
+    document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
+)
+
+
 
 enum ErrorType{
     UNKNOWN = "UNKNOWN",
@@ -108,6 +112,7 @@ async function getRequest(path: string){
     }
 }
 
+
 async function getListRequest(path: string){
     const data = await getRequest(path);
     if(data?.results && Array.isArray(data?.results)){
@@ -186,5 +191,59 @@ export async function isLoggedIn(){
         return true;
     }catch(error){
         return false;
+    }
+}
+
+export function postForm(path : string){
+    async function formHandler(event : any){
+        
+        axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const formDataObject = Object.fromEntries(formData.entries());
+        console.log(formDataObject)
+        try {
+            await axios.post(backend_url + path, formDataObject, { withCredentials: true });
+        } catch (error) {
+            const apierror : APIError = new APIError();
+            apierror.message = "error posting form";
+            apierror.type = ErrorType.REQUEST_ERROR;
+            apierror.trace = error;
+            throw apierror;
+        }
+    }
+    return formHandler;
+}
+
+export async function postData(path: string, data: any){
+    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+
+    try {
+        const response = await axios.post(backend_url + path, data, { withCredentials: true });
+
+        if (response.status === 200 && response?.data) {
+            return response.data;
+        } else if(response?.data?.detail) {
+            console.error("Unexpected response structure:", response.data);
+            const error : APIError = new APIError();
+            error.status = response.status;
+            error.message = response.data.detail;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        }else{
+            const error : APIError = new APIError();
+            error.status = response.status;
+            error.message = response.statusText;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        }
+    } catch (error) {
+        const apierror : APIError = new APIError();
+        apierror.message = "error on post request";
+        apierror.type = ErrorType.REQUEST_ERROR;
+        apierror.trace = error;
+        throw apierror;
     }
 }
