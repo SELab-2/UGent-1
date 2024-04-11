@@ -4,12 +4,11 @@ import NavBar from "../../components/NavBar";
 import Box from "@mui/material/Box";
 import initTranslations from "../../../i18n";
 import {postForm} from '@lib/api';
-import ugent_banner from "@app/[locale]/course/ugent_banner.png"; // TODO move image to resources
 
 
 function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
     const [translations, setTranslations] = useState({t: (key: any) => key});
-    const [selectedImage, setSelectedImage] = useState(ugent_banner);
+    const [selectedImage, setSelectedImage] = useState();
 
     useEffect(() => {
         const initialize = async () => {
@@ -19,6 +18,23 @@ function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
 
         initialize();
     }, [locale]);
+
+    useEffect(() => {
+        const fetchImageData = async () => {
+            try {
+                const response = await fetch('../ugent_banner.png'); // Adjust the URL based on the image location
+                if (!response.ok) {
+                    throw new Error('Failed to fetch image');
+                }
+                const data = await response.blob();
+                setSelectedImage(data);
+            } catch (error) {
+                console.error('Error fetching image:', error);
+            }
+        };
+
+        fetchImageData();
+    }, []);
 
     const handleCancel = () => {
         // TODO redirect to homepage

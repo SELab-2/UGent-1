@@ -1,18 +1,17 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import NavBar from "../../components/NavBar";
-import Typography from "@mui/material/Typography";
+import NavBar from "../../../components/NavBar";
 import Box from "@mui/material/Box";
-import initTranslations from "../../../i18n";
+import initTranslations from "../../../../i18n";
 import ugent_banner from "@app/[locale]/course/ugent_banner.png"; // TODO move image to resources
 
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
-function CourseEditPage({ params: { locale, id } }: { params: { locale: any, id: string } }) {
-    const [translations, setTranslations] = useState({ t: (key: any) => key });
-    const [courseData, setCourseData] = useState({ name: '', description: '' });
+function CourseEditPage({params: {locale, id}}: { params: { locale: any, id: string } }) {
+    const [translations, setTranslations] = useState({t: (key: any) => key});
+    const [courseData, setCourseData] = useState({name: '', description: ''});
     const [selectedImage, setSelectedImage] = useState(ugent_banner);
 
     useEffect(() => {
@@ -27,7 +26,7 @@ function CourseEditPage({ params: { locale, id } }: { params: { locale: any, id:
     useEffect(() => {
         const fetchCourseData = async () => {
             try {
-                const response = await axios.get(backend_url + "/courses/" + id, { withCredentials: true });
+                const response = await axios.get(backend_url + "/courses/" + id, {withCredentials: true});
                 if (response.data) {
                     setCourseData(response.data);
                 } else {
@@ -43,7 +42,7 @@ function CourseEditPage({ params: { locale, id } }: { params: { locale: any, id:
 
     const handleRemoveCourse = () => {
         try {
-            axios.delete(backend_url + "/courses/" + id, { withCredentials: true });
+            axios.delete(backend_url + "/courses/" + id, {withCredentials: true});
             alert('Course removed successfully!');
         } catch (error) {
             console.error("There was an error removing the course:", error);
@@ -72,7 +71,7 @@ function CourseEditPage({ params: { locale, id } }: { params: { locale: any, id:
         const formDataObject = Object.fromEntries(formData.entries());
 
         try {
-            await axios.put(backend_url + "/courses/" + id + "/", formDataObject, { withCredentials: true });
+            await axios.put(backend_url + "/courses/" + id + "/", formDataObject, {withCredentials: true});
             alert('Course updated successfully!');
         } catch (error) {
             console.error("There was an error updating the course:", error);
@@ -154,7 +153,8 @@ function CourseEditPage({ params: { locale, id } }: { params: { locale: any, id:
                                 marginBottom: '-10px',
                                 display: 'block'
                             }}>{translations.t("Description")}</label><br/>
-                            <textarea id="description" name="description" rows={5} defaultValue={courseData.description} required style={{
+                            <textarea id="description" name="description" rows={5} defaultValue={courseData.description}
+                                      required style={{
                                 width: '100%',
                                 fontFamily: 'Arial, sans-serif',
                                 color: '#1E64C8',
