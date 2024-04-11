@@ -12,10 +12,6 @@ const i18nNamespaces = ['common']
 export default async function Course({params: {locale, course_id}}: { params: { locale: any, course_id: number } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
-    const project_selected = false
-
-    const desc_mock = "This is a mock description for the course, it should be replaced with the actual course description. It should be a brief description of the course."
-
     return (
         <TranslationsProvider
             resources={resources}
