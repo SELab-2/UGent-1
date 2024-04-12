@@ -9,6 +9,7 @@ from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.groups.models import GroupSerializer
 from .models import Project, ProjectSerializer
 from .permissions import CanAccessProject
+from ..submissions.models import Submissions, SubmissionsSerializer
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -50,3 +51,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
         project = self.get_object()
         groups = Group.objects.filter(project_id=project)
         return Response(GroupSerializer(groups, many=True).data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get'])
+    def get_submissions(self, request, *args, **kwargs):
+        project = self.get_object()
+        groups = Group.objects.filter(project_id=project)
+        submissions = Submissions.objects.filter(group_id__in=groups)
+        return Response(SubmissionsSerializer(submissions, many=True).data, status=status.HTTP_200_OK)
