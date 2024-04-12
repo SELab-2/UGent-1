@@ -1,8 +1,8 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import NavBar from "../../../../../../components/NavBar"
+import NavBar from "../../../components/NavBar"
 import Box from "@mui/material/Box";
-import BottomBar from "../../../../../../components/BottomBar";
+import BottomBar from "../../../components/BottomBar";
 import dayjs from "dayjs";
 import JSZip, {JSZipObject} from "jszip";
 import Title from './title';
