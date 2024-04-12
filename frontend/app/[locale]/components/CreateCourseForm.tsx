@@ -120,7 +120,8 @@ const CreateCourseForm = () => {
                     fontFamily: 'Arial, sans-serif',
                     color: '#1E64C8',
                     borderRadius: '6px',
-                    padding: '10px'
+                    padding: '10px',
+                    boxSizing: 'border-box'
                 }}/>
             </Box>
             <Box sx={{marginTop: '16px'}}>
