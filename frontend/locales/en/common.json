@@ -19,5 +19,8 @@
     "project_name": "Project name",
     "deadline": "Deadline",
     "visibility": "Visibility",
-    "admin_page": "Admin page"
+    "admin_page": "Admin page",
+    "access": "Access",
+    "open_course": "Open course",
+    "private_course": "Private course"
 }

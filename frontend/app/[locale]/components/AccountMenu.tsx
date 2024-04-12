@@ -28,7 +28,6 @@ export default function AccountMenu() {
         const fetchCourses = async () => {
             try{
                 setUser(await getUserData());
-                console.log(user);
             }catch(error){
                 if(error instanceof APIError) setError(error);
             }
@@ -49,6 +48,10 @@ export default function AccountMenu() {
         //TODO: Handle settings and My profile actions!!
         setAnchorEl(null);
     };
+
+    const toProfile = () => {
+        window.location.href = '/profile'
+    }
 
     const handleLogout = () => {
         setAnchorEl(null);
@@ -99,7 +102,7 @@ export default function AccountMenu() {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={toProfile}>
                     <Avatar /> {t('my_profile')}
                 </MenuItem>
                 <Divider />

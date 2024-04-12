@@ -19,5 +19,8 @@
     "project_name": "Projectnaam",
     "deadline": "Deadline",
     "visibility": "Zichtbaarheid",
-    "admin_page": "Beheerderspagina"
+    "admin_page": "Beheerderspagina",
+    "access": "Toegang",
+    "open_course": "Open cursus",
+    "private_course": "Privé cursus"
 }

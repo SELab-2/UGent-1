@@ -2,7 +2,7 @@
 
 import {useTranslation} from "react-i18next";
 import React, {useEffect, useState} from "react";
-import {APIError, getCourse, Course} from "@lib/api";
+import {APIError, getCourse, Course, UserData, getUserData} from "@lib/api";
 import Typography from "@mui/material/Typography";
 
 interface CourseDetailsProps {
@@ -10,6 +10,7 @@ interface CourseDetailsProps {
 }
 
 export default function CourseDetails({course_id}: CourseDetailsProps) {
+    const [user, setUser] = useState<UserData | null>(null);
     const [course, setCourse] = useState<Course | null>(null);
     const [error, setError] = useState<APIError | null>(null);
     const {t} = useTranslation();
@@ -18,6 +19,7 @@ export default function CourseDetails({course_id}: CourseDetailsProps) {
         const fetchCourse = async () => {
             try {
                 setCourse(await getCourse(course_id));
+                setUser(await getUserData());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
             }
@@ -52,6 +54,25 @@ export default function CourseDetails({course_id}: CourseDetailsProps) {
                     {t('no_description')}
                 </Typography>
             )
+            }
+            {user?.role !== 1 ? (
+                <>
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontWeight: 'medium',
+                            marginTop: 2
+                        }}
+                    >
+                        {t("access")}
+                    </Typography>
+                    <Typography
+                        variant="h6"
+                    >
+                        {}
+                    </Typography>
+                </>
+            ) : null
             }
         </>
     );
