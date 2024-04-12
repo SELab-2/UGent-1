@@ -9,23 +9,7 @@ interface StudentCoTeacherButtonsProps {
 }
 
 const StudentCoTeacherButtons = ({course_id}: StudentCoTeacherButtonsProps) => {
-    const [course, setCourse] = useState<Course | null>(null);
-    const [error, setError] = useState<APIError | null>(null);
     const {t} = useTranslation()
-
-    useEffect(() => {
-        const fetchCourse = async () => {
-            try {
-                setCourse(await getCourse(course_id));
-            } catch (error) {
-                if (error instanceof APIError) setError(error);
-            }
-
-        };
-
-        fetchCourse();
-    }, [course_id]);
-
 
     return (
         <Box
