@@ -1,23 +1,39 @@
 "use client"
 import {postForm} from "@lib/api";
 import Box from "@mui/material/Box";
-import {useTranslation} from "react-i18next";
 import initTranslations from "@app/i18n";
 import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
 import banner from '../../../public/ugent_banner.png'
 
-const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+const i18nNamespaces = ['common']
+
 const CreateCourseForm = () => {
-    const { t } = useTranslation()
+    const [translations, setTranslations] = useState<{
+        t: ((key: string) => string),
+        resources: any,
+        locale: string,
+        i18nNamespaces: string[]
+    }>
+    ({t: (key: string) => key, resources: null, locale: "en", i18nNamespaces: [""]})
     const [selectedImage, setSelectedImage] = useState(banner);
 
+    useEffect(() => {
+        const fetchTranslations = async () => {
+            const url = window.location.pathname;
+            const locale = url.split('/')[1];
+            const {t, resources} = await initTranslations(locale, i18nNamespaces)
+            setTranslations({t, resources, locale, i18nNamespaces})
+        }
+
+        fetchTranslations();
+    }, []);
 
     const handleSubmit = async (event: any) => {
         postForm("/courses/");
-        window.location.href = backend_url + "/home";
-        location.reload();
-        alert('Course created successfully!')
+        window.location.href = "/home"; //TODO doens't work
+        window.location.reload();
+        alert('Course created successfully!') //TODO remove?
     }
     const handleImageUpload = (event: any) => {
         const imageFile = event.target.files[0];
@@ -42,7 +58,7 @@ const CreateCourseForm = () => {
                     fontFamily: 'Arial, sans-serif',
                     marginBottom: '-10px',
                     display: 'block'
-                }}>{t("Course name")}</label><br/>
+                }}>{translations.t("Course name")}</label><br/>
                 <input type="text" id="name" name="name" required style={{
                     fontSize: '20px',
                     fontFamily: 'Arial, sans-serif',
@@ -56,7 +72,7 @@ const CreateCourseForm = () => {
                     fontSize: '32px',
                     fontFamily: 'Arial, sans-serif',
                     color: '#1E64C8'
-                }}>{t("Banner")}</label><br/>
+                }}>{translations.t("Banner")}</label><br/>
                 <div style={{
                     width: '100%',
                     height: '200px',
@@ -75,7 +91,7 @@ const CreateCourseForm = () => {
                     </div>
                 </div>
             </Box>
-            <Box sx={{marginTop: '16px'}}>
+            <Box>
                 <label htmlFor="Image" style={{
                     cursor: 'pointer',
                     display: 'inline-block',
@@ -86,7 +102,7 @@ const CreateCourseForm = () => {
                     color: '#1E64C8',
                     fontFamily: 'Arial, sans-serif'
                 }}>
-                    {t("Select image")}
+                    {translations.t("Select image")}
                     <input type="file" id="Image" name="Image" accept="image/*" onChange={handleImageUpload}
                            style={{display: 'none'}}/>
                 </label>
@@ -98,7 +114,7 @@ const CreateCourseForm = () => {
                     color: '#1E64C8',
                     marginBottom: '-10px',
                     display: 'block'
-                }}>{t("Description")}</label><br/>
+                }}>{translations.t("Description")}</label><br/>
                 <textarea id="description" name="description" rows={5} required style={{
                     width: '100%',
                     fontFamily: 'Arial, sans-serif',
@@ -121,8 +137,8 @@ const CreateCourseForm = () => {
                     borderRadius: '6px',
                     padding: '5px'
                 }}>
-                    <option value="option1">{t("Private")}</option>
-                    <option value="option2">{t("Public")}</option>
+                    <option value="option1">{translations.t("Private")}</option>
+                    <option value="option2">{translations.t("Public")}</option>
                 </select>
             </Box>
             <Box sx={{marginTop: '16px', position: 'absolute'}}>
@@ -136,7 +152,7 @@ const CreateCourseForm = () => {
                     fontFamily: 'Arial, sans-serif',
                     fontSize: '16px',
                     marginTop: '80px'
-                }}>{t("Save course")}</button>
+                }}>{translations.t("Save course")}</button>
             </Box>
         </form>
     )

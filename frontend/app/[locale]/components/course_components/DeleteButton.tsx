@@ -3,16 +3,17 @@
 import React from 'react'
 import {useTranslation} from "react-i18next";
 
-const CancelButton = () => {
+const DeleteButton = () => {
     const {t} = useTranslation()
 
-    const handleCancel = () => {
+    const handleDelete = () => {
+        //TODO
         window.location.href = "/home";
     }
 
     return (
         <div>
-            <button onClick={handleCancel} style={{
+            <button onClick={handleDelete} style={{
                 backgroundColor: 'red',
                 color: 'white',
                 padding: '8px 16px',
@@ -24,11 +25,11 @@ const CancelButton = () => {
                 top: '20px',
                 right: '20px',
                 fontSize: '16px'
-            }}>{t("Cancel")}
+            }}>{t("Delete course")}
             </button>
 
         </div>
     )
 }
 
-export default CancelButton
+export default DeleteButton

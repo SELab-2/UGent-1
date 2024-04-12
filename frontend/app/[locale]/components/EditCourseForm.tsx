@@ -3,6 +3,8 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
+import banner from "../../../public/ugent_banner.png";
+import Image from 'next/image';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -10,14 +12,15 @@ interface EditCourseFormProps {
     courseId: number
 }
 
-const EditCourseForm = ({courseId}:EditCourseFormProps) => {
-    const [courseData, setCourseData] = useState({ name: '', description: '' });
+const EditCourseForm = ({courseId}: EditCourseFormProps) => {
+    const [courseData, setCourseData] = useState({name: '', description: ''});
     const {t} = useTranslation();
+    const [selectedImage, setSelectedImage] = useState(banner); //TODO: get image from backend (when added)
 
     useEffect(() => {
         const fetchCourseData = async () => {
             try {
-                const response = await axios.get(backend_url + "/courses/" + courseId, { withCredentials: true });
+                const response = await axios.get(backend_url + "/courses/" + courseId, {withCredentials: true});
                 if (response.data) {
                     setCourseData(response.data);
                 } else {
@@ -32,16 +35,24 @@ const EditCourseForm = ({courseId}:EditCourseFormProps) => {
     }, [courseId]);
 
     const handleSubmit = async (event: any) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const formDataObject = Object.fromEntries(formData.entries());
+        //TODO
+        window.location.href = "/home"; //TODO doens't work
+        window.location.reload();
+        alert('Course created successfully!') //TODO remove?
+    };
 
-        try {
-            await axios.put(backend_url + "/courses/" + courseId, formDataObject, { withCredentials: true });
-            alert('Course updated successfully!');
-        } catch (error) {
-            console.error("There was an error updating the course:", error);
-            alert('An error occurred. Please try again later.');
+    const handleImageUpload = (event: any) => {
+        const imageFile = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            // Update the selectedImage state with the uploaded image data URL
+            setSelectedImage(reader.result);
+        };
+
+        // Read the uploaded image as a data URL
+        if (imageFile) {
+            reader.readAsDataURL(imageFile);
         }
     };
 
@@ -68,13 +79,23 @@ const EditCourseForm = ({courseId}:EditCourseFormProps) => {
                     fontFamily: 'Arial, sans-serif',
                     color: '#1E64C8'
                 }}>{t("Banner")}</label><br/>
-                <img src={selectedImage} alt="Image" style={{
+                <div style={{
                     width: '100%',
-                    height: '220px',
-                    objectFit: 'cover',
-                    objectPosition: 'center',
-                    borderRadius: '12px'
-                }}/>
+                    height: '200px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <div style={{position: 'relative', width: '100%', height: '100%'}}>
+                        <Image
+                            src={selectedImage}
+                            alt="Image"
+                            layout="fill"
+                            objectFit="cover"
+                        />
+                    </div>
+                </div>
             </Box>
             <Box sx={{marginTop: '16px'}}>
                 <label htmlFor="Image" style={{
