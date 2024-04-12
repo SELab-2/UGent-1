@@ -12,7 +12,7 @@ const EditCourseButton = ({course_id}: EditCourseButtonProps) => {
 
     return (
         <Link
-        href={'/home/course/' + course_id + '/edit'}
+        href={'/course/' + course_id + '/edit'}
         >
             <Button
                 variant="contained"

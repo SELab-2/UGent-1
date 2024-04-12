@@ -1,4 +1,4 @@
-import NavBar from "@app/[locale]/components/NavBar";
+import NavBar from "../../components/NavBar";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import initTranslations from "@app/i18n";

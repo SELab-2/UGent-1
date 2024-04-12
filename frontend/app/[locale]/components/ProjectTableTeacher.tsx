@@ -53,8 +53,7 @@ function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
     };
 
     const handleDetailsClick = () => {
-        //TODO: Redirect to project details page
-        console.log(selectedId);
+        console.log("routing to project details page of project with id: " + selectedId);
     }
 
     return (
@@ -75,6 +74,7 @@ function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
                     variant="contained"
                     color='secondary'
                     disabled={selectedId === null}
+                    href={'/project/' + selectedId}
                     sx={{
                         width: 'fit-content',
                         color: 'secondary.contrastText',

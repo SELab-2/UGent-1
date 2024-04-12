@@ -1,11 +1,12 @@
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
-import {Box, Typography, Button} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import NavBar from "@app/[locale]/components/NavBar";
 import Footer from "@app/[locale]/components/Footer";
 import CourseBanner from "@app/[locale]/components/CourseBanner";
 import CourseDetails from "@app/[locale]/components/CourseDetails";
 import ProjectTableTeacher from "@app/[locale]/components/ProjectTableTeacher";
+import StudentCoTeacherButtons from "@app/[locale]/components/StudentCoTeacherButtons";
 
 const i18nNamespaces = ['common']
 
@@ -37,36 +38,7 @@ export default async function Course({params: {locale, course_id}}: { params: { 
                     {t('projects')}
                 </Typography>
                 <ProjectTableTeacher course_id={course_id} />
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start',
-                        width: '100%',
-                        gap: 2,
-                    }}
-                >
-                    <Button
-                        variant="contained"
-                        color='secondary'
-                        sx={{
-                            width: 'fit-content',
-                            color: 'secondary.contrastText',
-                        }}
-                    >
-                        {t("view_students")}
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color='secondary'
-                        sx={{
-                            width: 'fit-content',
-                            color: 'secondary.contrastText',
-                        }}
-                    >
-                        {t("view_co_teachers")}
-                    </Button>
-                </Box>
+                <StudentCoTeacherButtons course_id={course_id} />
             </Box>
             <Footer/>
         </TranslationsProvider>

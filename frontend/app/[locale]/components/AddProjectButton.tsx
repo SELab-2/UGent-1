@@ -11,6 +11,7 @@ const AddProjectButton = () => {
         <Button
             variant="contained"
             color='secondary'
+            href={'/project/add'}
             startIcon={<AddCircleOutlineIcon />}
             sx={{
                 width: 'fit-content',
