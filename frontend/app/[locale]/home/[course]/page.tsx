@@ -1,4 +1,3 @@
-"use client"
 import React from 'react';
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
@@ -9,7 +8,7 @@ import Footer from "@app/[locale]/components/Footer";
 import CourseBanner from "@app/[locale]/components/CourseBanner";
 import AddProjectButton from "@app/[locale]/components/AddProjectButton";
 import {Button} from "@mui/material";
-import { joinCourseUsingToken, APIError} from '@lib/api';
+import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
 
 const i18nNamespaces = ['common']
 
@@ -21,24 +20,13 @@ export default async function Course({params: {locale, course}, searchParams: {t
 
     const desc_mock = "This is a mock description for the course, it should be replaced with the actual course description. It should be a brief description of the course."
 
-
-    if (token){
-        try {
-            await joinCourseUsingToken(course, token);
-        } catch (error) {
-            if (error instanceof APIError) {
-                console.error(error.message);
-            }
-        }
-    }
-
-
     return (
         <TranslationsProvider
             resources={resources}
             locale={locale}
             namespaces={i18nNamespaces}
         >
+            <JoinCourseWithToken token={token} course_id={course}></JoinCourseWithToken>
             <NavBar/>
             <Box sx={{marginTop: '64px', padding: 5}}>
                 <CourseBanner/>
@@ -89,6 +77,7 @@ export default async function Course({params: {locale, course}, searchParams: {t
                     {course}
                 </h1>
             </Box>
+
             <Footer/>
         </TranslationsProvider>
     )
