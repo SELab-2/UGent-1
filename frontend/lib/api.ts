@@ -342,7 +342,7 @@ export async function deleteData(path: string){
     axios.defaults.headers.delete['X-CSRFToken'] = getCookieValue('csrftoken');
 
     try {
-        const response = await axios.delete(backend_url + path, { withCredentials: true });
+        const response = await axios.delete(backend_url + path + '/', { withCredentials: true });
 
     } catch (error) {
         const apierror : APIError = new APIError();
