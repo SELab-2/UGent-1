@@ -16,27 +16,36 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {useTranslation} from "react-i18next";
 import {APIError, getCourses, getUserData, UserData} from "@lib/api";
 import {useEffect, useState} from "react";
+import initTranslations from "@app/i18n";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+const i18nNamespaces = ['common']
 
 export default function AccountMenu() {
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<APIError | null>(null);
-    const { t } = useTranslation()
-
+    const [translations, setTranslations] = useState<{t: ((key: string) => string), resources: any, locale: string, i18nNamespaces: string[]}>
+        ({t: (key: string) => key, resources: null, locale: "en", i18nNamespaces: [""]})
     useEffect(() => {
 
 
         const fetchCourses = async () => {
             try{
                 setUser(await getUserData());
-                console.log(user);
             }catch(error){
                 if(error instanceof APIError) setError(error);
             }
 
         };
 
+        const fetchTranslations = async () => {
+            const url = window.location.pathname;
+            const locale = url.split('/')[1];
+            const {t, resources} = await initTranslations(locale, i18nNamespaces)
+            setTranslations({t, resources, locale, i18nNamespaces})
+        }
+
+        fetchTranslations();
         fetchCourses();
     }, []);
 
@@ -102,20 +111,20 @@ export default function AccountMenu() {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 <MenuItem onClick={handleClose}>
-                    <Avatar /> {t('my_profile')}
+                    <Avatar /> {translations.t('my_profile')}
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleClose}>
                     <ListItemIcon>
                         <Settings fontSize="small" />
                     </ListItemIcon>
-                    {t('settings')}
+                    {translations.t('settings')}
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>
-                    {t('logout')}
+                    {translations.t('logout')}
                 </MenuItem>
             </Menu>
         </React.Fragment>

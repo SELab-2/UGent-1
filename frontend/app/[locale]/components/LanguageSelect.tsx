@@ -46,6 +46,7 @@ const LanguageSelect = () => {
             <Select
                 autoWidth
                 value={currentLocale}
+                defaultValue={window.location.pathname.split("/")[1]}
                 onChange={handleChange}
                 sx={{
                     color: "white",

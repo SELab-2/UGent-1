@@ -12,12 +12,17 @@ import LanguageSelect from "./LanguageSelect";
 import AccountMenu from "./AccountMenu";
 import {useTranslation} from "react-i18next";
 import {APIError, Course, getCourses} from "@lib/api";
+import initTranslations from "@app/i18n";
+import {any} from "prop-types";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+const i18nNamespaces = ['common']
 
 const NavBar = () => {
     const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
     const [error, setError] = useState<APIError | null>(null);
+    const [translations, setTranslations] = useState<{t: ((key: string) => string), resources: any, locale: string, i18nNamespaces: string[]}>
+        ({t: (key: string) => key, resources: null, locale: "en", i18nNamespaces: [""]})
     useEffect(() => {
         const fetchCourses = async () => {
             try{
@@ -28,23 +33,30 @@ const NavBar = () => {
 
         };
 
+        const fetchTranslations = async () => {
+            const url = window.location.pathname;
+            const locale = url.split('/')[1];
+            const {t, resources} = await initTranslations(locale, i18nNamespaces)
+            setTranslations({t, resources, locale, i18nNamespaces})
+        }
+
+        fetchTranslations();
         fetchCourses();
     }, []);
-    const { t } = useTranslation();
 
     //Function that handles the bottom menu items
     const handleBottomItems = (event: React.MouseEvent<HTMLElement>, button:string) => {
         switch (button) {
-            case t('manual'):
+            case translations.t('manual'):
                 //TODO: Route to manual page(in wiki or separate page?)
                 break;
-            case t('github'):
+            case translations.t('github'):
                 window.location.href = 'https://github.com/SELab-2/UGent-1'
                 break;
-            case t('my_profile'):
+            case translations.t('my_profile'):
                 //TODO: Route to profile page
                 break;
-            case t('logout'):
+            case translations.t('logout'):
                 doLogout();
         }
     };
@@ -82,7 +94,7 @@ const NavBar = () => {
                 ) : (
                     <ListItem>
                         <ListItemText
-                            primary={t("no_courses")}
+                            primary={translations.t("no_courses")}
                             sx={{
                                 color: 'text.disabled'
                             }}
@@ -92,7 +104,7 @@ const NavBar = () => {
             </List>
             <Divider />
             <List>
-                {[t('manual'), t('github'), t('my_profile'), t('logout')].map((text, index) => (
+                {[translations.t('manual'), translations.t('github'), translations.t('my_profile'), translations.t('logout')].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton onClick={(event) => handleBottomItems(event, text)}>
                             <ListItemIcon>
