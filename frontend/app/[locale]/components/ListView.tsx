@@ -4,7 +4,7 @@ import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } 
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers } from '@lib/api';
+import { getUsers, deleteData } from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -146,7 +146,7 @@ interface ListViewProps {
     secondvalues?: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({ admin, get, headers, secondvalues, tablenames, action, action_name }) => {
+const ListView: NextPage<ListViewProps> = ({ admin, get, headers, secondvalues, tablenames, action_name }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [secondvalueson, setSecondValuesOn] = useState(false);
@@ -155,6 +155,8 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, headers, secondvalues, 
     const [rows, setRows] = useState<(string | number)[][]>([]);
     const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
     const [values, setValues] = useState<(string | number)[][]>([]); // Initialize as empty array
+    const [ids, setIds] = useState<number[]>([]);
+    const [action, setAction] = useState<(path: string) => Promise<any> | undefined>();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -162,32 +164,44 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, headers, secondvalues, 
                 const hashmap_get_to_parser: { [key: string]: (data: any) => any[] } = {
                     'users': (data) => [data.name, data.email, data.role],
                 };
-
+    
                 const hashmap_get_to_function: { [key: string]: () => Promise<any> } = {
                     'users': getUsers,
                 };
-
+    
+                const hashmap_action_to_function: { [key: string]: (path:string) => Promise<any> } = {
+                    'remove': deleteData,
+                };
+    
                 const data = await hashmap_get_to_function[get]();
                 console.log(data);
                 const mappedData = data.map(hashmap_get_to_parser[get]);
                 setValues(mappedData);
-
+                setIds(data.map((d: any) => d.id));
+    
                 // Calculate total pages based on filtered rows
                 const totalItems = secondvalueson ? secondvalues?.length : mappedData.length;
                 setTotalPages(Math.ceil(totalItems / itemsPerPage));
-
+    
                 // Filter and slice rows based on current search term and page
                 const filteredRows = secondvalueson ? secondvalues : mappedData;
                 const filteredAndSlicedRows = filteredRows
                     .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())))
                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
                 setRows(filteredAndSlicedRows);
+    
+                // Set the action only if action_name is provided
+                if (action_name) {
+                    setAction(() => hashmap_action_to_function[action_name]);
+                }
+    
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
         fetchData();
     }, [currentPage, searchTerm, secondvalues, secondvalueson]);
+    
 
   const handleChangePage = (direction: 'next' | 'prev') => {
         if (direction === 'next') {
@@ -229,18 +243,19 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, headers, secondvalues, 
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
             />
-            {admin && action && (
+            {admin && (
                 <RemoveButton
                 onClick={() => {
                     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
                     checkboxes.forEach((checkbox, index) => {
                         if ((checkbox as HTMLInputElement).checked) {
                             // if secondvalues are on, use the secondvalues array
-                            const courseId = secondvalueson ? secondvalues[index][0] : values[index][0];
-                            if (!isNaN(courseId)) {
-                                action(courseId);
+                            const id =  ids[index];
+                            if (!isNaN(id)) {
+                                console.log("Removing ID:", id);
+                                action('/users/' + id);
                             } else {
-                                console.error("Invalid course ID:", values[index][0]);
+                                console.error("Invalid course ID:", ids[index]);
                             }
                         }
                     });

@@ -25,6 +25,7 @@ export default async function Users({params: {locale}}: { params: { locale: any}
                 admin={true}
                 headers={headers}
                 get={'users'}
+                action_name={'remove'}
             />
             <Footer/>
         </TranslationsProvider>
