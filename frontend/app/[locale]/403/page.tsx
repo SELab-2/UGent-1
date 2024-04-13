@@ -20,7 +20,7 @@ async function CourseCreatePage({ params: { locale } }: { params: { locale: any 
             <NavBar />
             <Box sx={{ marginTop: '64px' }}>
                 <Typography variant="h3">
-                    {t("page_not_found")}
+                    {t("no_access_message")}
                 </Typography>
             </Box>
         </TranslationsProvider>
