@@ -1,25 +1,24 @@
-import axios, { AxiosError } from 'axios';
+import axios, {AxiosError} from 'axios';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
-const getCookieValue = (name : string) => (
+const getCookieValue = (name: string) => (
     document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
 )
 
 
-
-enum ErrorType{
+enum ErrorType {
     UNKNOWN = "UNKNOWN",
     REQUEST_ERROR = "REQUEST_ERROR",
 }
 
-enum Role{
+enum Role {
     ADMIN = 1,
     TEACHER = 2,
     STUDENT = 3,
 }
 
-export class APIError{
+export class APIError {
     message: string | undefined;
     status: number | undefined = 0;
     type: ErrorType = ErrorType.UNKNOWN;
@@ -66,6 +65,15 @@ export type Group = {
 
 }
 
+export type Submission = {
+    submission_id: number;
+    group_id: number;
+    submission_nr: number;
+    file: string;
+    timestamp: string;
+    output_test: string;
+}
+
 export type UserData = {
     id: number;
     emai: string;
@@ -75,37 +83,37 @@ export type UserData = {
     role: Role;
 }
 
-async function getRequest(path: string){
+async function getRequest(path: string) {
     try {
         const response = await axios.get(backend_url + path, {withCredentials: true});
         if (response.status === 200 && response?.data) {
             return response.data;
-        } else if(response?.data?.detail) {
+        } else if (response?.data?.detail) {
             console.error("Unexpected response structure:", response.data);
-            const error : APIError = new APIError();
+            const error: APIError = new APIError();
             error.status = response.status;
             error.message = response.data.detail;
             error.type = ErrorType.UNKNOWN;
             error.trace = undefined;
             throw error;
-        }else{
-            const error : APIError = new APIError();
+        } else {
+            const error: APIError = new APIError();
             error.status = response.status;
             error.message = response.statusText;
             error.type = ErrorType.UNKNOWN;
             error.trace = undefined;
             throw error;
         }
-    } catch (axioserror : AxiosError | unknown) {
+    } catch (axioserror: AxiosError | unknown) {
         console.error("There was an error fetching the courses:", axioserror);
-        const error : APIError = new APIError();
-        if(axioserror instanceof AxiosError){
+        const error: APIError = new APIError();
+        if (axioserror instanceof AxiosError) {
             error.status = axioserror.response?.status;
             error.message = axioserror.message;
             error.type = ErrorType.REQUEST_ERROR;
             error.trace = axioserror;
             throw error;
-        }else{
+        } else {
             error.message = "Fetching error";
             error.type = ErrorType.REQUEST_ERROR;
             error.trace = axioserror;
@@ -154,32 +162,32 @@ async function getBlobRequest(path: string){
     }
 }
 
-async function getListRequest(path: string){
+async function getListRequest(path: string) {
     const data = await getRequest(path);
-    if(data?.results && Array.isArray(data?.results)){
+    if (data?.results && Array.isArray(data?.results)) {
         return data.results;
-    }else if(data?.detail) {
+    } else if (data?.detail) {
         console.error("Unexpected response structure: no list returned");
-        const error : APIError = new APIError();
+        const error: APIError = new APIError();
         error.message = data?.detail;
         error.type = ErrorType.UNKNOWN;
         error.trace = undefined;
         throw error;
-    }else{
-        const error : APIError = new APIError();
+    } else {
+        const error: APIError = new APIError();
         error.message = "no list returned";
         error.type = ErrorType.UNKNOWN;
         error.trace = undefined;
         throw error;
     }
-    
+
 }
 
-export async function getCourse(id: number) : Promise<Course>{
+export async function getCourse(id: number): Promise<Course> {
     return (await getRequest(`/courses/${id}`));
 }
 
-export async function getCourses() : Promise<Course[]>{
+export async function getCourses(): Promise<Course[]> {
     return (await getListRequest('/courses'));
 }
 
@@ -203,85 +211,90 @@ export async function getProjects() : Promise<Project[]>{
     return (await getListRequest('/projects'));
 }
 
-export async function getGroup(id: number) : Promise<Group>{
+export async function getGroup(id: number): Promise<Group> {
     return (await getRequest(`/groups/${id}`));
 }
 
-export async function getGroups() : Promise<Group[]>{
+export async function getGroups(): Promise<Group[]> {
     return (await getListRequest('/groups'));
 }
 
-let userData : UserData | undefined = undefined;
+export async function getProjectSubmissions(id: number): Promise<Submission[]> {
+    return (await getListRequest(`/projects/${id}/get_submissions`))
+}
 
-export async function getUserData() : Promise<UserData>{
-    if(userData){
+let userData: UserData | undefined = undefined;
+
+export async function getUserData(): Promise<UserData> {
+    if (userData) {
         return userData;
-    }else if(localStorage.getItem('user')){
-        let user : UserData = JSON.parse(localStorage.getItem('user') as string);
+    } else if (localStorage.getItem('user')) {
+        let user: UserData = JSON.parse(localStorage.getItem('user') as string);
         userData = user;
         return user;
-    }else{
-        let user : UserData = await getRequest('/users/current');
+    } else {
+        let user: UserData = await getRequest('/users/current');
         localStorage.setItem('user', JSON.stringify(user));
         console.log(user);
         return user;
     }
 }
 
-export async function logOut(){
+export async function logOut() {
     userData = undefined;
     localStorage.removeItem('user');
     window.location.href = backend_url + "/auth/logout";
 }
 
-export async function isLoggedIn(){
-    try{
+export async function isLoggedIn() {
+    try {
         await getUserData();
         return true;
-    }catch(error){
+    } catch (error) {
         return false;
     }
 }
 
-export function postForm(path : string){
-    async function formHandler(event : any){
-        
+export function postForm(path: string) {
+    async function formHandler(event: any) {
+
         axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
         event.preventDefault();
         const formData = new FormData(event.target);
         const formDataObject = Object.fromEntries(formData.entries());
         console.log(formDataObject)
         try {
-            await axios.post(backend_url + path, formDataObject, { withCredentials: true });
+            await axios.post(backend_url + path, formDataObject, {withCredentials: true});
         } catch (error) {
-            const apierror : APIError = new APIError();
+            const apierror: APIError = new APIError();
             apierror.message = "error posting form";
             apierror.type = ErrorType.REQUEST_ERROR;
             apierror.trace = error;
             throw apierror;
         }
     }
+
     return formHandler;
 }
 
-export async function postData(path: string, data: any){
+export async function postData(path: string, data: any) {
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
 
     try {
-        const response = await axios.post(backend_url + path, data, { withCredentials: true });
+        const response = await axios.post(backend_url + path, data, {withCredentials: true});
 
         if (response.status === 200 && response?.data) {
             return response.data;
-        } else if(response?.data?.detail) {
+        } else if (response?.data?.detail) {
             console.error("Unexpected response structure:", response.data);
-            const error : APIError = new APIError();
+            const error: APIError = new APIError();
             error.status = response.status;
             error.message = response.data.detail;
             error.type = ErrorType.UNKNOWN;
             error.trace = undefined;
             throw error;
-        }else{
-            const error : APIError = new APIError();
+        } else {
+            const error: APIError = new APIError();
             error.status = response.status;
             error.message = response.statusText;
             error.type = ErrorType.UNKNOWN;
@@ -289,7 +302,7 @@ export async function postData(path: string, data: any){
             throw error;
         }
     } catch (error) {
-        const apierror : APIError = new APIError();
+        const apierror: APIError = new APIError();
         apierror.message = "error on post request";
         apierror.type = ErrorType.REQUEST_ERROR;
         apierror.trace = error;
