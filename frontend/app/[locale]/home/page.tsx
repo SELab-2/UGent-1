@@ -41,7 +41,7 @@ function HomePage({params: {locale}} : {params: {locale: any}}) {
 
     return (
         <>
-            <NavBar/>
+
             <Box sx={{position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#fff'}}>
                 <Container>
                     <CourseControls
