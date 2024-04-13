@@ -1,6 +1,6 @@
-import NavBar from "../../../components/NavBar";
+import NavBar from "@app/[locale]/components/NavBar";
 import Box from "@mui/material/Box";
-import initTranslations from "../../../../i18n";
+import initTranslations from "@app/i18n";
 import EditCourseForm from "@app/[locale]/components/EditCourseForm";
 import DeleteButton from "@app/[locale]/components/course_components/DeleteButton";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
@@ -18,7 +18,7 @@ async function CourseEditPage({params: {locale, course_id}}: { params: { locale:
             <NavBar/>
             <Box sx={{margin: '64px', marginTop: '96px', position: 'relative'}}>
                 <Box sx={{marginRight: '40px'}}>
-                    <DeleteButton/>
+                    <DeleteButton courseId={course_id}/>
                     <EditCourseForm courseId={course_id}/>
                 </Box>
             </Box>

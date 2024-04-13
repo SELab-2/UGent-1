@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
 import banner from "../../../public/ugent_banner.png";
 import Image from 'next/image';
-
+import {updateCourse} from "@lib/api";
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 interface EditCourseFormProps {
@@ -35,8 +35,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
     }, [courseId]);
 
     const handleSubmit = async (event: any) => {
-        //TODO
-        window.location.href = "/home"; //TODO doens't work
+        await updateCourse(courseId, courseData).then((response) => {console.log(response)}); //TODO remove console.log
         window.location.reload();
         alert('Course created successfully!') //TODO remove?
     };

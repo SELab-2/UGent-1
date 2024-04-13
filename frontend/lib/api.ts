@@ -183,6 +183,14 @@ export async function getCourses() : Promise<Course[]>{
     return (await getListRequest('/courses'));
 }
 
+export async function updateCourse(id: number, data: any): Promise<Course> {
+    return (await putData(`/courses/${id}/`, data));
+}
+
+export async function deleteCourse(id: number): Promise<void> {
+    return (await deleteData(`/courses/${id}/`));
+}
+
 export async function getTestFiles(path: string): Promise<Blob> {
     return (await getBlobRequest(path));
 }

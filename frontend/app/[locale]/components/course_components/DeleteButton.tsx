@@ -2,12 +2,17 @@
 
 import React from 'react'
 import {useTranslation} from "react-i18next";
+import {deleteCourse} from "@lib/api";
 
-const DeleteButton = () => {
+
+interface EditCourseFormProps {
+    courseId: number
+}
+const DeleteButton = ({courseId}: EditCourseFormProps) => {
     const {t} = useTranslation()
 
-    const handleDelete = () => {
-        //TODO
+    const handleDelete = async () => {
+        await deleteCourse(courseId).then((response) => {console.log(response)}); //TODO remove console.log
         window.location.href = "/home";
     }
 
