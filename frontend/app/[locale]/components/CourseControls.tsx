@@ -5,17 +5,14 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import {useClientSideTranslations} from '../../../lib/clientSideHook';
+import {useTranslation} from "react-i18next";
+import Link from 'next/link';
 
-type CourseControlsProps = {
-    locale: string;
-};
-
-const CourseControls: React.FC<CourseControlsProps> = ({locale}) => {
-    const t = useClientSideTranslations(locale, ['common']);
+const CourseControls = () => {
     const currentYear = new Date().getFullYear();
     const academicYear = `${currentYear - 1}-${currentYear.toString().slice(-2)}`;
     const [selectedYear, setSelectedYear] = useState(academicYear);
+    const {t} = useTranslation()
 
     const handleYearChange = (event: SelectChangeEvent) => {
         setSelectedYear(event.target.value as string);
@@ -37,9 +34,11 @@ const CourseControls: React.FC<CourseControlsProps> = ({locale}) => {
                     <Button variant="contained" color="secondary" startIcon={<FilterListIcon/>}>
                         {t("filter_courses")}
                     </Button>
-                    <Button variant="contained" color="secondary" startIcon={<AddCircleIcon/>}>
-                        {t("create_course")}
-                    </Button>
+                    <Link href="/course/add" passHref>
+                        <Button variant="contained" color="secondary" startIcon={<AddCircleIcon/>}>
+                            {t("create_course")}
+                        </Button>
+                    </Link>
                     <Button variant="contained" color="secondary" startIcon={<ArchiveIcon/>}>
                         {t("view_archive")}
                     </Button>

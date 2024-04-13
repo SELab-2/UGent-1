@@ -1,7 +1,7 @@
 {
     "test": "Nederlands: Hallo wereld!",
-    "courses": "Mijn cursussen",
-    "my_profile": "Mijn profiel",
+    "courses": "Mijn Cursussen",
+    "my_profile": "Mijn Profiel",
     "settings": "Instellingen",
     "logout": "Uitloggen",
     "github": "GitHub",
@@ -36,6 +36,11 @@
     "remove_dialog": "Project verwijderen?",
     "action_dialog": "Deze actie kan niet ongedaan worden gemaakt.",
     "remove_confirm": "Verwijderen",
-    "remove_cancel": "Annuleren"
-
+    "remove_cancel": "Annuleren",
+    "filter_courses": "Filter Cursussen",
+    "create_course": "Cursus Aanmaken",
+    "view_archive": "Bekijk Archief",
+    "project": "Project",
+    "deadline": "Deadline",
+    "submissions": "Indieningen"
 }

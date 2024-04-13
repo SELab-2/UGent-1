@@ -13,17 +13,25 @@ import {
     TableRow,
     Typography,
 } from '@mui/material';
-import {APIError, getProjectsFromCourse, getTeachersFromCourse, Project} from "@lib/api";
+import {APIError, Course, getCourse, getProjectsFromCourse, getTeachersFromCourse, Project} from "@lib/api";
+import {useTranslation} from "react-i18next";
 
-type CourseCardProps = {
-    courseId: number;
-    courseName: string;
-};
-
-const CourseCard: React.FC<CourseCardProps> = ({courseId, courseName}) => {
+const CourseCard = ({params: {courseId}}: { params: { courseId: number } }) => {
+    const [course, setCourse] = useState<Course | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
     const [teachers, setTeachers] = useState<String[]>([]);
     const [error, setError] = useState<APIError | null>(null);
+    const {t} = useTranslation()
+
+    useEffect(() => {
+        const fetchCourse = async () => {
+            try {
+                setCourse(await getCourse(courseId));
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
+            }
+        }
+    })
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -56,7 +64,7 @@ const CourseCard: React.FC<CourseCardProps> = ({courseId, courseName}) => {
             <Card>
                 <CardContent>
                     <Typography variant="h6" component="div" gutterBottom>
-                        {courseName}
+                        {course.name}
                     </Typography>
                     <Typography color="text.text" gutterBottom style={{whiteSpace: 'pre-line'}}>
                         {teachers.join('\n')}
@@ -65,9 +73,9 @@ const CourseCard: React.FC<CourseCardProps> = ({courseId, courseName}) => {
                         <Table aria-label="simple table" size="small">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>{"project"}</TableCell>
-                                    <TableCell align="right">{"deadline"}</TableCell>
-                                    <TableCell align="right">{"submissions"}</TableCell>
+                                    <TableCell>{t('project')}</TableCell>
+                                    <TableCell align="right">{t('deadline')}</TableCell>
+                                    <TableCell align="right">{t('submissions')}</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>

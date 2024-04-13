@@ -1,7 +1,7 @@
 {
     "test": "English: Hello world!",
-    "courses": "My courses",
-    "my_profile": "My profile",
+    "courses": "My Courses",
+    "my_profile": "My Profile",
     "settings": "Settings",
     "logout": "Log out",
     "github": "GitHub",
@@ -36,5 +36,11 @@
     "remove_dialog": "Remove project?",
     "action_dialog": "This action cannot be undone.",
     "remove_confirm": "Remove",
-    "remove_cancel": "Cancel"
+    "remove_cancel": "Cancel",
+    "filter_courses": "Filter Courses",
+    "create_course": "Create Course",
+    "view_archive": "View Archive",
+    "project": "Project",
+    "deadline": "Deadline",
+    "submissions": "Submissions"
 }
