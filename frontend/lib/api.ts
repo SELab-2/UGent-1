@@ -175,6 +175,14 @@ async function getListRequest(path: string){
     
 }
 
+export async function getUser(id: number) : Promise<User>{
+    return (await getRequest(`/users/${id}`));
+}
+
+export async function getUsers() : Promise<User[]>{
+    return (await getListRequest('/users'));
+}
+
 export async function getCourse(id: number) : Promise<Course>{
     return (await getRequest(`/courses/${id}`));
 }
