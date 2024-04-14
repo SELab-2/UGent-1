@@ -4,7 +4,7 @@ import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } 
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers, deleteData, postData } from '@lib/api';
+import { getUsers, deleteData, postData, getCourses } from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -161,9 +161,17 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
     useEffect(() => {
         const fetchData = async () => {
             try {
+
+                /**
+                 * 
+                 *  EDIT
+                 * 
+                 */
+
                 const hashmap_get_to_parser: { [key: string]: (data: any) => any[] } = {
                     'users': (data) => [data.name, data.email, data.role],
                     'course_users': (data) => [data.name, data.email, data.role],
+                    'courses': (data) => [data.name, data.description]
                 };
 
                 const hashmap_get_to_function: { [key: string]: () => Promise<any> } = {
@@ -171,7 +179,8 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
                     'course_users':  async () => {
                         const users = await getUsers();
                         return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role === 3);
-                    }
+                    },
+                    'courses': getCourses
                 };
 
                 const hashmap_get_to_secondvalues: { [key: string]: () => Promise<any> } = {
@@ -181,11 +190,13 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
                     'course_users': async () => {
                         const users = await getUsers();
                         return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role !== 3);
+                    },
+                    'courses': async () => {
+                        return undefined;
                     }
                 };
 
                 let data = await hashmap_get_to_function[get]();
-                console.log(data);
                 const mappedData = data.map(hashmap_get_to_parser[get]);
                 setValues(mappedData);
                 if(hashmap_get_to_secondvalues[get]) {
@@ -195,7 +206,18 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
                         setSecondValues(mappedSecondValues);
                     }
                 }
-                setIds(data.map((d: any) => d.id));
+
+                /**
+                 * 
+                 *  EDIT
+                 * 
+                 */
+
+                if(get === 'courses') {
+                    setIds(data.map((d: any) => d.course_id));
+                } else {
+                    setIds(data.map((d: any) => d.id));
+                }
     
                 // Calculate total pages based on filtered rows
                 const totalItems = secondvalueson ? secondValues?.length : mappedData.length;
@@ -255,19 +277,26 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
             />
-            {admin && (
+            {admin && !secondvalueson && action_name && (
                 <RemoveButton
                 onClick={() => {
                     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
                     checkboxes.forEach((checkbox, index) => {
                         if ((checkbox as HTMLInputElement).checked) {
                             // if secondvalues are on, use the secondvalues array
+                            /**
+                             * 
+                             *  EDIT
+                             * 
+                             */
                             const id =  ids[index];
                             if (!isNaN(id)) {
                                 if(action_name === 'remove_from_course') {
                                     postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id});
                                 } else if (action_name === 'remove') {
                                     deleteData('/users/' + id);
+                                } else if (action_name === 'join_course') {
+                                    postData('/courses/' + id + '/join_course/', {course_id: id});
                                 }
                             } else {
                                 console.error("Invalid id", ids[index]);
