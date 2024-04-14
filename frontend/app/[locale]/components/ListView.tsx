@@ -1,12 +1,10 @@
+'use client'
 import React, { useState, useEffect } from 'react';
 import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } from '@mui/material';
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
 import checkMarkImage from './check-mark.png';
-import { useTheme } from '@mui/material/styles';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-
+import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject } from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -16,7 +14,7 @@ const RootContainer = styled(Container)(({theme}) => ({
     padding: theme.spacing(1),
     borderRadius: theme.spacing(1),
     boxShadow: theme.shadows[1],
-    marginTop: '64px',
+    marginTop: '20px',
     width: '75%',
     maxWidth: '100%',
 }));
@@ -148,24 +146,119 @@ interface ListViewProps {
     secondvalues?: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues, tablenames, action, action_name}) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name }) => {
+    // default listview
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [secondvalueson, setSecondValuesOn] = useState(false);
     const itemsPerPage = 10;
-    const [totalPages, setTotalPages] = useState(Math.ceil(values.length / itemsPerPage));
+    const [totalPages, setTotalPages] = useState(0);
     const [rows, setRows] = useState<(string | number)[][]>([]);
     const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
+    // student and user page
+    const [secondvalueson, setSecondValuesOn] = useState(false);
+    const [secondValues, setSecondValues] = useState<(string | number)[][]>([]);
+    // group screen
+    const [user, setUser] = useState<any>();
+    const [user_is_in_group, setUserIsInGroup] = useState(false);
+    const [project, setProject] = useState<any>();
 
     useEffect(() => {
-        const totalItems = secondvalueson ? secondvalues?.length : values.length;
-        setTotalPages(Math.ceil(totalItems / itemsPerPage));
-        const filteredRows = secondvalueson ? secondvalues : values;
-        const filteredAndSlicedRows = filteredRows
-            .filter(row => row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())))
-            .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-        setRows(filteredAndSlicedRows);
-    }, [currentPage, searchTerm, secondvalues, secondvalueson, values]);
+        const fetchData = async () => {
+            try {
+
+                /**
+                 *
+                 *  EDIT
+                 *
+                 */
+
+                const hashmap_get_to_parser: { [key: string]: (data: any) => any[] | Promise<any[]> } = {
+                    'users': (data) => [data.id, data.name, data.email, data.role],
+                    'course_users': (data) => [data.id, data.name, data.email, data.role],
+                    'courses': (data) => [data.course_id, data.name, data.description],
+                    'groups': async (data) => {
+                        let l = [];
+                        // Iterate over the values of the object
+                        for (const user_id of Object.values(data.user)) {
+                            const i = await getUser(Number(user_id));
+                            if(i.id === user.id) {
+                                setUserIsInGroup(true);
+                            }
+                            l.push(i.email);
+                        }
+                        return [data.group_id, data.user, data.group_nr, l.join(', ')];
+                    }
+
+                };
+
+                const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
+                    'users': getUsers,
+                    'course_users':  async () => {
+                        const users = await getUsers();
+                        return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role === 3);
+                    },
+                    'courses': getCourses,
+                    'groups': async () => {
+                        return getGroups_by_project(get_id);
+                    }
+                };
+
+                const hashmap_get_to_secondvalues: { [key: string]: () => Promise<any> } = {
+                    'users': async () => {
+                        return undefined;
+                    },
+                    'course_users': async () => {
+                        const users = await getUsers();
+                        return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role !== 3);
+                    },
+                    'courses': async () => {
+                        return undefined;
+                    },
+                    'groups': async () => {
+                        return undefined;
+                    }
+                };
+
+                // Get user data
+                const user = await getUserData();
+                setUser(user);
+
+                if(get === 'groups') {
+                    const project = await getProject(get_id);
+                    setProject(project);
+                }
+
+                let data = await hashmap_get_to_function[get]();
+                const mappedData = [];
+                for (const d of data) {
+                    mappedData.push(await hashmap_get_to_parser[get](d));
+                }
+                if(hashmap_get_to_secondvalues[get]) {
+                    const secondvalues = await hashmap_get_to_secondvalues[get]();
+                    if(secondvalues) {
+                        const mappedSecondValues = secondvalues.map(hashmap_get_to_parser[get]);
+                        setSecondValues(mappedSecondValues);
+                    }
+                }
+
+                // Calculate total pages based on filtered rows
+                const totalItems = secondvalueson ? secondValues?.length : mappedData.length;
+                setTotalPages(Math.ceil(totalItems / itemsPerPage));
+
+                // Filter and slice rows based on current search term and page
+                const filteredRows = secondvalueson ? secondValues : mappedData;
+                const filteredAndSlicedRows = filteredRows
+                    .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())))
+                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+                setRows(filteredAndSlicedRows);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        fetchData();
+        // the values below will be constan
+    }, [currentPage, searchTerm, secondvalueson]);
+
 
     const handleChangePage = (direction: 'next' | 'prev') => {
         if (direction === 'next') {
@@ -207,24 +300,37 @@ const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
             />
-            {admin && action && (
+            {admin && !secondvalueson && action_name && (
                 <RemoveButton
                     onClick={() => {
                         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
                         checkboxes.forEach((checkbox, index) => {
                             if ((checkbox as HTMLInputElement).checked) {
                                 // if secondvalues are on, use the secondvalues array
-                                const courseId = secondvalueson ? secondvalues[index][0] : values[index][0];
-                                if (!isNaN(courseId)) {
-                                    action(courseId);
+                                /**
+                                 *
+                                 *  EDIT
+                                 *
+                                 */
+                                const id = sortedRows[index][0];
+                                if (!isNaN(id)) {
+                                    if(action_name === 'remove_from_course') {
+                                        postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id});
+                                    } else if (action_name === 'remove') {
+                                        deleteData('/users/' + id);
+                                    } else if (action_name === 'join_course') {
+                                        postData('/courses/' + id + '/join_course/', {course_id: id});
+                                    }
                                 } else {
-                                    console.error("Invalid course ID:", values[index][0]);
+                                    console.error("Invalid id", sortedRows[index][0]);
                                 }
                             }
                         });
                     }}
                 >
-                    {action_name || 'Remove'}
+                    {   // TODO i18n
+                        action_name
+                    }
                 </RemoveButton>
 
             )}
@@ -238,7 +344,7 @@ const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues
             <Table>
                 <thead>
                 <tr>
-                    <th>Select</th>
+                    {(get !== 'groups') && <th>Select</th>}
                     {headers.map((header, index) => (
                         <th key={index}>
                             <IconButton size="small" onClick={() => handleSort(header)}>
@@ -252,17 +358,49 @@ const ListView: NextPage<ListViewProps> = ({admin, headers, values, secondvalues
                 <tbody>
                 {sortedRows.map((row, index) => (
                     <TableRow key={index}>
-                        <td>
-                            {<CheckBoxWithCustomCheck checked={false}/>}
-                        </td>
-                        {row.map((cell, cellIndex) => (
+                        {((get !== 'groups') &&
+                            <td>
+                                {<CheckBoxWithCustomCheck checked={false}/>}
+                            </td>)}
+                        {get === 'groups' && row.slice(2).map((cell, cellIndex) => (
                             <td key={cellIndex}>{cell}</td>
                         ))}
+                        {get !== 'groups' && row.slice(1).map((cell, cellIndex) => (
+                            <td key={cellIndex}>{cell}</td>
+                        ))}
+                        {
+                            // group join button
+                            get === 'groups' && (!row[1].includes(user.id)) && (
+                                <td>
+                                    {
+                                        // join button isn't shown when user is already in group
+                                        // or when group is full
+                                        // TODO i18n join button
+                                        (!user_is_in_group) && (row[1].length < project.group_size) && (
+                                            <Button onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]})}>
+                                                Join
+                                            </Button>
+                                        )
+                                    }
+                                </td>)
+                        }
+                        {
+                            // group leave button
+                            get === 'groups' && (row[1].includes(user.id)) && (
+                                <td>
+                                    {
+                                        (user_is_in_group) && (
+                                            <Button onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]})}>
+                                                Leave
+                                            </Button>
+                                        )}
+                                </td>)
+                        }
                     </TableRow>
                 ))}
                 </tbody>
             </Table>
-            {totalPages > 1 && (
+            {totalPages > 1 &&  (
                 <Box>
                     <Button
                         disabled={currentPage === 1}
