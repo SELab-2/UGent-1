@@ -4,7 +4,7 @@ import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } 
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser } from '@lib/api';
+import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject } from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -147,16 +147,20 @@ interface ListViewProps {
 }
 
 const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name }) => {
+    // default listview
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [secondvalueson, setSecondValuesOn] = useState(false);
     const itemsPerPage = 10;
     const [totalPages, setTotalPages] = useState(0);
     const [rows, setRows] = useState<(string | number)[][]>([]);
     const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
+    // student and user page
+    const [secondvalueson, setSecondValuesOn] = useState(false);
     const [secondValues, setSecondValues] = useState<(string | number)[][]>([]);
+    // group screen
     const [user, setUser] = useState<any>();
-    const [group_members, setGroupMembers] = useState<(string | number)[][]>([]);
+    const [user_is_in_group, setUserIsInGroup] = useState(false);
+    const [project, setProject] = useState<any>();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -177,9 +181,12 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                         // Iterate over the values of the object
                         for (const user_id of Object.values(data.user)) {
                             const i = await getUser(Number(user_id));
+                            if(i.id === user.id) {
+                                setUserIsInGroup(true);
+                            }
                             l.push(i.email);
                         }
-                        return [data.group_nr, l.join(', ')];
+                        return [data.group_id, data.user, data.group_nr, l.join(', ')];
                     }
                     
                 };
@@ -212,6 +219,10 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     }
                 };
 
+                // Get user data
+                const user = await getUserData();
+                setUser(user);
+
                 let data = await hashmap_get_to_function[get]();
                 const mappedData = [];
                 for (const d of data) {
@@ -237,9 +248,10 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
                 setRows(filteredAndSlicedRows);
 
-                // Get user data
-                const user = await getUserData();
-                setUser(user);
+                if(get === 'groups') {
+                    const project = await getProject(get_id);
+                    setProject(project);
+                }
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -316,7 +328,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     });
                 }}
             >
-                {action_name || 'Remove'}
+                {   // TODO i18n
+                    action_name
+                }
             </RemoveButton>
 
             )}
@@ -330,7 +344,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                <Table>
                 <thead>
                     <tr>
-                        <th>Select</th>
+                        {(get !== 'groups') && <th>Select</th>}
                         {headers.map((header, index) => (
                             <th key={index}>
                                 <IconButton size="small" onClick={() => handleSort(header)}>
@@ -344,21 +358,44 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 <tbody>
                     {sortedRows.map((row, index) => (
                         <TableRow key={index}>
+                            {((get !== 'groups') &&
                             <td>
                                 {<CheckBoxWithCustomCheck checked={false}/>}
-                            </td>
-                            {row.slice(1).map((cell, cellIndex) => (
+                            </td>)}
+                            {get === 'groups' && row.slice(2).map((cell, cellIndex) => (
+                                <td key={cellIndex}>{cell}</td>
+                            ))}
+                            {get !== 'groups' && row.slice(1).map((cell, cellIndex) => (
                                 <td key={cellIndex}>{cell}</td>
                             ))}
                             { 
                             // group join button
-                            get === 'groups' && (
+                            get === 'groups' && (!row[1].includes(user.id)) && (
                                 <td>
-                                    <Button>
+                                    {
+                                    // join button isn't shown when user is already in group
+                                    // or when group is full
+                                    // TODO i18n join button
+                                    (!user_is_in_group) && (row[1].length < project.group_size) && (
+                                    <Button onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]})}>
                                         Join
                                     </Button>
+                                    )
+                                    }
                                 </td>)
-                                }
+                            }
+                            { 
+                            // group leave button
+                            get === 'groups' && (row[1].includes(user.id)) && (
+                                <td>
+                                    {
+                                    (user_is_in_group) && (
+                                    <Button onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]})}>
+                                        Leave
+                                    </Button>
+                                    )}
+                                </td>)
+                            }
                         </TableRow>
                     ))}
                 </tbody>
