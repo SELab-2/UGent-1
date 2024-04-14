@@ -223,6 +223,11 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 const user = await getUserData();
                 setUser(user);
 
+                if(get === 'groups') {
+                    const project = await getProject(get_id);
+                    setProject(project);
+                }
+
                 let data = await hashmap_get_to_function[get]();
                 const mappedData = [];
                 for (const d of data) {
@@ -247,16 +252,12 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())))
                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
                 setRows(filteredAndSlicedRows);
-
-                if(get === 'groups') {
-                    const project = await getProject(get_id);
-                    setProject(project);
-                }
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
         fetchData();
+        // the values below will be constantly updated
     }, [currentPage, searchTerm, secondValues, secondvalueson]);
     
 
