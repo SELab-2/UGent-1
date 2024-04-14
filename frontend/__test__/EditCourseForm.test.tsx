@@ -15,15 +15,19 @@ const mockCourse = {
 
 describe('EditCourseForm', () => {
     it('renders correctly', () => {
-        const {getByText} = render(<EditCourseForm courseId={mockCourse.id}/>);
+        render(<EditCourseForm courseId={mockCourse.id}/>);
+    });
+
+    it('check boxes', () => {
+       render(<EditCourseForm courseId={mockCourse.id}/>);
 
         // check if the name label was rendered properly
-        expect(screen.getByText('name')).toBeInTheDocument();
+        expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
 
         // check if the description label was rendered properly
-        expect(screen.getByText('description')).toBeInTheDocument();
+        expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
 
         // check if the save button was rendered properly
-        expect(screen.getByText('save')).toBeInTheDocument();
+        expect(screen.getByRole('button')).toBeInTheDocument();
     });
 });

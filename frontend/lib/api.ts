@@ -139,7 +139,7 @@ export async function getCourse(id: number) : Promise<Course>{
 }
 
 export async function getCourses() : Promise<Course[]>{
-    return (await getListRequest('/courses'));
+    return (await getListRequest('/courses/'));
 }
 
 export async function getProject(id: number) : Promise<Project>{

@@ -1,19 +1,15 @@
 export {}
+import AuthAgent from '../../src/auth/auth-agent';
+
 
 Cypress.Commands.add('login', (username: string, password: string) => {
-    cy.request({
-        method: 'POST',
-        url: 'http://localhost:8000/auth/login/',
-        body: {
-            "username": username,
-            "password": password,
-        },
-    }).then((resp) => {
-        if (resp.status == 200) {
-            cy.visit('http://localhost:3000/home');
-        }
-    });
+    cy.visit('http://localhost:8000/api-auth/login/?next=/');
+    cy.get('input[name="username"]').type(username);
+    cy.get('input[name="password"]').type(password);
+    cy.get('input[type=submit').click()
+    cy.visit('http://localhost:3000/home');
 });
+
 
 declare global {
     namespace Cypress {
