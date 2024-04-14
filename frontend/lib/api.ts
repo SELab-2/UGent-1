@@ -231,6 +231,10 @@ export async function getGroups_by_project(project_id: number) : Promise<Group[]
     return (await getRequest(`/projects/${project_id}/get_groups`));
 }
 
+export async function getProjectSubmissions(id: number): Promise<Submission[]> {
+    return (await getListRequest(`/projects/${id}/get_submissions`))
+}
+
 let userData : UserData | undefined = undefined;
 
 export async function getUserData(): Promise<UserData> {

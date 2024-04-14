@@ -1,10 +1,19 @@
 'use client'
-import React, { useState, useEffect } from 'react';
-import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } from '@mui/material';
-import { styled } from '@mui/system';
-import { NextPage } from 'next';
+import React, {useEffect, useState} from 'react';
+import {Box, Button, Checkbox, Container, CssBaseline, IconButton, TextField} from '@mui/material';
+import {styled} from '@mui/system';
+import {NextPage} from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser } from '@lib/api';
+import {
+    deleteData,
+    getCourses,
+    getGroups_by_project,
+    getProjectSubmissions,
+    getUser,
+    getUserData,
+    getUsers,
+    postData
+} from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -180,7 +189,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                             l.push(i.email);
                         }
                         return [data.group_nr, l.join(', ')];
-                    }
+                    },
+                    'submissions': (data) => [data.group_id, data.timestamp, "test"]
 
                 };
 
@@ -193,6 +203,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     'courses': getCourses,
                     'groups': async () => {
                         return getGroups_by_project(get_id);
+                    },
+                    'submissions': async () => {
+                        return getProjectSubmissions(get_id);
                     }
                 };
 
@@ -208,6 +221,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                         return undefined;
                     },
                     'groups': async () => {
+                        return undefined;
+                    },
+                    'submissions': async () => {
                         return undefined;
                     }
                 };
