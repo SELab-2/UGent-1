@@ -1,10 +1,19 @@
 'use client'
-import React, { useState, useEffect } from 'react';
-import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } from '@mui/material';
-import { styled } from '@mui/system';
-import { NextPage } from 'next';
+import React, {useEffect, useState} from 'react';
+import {Box, Button, Checkbox, Container, CssBaseline, IconButton, TextField} from '@mui/material';
+import {styled} from '@mui/system';
+import {NextPage} from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject } from '@lib/api';
+import {
+    deleteData,
+    getCourses,
+    getGroups_by_project,
+    getProject,
+    getUser,
+    getUserData,
+    getUsers,
+    postData
+} from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -146,14 +155,14 @@ interface ListViewProps {
     secondvalues?: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name }) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name}) => {
     // default listview
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const [totalPages, setTotalPages] = useState(0);
     const [rows, setRows] = useState<(string | number)[][]>([]);
-    const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
+    const [sortConfig, setSortConfig] = useState({key: headers[0], direction: 'asc'});
     // student and user page
     const [secondvalueson, setSecondValuesOn] = useState(false);
     const [secondValues, setSecondValues] = useState<(string | number)[][]>([]);
@@ -181,7 +190,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                         // Iterate over the values of the object
                         for (const user_id of Object.values(data.user)) {
                             const i = await getUser(Number(user_id));
-                            if(i.id === user.id) {
+                            if (i.id === user.id) {
                                 setUserIsInGroup(true);
                             }
                             l.push(i.email);
@@ -193,7 +202,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
                     'users': getUsers,
-                    'course_users':  async () => {
+                    'course_users': async () => {
                         const users = await getUsers();
                         return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role === 3);
                     },
@@ -223,7 +232,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 const user = await getUserData();
                 setUser(user);
 
-                if(get === 'groups') {
+                if (get === 'groups') {
                     const project = await getProject(get_id);
                     setProject(project);
                 }
@@ -233,9 +242,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 for (const d of data) {
                     mappedData.push(await hashmap_get_to_parser[get](d));
                 }
-                if(hashmap_get_to_secondvalues[get]) {
+                if (hashmap_get_to_secondvalues[get]) {
                     const secondvalues = await hashmap_get_to_secondvalues[get]();
-                    if(secondvalues) {
+                    if (secondvalues) {
                         const mappedSecondValues = secondvalues.map(hashmap_get_to_parser[get]);
                         setSecondValues(mappedSecondValues);
                     }
@@ -273,7 +282,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
             direction = 'desc';
         }
-        setSortConfig({ key, direction });
+        setSortConfig({key, direction});
     };
 
     const sortedRows = [...rows].sort((a, b) => {
@@ -314,7 +323,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                                  */
                                 const id = sortedRows[index][0];
                                 if (!isNaN(id)) {
-                                    if(action_name === 'remove_from_course') {
+                                    if (action_name === 'remove_from_course') {
                                         postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id});
                                     } else if (action_name === 'remove') {
                                         deleteData('/users/' + id);
@@ -348,7 +357,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     {headers.map((header, index) => (
                         <th key={index}>
                             <IconButton size="small" onClick={() => handleSort(header)}>
-                                {sortConfig.key === header ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon /> : <WhiteTriangleDownIcon />) : <WhiteSquareIcon />}
+                                {sortConfig.key === header ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon/> :
+                                    <WhiteTriangleDownIcon/>) : <WhiteSquareIcon/>}
                             </IconButton>
                             {header}
                         </th>
@@ -377,7 +387,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                                         // or when group is full
                                         // TODO i18n join button
                                         (!user_is_in_group) && (row[1].length < project.group_size) && (
-                                            <Button onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]})}>
+                                            <Button
+                                                onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]})}>
                                                 Join
                                             </Button>
                                         )
@@ -390,7 +401,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                                 <td>
                                     {
                                         (user_is_in_group) && (
-                                            <Button onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]})}>
+                                            <Button
+                                                onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]})}>
                                                 Leave
                                             </Button>
                                         )}
@@ -400,7 +412,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 ))}
                 </tbody>
             </Table>
-            {totalPages > 1 &&  (
+            {totalPages > 1 && (
                 <Box>
                     <Button
                         disabled={currentPage === 1}
