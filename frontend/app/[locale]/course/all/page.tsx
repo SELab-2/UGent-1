@@ -4,6 +4,7 @@ import TranslationsProvider from "@app/[locale]/components/TranslationsProvider"
 import NavBar from "@app/[locale]/components/NavBar";
 import Footer from "@app/[locale]/components/Footer";
 import ListView from '@app/[locale]/components/ListView';
+import BackButton from '@app/[locale]/components/BackButton';
  
 
 const i18nNamespaces = ['common']
@@ -20,6 +21,7 @@ export default async function Users({params: {locale}}: { params: { locale: any}
             namespaces={i18nNamespaces}
         >
             <NavBar/>
+            <BackButton destination={'/home'}/>
             <ListView
                 admin={true}
                 headers={headers}

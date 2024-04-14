@@ -14,7 +14,7 @@ const RootContainer = styled(Container)(({theme}) => ({
     padding: theme.spacing(1),
     borderRadius: theme.spacing(1),
     boxShadow: theme.shadows[1],
-    marginTop: '64px',
+    marginTop: '20px',
     width: '75%',
     maxWidth: '100%',
 }));
@@ -240,7 +240,6 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                         setSecondValues(mappedSecondValues);
                     }
                 }
-
     
                 // Calculate total pages based on filtered rows
                 const totalItems = secondvalueson ? secondValues?.length : mappedData.length;
@@ -258,7 +257,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
         };
         fetchData();
         // the values below will be constan
-    }, [currentPage, searchTerm, secondValues, secondvalueson]);
+    }, [currentPage, searchTerm, secondvalueson]);
     
 
   const handleChangePage = (direction: 'next' | 'prev') => {
