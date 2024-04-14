@@ -257,7 +257,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
             }
         };
         fetchData();
-        // the values below will be constantly updated
+        // the values below will be constan
     }, [currentPage, searchTerm, secondValues, secondvalueson]);
     
 
