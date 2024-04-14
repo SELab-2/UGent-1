@@ -4,7 +4,6 @@ import TranslationsProvider from "@app/[locale]/components/TranslationsProvider"
 import NavBar from "@app/[locale]/components/NavBar";
 import Footer from "@app/[locale]/components/Footer";
 import ListView from '@app/[locale]/components/ListView';
-import {getUsers} from '@lib/api';
  
 
 const i18nNamespaces = ['common']

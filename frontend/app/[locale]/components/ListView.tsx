@@ -4,7 +4,7 @@ import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } 
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers, deleteData } from '@lib/api';
+import { getUsers, deleteData, postData } from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -109,22 +109,22 @@ const CheckBoxWithCustomCheck = () => {
     );
 };
 const WhiteSquareIcon = () => (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-       <rect width="12" height="12" fill="white"/>
-    </svg>
-   );
+<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="12" height="12" fill="white"/>
+</svg>
+);
 
-   const WhiteTriangleUpIcon = () => (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-       <path d="M6 12L12 0L0 0L6 12Z" fill="white"/>
-    </svg>
-   );
+const WhiteTriangleUpIcon = () => (
+<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6 12L12 0L0 0L6 12Z" fill="white"/>
+</svg>
+);
 
-   const WhiteTriangleDownIcon = () => (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-       <path d="M6 0L12 12L0 12L6 0Z" fill="white"/>
-    </svg>
-   );
+const WhiteTriangleDownIcon = () => (
+<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6 0L12 12L0 12L6 0Z" fill="white"/>
+</svg>
+);
 
 
 const SearchBar = styled(TextField)({
@@ -146,7 +146,7 @@ interface ListViewProps {
     secondvalues?: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({ admin, get, headers, secondvalues, tablenames, action_name }) => {
+const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, secondvalues, tablenames, action_name }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [secondvalueson, setSecondValuesOn] = useState(false);
@@ -156,51 +156,63 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, headers, secondvalues, 
     const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
     const [values, setValues] = useState<(string | number)[][]>([]); // Initialize as empty array
     const [ids, setIds] = useState<number[]>([]);
-    const [action, setAction] = useState<(path: string) => Promise<any> | undefined>();
+    const [secondValues, setSecondValues] = useState<(string | number)[][]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const hashmap_get_to_parser: { [key: string]: (data: any) => any[] } = {
                     'users': (data) => [data.name, data.email, data.role],
+                    'course_users': (data) => [data.name, data.email, data.role],
                 };
-    
+
                 const hashmap_get_to_function: { [key: string]: () => Promise<any> } = {
                     'users': getUsers,
+                    'course_users':  async () => {
+                        const users = await getUsers();
+                        return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role === 3);
+                    }
                 };
-    
-                const hashmap_action_to_function: { [key: string]: (path:string) => Promise<any> } = {
-                    'remove': deleteData,
+
+                const hashmap_get_to_secondvalues: { [key: string]: () => Promise<any> } = {
+                    'users': async () => {
+                        return undefined;
+                    },
+                    'course_users': async () => {
+                        const users = await getUsers();
+                        return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role !== 3);
+                    }
                 };
-    
-                const data = await hashmap_get_to_function[get]();
+
+                let data = await hashmap_get_to_function[get]();
                 console.log(data);
                 const mappedData = data.map(hashmap_get_to_parser[get]);
                 setValues(mappedData);
+                if(hashmap_get_to_secondvalues[get]) {
+                    const secondvalues = await hashmap_get_to_secondvalues[get]();
+                    if(secondvalues) {
+                        const mappedSecondValues = secondvalues.map(hashmap_get_to_parser[get]);
+                        setSecondValues(mappedSecondValues);
+                    }
+                }
                 setIds(data.map((d: any) => d.id));
     
                 // Calculate total pages based on filtered rows
-                const totalItems = secondvalueson ? secondvalues?.length : mappedData.length;
+                const totalItems = secondvalueson ? secondValues?.length : mappedData.length;
                 setTotalPages(Math.ceil(totalItems / itemsPerPage));
     
                 // Filter and slice rows based on current search term and page
-                const filteredRows = secondvalueson ? secondvalues : mappedData;
+                const filteredRows = secondvalueson ? secondValues : mappedData;
                 const filteredAndSlicedRows = filteredRows
                     .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())))
                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
                 setRows(filteredAndSlicedRows);
-    
-                // Set the action only if action_name is provided
-                if (action_name) {
-                    setAction(() => hashmap_action_to_function[action_name]);
-                }
-    
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
         fetchData();
-    }, [currentPage, searchTerm, secondvalues, secondvalueson]);
+    }, [currentPage, searchTerm, secondValues, secondvalueson]);
     
 
   const handleChangePage = (direction: 'next' | 'prev') => {
@@ -252,10 +264,13 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, headers, secondvalues, 
                             // if secondvalues are on, use the secondvalues array
                             const id =  ids[index];
                             if (!isNaN(id)) {
-                                console.log("Removing ID:", id);
-                                action('/users/' + id);
+                                if(action_name === 'remove_from_course') {
+                                    postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id});
+                                } else if (action_name === 'remove') {
+                                    deleteData('/users/' + id);
+                                }
                             } else {
-                                console.error("Invalid course ID:", ids[index]);
+                                console.error("Invalid id", ids[index]);
                             }
                         }
                     });
