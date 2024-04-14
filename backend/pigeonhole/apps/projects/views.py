@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,10 +13,17 @@ from .permissions import CanAccessProject
 from ..submissions.models import Submissions, SubmissionsSerializer
 
 
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
+
+
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated & CanAccessProject]
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
