@@ -154,10 +154,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
     const [totalPages, setTotalPages] = useState(0);
     const [rows, setRows] = useState<(string | number)[][]>([]);
     const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
-    const [values, setValues] = useState<(string | number)[][]>([]);
-    const [ids, setIds] = useState<number[]>([]);
     const [secondValues, setSecondValues] = useState<(string | number)[][]>([]);
     const [user, setUser] = useState<any>();
+    const [group_members, setGroupMembers] = useState<(string | number)[][]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -170,9 +169,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                  */
 
                 const hashmap_get_to_parser: { [key: string]: (data: any) => any[] | Promise<any[]> } = {
-                    'users': (data) => [data.name, data.email, data.role],
-                    'course_users': (data) => [data.name, data.email, data.role],
-                    'courses': (data) => [data.name, data.description],
+                    'users': (data) => [data.id, data.name, data.email, data.role],
+                    'course_users': (data) => [data.id, data.name, data.email, data.role],
+                    'courses': (data) => [data.course_id, data.name, data.description],
                     'groups': async (data) => {
                         let l = [];
                         // Iterate over the values of the object
@@ -218,7 +217,6 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 for (const d of data) {
                     mappedData.push(await hashmap_get_to_parser[get](d));
                 }
-                setValues(mappedData);
                 if(hashmap_get_to_secondvalues[get]) {
                     const secondvalues = await hashmap_get_to_secondvalues[get]();
                     if(secondvalues) {
@@ -227,17 +225,6 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     }
                 }
 
-                /**
-                 * 
-                 *  EDIT
-                 * 
-                 */
-
-                if(get === 'courses') {
-                    setIds(data.map((d: any) => d.course_id));
-                } else {
-                    setIds(data.map((d: any) => d.id));
-                }
     
                 // Calculate total pages based on filtered rows
                 const totalItems = secondvalueson ? secondValues?.length : mappedData.length;
@@ -313,7 +300,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                              *  EDIT
                              * 
                              */
-                            const id =  ids[index];
+                            const id = sortedRows[index][0];
                             if (!isNaN(id)) {
                                 if(action_name === 'remove_from_course') {
                                     postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id});
@@ -323,7 +310,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                                     postData('/courses/' + id + '/join_course/', {course_id: id});
                                 }
                             } else {
-                                console.error("Invalid id", ids[index]);
+                                console.error("Invalid id", sortedRows[index][0]);
                             }
                         }
                     });
@@ -360,7 +347,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                             <td>
                                 {<CheckBoxWithCustomCheck checked={false}/>}
                             </td>
-                            {row.map((cell, cellIndex) => (
+                            {row.slice(1).map((cell, cellIndex) => (
                                 <td key={cellIndex}>{cell}</td>
                             ))}
                             { 
