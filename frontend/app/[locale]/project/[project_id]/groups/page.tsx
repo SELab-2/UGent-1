@@ -10,7 +10,7 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
     const { locale, project_id: projectId } = params; 
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
-    const headers = [t('group_nr')];
+    const headers = [t('group_nr'), t('members'), t('join/leave')];
     
     return (
         <TranslationsProvider

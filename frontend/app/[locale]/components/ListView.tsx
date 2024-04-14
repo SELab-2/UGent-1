@@ -4,7 +4,7 @@ import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } 
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers, deleteData, postData, getCourses, getGroups_by_project } from '@lib/api';
+import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser } from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -146,7 +146,7 @@ interface ListViewProps {
     secondvalues?: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, secondvalues, tablenames, action_name }) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [secondvalueson, setSecondValuesOn] = useState(false);
@@ -154,9 +154,10 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
     const [totalPages, setTotalPages] = useState(0);
     const [rows, setRows] = useState<(string | number)[][]>([]);
     const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
-    const [values, setValues] = useState<(string | number)[][]>([]); // Initialize as empty array
+    const [values, setValues] = useState<(string | number)[][]>([]);
     const [ids, setIds] = useState<number[]>([]);
     const [secondValues, setSecondValues] = useState<(string | number)[][]>([]);
+    const [user, setUser] = useState<any>();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -168,11 +169,20 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
                  * 
                  */
 
-                const hashmap_get_to_parser: { [key: string]: (data: any) => any[] } = {
+                const hashmap_get_to_parser: { [key: string]: (data: any) => any[] | Promise<any[]> } = {
                     'users': (data) => [data.name, data.email, data.role],
                     'course_users': (data) => [data.name, data.email, data.role],
                     'courses': (data) => [data.name, data.description],
-                    'groups': (data) => [data.group_nr]
+                    'groups': async (data) => {
+                        let l = [];
+                        // Iterate over the values of the object
+                        for (const user_id of Object.values(data.user)) {
+                            const i = await getUser(Number(user_id));
+                            l.push(i.email);
+                        }
+                        return [data.group_nr, l.join(', ')];
+                    }
+                    
                 };
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
@@ -204,7 +214,10 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
                 };
 
                 let data = await hashmap_get_to_function[get]();
-                const mappedData = data.map(hashmap_get_to_parser[get]);
+                const mappedData = [];
+                for (const d of data) {
+                    mappedData.push(await hashmap_get_to_parser[get](d));
+                }
                 setValues(mappedData);
                 if(hashmap_get_to_secondvalues[get]) {
                     const secondvalues = await hashmap_get_to_secondvalues[get]();
@@ -236,6 +249,10 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
                     .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())))
                     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
                 setRows(filteredAndSlicedRows);
+
+                // Get user data
+                const user = await getUserData();
+                setUser(user);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -346,11 +363,20 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
                             {row.map((cell, cellIndex) => (
                                 <td key={cellIndex}>{cell}</td>
                             ))}
+                            { 
+                            // group join button
+                            get === 'groups' && (
+                                <td>
+                                    <Button>
+                                        Join
+                                    </Button>
+                                </td>)
+                                }
                         </TableRow>
                     ))}
                 </tbody>
             </Table>
-            {totalPages > 1 && (
+            {totalPages > 1 &&  (
                 <Box>
                     <Button
                         disabled={currentPage === 1}
