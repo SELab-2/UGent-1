@@ -4,7 +4,7 @@ import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } 
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers, deleteData, postData, getCourses } from '@lib/api';
+import { getUsers, deleteData, postData, getCourses, getGroups_by_project } from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -171,16 +171,20 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
                 const hashmap_get_to_parser: { [key: string]: (data: any) => any[] } = {
                     'users': (data) => [data.name, data.email, data.role],
                     'course_users': (data) => [data.name, data.email, data.role],
-                    'courses': (data) => [data.name, data.description]
+                    'courses': (data) => [data.name, data.description],
+                    'groups': (data) => [data.group_nr]
                 };
 
-                const hashmap_get_to_function: { [key: string]: () => Promise<any> } = {
+                const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
                     'users': getUsers,
                     'course_users':  async () => {
                         const users = await getUsers();
                         return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role === 3);
                     },
-                    'courses': getCourses
+                    'courses': getCourses,
+                    'groups': async () => {
+                        return getGroups_by_project(get_id);
+                    }
                 };
 
                 const hashmap_get_to_secondvalues: { [key: string]: () => Promise<any> } = {
@@ -192,6 +196,9 @@ const ListView: NextPage<ListViewProps> = ({ admin, get, get_id, headers, second
                         return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role !== 3);
                     },
                     'courses': async () => {
+                        return undefined;
+                    },
+                    'groups': async () => {
                         return undefined;
                     }
                 };

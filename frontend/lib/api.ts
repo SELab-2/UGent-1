@@ -219,6 +219,10 @@ export async function getGroups() : Promise<Group[]>{
     return (await getListRequest('/groups'));
 }
 
+export async function getGroups_by_project(project_id: number) : Promise<Group[]>{
+    return (await getRequest(`/projects/${project_id}/get_groups`));
+}
+
 let userData : UserData | undefined = undefined;
 
 export async function getUserData() : Promise<UserData>{
