@@ -183,7 +183,15 @@ async function getListRequest(path: string) {
 
 }
 
-export async function getCourse(id: number): Promise<Course> {
+export async function getUser(id: number) : Promise<User>{
+    return (await getRequest(`/users/${id}`));
+}
+
+export async function getUsers() : Promise<User[]>{
+    return (await getListRequest('/users'));
+}
+
+export async function getCourse(id: number) : Promise<Course>{
     return (await getRequest(`/courses/${id}`));
 }
 
@@ -219,11 +227,11 @@ export async function getGroups(): Promise<Group[]> {
     return (await getListRequest('/groups'));
 }
 
-export async function getProjectSubmissions(id: number): Promise<Submission[]> {
-    return (await getListRequest(`/projects/${id}/get_submissions`))
+export async function getGroups_by_project(project_id: number) : Promise<Group[]>{
+    return (await getRequest(`/projects/${project_id}/get_groups`));
 }
 
-let userData: UserData | undefined = undefined;
+let userData : UserData | undefined = undefined;
 
 export async function getUserData(): Promise<UserData> {
     if (userData) {
@@ -344,10 +352,10 @@ export async function putData(path: string, data: any){
 }
 
 export async function deleteData(path: string){
-    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.delete['X-CSRFToken'] = getCookieValue('csrftoken');
 
     try {
-        const response = await axios.delete(backend_url + path, { withCredentials: true });
+        const response = await axios.delete(backend_url + path + '/', { withCredentials: true });
 
     } catch (error) {
         const apierror : APIError = new APIError();

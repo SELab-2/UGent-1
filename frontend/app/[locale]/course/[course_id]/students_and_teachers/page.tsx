@@ -6,11 +6,11 @@ import ListView from '@app/[locale]/components/ListView';
 
 const i18nNamespaces = ['common']
 
-export default async function GroupPage({ params }: { params: { locale: any, project_id: number } }) {
-    const { locale, project_id: projectId } = params; 
+export default async function StudentsPage({ params }: { params: { locale: any, courseId: number } }) {
+    const { locale, courseId } = params;
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
-    const headers = [t('group_nr'), t('members'), t('join/leave')];
+    const headers = [t('name'), t('email'), t('role')];
     
     return (
         <TranslationsProvider
@@ -23,8 +23,10 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
                 <ListView
                     admin={true}
                     headers={headers}
-                    get_id={projectId}
-                    get={'groups'}
+                    get_id={courseId}
+                    get={'course_users'}
+                    action_name={'remove_from_course'}
+                    tablenames={[t('students'), t('teachers')]}
                 />
             </div>
             <Footer />
