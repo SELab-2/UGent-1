@@ -1,5 +1,4 @@
 import axios, { AxiosError } from 'axios';
-import axios, {AxiosError} from 'axios';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
