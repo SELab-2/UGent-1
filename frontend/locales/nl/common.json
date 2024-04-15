@@ -36,6 +36,15 @@
     "remove_dialog": "Project verwijderen?",
     "action_dialog": "Deze actie kan niet ongedaan worden gemaakt.",
     "remove_confirm": "Verwijderen",
-    "remove_cancel": "Annuleren"
-
+    "remove_cancel": "Annuleren",
+    "name": "Naam",
+    "email": "E-mail",
+    "group": "Groep",
+    "role" : "Rol",
+    "remove_user": "Geselecteerde gebruikers verwijderen",
+    "remove_user_from_course": "Geselecteerde gebruikers verwijderen uit cursus",
+    "search" : "Zoeken",
+    "back_to" : "Terug naar",
+    "page" : "pagina",
+    "course_detail" : "cursus details"
 }

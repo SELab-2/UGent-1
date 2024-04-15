@@ -26,14 +26,14 @@ const BackButton_ = styled('button')(({theme}) => ({
 }));
 
 // back button has to take the destination as a prop and navigate to it
-export default function BackButton({ destination }) {
+export default function BackButton({ destination, text}) {
     const handleClick = () => {
         window.location.assign(destination);
     };
 
     return (
         <BackButton_ onClick={handleClick}>
-            Back to {destination.slice(1)} page
+            {text}
         </BackButton_>
     );
 }

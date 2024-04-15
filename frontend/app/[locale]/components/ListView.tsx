@@ -4,7 +4,7 @@ import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } 
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject } from '@lib/api';
+import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject, getUsers_by_course } from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -146,7 +146,7 @@ interface ListViewProps {
     secondvalues?: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name }) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name, action_text, search_text }) => {
     // default listview
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -194,8 +194,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
                     'users': getUsers,
                     'course_users':  async () => {
-                        const users = await getUsers();
-                        return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role === 3);
+                        const users = await getUsers_by_course(get_id);
+                        return users.filter((d: any) => d.role === 3);
                     },
                     'courses': getCourses,
                     'groups': async () => {
@@ -208,8 +208,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                         return undefined;
                     },
                     'course_users': async () => {
-                        const users = await getUsers();
-                        return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role !== 3);
+                        const users = await getUsers_by_course(get_id);
+                        return users.filter((d: any) => d.role !== 3);
                     },
                     'courses': async () => {
                         return undefined;
@@ -294,7 +294,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
         <RootContainer component="main">
             <CssBaseline/>
             <SearchBar
-                label="Search"
+                label={search_text}
                 variant="outlined"
                 fullWidth
                 value={searchTerm}
@@ -328,8 +328,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     });
                 }}
             >
-                {   // TODO i18n
-                    action_name
+                {
+                    action_text
                 }
             </RemoveButton>
 

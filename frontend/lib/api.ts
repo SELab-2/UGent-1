@@ -183,6 +183,10 @@ export async function getUsers() : Promise<User[]>{
     return (await getListRequest('/users'));
 }
 
+export async function getUsers_by_course(course_id: number) : Promise<User[]>{
+    return (await getRequest(`/courses/${course_id}/get_users`));
+}
+
 export async function getCourse(id: number) : Promise<Course>{
     return (await getRequest(`/courses/${id}`));
 }
