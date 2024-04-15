@@ -1,4 +1,3 @@
-
 import axios, { AxiosError } from 'axios';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
@@ -31,6 +30,8 @@ export type Course = {
     course_id: number;
     name: string;
     description: string;
+    open_course: boolean;
+    invite_token: string;
 }
 
 export type Project = {
@@ -43,6 +44,9 @@ export type Project = {
     max_score: number;
     number_of_groups: number;
     group_size: number;
+    file_structure: string;
+    test_files: string;
+    conditions: string;
 }
 
 export type User = {
@@ -112,6 +116,45 @@ async function getRequest(path: string){
     }
 }
 
+async function getBlobRequest(path: string){
+    try {
+        const response = await axios.get(path,
+            {withCredentials: true, responseType: 'blob'});
+        if (response.status === 200 && response?.data) {
+            return response.data;
+        } else if(response?.data?.detail) {
+            console.error("Unexpected response structure:", response.data);
+            const error : APIError = new APIError();
+            error.status = response.status;
+            error.message = response.data.detail;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        }else{
+            const error : APIError = new APIError();
+            error.status = response.status;
+            error.message = response.statusText;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        }
+    } catch (axioserror : AxiosError | unknown) {
+        console.error("There was an error fetching the courses:", axioserror);
+        const error : APIError = new APIError();
+        if(axioserror instanceof AxiosError){
+            error.status = axioserror.response?.status;
+            error.message = axioserror.message;
+            error.type = ErrorType.REQUEST_ERROR;
+            error.trace = axioserror;
+            throw error;
+        }else{
+            error.message = "Fetching error";
+            error.type = ErrorType.REQUEST_ERROR;
+            error.trace = axioserror;
+            throw error;
+        }
+    }
+}
 
 async function getListRequest(path: string){
     const data = await getRequest(path);
@@ -142,8 +185,20 @@ export async function getCourses() : Promise<Course[]>{
     return (await getListRequest('/courses'));
 }
 
+export async function getTestFiles(path: string): Promise<Blob> {
+    return (await getBlobRequest(path));
+}
+
 export async function getProject(id: number) : Promise<Project>{
     return (await getRequest(`/projects/${id}`));
+}
+
+export async function updateProject(id: number, data: any): Promise<Project> {
+    return (await putData(`/projects/${id}/`, data));
+}
+
+export async function deleteProject(id: number): Promise<void> {
+    return (await deleteData(`/projects/${id}/`));
 }
 
 export async function getProjects() : Promise<Project[]>{
@@ -167,11 +222,11 @@ let userData : UserData | undefined = undefined;
 export async function getUserData() : Promise<UserData>{
     if(userData){
         return userData;
-    }else if(localStorage.getItem('user')){
+    }/*else if(localStorage.getItem('user')){
         let user : UserData = JSON.parse(localStorage.getItem('user') as string);
         userData = user;
         return user;
-    }else{
+    }*/else{
         let user : UserData = await getRequest('/users/current');
         localStorage.setItem('user', JSON.stringify(user));
         console.log(user);
@@ -246,4 +301,56 @@ export async function postData(path: string, data: any){
         apierror.trace = error;
         throw apierror;
     }
+}
+
+export async function putData(path: string, data: any){
+    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+
+    try {
+        const response = await axios.put(backend_url + path, data, { withCredentials: true });
+
+        if (response.status === 200 && response?.data) {
+            return response.data;
+        } else if(response?.data?.detail) {
+            console.error("Unexpected response structure:", response.data);
+            const error : APIError = new APIError();
+            error.status = response.status;
+            error.message = response.data.detail;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        }else{
+            const error : APIError = new APIError();
+            error.status = response.status;
+            error.message = response.statusText;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        }
+    } catch (error) {
+        const apierror : APIError = new APIError();
+        apierror.message = "error on put request";
+        apierror.type = ErrorType.REQUEST_ERROR;
+        apierror.trace = error;
+        throw apierror;
+    }
+}
+
+export async function deleteData(path: string){
+    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+
+    try {
+        const response = await axios.delete(backend_url + path, { withCredentials: true });
+
+    } catch (error) {
+        const apierror : APIError = new APIError();
+        apierror.message = "error on delete request";
+        apierror.type = ErrorType.REQUEST_ERROR;
+        apierror.trace = error;
+        throw apierror;
+    }
+}
+
+export async function joinCourseUsingToken(course_id: number, token: string){
+    return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }

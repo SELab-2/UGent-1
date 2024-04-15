@@ -25,9 +25,12 @@ export default function AccountMenu() {
     const { t } = useTranslation()
 
     useEffect(() => {
+
+
         const fetchCourses = async () => {
             try{
                 setUser(await getUserData());
+                console.log(user);
             }catch(error){
                 if(error instanceof APIError) setError(error);
             }

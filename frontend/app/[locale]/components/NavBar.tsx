@@ -71,6 +71,7 @@ const NavBar = () => {
     }
 
     const doLogout = (): void => {
+        // Implement CAS login logic here
         window.location.href = backend_url + "/auth/logout";
     };
 
