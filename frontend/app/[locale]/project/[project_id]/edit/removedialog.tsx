@@ -1,14 +1,15 @@
-import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
-import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid} from "@mui/material";
+import {Box, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import React from "react";
 
-function RemoveDialog(
+interface RemoveDialogProps {
     confirmRemove: boolean,
     handle_remove: () => void,
     setConfirmRemove: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
-) {
-    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
+}
+
+function RemoveDialog({confirmRemove, handle_remove, setConfirmRemove, translations}: RemoveDialogProps) {
+    return <div>
         <Dialog open={confirmRemove} className={"dialogPadding"}>
             <Box textAlign={"center"}>
                 <DialogTitle>
@@ -20,22 +21,22 @@ function RemoveDialog(
                     {translations.t("action_dialog")}
                 </Box>
             </DialogContent>
-            <DialogActions style={{ justifyContent: 'space-between'}}>
-                    <button
-                        onClick={handle_remove}
-                        className={"dialogRemove"}
-                    >
-                        {translations.t("remove_confirm")}
-                    </button>
-                    <button
-                        onClick={() => setConfirmRemove(false)}
-                        className={"dialogCancel"}
-                    >
-                        {translations.t("remove_cancel")}
-                    </button>
+            <DialogActions style={{justifyContent: 'space-between'}}>
+                <button
+                    onClick={handle_remove}
+                    className={"dialogRemove"}
+                >
+                    {translations.t("remove_confirm")}
+                </button>
+                <button
+                    onClick={() => setConfirmRemove(false)}
+                    className={"dialogCancel"}
+                >
+                    {translations.t("remove_cancel")}
+                </button>
             </DialogActions>
         </Dialog>;
-    </TranslationsProvider>
+    </div>
 }
 
 export default RemoveDialog;

@@ -17,7 +17,7 @@ import Deadline from "./deadline";
 import RemoveDialog from './removedialog';
 import initTranslations from '../../../../i18n';
 import './project_styles.css'
-import {getProject, Project, getTestFiles, updateProject, deleteProject, getUserData} from "../../../../../lib/api";
+import {deleteProject, getProject, getTestFiles, getUserData, Project, updateProject} from "../../../../../lib/api";
 import {any} from "prop-types";
 
 
@@ -178,20 +178,79 @@ function ProjectDetailPage({params: {locale, project_id}}: { params: { locale: a
                             height="100vh"
                         >
                             <Box className={"pageBoxLeft"}>
-                                {Title(isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations)}
-                                {Assignment(isAssignmentEmpty, setDescription, description, translations)}
-                                {RequiredFiles(files, setFiles, translations)}
-                                {Conditions(conditions, setConditions, translations)}
-                                {Groups(groupAmount, isGroupAmountEmpty, groupSize, isGroupSizeEmpty, setGroupAmount, setGroupSize, translations)}
-                                {TestFiles(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
-                                {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
+                                <Title
+                                    isTitleEmpty={isTitleEmpty}
+                                    setTitle={setTitle}
+                                    title={title}
+                                    score={score}
+                                    isScoreEmpty={isScoreEmpty}
+                                    setScore={setScore}
+                                    translations={translations}
+                                />
+                                <Assignment
+                                    isAssignmentEmpty={isAssignmentEmpty}
+                                    setDescription={setDescription}
+                                    description={description}
+                                    translations={translations}
+                                />
+                                <RequiredFiles
+                                    files={files}
+                                    setFiles={setFiles}
+                                    translations={translations}
+                                />
+                                <Conditions
+                                    conditions={conditions}
+                                    setConditions={setConditions}
+                                    translations={translations}
+                                />
+                                <Groups
+                                    groupAmount={groupAmount}
+                                    isGroupAmountEmpty={isGroupAmountEmpty}
+                                    groupSize={groupSize}
+                                    isGroupSizeEmpty={isGroupSizeEmpty}
+                                    setGroupAmount={setGroupAmount}
+                                    setGroupSize={setGroupSize}
+                                    translations={translations}
+                                />
+                                <TestFiles
+                                    setTestfilesData={setTestfilesData}
+                                    setTestfilesName={setTestfilesName}
+                                    testfilesData={testfilesData}
+                                    testfilesName={testfilesName}
+                                    translations={translations}
+                                />
+                                <UploadTestFile
+                                    testfilesName={testfilesName}
+                                    setTestfilesName={setTestfilesName}
+                                    testfilesData={testfilesData}
+                                    setTestfilesData={setTestfilesData}
+                                    translations={translations}
+                                />
                             </Box>
                             <Box className={"pageBoxRight"}>
-                                {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations, course_id, setHasDeadline, hasDeadline)}
-                                {Deadline(deadline, setDeadline, hasDeadline)}
+                                <FinishButtons
+                                    visible={visible}
+                                    setVisible={setVisible}
+                                    handleSave={handleSave}
+                                    setConfirmRemove={setConfirmRemove}
+                                    translations={translations}
+                                    course_id={course_id}
+                                    setHasDeadline={setHasDeadline}
+                                    hasDeadline={hasDeadline}
+                                />
+                                <Deadline
+                                    deadline={deadline}
+                                    setDeadline={setDeadline}
+                                    hasDeadline={hasDeadline}
+                                />
                             </Box>
                         </Box>
-                        {RemoveDialog(confirmRemove, handle_remove, setConfirmRemove, translations)}
+                        <RemoveDialog
+                            confirmRemove={confirmRemove}
+                            handle_remove={handle_remove}
+                            setConfirmRemove={setConfirmRemove}
+                            translations={translations}
+                        />
                     </div>
                 ) : (
                     <div>Students cannot edit project</div>

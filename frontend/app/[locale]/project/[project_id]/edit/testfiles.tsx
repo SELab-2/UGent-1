@@ -3,10 +3,9 @@ import {Avatar, IconButton, Link, List, ListItem, ListItemAvatar} from "@mui/mat
 import DeleteIcon from "@mui/icons-material/Delete";
 import DescriptionIcon from "@mui/icons-material/Description";
 import React from "react";
-import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import JSZip from "jszip";
 
-function TestFiles(
+interface TestFilesProps {
     testfilesName: string[],
     setTestfilesName: (value: (((prevState: string[]) => string[]) | string[])) => void,
     testfilesData: JSZip.JSZipObject[],
@@ -16,9 +15,11 @@ function TestFiles(
         resources: any;
         locale: any;
         i18nNamespaces: string[]
-    }) {
-    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces}
-                                 resources={translations.resources}>
+    }
+}
+
+function TestFiles({testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations}: TestFilesProps) {
+    return <div>
         <Typography variant="h5" className={"typographyStyle"}>
             {translations.t("test_files")}
         </Typography>
@@ -54,7 +55,7 @@ function TestFiles(
                 </ListItem>
             ))}
         </List>
-    </TranslationsProvider>;
+    </div>;
 }
 
 export default TestFiles;
