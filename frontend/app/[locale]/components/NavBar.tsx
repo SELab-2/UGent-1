@@ -59,14 +59,18 @@ const NavBar = () => {
                 window.location.href = 'https://github.com/SELab-2/UGent-1'
                 break;
             case t('my_profile'):
-                //TODO: Route to profile page
+                window.location.href = '/profile'
                 break;
             case t('logout'):
                 doLogout();
         }
     };
+
+    const handleCourseClick = (course_id: number) => {
+        window.location.href = '/course/' + course_id;
+    }
+
     const doLogout = (): void => {
-        // Implement CAS login logic here
         window.location.href = backend_url + "/auth/logout";
     };
 
@@ -91,7 +95,7 @@ const NavBar = () => {
                 {courses.length > 0 ? (
                     courses.map((course) => (
                         <ListItem key={course.course_id} disablePadding>
-                            <ListItemButton>
+                            <ListItemButton onClick={(event) => handleCourseClick(course.course_id)}>
                                 <ListItemText primary={course.name}/>
                             </ListItemButton>
                         </ListItem>
@@ -110,7 +114,7 @@ const NavBar = () => {
             {user?.role === 3 ? (
                 <>
                     <Divider/>
-                    <Link href={'/admin'} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link href={'/admin'} style={{textDecoration: 'none', color: 'inherit'}}>
                         <ListItemButton>
                             <ListItemIcon>
                                 <ConstructionIcon/>

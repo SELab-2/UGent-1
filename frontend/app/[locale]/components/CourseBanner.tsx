@@ -28,6 +28,9 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
         fetchCourse();
     }, [course_id]);
 
+    console.log(user?.role);
+    console.log(user?.first_name, user?.last_name, user?.emai);
+
     return (
         <Box
             sx={{
@@ -42,6 +45,8 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 marginTop: 50,
                 margin: "0 auto",
                 paddingX: 2,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
             }}
         >
             <Box
@@ -56,17 +61,19 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                     textAlign="left"
                     sx={{
                         color: 'white',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
                     }}
                 >
                     {course?.name}
                 </Typography>
             </Box>
-            {user?.role === 2 || user?.role === 3 ? (
+            {user?.role !== 1 ? (
                 <Box
                     height="100%"
                     display="flex"
                     flexDirection="column"
-                    justifyContent="flex-start" // Align content at the top left horizontally
+                    justifyContent="flex-start" // Align content at the top left horiz== 2 || user?.role === 3ontally
                     alignItems="flex-start"
                     textAlign="left"
                 >
