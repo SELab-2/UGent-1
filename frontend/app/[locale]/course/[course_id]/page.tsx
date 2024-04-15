@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import Box from "@mui/material/Box";
@@ -8,10 +8,12 @@ import Footer from "@app/[locale]/components/Footer";
 import CourseBanner from "@app/[locale]/components/CourseBanner";
 import AddProjectButton from "@app/[locale]/components/AddProjectButton";
 import {Button} from "@mui/material";
+import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
 
 const i18nNamespaces = ['common']
 
-export default async function Course({params: {locale, course_id}}: { params: { locale: any, course_id: string } }) {
+export default async function Course({params: {locale, course_id}, searchParams: {token}}:
+                                         { params: { locale: any, course_id: string }, searchParams: { token: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
     const project_selected = false
@@ -24,6 +26,7 @@ export default async function Course({params: {locale, course_id}}: { params: { 
             locale={locale}
             namespaces={i18nNamespaces}
         >
+            <JoinCourseWithToken token={token} course_id={course_id}></JoinCourseWithToken>
             <NavBar/>
             <Box sx={{marginTop: '64px', padding: 5}}>
                 <CourseBanner/>
@@ -74,6 +77,7 @@ export default async function Course({params: {locale, course_id}}: { params: { 
                     {course_id}
                 </h1>
             </Box>
+
             <Footer/>
         </TranslationsProvider>
     )
