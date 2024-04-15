@@ -148,10 +148,8 @@ interface ListViewProps {
 
 const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name, action_text, search_text }) => {
     // default listview
+    const [data, setData] = useState<(string | number)[][]>([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
-    const [totalPages, setTotalPages] = useState(0);
     const [rows, setRows] = useState<(string | number)[][]>([]);
     const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
     // student and user page
@@ -161,6 +159,11 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
     const [user, setUser] = useState<any>();
     const [user_is_in_group, setUserIsInGroup] = useState(false);
     const [project, setProject] = useState<any>();
+    // multiple pages
+    const itemsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [previousPage, setPreviousPage] = useState(0);
+    const [nextPage, setNextPage] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -197,7 +200,20 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                         const users = await getUsers_by_course(get_id);
                         return users.filter((d: any) => d.role === 3);
                     },
-                    'courses': getCourses,
+                    'courses': async () => {
+                        const response = await getCourses(currentPage);
+                        if(response.previous){
+                            setPreviousPage(1);
+                        } else {
+                            setPreviousPage(0);
+                        }
+                        if(response.next){
+                            setNextPage(1);
+                        } else {
+                            setNextPage(0);
+                        }
+                        return response.results;
+                    },
                     'groups': async () => {
                         return getGroups_by_project(get_id);
                     }
@@ -228,11 +244,12 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     setProject(project);
                 }
 
-                let data = await hashmap_get_to_function[get]();
+                const data = await hashmap_get_to_function[get]();
                 const mappedData = [];
                 for (const d of data) {
                     mappedData.push(await hashmap_get_to_parser[get](d));
                 }
+
                 if(hashmap_get_to_secondvalues[get]) {
                     const secondvalues = await hashmap_get_to_secondvalues[get]();
                     if(secondvalues) {
@@ -241,15 +258,10 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     }
                 }
     
-                // Calculate total pages based on filtered rows
-                const totalItems = secondvalueson ? secondValues?.length : mappedData.length;
-                setTotalPages(Math.ceil(totalItems / itemsPerPage));
-    
                 // Filter and slice rows based on current search term and page
                 const filteredRows = secondvalueson ? secondValues : mappedData;
                 const filteredAndSlicedRows = filteredRows
-                    .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())))
-                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+                    .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())));
                 setRows(filteredAndSlicedRows);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -257,13 +269,13 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
         };
         fetchData();
         // the values below will be constan
-    }, [currentPage, searchTerm, secondvalueson]);
+    }, [currentPage, searchTerm, secondvalueson, currentPage]);
     
 
-  const handleChangePage = (direction: 'next' | 'prev') => {
+    const handleChangePage = (direction: 'next' | 'prev') => {
         if (direction === 'next') {
             setCurrentPage(currentPage + 1);
-        } else {
+        } else if (direction === 'prev' && currentPage > 1) {
             setCurrentPage(currentPage - 1);
         }
     };
@@ -400,22 +412,20 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     ))}
                 </tbody>
             </Table>
-            {totalPages > 1 &&  (
-                <Box>
-                    <Button
-                        disabled={currentPage === 1}
-                        onClick={() => handleChangePage('prev')}
-                    >
-                        Prev
-                    </Button>
-                    <Button
-                        disabled={currentPage === totalPages}
-                        onClick={() => handleChangePage('next')}
-                    >
-                        Next
-                    </Button>
-                </Box>
-            )}
+            <Box style={{ display: 'flex', gap: '8px' }}>
+                <Button
+                    disabled={previousPage === 0}
+                    onClick={() => handleChangePage('prev')}
+                >
+                    Prev
+                </Button>
+                <Button
+                    disabled={nextPage === 0}
+                    onClick={() => handleChangePage('next')}
+                >
+                    Next
+                </Button>
+            </Box>
         </RootContainer>
     );
 }

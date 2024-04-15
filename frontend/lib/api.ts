@@ -191,8 +191,8 @@ export async function getCourse(id: number) : Promise<Course>{
     return (await getRequest(`/courses/${id}`));
 }
 
-export async function getCourses() : Promise<Course[]>{
-    return (await getListRequest('/courses'));
+export async function getCourses(page=1) : Promise<Course[]>{
+    return (await getRequest(`/courses?page=${page}`));
 }
 
 export async function getTestFiles(path: string): Promise<Blob> {
