@@ -46,5 +46,7 @@
     "search" : "Zoeken",
     "back_to" : "Terug naar",
     "page" : "pagina",
-    "course_detail" : "cursus details"
+    "course_detail" : "cursus details",
+    "join_course" : "Cursus toetreden",
+    "members" : "Leden"
 }

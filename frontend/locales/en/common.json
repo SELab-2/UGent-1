@@ -45,5 +45,6 @@
     "search" : "Search",
     "back_to": "Back to",
     "page" : "page",
-    "course_detail" : "course detail"
+    "course_detail" : "course detail",
+    "join_course" : "Join course"
 }

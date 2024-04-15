@@ -20,7 +20,10 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
             namespaces={i18nNamespaces}
         >
             <NavBar />
-            <BackButton destination={`/project/${projectId}`} />
+            <BackButton 
+            destination={`/project/${projectId}`} 
+            text={t('back_to') + ' ' + t('project') + ' ' +  t('page')}
+            />
             <div style={{ marginBottom: '100px' }}>
                 <ListView
                     admin={true}

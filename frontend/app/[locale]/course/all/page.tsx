@@ -21,13 +21,19 @@ export default async function Users({params: {locale}}: { params: { locale: any}
             namespaces={i18nNamespaces}
         >
             <NavBar/>
-            <BackButton destination={'/home'}/>
+            <BackButton 
+                destination={'/home'}
+                text={t('back_to') + ' ' + t('home') + ' ' +  t('page')}
+            />
+            <div style={{ marginBottom: '100px' }}>
             <ListView
                 admin={true}
                 headers={headers}
                 get={'courses'}
                 action_name={'join_course'}
+                action_text={t('join_course')}
             />
+            </div>
             <Footer/>
         </TranslationsProvider>
     )
