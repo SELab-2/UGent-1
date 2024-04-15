@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import NavBar from "@app/[locale]/components/NavBar";
 import Footer from "@app/[locale]/components/Footer";
 import CourseBanner from "@app/[locale]/components/CourseBanner";
-import AddProjectButton from "@app/[locale]/components/AddProjectButton";
+import AddButton from "@app/[locale]/components/AddButton";
 import {Button} from "@mui/material";
 import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
 
@@ -60,7 +60,7 @@ export default async function Course({params: {locale, course_id}, searchParams:
                         paddingX: 2,
                     }}
                 >
-                    <AddProjectButton/>
+                    <AddButton translationkey='add_project'/>
                     <Button
                         variant="contained"
                         color='secondary'

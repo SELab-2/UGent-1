@@ -4,7 +4,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import {useTranslation} from "react-i18next";
 
 //TODO: route to add project page
-const AddProjectButton = () => {
+function AddButton({translationkey} : {translationkey: string}){
     const { t } = useTranslation()
 
     return(
@@ -17,9 +17,9 @@ const AddProjectButton = () => {
                 color: 'secondary.contrastText',
             }}
         >
-            {t("add_project")}
+            {t(translationkey)}
         </Button>
     )
 }
 
-export default AddProjectButton
+export default AddButton

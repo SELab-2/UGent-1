@@ -36,6 +36,9 @@
     "remove_dialog": "Project verwijderen?",
     "action_dialog": "Deze actie kan niet ongedaan worden gemaakt.",
     "remove_confirm": "Verwijderen",
-    "remove_cancel": "Annuleren"
+    "remove_cancel": "Annuleren",
+    "add_file_folder": "Bestand of map toevoegen",
+    "files": "Bestanden",
+    "submit_project": "Project inleveren"
 
 }
