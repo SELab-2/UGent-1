@@ -150,19 +150,22 @@ const RemoveButton = styled(Button)({
 });
 
 interface ListViewProps {
+    admin: boolean;
+    get: string;
+    get_id: number;
     headers: string[];
-    values: (string | number)[][];
-    secondvalues?: (string | number)[][];
+    tablenames: string[];
+    action_name: string;
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name }) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [secondvalueson, setSecondValuesOn] = useState(false);
     const itemsPerPage = 10;
     const [totalPages, setTotalPages] = useState(0);
     const [rows, setRows] = useState<(string | number)[][]>([]);
-    const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
+    const [sortConfig, setSortConfig] = useState({key: headers[0], direction: 'asc'});
     const [secondValues, setSecondValues] = useState<(string | number)[][]>([]);
     const [user, setUser] = useState<any>();
     const [group_members, setGroupMembers] = useState<(string | number)[][]>([]);
@@ -190,13 +193,13 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                         }
                         return [data.group_nr, l.join(', ')];
                     },
-                    'submissions': (data) => [data.group_id, data.timestamp, "test"]
+                    'submissions': (data) => [data.submission_id, data.group_id, data.timestamp, "test"]
 
                 };
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
                     'users': getUsers,
-                    'course_users':  async () => {
+                    'course_users': async () => {
                         const users = await getUsers();
                         return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role === 3);
                     },
@@ -233,9 +236,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 for (const d of data) {
                     mappedData.push(await hashmap_get_to_parser[get](d));
                 }
-                if(hashmap_get_to_secondvalues[get]) {
+                if (hashmap_get_to_secondvalues[get]) {
                     const secondvalues = await hashmap_get_to_secondvalues[get]();
-                    if(secondvalues) {
+                    if (secondvalues) {
                         const mappedSecondValues = secondvalues.map(hashmap_get_to_parser[get]);
                         setSecondValues(mappedSecondValues);
                     }
@@ -277,7 +280,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
             direction = 'desc';
         }
-        setSortConfig({ key, direction });
+        setSortConfig({key, direction});
     };
 
     const sortedRows = [...rows].sort((a, b) => {
@@ -318,7 +321,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                                  */
                                 const id = sortedRows[index][0];
                                 if (!isNaN(id)) {
-                                    if(action_name === 'remove_from_course') {
+                                    if (action_name === 'remove_from_course') {
                                         postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id});
                                     } else if (action_name === 'remove') {
                                         deleteData('/users/' + id);
@@ -350,7 +353,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                     {headers.map((header, index) => (
                         <th key={index}>
                             <IconButton size="small" onClick={() => handleSort(header)}>
-                                {sortConfig.key === header ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon /> : <WhiteTriangleDownIcon />) : <WhiteSquareIcon />}
+                                {sortConfig.key === header ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon/> :
+                                    <WhiteTriangleDownIcon/>) : <WhiteSquareIcon/>}
                             </IconButton>
                             {header}
                         </th>
@@ -379,7 +383,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 ))}
                 </tbody>
             </Table>
-            {totalPages > 1 &&  (
+            {totalPages > 1 && (
                 <Box>
                     <Button
                         disabled={currentPage === 1}

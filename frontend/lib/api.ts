@@ -232,7 +232,7 @@ export async function getGroups_by_project(project_id: number) : Promise<Group[]
 }
 
 export async function getProjectSubmissions(id: number): Promise<Submission[]> {
-    return (await getListRequest(`/projects/${id}/get_submissions`))
+    return (await getRequest(`/projects/${id}/get_submissions`))
 }
 
 let userData : UserData | undefined = undefined;
