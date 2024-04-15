@@ -12,8 +12,8 @@ import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
 
 const i18nNamespaces = ['common']
 
-export default async function Course({params: {locale, course}, searchParams: {token}}:
-                                         { params: { locale: any, course: string }, searchParams: { token: string } }) {
+export default async function Course({params: {locale, course_id}, searchParams: {token}}:
+                                         { params: { locale: any, course_id: string }, searchParams: { token: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
     const project_selected = false
@@ -74,7 +74,7 @@ export default async function Course({params: {locale, course}, searchParams: {t
                     </Button>
                 </Box>
                 <h1>
-                    {course}
+                    {course_id}
                 </h1>
             </Box>
 
