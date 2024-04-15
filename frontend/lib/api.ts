@@ -216,13 +216,14 @@ let userData : UserData | undefined = undefined;
 export async function getUserData() : Promise<UserData>{
     if(userData){
         return userData;
-    }else if(localStorage.getItem('user')){
+    }/*else if(localStorage.getItem('user')){
+        let user : UserData = JSON.parse(localStorage.getItem('user') as string);
         let user : UserData = JSON.parse(localStorage.getItem('user') as string);
         userData = user;
         return user;
-    }else{
+    }*/else{
         let user : UserData = await getRequest('/users/current');
-        localStorage.setItem('user', JSON.stringify(user));
+        //localStorage.setItem('user', JSON.stringify(user));
         console.log(user);
         return user;
     }
