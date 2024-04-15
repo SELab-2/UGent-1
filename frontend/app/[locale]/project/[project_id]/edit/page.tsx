@@ -13,17 +13,17 @@ import Groups from "./groups";
 import TestFiles from './testfiles';
 import UploadTestFile from "./uploadButton";
 import FinishButtons from './finishbuttons';
-import Deadline from "@app/[locale]/home/course/[course_id]/project/[project_id]/edit/deadline";
+import Deadline from "./deadline";
 import RemoveDialog from './removedialog';
-import initTranslations from '@app/i18n';
+import initTranslations from '../../../../i18n';
 import './project_styles.css'
-import {getProject, Project, getTestFiles, updateProject, deleteProject, getUserData} from "@lib/api";
+import {getProject, Project, getTestFiles, updateProject, deleteProject, getUserData} from "../../../../../lib/api";
 import {any} from "prop-types";
 
 
 const i18nNamespaces = ['common']
 
-function ProjectDetailPage({params: {locale, course_id, project_id}}: { params: { locale: any, course_id: any, project_id: any } }) {
+function ProjectDetailPage({params: {locale, project_id}}: { params: { locale: any, project_id: any } }) {
     const [files, setFiles] = useState<string[]>([]);
     const [title, setTitle] = useState('Project 1');
     const [description, setDescription] = useState('Lorem\nIpsum\n');
@@ -43,6 +43,7 @@ function ProjectDetailPage({params: {locale, course_id, project_id}}: { params: 
     const [isTeacher, setIsTeacher] = useState(false);
     const [loadingUser, setLoadingUser] = useState(true);
     const [hasDeadline, setHasDeadline] = useState(false);
+    const [course_id, setCourseId] = useState(0);
 
     const isTitleEmpty = !title
     const isAssignmentEmpty = !description
@@ -65,6 +66,7 @@ function ProjectDetailPage({params: {locale, course_id, project_id}}: { params: 
                 setTitle(project["name"])
                 setGroupAmount(project["number_of_groups"])
                 setVisible(project["visible"])
+                setCourseId(project.course_id);
                 if (project.test_files !== null) await setTestFiles(project);
                 setScore(+project["max_score"]);
                 if (project["conditions"] != null) {
@@ -159,7 +161,7 @@ function ProjectDetailPage({params: {locale, course_id, project_id}}: { params: 
 
     const handle_remove = async () => {
         await deleteProject(project_id).then((response) => console.log(response));
-        window.location.href = "home/course/" + course_id + "/"
+        window.location.href = "/course/" + course_id + "/"
     }
 
     return (
