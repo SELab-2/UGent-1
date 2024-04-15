@@ -30,6 +30,8 @@ export type Course = {
     course_id: number;
     name: string;
     description: string;
+    open_course: boolean;
+    invite_token: string;
 }
 
 export type Project = {
@@ -218,7 +220,6 @@ export async function getUserData() : Promise<UserData>{
         return userData;
     }/*else if(localStorage.getItem('user')){
         let user : UserData = JSON.parse(localStorage.getItem('user') as string);
-        let user : UserData = JSON.parse(localStorage.getItem('user') as string);
         userData = user;
         return user;
     }*/else{
@@ -344,4 +345,8 @@ export async function deleteData(path: string){
         apierror.trace = error;
         throw apierror;
     }
+}
+
+export async function joinCourseUsingToken(course_id: number, token: string){
+    return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
