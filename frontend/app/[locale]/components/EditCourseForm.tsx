@@ -14,22 +14,29 @@ interface EditCourseFormProps {
 }
 
 const EditCourseForm = ({courseId}: EditCourseFormProps) => {
-    const [courseData, setCourseData] = useState({name: '', description: ''});
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    let [open, setOpen] = useState(false);
     const {t} = useTranslation();
     const [selectedImage, setSelectedImage] = useState(banner);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCourseData = async () => {
             try {
                 const response = await axios.get(backend_url + "/courses/" + courseId, {withCredentials: true});
                 if (response.data) {
-                    setCourseData(response.data);
+                    const data = response.data
+                    setName(data.name);
+                    setDescription(data.description);
+                    open = data.open_course;
                 } else {
                     console.error("Unexpected response structure:", response.data);
                 }
             } catch (error) {
                 console.error("There was an error fetching the course data:", error);
             }
+            setLoading(false);
         };
 
         fetchCourseData();
@@ -37,9 +44,8 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        await updateCourse(courseId, courseData).then((response) => {
-            console.log(response)
-        }); //TODO remove console.log
+        const courseData = {name: name, description: description, open_course: open};
+        await updateCourse(courseId, courseData)
         window.location.reload();
     };
 
@@ -59,6 +65,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
     };
 
     return (
+        loading ? (<div>Loading...</div>) : (
         <form onSubmit={handleSubmit}>
             <Box sx={{marginTop: '16px'}}>
                 <label htmlFor="name" style={{
@@ -67,7 +74,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     marginBottom: '-10px',
                     display: 'block'
                 }}>{t("course name")}</label><br/>
-                <input type="text" id="name" name="name" defaultValue={courseData.name} required style={{
+                <input type="text" id="name" name="name" defaultValue={name} onChange={(event: any) => setName(event.target.value)} required style={{
                     fontSize: '20px',
                     fontFamily: 'Arial, sans-serif',
                     borderRadius: '6px',
@@ -123,7 +130,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     marginBottom: '-10px',
                     display: 'block'
                 }}>{t("description")}</label><br/>
-                <textarea id="description" name="description" rows={5} defaultValue={courseData.description} required
+                <textarea id="description" name="description" rows={5} defaultValue={description} onChange={(event: any) => setDescription(event.target.value)} required
                           style={{
                               width: '100%',
                               fontFamily: 'Arial, sans-serif',
@@ -140,14 +147,15 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     marginBottom: '-10px',
                     display: 'block'
                 }}>{t("access")}</label><br/>
-                <select id="choice" name="choice" style={{
+                <select id="choice" name="choice" defaultValue={open.toString()}
+                        onChange={(event) => (setOpen(event.target.value === 'true'))} style={{
                     fontSize: '20px',
                     fontFamily: 'Arial, sans-serif',
                     borderRadius: '6px',
                     padding: '5px'
                 }}>
-                    <option value="option1">{t("private")}</option>
-                    <option value="option2">{t("public")}</option>
+                    <option value="false">{t("private")}</option>
+                    <option value="true">{t("public")}</option>
                 </select>
             </Box>
             <Box sx={{marginTop: '16px', position: 'absolute'}}>
@@ -164,7 +172,8 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                 }}>{t("save changes")}</button>
             </Box>
         </form>
-    )
+        ));
+
 }
 
 export default EditCourseForm

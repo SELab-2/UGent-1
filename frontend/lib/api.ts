@@ -306,7 +306,7 @@ export async function postData(path: string, data: any){
 }
 
 export async function putData(path: string, data: any){
-    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.put['X-CSRFToken'] = getCookieValue('csrftoken');
 
     try {
         const response = await axios.put(backend_url + path, data, { withCredentials: true });
@@ -339,7 +339,7 @@ export async function putData(path: string, data: any){
 }
 
 export async function deleteData(path: string){
-    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.delete['X-CSRFToken'] = getCookieValue('csrftoken');
 
     try {
         const response = await axios.delete(backend_url + path, { withCredentials: true });

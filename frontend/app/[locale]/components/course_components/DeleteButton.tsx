@@ -13,9 +13,7 @@ const DeleteButton = ({courseId}: EditCourseFormProps) => {
     const {t} = useTranslation()
 
     const handleDelete = async () => {
-        await deleteCourse(courseId).then((response) => {
-            console.log(response)
-        }); //TODO remove console.log
+        await deleteCourse(courseId)
         window.location.href = "/home";
     }
 
