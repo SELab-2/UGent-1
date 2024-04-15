@@ -26,7 +26,7 @@ export default async function Course({params: {locale, course_id}, searchParams:
             locale={locale}
             namespaces={i18nNamespaces}
         >
-            <JoinCourseWithToken token={token} course_id={course}></JoinCourseWithToken>
+            <JoinCourseWithToken token={token} course_id={course_id}></JoinCourseWithToken>
             <NavBar/>
             <Box sx={{marginTop: '64px', padding: 5}}>
                 <CourseBanner/>

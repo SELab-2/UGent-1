@@ -13,9 +13,9 @@ const JoinCourseWithToken = ({token, course_id}: { token: any, course_id: any })
                     new Error('User not logged in');
                 }
                 try {
-                    const respone = await joinCourseUsingToken(course_id, token);
+                    const response = await joinCourseUsingToken(course_id, token);
                     setJoined(true);
-                    if (!respone.ok) {
+                    if (!response.ok) {
                         new Error('Failed to join course');
                     }
                 } catch (error) {
@@ -35,7 +35,7 @@ const JoinCourseWithToken = ({token, course_id}: { token: any, course_id: any })
     }, []);
 
     if (joined) {
-        window.location.href = '/home/' + course_id;
+        window.location.href = '/course/' + course_id;
         return;
     }
 
