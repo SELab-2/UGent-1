@@ -30,6 +30,8 @@ export type Course = {
     course_id: number;
     name: string;
     description: string;
+    open_course: boolean;
+    invite_token: string;
 }
 
 export type Project = {
@@ -232,11 +234,11 @@ let userData : UserData | undefined = undefined;
 export async function getUserData() : Promise<UserData>{
     if(userData){
         return userData;
-    }else if(localStorage.getItem('user')){
+    }/*else if(localStorage.getItem('user')){
         let user : UserData = JSON.parse(localStorage.getItem('user') as string);
         userData = user;
         return user;
-    }else{
+    }*/else{
         let user : UserData = await getRequest('/users/current');
         localStorage.setItem('user', JSON.stringify(user));
         console.log(user);
@@ -359,4 +361,8 @@ export async function deleteData(path: string){
         apierror.trace = error;
         throw apierror;
     }
+}
+
+export async function joinCourseUsingToken(course_id: number, token: string){
+    return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
