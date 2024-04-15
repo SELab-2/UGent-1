@@ -16,6 +16,9 @@ class CourseAdmin(admin.ModelAdmin):
     ordering = (
         'course_id',
     )
+    readonly_fields = (
+        'invite_token',
+    )
 
     fieldsets = (
         (
@@ -27,6 +30,15 @@ class CourseAdmin(admin.ModelAdmin):
                 )
             }
         ),
+        (
+            'Invites',
+            {
+                'fields': (
+                    'invite_token',
+                    'open_course',
+                )
+            }
+        )
     )
 
 
