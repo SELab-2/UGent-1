@@ -24,7 +24,7 @@ const CancelButton = () => {
                 top: '20px',
                 right: '20px',
                 fontSize: '16px'
-            }}>{t("Cancel")}
+            }}>{t("cancel")}
             </button>
 
         </div>

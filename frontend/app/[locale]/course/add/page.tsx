@@ -9,9 +9,6 @@ import CancelButton from "@app/[locale]/components/course_components/CancelButto
 async function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
     const {t, resources} = await initTranslations(locale, ["common"])
 
-
-    // translations, redirect after save and cancel dont work
-
     return (
         <TranslationsProvider
             resources={resources}

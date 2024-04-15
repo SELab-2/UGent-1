@@ -8,11 +8,14 @@ import {deleteCourse} from "@lib/api";
 interface EditCourseFormProps {
     courseId: number
 }
+
 const DeleteButton = ({courseId}: EditCourseFormProps) => {
     const {t} = useTranslation()
 
     const handleDelete = async () => {
-        await deleteCourse(courseId).then((response) => {console.log(response)}); //TODO remove console.log
+        await deleteCourse(courseId).then((response) => {
+            console.log(response)
+        }); //TODO remove console.log
         window.location.href = "/home";
     }
 
@@ -30,7 +33,7 @@ const DeleteButton = ({courseId}: EditCourseFormProps) => {
                 top: '20px',
                 right: '20px',
                 fontSize: '16px'
-            }}>{t("Delete course")}
+            }}>{t("delete course")}
             </button>
 
         </div>

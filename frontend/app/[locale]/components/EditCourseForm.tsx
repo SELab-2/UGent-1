@@ -6,6 +6,7 @@ import {useTranslation} from "react-i18next";
 import banner from "../../../public/ugent_banner.png";
 import Image from 'next/image';
 import {updateCourse} from "@lib/api";
+
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 interface EditCourseFormProps {
@@ -15,7 +16,7 @@ interface EditCourseFormProps {
 const EditCourseForm = ({courseId}: EditCourseFormProps) => {
     const [courseData, setCourseData] = useState({name: '', description: ''});
     const {t} = useTranslation();
-    const [selectedImage, setSelectedImage] = useState(banner); //TODO: get image from backend (when added)
+    const [selectedImage, setSelectedImage] = useState(banner);
 
     useEffect(() => {
         const fetchCourseData = async () => {
@@ -35,9 +36,11 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
     }, [courseId]);
 
     const handleSubmit = async (event: any) => {
-        await updateCourse(courseId, courseData).then((response) => {console.log(response)}); //TODO remove console.log
+        event.preventDefault();
+        await updateCourse(courseId, courseData).then((response) => {
+            console.log(response)
+        }); //TODO remove console.log
         window.location.reload();
-        alert('Course created successfully!') //TODO remove?
     };
 
     const handleImageUpload = (event: any) => {
@@ -63,7 +66,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     fontFamily: 'Arial, sans-serif',
                     marginBottom: '-10px',
                     display: 'block'
-                }}>{t("Course name")}</label><br/>
+                }}>{t("course name")}</label><br/>
                 <input type="text" id="name" name="name" defaultValue={courseData.name} required style={{
                     fontSize: '20px',
                     fontFamily: 'Arial, sans-serif',
@@ -77,7 +80,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     fontSize: '32px',
                     fontFamily: 'Arial, sans-serif',
                     color: '#1E64C8'
-                }}>{t("Banner")}</label><br/>
+                }}>{t("banner")}</label><br/>
                 <div style={{
                     width: '100%',
                     height: '200px',
@@ -107,7 +110,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     color: '#1E64C8',
                     fontFamily: 'Arial, sans-serif'
                 }}>
-                    {t("Select image")}
+                    {t("select image")}
                     <input type="file" id="Image" name="Image" accept="image/*" onChange={handleImageUpload}
                            style={{display: 'none'}}/>
                 </label>
@@ -119,7 +122,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     color: '#1E64C8',
                     marginBottom: '-10px',
                     display: 'block'
-                }}>{t("Description")}</label><br/>
+                }}>{t("description")}</label><br/>
                 <textarea id="description" name="description" rows={5} defaultValue={courseData.description} required
                           style={{
                               width: '100%',
@@ -136,15 +139,15 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     color: '#1E64C8',
                     marginBottom: '-10px',
                     display: 'block'
-                }}>Access</label><br/>
+                }}>{t("access")}</label><br/>
                 <select id="choice" name="choice" style={{
                     fontSize: '20px',
                     fontFamily: 'Arial, sans-serif',
                     borderRadius: '6px',
                     padding: '5px'
                 }}>
-                    <option value="option1">{t("Private")}</option>
-                    <option value="option2">{t("Public")}</option>
+                    <option value="option1">{t("private")}</option>
+                    <option value="option2">{t("public")}</option>
                 </select>
             </Box>
             <Box sx={{marginTop: '16px', position: 'absolute'}}>
@@ -158,7 +161,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     fontFamily: 'Arial, sans-serif',
                     fontSize: '16px',
                     marginTop: '80px'
-                }}>{t("Save changes")}</button>
+                }}>{t("save changes")}</button>
             </Box>
         </form>
     )

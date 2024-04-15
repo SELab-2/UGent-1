@@ -30,9 +30,7 @@ const CreateCourseForm = () => {
         fetchTranslations();
     }, []);
 
-    const handleSubmit = async (event: any) => {
-        postForm("/courses/");
-    }
+
     const handleImageUpload = (event: any) => {
         const imageFile = event.target.files[0];
         const reader = new FileReader();
@@ -54,14 +52,14 @@ const CreateCourseForm = () => {
             locale={translations.locale}
             namespaces={["common"]}
         >
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={postForm("/courses/")}>
                 <Box sx={{marginTop: '16px'}}>
                     <label htmlFor="name" style={{
                         fontSize: '32px',
                         fontFamily: 'Arial, sans-serif',
                         marginBottom: '-10px',
                         display: 'block'
-                    }}>{translations.t("Course name")}</label><br/>
+                    }}>{translations.t("course name")}</label><br/>
                     <input type="text" id="name" name="name" required style={{
                         fontSize: '20px',
                         fontFamily: 'Arial, sans-serif',
@@ -75,7 +73,7 @@ const CreateCourseForm = () => {
                         fontSize: '32px',
                         fontFamily: 'Arial, sans-serif',
                         color: '#1E64C8'
-                    }}>{translations.t("Banner")}</label><br/>
+                    }}>{translations.t("banner")}</label><br/>
                     <div style={{
                         width: '100%',
                         height: '200px',
@@ -105,7 +103,7 @@ const CreateCourseForm = () => {
                         color: '#1E64C8',
                         fontFamily: 'Arial, sans-serif'
                     }}>
-                        {translations.t("Select image")}
+                        {translations.t("select image")}
                         <input type="file" id="Image" name="Image" accept="image/*" onChange={handleImageUpload}
                                style={{display: 'none'}}/>
                     </label>
@@ -117,7 +115,7 @@ const CreateCourseForm = () => {
                         color: '#1E64C8',
                         marginBottom: '-10px',
                         display: 'block'
-                    }}>{translations.t("Description")}</label><br/>
+                    }}>{translations.t("description")}</label><br/>
                     <textarea id="description" name="description" rows={5} required style={{
                         width: '100%',
                         fontFamily: 'Arial, sans-serif',
@@ -134,15 +132,15 @@ const CreateCourseForm = () => {
                         color: '#1E64C8',
                         marginBottom: '-10px',
                         display: 'block'
-                    }}>Access</label><br/>
+                    }}>{translations.t("access")}</label><br/>
                     <select id="choice" name="choice" style={{
                         fontSize: '20px',
                         fontFamily: 'Arial, sans-serif',
                         borderRadius: '6px',
                         padding: '5px'
                     }}>
-                        <option value="option1">{translations.t("Private")}</option>
-                        <option value="option2">{translations.t("Public")}</option>
+                        <option value="option1">{translations.t("private")}</option>
+                        <option value="option2">{translations.t("public")}</option>
                     </select>
                 </Box>
                 <Box sx={{marginTop: '16px', position: 'absolute'}}>
@@ -156,7 +154,7 @@ const CreateCourseForm = () => {
                         fontFamily: 'Arial, sans-serif',
                         fontSize: '16px',
                         marginTop: '80px'
-                    }}>{translations.t("Save course")}</button>
+                    }}>{translations.t("save course")}</button>
                 </Box>
             </form>
         </TranslationsProvider>
