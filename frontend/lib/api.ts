@@ -346,3 +346,7 @@ export async function deleteData(path: string){
         throw apierror;
     }
 }
+
+export async function joinCourseUsingToken(course_id: number, token: string){
+    return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
+}
