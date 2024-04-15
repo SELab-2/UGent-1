@@ -17,8 +17,8 @@ async function CourseEditPage({params: {locale, course_id}}: { params: { locale:
         >
             <NavBar/>
             <Box sx={{margin: '64px', marginTop: '96px', position: 'relative'}}>
-                <Box sx={{marginRight: '40px'}}>
-                    <DeleteButton courseId={course_id}/>
+                <DeleteButton courseId={course_id}/>
+                <Box sx={{marginRight: '20px'}}>
                     <EditCourseForm courseId={course_id}/>
                 </Box>
             </Box>
