@@ -112,7 +112,7 @@ const NavBar = () => {
                     </ListItem>
                 )}
             </List>
-            {user?.role === 3 ? (
+            {user?.role === 1 ? (
                 <>
                     <Divider/>
                     <Link href={'/admin'} style={{textDecoration: 'none', color: 'inherit'}}>

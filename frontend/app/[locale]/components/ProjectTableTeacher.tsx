@@ -52,10 +52,6 @@ function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
         setSelectedId((prevSelectedId) => (prevSelectedId === row.project_id ? null : row.project_id));
     };
 
-    const handleDetailsClick = () => {
-        console.log("routing to project details page of project with id: " + selectedId);
-    }
-
     return (
         <>
             <Box
@@ -67,7 +63,7 @@ function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
 
                 }}
             >
-                {user?.role === 2 || user?.role === 3 ? (
+                {user?.role !== 3 ? (
                     <AddProjectButton/>
                 ): null}
                 <Button
@@ -79,7 +75,6 @@ function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
                         width: 'fit-content',
                         color: 'secondary.contrastText',
                     }}
-                    onClick={handleDetailsClick}
                 >
                     {t("details")}
                 </Button>

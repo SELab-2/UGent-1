@@ -42,8 +42,6 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 marginTop: 50,
                 margin: "0 auto",
                 paddingX: 2,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
             }}
         >
             <Box
@@ -51,27 +49,26 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 display="flex"
                 justifyContent="flex-start"
                 alignItems="center"
-                width="100%"
+                width={"calc(100% - 200px)"}
             >
                 <Typography
                     variant="h1"
                     textAlign="left"
+                    width={"inherit"}
                     noWrap={true}
                     sx={{
                         color: 'white',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
                     }}
                 >
                     {course?.name}
                 </Typography>
             </Box>
-            {user?.role !== 1 ? (
+            {user?.role !== 3 ? (
                 <Box
                     height="100%"
                     display="flex"
                     flexDirection="column"
-                    justifyContent="flex-start" // Align content at the top left horiz== 2 || user?.role === 3ontally
+                    justifyContent="flex-start"
                     alignItems="flex-start"
                     textAlign="left"
                 >

@@ -3,6 +3,7 @@
 import {useTranslation} from "react-i18next";
 import React, {useEffect, useState} from "react";
 import {APIError, getCourse, Course, UserData, getUserData} from "@lib/api";
+import { usePathname } from 'next/navigation'
 import Typography from "@mui/material/Typography";
 
 interface CourseDetailsProps {
@@ -55,7 +56,7 @@ export default function CourseDetails({course_id}: CourseDetailsProps) {
                 </Typography>
             )
             }
-            {user?.role !== 1 ? (
+            {user?.role !== 3 ? (
                 <>
                     <Typography
                         variant="h3"
@@ -74,7 +75,7 @@ export default function CourseDetails({course_id}: CourseDetailsProps) {
                     <Typography
                         variant="h6"
                     >
-                        {"Invite link: " + course?.invite_token}
+                        {"Invite link: " + window.location + "?token=" + course?.invite_token}
                     </Typography>
                 </>
             ) : null
