@@ -140,7 +140,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                     'users': (data) => [data.id, data.email, data.role],
                     'course_students': (data) => [data.id, data.email],
                     'course_teachers': (data) => [data.id, data.email],
-                    'courses': (data) => [data.course_id, data.name, data.description],
+                    'courses': (data) => [data.course_id, data.name, data.description, data.open_course],
                     'groups': async (data) => {
                         let l = [];
                         // Iterate over the values of the object
@@ -184,6 +184,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                 }
 
                 const data = await hashmap_get_to_function[get]();
+                console.log(data);
                 const mappedData = [];
                 for (const d of data) {
                     mappedData.push(await hashmap_get_to_parser[get](d));
@@ -293,7 +294,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                                     } else if (action_name === 'join_course') {
                                         postData('/courses/' + id + '/join_course/', {course_id: id})
                                         .then(() => {
-                                            window.location.reload();
+                                            window.location.href = '/course/' + id;
                                         });
                                     }
                                 }                                
@@ -337,6 +338,29 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                             {get !== 'groups' && row.slice(1).map((cell, cellIndex) => (
                                 <td key={cellIndex}>{cell}</td>
                             ))}
+                            {   
+                                // course leave button
+                                get === 'courses' && user.course.includes(row[0]) && (
+                                    <td>
+                                        <Button onClick={() => postData('/courses/' + row[0] + '/leave_course/', {course_id: row[0]})}>
+                                            Leave
+                                        </Button>
+                                    </td>
+                                )
+                            }
+                            {
+                                // course join button
+                                get === 'courses' && (!user.course.includes(row[0])) && (
+                                    <td>
+                                        <Button onClick={() => postData('/courses/' + row[0] + '/join_course/', {course_id: row[0]})}
+                                        disabled={!row[3]} 
+                                        style={{backgroundColor: row[3] ? '': 'gray'}}
+                                        >
+                                            Join
+                                        </Button>
+                                    </td>
+                                )
+                            }
                             { 
                             // group join button
                             get === 'groups' && (!row[1].includes(user.id)) && (
@@ -346,7 +370,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                                     // or when group is full
                                     // TODO i18n join button
                                     (!user_is_in_group) && (row[1].length < project.group_size) && (
-                                    <Button onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]})}>
+                                    <Button onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]}).then(() => window.location.reload())
+                                    }>
                                         Join
                                     </Button>
                                     )
@@ -359,7 +384,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                                 <td>
                                     {
                                     (user_is_in_group) && (
-                                    <Button onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]})}>
+                                    <Button onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]}).then(() => window.location.reload())
+                                    }>
                                         Leave
                                     </Button>
                                     )}
