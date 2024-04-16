@@ -350,3 +350,29 @@ export async function deleteData(path: string){
 export async function joinCourseUsingToken(course_id: number, token: string){
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
+
+export async function uploadSubmissionFile(event: any){
+    axios.defaults.headers.put['X-CSRFToken'] = getCookieValue('csrftoken');
+    event.preventDefault();
+    console.log(event.target.fileList.files);
+    const formData = new FormData(event.target);
+    for(const file of event.target.fileList.files){
+        formData.append(file.webkitRelativePath, file);
+    }
+    const formDataObject = Object.fromEntries(formData.entries());
+    console.log(formDataObject)
+    try {
+        await axios.put(backend_url + '/submissions/27/upload/', formDataObject,
+         { withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+          });
+    } catch (error) {
+        const apierror : APIError = new APIError();
+        apierror.message = "error posting form";
+        apierror.type = ErrorType.REQUEST_ERROR;
+        apierror.trace = error;
+        throw apierror;
+    }
+}
