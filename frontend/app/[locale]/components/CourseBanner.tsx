@@ -55,7 +55,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                     variant="h1"
                     textAlign="left"
                     width={"inherit"}
-                    noWrap={true}
+                    noWrap={false}
                     sx={{
                         color: 'white',
                     }}
