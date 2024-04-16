@@ -133,8 +133,9 @@ class CourseViewSet(viewsets.ModelViewSet):
     def get_students(self, request, *args, **kwargs):
         course = self.get_object()
         res = [
-            user for user in User.objects.all() if course in user.course.all() 
-            and (user.role == 3)
+            user
+            for user in User.objects.all()
+            if course in user.course.all() and (user.role == 3)
         ]
         page_size = request.query_params.get(
             "page_size", self.pagination_class.page_size
@@ -155,8 +156,9 @@ class CourseViewSet(viewsets.ModelViewSet):
     def get_teachers(self, request, *args, **kwargs):
         course = self.get_object()
         res = [
-            user for user in User.objects.all() if course in user.course.all() 
-            and (user.role != 3)
+            user
+            for user in User.objects.all()
+            if course in user.course.all() and (user.role != 3)
         ]
 
         page_size = request.query_params.get(
