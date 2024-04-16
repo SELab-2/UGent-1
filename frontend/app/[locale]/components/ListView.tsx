@@ -4,6 +4,8 @@ import {Box, Button, Checkbox, Container, CssBaseline, IconButton, TextField} fr
 import {styled} from '@mui/system';
 import {NextPage} from 'next';
 import checkMarkImage from './check-mark.png';
+import CheckIcon from '@mui/icons-material/Check';
+import CancelIcon from "@mui/icons-material/Cancel";
 import {
     deleteData,
     getCourses,
@@ -164,7 +166,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
     const [secondvalueson, setSecondValuesOn] = useState(false);
     const itemsPerPage = 10;
     const [totalPages, setTotalPages] = useState(0);
-    const [rows, setRows] = useState<(string | number)[][]>([]);
+    const [rows, setRows] = useState<(string | number | boolean)[][]>([]);
     const [sortConfig, setSortConfig] = useState({key: headers[0], direction: 'asc'});
     const [secondValues, setSecondValues] = useState<(string | number)[][]>([]);
     const [user, setUser] = useState<any>();
@@ -193,7 +195,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                         }
                         return [data.group_nr, l.join(', ')];
                     },
-                    'submissions': (data) => [data.submission_id, data.group_id, data.timestamp, "test"]
+                    'submissions': (data) => [data.submission_id, data.group_id, data.timestamp, data.output_test !== undefined]
 
                 };
 
@@ -368,7 +370,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                             {<CheckBoxWithCustomCheck checked={false}/>}
                         </td>
                         {row.slice(1).map((cell, cellIndex) => (
-                            <td key={cellIndex}>{cell}</td>
+                            <td key={cellIndex}>{typeof cell == "boolean" ? (cell ? <CheckIcon/> :
+                                <CancelIcon/>) : cell}</td>
                         ))}
                         {
                             // group join button
