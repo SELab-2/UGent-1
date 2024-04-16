@@ -43,7 +43,7 @@ export default async function Course({params: {locale, course_id}, searchParams:
                 <ProjectTableTeacher course_id={course_id}/>
                 <StudentCoTeacherButtons course_id={course_id}/>
             </Box>
-            <Footer/>
+
         </TranslationsProvider>
     )
 }

@@ -5,6 +5,8 @@ import React, {useEffect, useState} from "react";
 import {APIError, getCourse, Course, UserData, getUserData} from "@lib/api";
 import { usePathname } from 'next/navigation'
 import Typography from "@mui/material/Typography";
+import CopyToClipboardButton from "@app/[locale]/components/CopyToClipboardButton";
+import {Box} from "@mui/material";
 
 interface CourseDetailsProps {
     course_id: number;
@@ -74,9 +76,18 @@ export default function CourseDetails({course_id}: CourseDetailsProps) {
                     </Typography>
                     <Typography
                         variant="h6"
+                        fontWeight={"bold"}
                     >
-                        {"Invite link: " + window.location + "?token=" + course?.invite_token}
+                        {"Invite link:"}
                     </Typography>
+                    <Box sx={{display: 'flex', alignItems: 'center'}}>
+                        <Typography
+                            variant="h6"
+                        >
+                            {window.location + "?token=" + course?.invite_token}
+                        </Typography>
+                        <CopyToClipboardButton text={window.location + "?token=" + course?.invite_token}/>
+                    </Box>
                 </>
             ) : null
             }

@@ -47,6 +47,7 @@
     "remove_dialog": "Project verwijderen?",
     "action_dialog": "Deze actie kan niet ongedaan worden gemaakt.",
     "remove_confirm": "Verwijderen",
-    "remove_cancel": "Annuleren"
-
+    "remove_cancel": "Annuleren",
+    "copy": "Kopiëren",
+    "copied_to_clipboard": "Gekopieerd naar klembord"
 }

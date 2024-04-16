@@ -47,5 +47,7 @@
     "remove_dialog": "Remove project?",
     "action_dialog": "This action cannot be undone.",
     "remove_confirm": "Remove",
-    "remove_cancel": "Cancel"
+    "remove_cancel": "Cancel",
+    "copy": "Copy",
+    "copied_to_clipboard": "Copied to clipboard"
 }

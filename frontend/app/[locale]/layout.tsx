@@ -4,6 +4,8 @@ import loginTheme from '../../styles/theme';
 import React from "react";
 
 import '../i18n'
+import Footer from "@app/[locale]/components/Footer";
+import {height} from "@mui/system";
 
 export const metadata = {
     title: 'Next.js',
@@ -17,7 +19,10 @@ export default function RootLayout(props: React.PropsWithChildren<{}>) {
         <body>
         <AppRouterCacheProvider>
             <ThemeProvider theme={loginTheme}>
-                {children}
+                <div>
+                    {children}
+                </div>
+                <Footer/>
             </ThemeProvider>
         </AppRouterCacheProvider>
         </body>
