@@ -105,7 +105,7 @@ function ProjectDetailPage({params: {locale, project_id}}: { params: { locale: a
         const zipData = await zip.loadAsync(test_files_zip);
         const testfiles_name: string[] = [];
         const testfiles_data: JSZipObject[] = [];
-        zipData.forEach((relativePath, file) => {
+        zipData.forEach((relativePath: string, file: any) => {
             testfiles_data.push(file);
             testfiles_name.push(relativePath);
         });
