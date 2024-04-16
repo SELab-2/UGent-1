@@ -69,7 +69,12 @@ export default function CourseDetails({course_id}: CourseDetailsProps) {
                     <Typography
                         variant="h6"
                     >
-                        {}
+                        {course?.open_course ? t("open_course") : t("private_course")}
+                    </Typography>
+                    <Typography
+                        variant="h6"
+                    >
+                        {"Invite link: " + course?.invite_token}
                     </Typography>
                 </>
             ) : null

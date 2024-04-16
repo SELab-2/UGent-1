@@ -28,9 +28,6 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
         fetchCourse();
     }, [course_id]);
 
-    console.log(user?.role);
-    console.log(user?.first_name, user?.last_name, user?.emai);
-
     return (
         <Box
             sx={{
@@ -59,6 +56,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 <Typography
                     variant="h1"
                     textAlign="left"
+                    noWrap={true}
                     sx={{
                         color: 'white',
                         overflow: 'hidden',

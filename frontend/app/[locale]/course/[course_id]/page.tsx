@@ -7,10 +7,12 @@ import CourseBanner from "@app/[locale]/components/CourseBanner";
 import CourseDetails from "@app/[locale]/components/CourseDetails";
 import ProjectTableTeacher from "@app/[locale]/components/ProjectTableTeacher";
 import StudentCoTeacherButtons from "@app/[locale]/components/StudentCoTeacherButtons";
+import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
 
 const i18nNamespaces = ['common']
 
-export default async function Course({params: {locale, course_id}}: { params: { locale: any, course_id: number } }) {
+export default async function Course({params: {locale, course_id}, searchParams: {token}}:
+                                         { params: { locale: any, course_id: number }, searchParams: { token: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
     return (
@@ -19,6 +21,7 @@ export default async function Course({params: {locale, course_id}}: { params: { 
             locale={locale}
             namespaces={i18nNamespaces}
         >
+            <JoinCourseWithToken token={token} course_id={course_id}></JoinCourseWithToken>
             <NavBar/>
             <Box
                 sx={{
@@ -37,8 +40,8 @@ export default async function Course({params: {locale, course_id}}: { params: { 
                 >
                     {t('projects')}
                 </Typography>
-                <ProjectTableTeacher course_id={course_id} />
-                <StudentCoTeacherButtons course_id={course_id} />
+                <ProjectTableTeacher course_id={course_id}/>
+                <StudentCoTeacherButtons course_id={course_id}/>
             </Box>
             <Footer/>
         </TranslationsProvider>
