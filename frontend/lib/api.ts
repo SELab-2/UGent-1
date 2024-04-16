@@ -26,6 +26,15 @@ export class APIError{
     trace: unknown;
 }
 
+export type Submission = {
+    submission_id: number;
+    group_id: number;
+    submission_nr: number;
+    file: string;
+    timestamp: string;
+    output_test: string;
+}
+
 export type Course = {
     course_id: number;
     name: string;
@@ -158,7 +167,9 @@ async function getListRequest(path: string){
     const data = await getRequest(path);
     if(data?.results && Array.isArray(data?.results)){
         return data.results;
-    }else if(data?.detail) {
+    } else if (data !== null && Array.isArray(data)) {
+        return data;
+    } else if(data?.detail) {
         console.error("Unexpected response structure: no list returned");
         const error : APIError = new APIError();
         error.message = data?.detail;
@@ -207,8 +218,12 @@ export async function getProjectsFromCourse(id: number): Promise<Project[]>{
     return (await getListRequest('/courses/' + id + '/get_projects'))
 }
 
-export async function getTeachersFromCourse(id: number): Promise<String[]>{
+export async function getTeachersFromCourse(id: number): Promise<User[]>{
     return (await getListRequest('/courses/' + id + '/get_teachers'))
+}
+
+export async function getLastSubmissionFromProject(id: number): Promise<Submission> {
+    return (await getRequest(`/projects/${id}/get_last_submission`))
 }
 
 export async function getGroup(id: number) : Promise<Group>{

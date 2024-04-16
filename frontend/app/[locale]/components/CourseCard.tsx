@@ -13,30 +13,50 @@ import {
     TableRow,
     Typography,
 } from '@mui/material';
-import {APIError, Course, getCourse, getProjectsFromCourse, getTeachersFromCourse, Project} from "@lib/api";
+import {
+    APIError,
+    Course,
+    getLastSubmissionFromProject,
+    getProjectsFromCourse,
+    getTeachersFromCourse,
+    Project,
+    Submission,
+    User
+} from "@lib/api";
 import {useTranslation} from "react-i18next";
 
-const CourseCard = ({params: {courseId}}: { params: { courseId: number } }) => {
-    const [course, setCourse] = useState<Course | null>(null);
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [teachers, setTeachers] = useState<String[]>([]);
-    const [error, setError] = useState<APIError | null>(null);
-    const {t} = useTranslation()
+const options = {month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'};
 
-    useEffect(() => {
-        const fetchCourse = async () => {
-            try {
-                setCourse(await getCourse(courseId));
-            } catch (error) {
-                if (error instanceof APIError) setError(error);
-            }
-        }
-    })
+const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [teachers, setTeachers] = useState<User[]>([]);
+    const [error, setError] = useState<APIError | null>(null);
+    const [submissions, setSubmissions] = useState<Map<number, Submission>>(new Map());
+    const {t} = useTranslation()
 
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                setProjects(await getProjectsFromCourse(courseId));
+                const fetched_projects: Project[] = await getProjectsFromCourse(course.course_id);
+                const fetched_submissions = new Map<number, Submission>();
+                for (let i = 0; i < fetched_projects.length; i++) {
+                    const project = fetched_projects[i];
+                    const last_submission = await getLastSubmissionFromProject(project.project_id);
+                    if (last_submission.group_id !== null) {
+                        fetched_submissions.set(project.project_id, last_submission);
+                    }
+                }
+                setSubmissions(fetched_submissions);
+                setProjects(fetched_projects);
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
+            }
+
+        };
+
+        const fetchTeachers = async () => {
+            try {
+                setTeachers(await getTeachersFromCourse(course.course_id));
             } catch (error) {
                 if (error instanceof APIError) setError(error);
             }
@@ -44,20 +64,21 @@ const CourseCard = ({params: {courseId}}: { params: { courseId: number } }) => {
         };
 
         fetchProjects();
-    }, [courseId]);
-
-    useEffect(() => {
-        const fetchTeachers = async () => {
-            try {
-                setTeachers(await getTeachersFromCourse(courseId));
-            } catch (error) {
-                if (error instanceof APIError) setError(error);
-            }
-
-        };
-
         fetchTeachers();
-    }, [courseId]);
+    }, [course.course_id]);
+
+    const convertDate = (date_str: string) => {
+        let date = new Date(date_str);
+        let date_local = date.toLocaleString('en-US', {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        })
+        return date_local.replace(" at", "").replace(",", "");
+    }
 
     return (
         <ThemeProvider theme={CourseCardTheme}>
@@ -67,7 +88,7 @@ const CourseCard = ({params: {courseId}}: { params: { courseId: number } }) => {
                         {course.name}
                     </Typography>
                     <Typography color="text.text" gutterBottom style={{whiteSpace: 'pre-line'}}>
-                        {teachers.join('\n')}
+                        {teachers.map((teacher: User) => teacher.first_name + " " + teacher.last_name).join('\n')}
                     </Typography>
                     <TableContainer>
                         <Table aria-label="simple table" size="small">
@@ -83,15 +104,25 @@ const CourseCard = ({params: {courseId}}: { params: { courseId: number } }) => {
                                     <TableRow
                                         key={index}
                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        style={{backgroundColor: new Date(project.deadline) < new Date() ? 'lightgrey' : 'inherit'}}
                                     >
                                         <TableCell component="th" scope="row">
-                                            {project['name']}
+                                            <a href={`/project/${project.project_id}`} style={{color: 'black'}}>
+                                                {project['name']}
+                                            </a>
                                         </TableCell>
                                         <TableCell align="right">
-                                            {project['deadline']}
+                                            {convertDate(project['deadline'])}
                                         </TableCell>
                                         <TableCell align="right">
-                                            {'x'}
+                                            {submissions.has(project.project_id) ? (
+                                                <a
+                                                    href={`/submission/${submissions.get(project.project_id)?.submission_id}/`}
+                                                    style={{color: '#1E64C8'}}
+                                                >
+                                                    {`#${submissions.get(project.project_id)?.submission_nr}`}
+                                                </a>
+                                            ) : "/"}
                                         </TableCell>
                                     </TableRow>
                                 ))}

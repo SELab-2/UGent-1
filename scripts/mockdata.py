@@ -185,11 +185,7 @@ def run():
     )
 
     user_7, _ = User.objects.get_or_create(
-        username='runedyselinck',
-        email='rune.dyselinck@sel2-1.ugent.be',
-        first_name='Rune',
-        last_name='Dyselinck',
-        role=3
+        email='rune.dyselinck@.ugent.be'
     )
     user_7.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_14, course_15, course_16,
@@ -225,6 +221,24 @@ def run():
         deadline='2021-12-12 12:12:14',
         visible=True,
         number_of_groups=4,
+        group_size=2
+    )
+
+    project_3, _ = Project.objects.get_or_create(
+        name='Opdracht 1',
+        course_id=course_6,
+        deadline='2021-12-12 12:12:14',
+        visible=True,
+        number_of_groups=10,
+        group_size=2
+    )
+
+    project_4, _ = Project.objects.get_or_create(
+        name='Opdracht 2',
+        course_id=course_6,
+        deadline='2021-12-12 12:12:14',
+        visible=True,
+        number_of_groups=10,
         group_size=2
     )
 
@@ -282,6 +296,30 @@ def run():
         visible=True
     )
     group_5.user.set(
+        [user_7, user_8]
+    )
+
+    group_6, _ = Group.objects.get_or_create(
+        group_nr=2,
+        final_score=8,
+        project_id=project_3,
+        feedback=lorem_ipsum,
+        visible=True
+    )
+
+    group_6.user.set(
+        [user_7, user_8]
+    )
+
+    group_7, _ = Group.objects.get_or_create(
+        group_nr=2,
+        final_score=8,
+        project_id=project_4,
+        feedback=lorem_ipsum,
+        visible=True
+    )
+
+    group_7.user.set(
         [user_7, user_8]
     )
 
