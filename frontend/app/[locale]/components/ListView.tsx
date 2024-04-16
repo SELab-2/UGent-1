@@ -93,21 +93,7 @@ const ToggleButton = styled(Button)(({theme, selected}) => ({
 }));
 
 
-const CheckBoxWithCustomCheck = () => {
-    const [checked, setChecked] = useState(false);
-    const handleCheckboxChange = (event) => {
-        setChecked(event.target.checked);
-    };
 
-    return (
-        <GreenCheckbox checked={checked} onChange={handleCheckboxChange}>
-            <CustomCheckmarkWrapper>
-                {checked && <img src={checkMarkImage} alt="Checkmark"
-                                 style={{width: '100%', height: '100%', objectFit: 'contain'}}/>}
-            </CustomCheckmarkWrapper>
-        </GreenCheckbox>
-    );
-};
 const WhiteSquareIcon = () => (
 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="12" height="12" fill="white"/>
@@ -268,6 +254,28 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
             direction = 'desc';
         }
         setSortConfig({ key, direction });
+    };
+
+    const CheckBoxWithCustomCheck = () => {
+        const [checked, setChecked] = useState(false);
+        const handleCheckboxChange = (event) => {
+            setChecked(event.target.checked);
+        };
+    
+        
+        useEffect(() => {
+            setChecked(false);
+        }, [currentPage]);
+    
+    
+        return (
+            <GreenCheckbox checked={checked} onChange={handleCheckboxChange}>
+                <CustomCheckmarkWrapper>
+                    {checked && <img src={checkMarkImage} alt="Checkmark"
+                                     style={{width: '100%', height: '100%', objectFit: 'contain'}}/>}
+                </CustomCheckmarkWrapper>
+            </GreenCheckbox>
+        );
     };
 
     const sortedRows = [...rows].sort((a, b) => {
