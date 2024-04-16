@@ -3,6 +3,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from django_filters import FilterSet, CharFilter
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.pigeonhole.apps.courses.models import CourseSerializer
 from backend.pigeonhole.apps.groups.models import Group
@@ -12,6 +15,7 @@ from backend.pigeonhole.apps.users.models import User
 from backend.pigeonhole.apps.users.models import UserSerializer
 from .models import Course
 from .permissions import CourseUserPermissions
+from django.db.models import Q
 
 
 class CustomPageNumberPagination(PageNumberPagination):
@@ -20,11 +24,40 @@ class CustomPageNumberPagination(PageNumberPagination):
     max_page_size = 100
 
 
+class CourseFilter(FilterSet):
+    # Define filters for fields you want to filter on
+    keyword = CharFilter(method="filter_keyword")
+
+    class Meta:
+        model = Course
+        fields = []
+
+    def filter_keyword(self, queryset, name, value):
+        return queryset.filter(
+            Q(name__icontains=value) | Q(description__icontains=value)
+        )
+
+
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated, CourseUserPermissions]
     pagination_class = CustomPageNumberPagination
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
+    ordering_fields = ["name"]
+    filterset_class = CourseFilter
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        order_by = self.request.query_params.get("order_by")
+        sort_order = self.request.query_params.get("sort_order")
+
+        if order_by and sort_order:
+            if sort_order.lower() == "desc":
+                order_by = f"-{order_by}"
+            queryset = queryset.order_by(order_by)
+
+        return queryset
 
     def perform_create(self, serializer):
         course = serializer.save()

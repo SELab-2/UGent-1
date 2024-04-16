@@ -201,9 +201,24 @@ export async function getCourse(id: number) : Promise<Course>{
     return (await getRequest(`/courses/${id}`));
 }
 
-export async function getCourses(page = 1, pageSize = 5): Promise<Course[]> {
-    return (await getRequest(`/courses?page=${page}&page_size=${pageSize}`));
+export async function getCourses(page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Course[]> {
+    let url = `/courses?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
 }
+
 
 export async function getTestFiles(path: string): Promise<Blob> {
     return (await getBlobRequest(path));
@@ -249,7 +264,6 @@ export async function getUserData() : Promise<UserData>{
     }*/else{
         let user : UserData = await getRequest('/users/current');
         localStorage.setItem('user', JSON.stringify(user));
-        console.log(user);
         return user;
     }
 }
@@ -276,7 +290,6 @@ export function postForm(path : string){
         event.preventDefault();
         const formData = new FormData(event.target);
         const formDataObject = Object.fromEntries(formData.entries());
-        console.log(formDataObject)
         try {
             await axios.post(backend_url + path, formDataObject, { withCredentials: true });
         } catch (error) {

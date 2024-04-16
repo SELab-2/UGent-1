@@ -28,6 +28,7 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
                 <ListView
                     admin={true}
                     headers={headers}
+                    sortable={[true, false, false]}
                     get_id={projectId}
                     get={'groups'}
                 />
