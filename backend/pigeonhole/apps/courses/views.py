@@ -3,8 +3,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-from django.core.paginator import Paginator
-from django.db.models import QuerySet
 
 from backend.pigeonhole.apps.courses.models import CourseSerializer
 from backend.pigeonhole.apps.groups.models import Group
@@ -96,16 +94,19 @@ class CourseViewSet(viewsets.ModelViewSet):
         user = request.user
         courses = user.course.all()
 
-        page_number = request.query_params.get("page", 1)
         page_size = request.query_params.get(
             "page_size", self.pagination_class.page_size
         )
 
-        paginator = Paginator(courses, page_size)
-        page_obj = paginator.get_page(page_number)
+        paginator = CustomPageNumberPagination()
+        paginator.page_size = page_size
+        paginator.page_query_param = "page"
+        paginator.page_size_query_param = "page_size"
+        paginator.max_page_size = 100
 
-        serializer = CourseSerializer(page_obj, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        paginated_courses = paginator.paginate_queryset(courses, request)
+        serializer = CourseSerializer(paginated_courses, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["GET"])
     def get_users(self, request, *args, **kwargs):
@@ -133,13 +134,16 @@ class CourseViewSet(viewsets.ModelViewSet):
         course = self.get_object()
         projects = Project.objects.filter(course_id=course)
 
-        page_number = request.query_params.get("page", 1)
         page_size = request.query_params.get(
             "page_size", self.pagination_class.page_size
         )
 
-        paginator = Paginator(projects, page_size)
-        page_obj = paginator.get_page(page_number)
+        paginator = CustomPageNumberPagination()
+        paginator.page_size = page_size
+        paginator.page_query_param = "page"
+        paginator.page_size_query_param = "page_size"
+        paginator.max_page_size = 100
 
-        serializer = ProjectSerializer(page_obj, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        paginated_projects = paginator.paginate_queryset(projects, request)
+        serializer = ProjectSerializer(paginated_projects, many=True)
+        return paginator.get_paginated_response(serializer.data)
