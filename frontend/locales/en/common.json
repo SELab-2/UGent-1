@@ -36,5 +36,15 @@
     "remove_dialog": "Remove project?",
     "action_dialog": "This action cannot be undone.",
     "remove_confirm": "Remove",
-    "remove_cancel": "Cancel"
+    "remove_cancel": "Cancel",
+    "name" : "Name",
+    "email" : "Email",
+    "role" : "Role",
+    "remove_user": "Remove selected users",
+    "remove_user_from_course": "Remove user from course",
+    "search" : "Search",
+    "back_to": "Back to",
+    "page" : "page",
+    "course_detail" : "course detail",
+    "join_course" : "Join course"
 }

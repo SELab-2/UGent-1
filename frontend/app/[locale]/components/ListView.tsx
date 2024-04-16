@@ -6,16 +6,7 @@ import {NextPage} from 'next';
 import checkMarkImage from './check-mark.png';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from "@mui/icons-material/Cancel";
-import {
-    deleteData,
-    getCourses,
-    getGroups_by_project,
-    getProjectSubmissions,
-    getUser,
-    getUserData,
-    getUsers,
-    postData
-} from '@lib/api';
+import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject, getStudents_by_course, getTeachers_by_course, getProjectSubmissions } from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -25,7 +16,7 @@ const RootContainer = styled(Container)(({theme}) => ({
     padding: theme.spacing(1),
     borderRadius: theme.spacing(1),
     boxShadow: theme.shadows[1],
-    marginTop: '64px',
+    marginTop: '20px',
     width: '75%',
     maxWidth: '100%',
 }));
@@ -104,21 +95,7 @@ const ToggleButton = styled(Button)(({theme, selected}) => ({
 }));
 
 
-const CheckBoxWithCustomCheck = () => {
-    const [checked, setChecked] = useState(false);
-    const handleCheckboxChange = (event) => {
-        setChecked(event.target.checked);
-    };
 
-    return (
-        <GreenCheckbox checked={checked} onChange={handleCheckboxChange}>
-            <CustomCheckmarkWrapper>
-                {checked && <img src={checkMarkImage} alt="Checkmark"
-                                 style={{width: '100%', height: '100%', objectFit: 'contain'}}/>}
-            </CustomCheckmarkWrapper>
-        </GreenCheckbox>
-    );
-};
 const WhiteSquareIcon = () => (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="12" height="12" fill="white"/>
@@ -160,17 +137,19 @@ interface ListViewProps {
     action_name: string;
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name}) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_name, action_text, search_text }) => {
+    // default listview
     const [searchTerm, setSearchTerm] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const [secondvalueson, setSecondValuesOn] = useState(false);
-    const itemsPerPage = 10;
-    const [totalPages, setTotalPages] = useState(0);
     const [rows, setRows] = useState<(string | number | boolean)[][]>([]);
-    const [sortConfig, setSortConfig] = useState({key: headers[0], direction: 'asc'});
-    const [secondValues, setSecondValues] = useState<(string | number)[][]>([]);
+    const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
+    // group screen
     const [user, setUser] = useState<any>();
-    const [group_members, setGroupMembers] = useState<(string | number)[][]>([]);
+    const [user_is_in_group, setUserIsInGroup] = useState(false);
+    const [project, setProject] = useState<any>();
+    // multiple pages
+    const [currentPage, setCurrentPage] = useState(1);
+    const [previousPage, setPreviousPage] = useState(0);
+    const [nextPage, setNextPage] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -182,99 +161,101 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                  *
                  */
 
+                const parse_pages = (response: any) => {
+                    if(response.previous){
+                        setPreviousPage(1);
+                    } else {
+                        setPreviousPage(0);
+                    }
+                    if(response.next){
+                        setNextPage(1);
+                    } else {
+                        setNextPage(0);
+                    }
+                    return response.results;
+                }
+
                 const hashmap_get_to_parser: { [key: string]: (data: any) => any[] | Promise<any[]> } = {
-                    'users': (data) => [data.id, data.name, data.email, data.role],
-                    'course_users': (data) => [data.id, data.name, data.email, data.role],
+                    'users': (data) => [data.id, data.email, data.role],
+                    'course_students': (data) => [data.id, data.email],
+                    'course_teachers': (data) => [data.id, data.email],
                     'courses': (data) => [data.course_id, data.name, data.description],
                     'groups': async (data) => {
                         let l = [];
                         // Iterate over the values of the object
                         for (const user_id of Object.values(data.user)) {
                             const i = await getUser(Number(user_id));
+                            if(i.id === user.id) {
+                                setUserIsInGroup(true);
+                            }
                             l.push(i.email);
                         }
-                        return [data.group_nr, l.join(', ')];
+                        return [data.group_id, data.user, data.group_nr, l.join(', ')];
                     },
                     'submissions': (data) => [data.submission_id, data.group_id, data.timestamp, data.output_test !== undefined]
-
                 };
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
-                    'users': getUsers,
-                    'course_users': async () => {
-                        const users = await getUsers();
-                        return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role === 3);
+                    'users': async () => {
+                        return parse_pages(await getUsers(currentPage));
                     },
-                    'courses': getCourses,
+                    'course_students': async () => {
+                        return parse_pages(await getStudents_by_course(get_id, currentPage));
+                    },
+                    "course_teachers": async () => {
+                        return parse_pages(await getTeachers_by_course(get_id, currentPage));
+                    },
+                    'courses': async () => {
+                        return parse_pages(await getCourses(currentPage));
+                    },
                     'groups': async () => {
-                        return getGroups_by_project(get_id);
+                        return parse_pages(await getGroups_by_project(get_id, currentPage));
                     },
                     'submissions': async () => {
                         return getProjectSubmissions(get_id);
                     }
                 };
 
-                const hashmap_get_to_secondvalues: { [key: string]: () => Promise<any> } = {
-                    'users': async () => {
-                        return undefined;
-                    },
-                    'course_users': async () => {
-                        const users = await getUsers();
-                        return users.filter((d: any) => d.course_id === get_id).filter((d: any) => d.role !== 3);
-                    },
-                    'courses': async () => {
-                        return undefined;
-                    },
-                    'groups': async () => {
-                        return undefined;
-                    },
-                    'submissions': async () => {
-                        return undefined;
-                    }
-                };
+                // Get user data
+                const user = await getUserData();
+                setUser(user);
 
-                let data = await hashmap_get_to_function[get]();
+                if(get === 'groups') {
+                    const project = await getProject(get_id);
+                    setProject(project);
+                }
+
+                const data = await hashmap_get_to_function[get]();
                 const mappedData = [];
                 for (const d of data) {
                     mappedData.push(await hashmap_get_to_parser[get](d));
                 }
-                if (hashmap_get_to_secondvalues[get]) {
-                    const secondvalues = await hashmap_get_to_secondvalues[get]();
-                    if (secondvalues) {
-                        const mappedSecondValues = secondvalues.map(hashmap_get_to_parser[get]);
-                        setSecondValues(mappedSecondValues);
-                    }
-                }
-
-
-                // Calculate total pages based on filtered rows
-                const totalItems = secondvalueson ? secondValues?.length : mappedData.length;
-                setTotalPages(Math.ceil(totalItems / itemsPerPage));
 
                 // Filter and slice rows based on current search term and page
-                const filteredRows = secondvalueson ? secondValues : mappedData;
+                const filteredRows = mappedData;
                 const filteredAndSlicedRows = filteredRows
-                    .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())))
-                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+                    .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())));
                 setRows(filteredAndSlicedRows);
-
-                // Get user data
-                const user = await getUserData();
-                setUser(user);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
         fetchData();
-    }, [currentPage, searchTerm, secondValues, secondvalueson]);
-
+        // the values below will be constantly updated
+    }, [currentPage, searchTerm, currentPage]);
+    
 
     const handleChangePage = (direction: 'next' | 'prev') => {
         if (direction === 'next') {
             setCurrentPage(currentPage + 1);
-        } else {
+        } else if (direction === 'prev' && currentPage > 1) {
             setCurrentPage(currentPage - 1);
         }
+        // reset all checkboxes
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach((checkbox) => {
+            (checkbox as HTMLInputElement).checked = false;
+        });
     };
 
     const handleSort = (key: string) => {
@@ -283,6 +264,28 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
             direction = 'desc';
         }
         setSortConfig({key, direction});
+    };
+
+    const CheckBoxWithCustomCheck = () => {
+        const [checked, setChecked] = useState(false);
+        const handleCheckboxChange = (event) => {
+            setChecked(event.target.checked);
+        };
+
+
+        useEffect(() => {
+            setChecked(false);
+        }, [currentPage]);
+
+
+        return (
+            <GreenCheckbox checked={checked} onChange={handleCheckboxChange}>
+                <CustomCheckmarkWrapper>
+                    {checked && <img src={checkMarkImage} alt="Checkmark"
+                                     style={{width: '100%', height: '100%', objectFit: 'contain'}}/>}
+                </CustomCheckmarkWrapper>
+            </GreenCheckbox>
+        );
     };
 
     const sortedRows = [...rows].sort((a, b) => {
@@ -295,113 +298,122 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
         return 0;
     });
 
-    const handleToggleSecondValues = () => {
-        setSecondValuesOn(!secondvalueson);
-    };
-
     return (
         <RootContainer component="main">
             <CssBaseline/>
             <SearchBar
-                label="Search"
+                label={search_text}
                 variant="outlined"
                 fullWidth
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
             />
-            {admin && !secondvalueson && action_name && (
+            {admin && action_name && (
                 <RemoveButton
-                    onClick={() => {
-                        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-                        checkboxes.forEach((checkbox, index) => {
-                            if ((checkbox as HTMLInputElement).checked) {
-                                // if secondvalues are on, use the secondvalues array
-                                /**
-                                 *
-                                 *  EDIT
-                                 *
-                                 */
-                                const id = sortedRows[index][0];
-                                if (!isNaN(id)) {
-                                    if (action_name === 'remove_from_course') {
-                                        postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id});
-                                    } else if (action_name === 'remove') {
-                                        deleteData('/users/' + id);
-                                    } else if (action_name === 'join_course') {
-                                        postData('/courses/' + id + '/join_course/', {course_id: id});
-                                    }
-                                } else {
-                                    console.error("Invalid id", sortedRows[index][0]);
+                onClick={() => {
+                    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach((checkbox, index) => {
+                        if ((checkbox as HTMLInputElement).checked) {
+                            /**
+                             *
+                             *  EDIT
+                             *
+                             */
+                            const id = sortedRows[index][0];
+                            if (!isNaN(id)) {
+                                if(action_name === 'remove_from_course') {
+                                    postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id});
+                                } else if (action_name === 'remove') {
+                                    deleteData('/users/' + id);
+                                } else if (action_name === 'join_course') {
+                                    postData('/courses/' + id + '/join_course/', {course_id: id});
                                 }
+                            } else {
+                                console.error("Invalid id", sortedRows[index][0]);
                             }
-                        });
-                    }}
-                >
-                    {action_name || 'Remove'}
-                </RemoveButton>
+                        }
+                    });
+                }}
+            >
+                {
+                    action_text
+                }
+            </RemoveButton>
 
-            )}
-            {tablenames && (
-                <ToggleButton onClick={handleToggleSecondValues} selected={secondvalueson}>
-                    <span>{tablenames[0]}</span>
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    <span>{tablenames[1]}</span>
-                </ToggleButton>
             )}
             <Table>
                 <thead>
-                <tr>
-                    <th>Select</th>
-                    {headers.map((header, index) => (
-                        <th key={index}>
-                            <IconButton size="small" onClick={() => handleSort(header)}>
-                                {sortConfig.key === header ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon/> :
-                                    <WhiteTriangleDownIcon/>) : <WhiteSquareIcon/>}
-                            </IconButton>
-                            {header}
-                        </th>
-                    ))}
-                </tr>
+                    <tr>
+                        {(get !== 'groups') && <th>Select</th>}
+                        {headers.map((header, index) => (
+                            <th key={index}>
+                                <IconButton size="small" onClick={() => handleSort(headers[index])}>
+                                    {sortConfig.key === headers[index] ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon /> : <WhiteTriangleDownIcon />) : <WhiteSquareIcon />}
+                                </IconButton>
+                                {header}
+                            </th>
+                        ))}
+                    </tr>
                 </thead>
                 <tbody>
-                {sortedRows.map((row, index) => (
-                    <TableRow key={index}>
-                        <td>
-                            {<CheckBoxWithCustomCheck checked={false}/>}
-                        </td>
-                        {row.slice(1).map((cell, cellIndex) => (
-                            <td key={cellIndex}>{typeof cell == "boolean" ? (cell ? <CheckIcon/> :
-                                <CancelIcon/>) : cell}</td>
-                        ))}
-                        {
+                    {sortedRows.map((row, index) => (
+                        <TableRow key={index}>
+                            {((get !== 'groups') &&
+                            <td>
+                                {<CheckBoxWithCustomCheck checked={false}/>}
+                            </td>)}
+                            {get === 'groups' && row.slice(2).map((cell, cellIndex) => (
+                                <td key={cellIndex}>{typeof cell == "boolean" ? (cell ? <CheckIcon/> :<CancelIcon/>) : cell}</td>
+                            ))}
+                            {get !== 'groups' && row.slice(1).map((cell, cellIndex) => (
+                                <td key={cellIndex}>{typeof cell == "boolean" ? (cell ? <CheckIcon/> :<CancelIcon/>) : cell}</td>
+                            ))}
+                            { 
                             // group join button
-                            get === 'groups' && (
+                            get === 'groups' && (!row[1].includes(user.id)) && (
                                 <td>
-                                    <Button>
+                                    {
+                                    // join button isn't shown when user is already in group
+                                    // or when group is full
+                                    // TODO i18n join button
+                                    (!user_is_in_group) && (row[1].length < project.group_size) && (
+                                    <Button onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]})}>
                                         Join
                                     </Button>
+                                    )
+                                    }
                                 </td>)
-                        }
-                    </TableRow>
-                ))}
+                            }
+                            {
+                            // group leave button
+                            get === 'groups' && (row[1].includes(user.id)) && (
+                                <td>
+                                    {
+                                    (user_is_in_group) && (
+                                    <Button onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]})}>
+                                        Leave
+                                    </Button>
+                                    )}
+                                </td>)
+                            }
+                        </TableRow>
+                    ))}
                 </tbody>
             </Table>
-            {totalPages > 1 && (
-                <Box>
-                    <Button
-                        disabled={currentPage === 1}
-                        onClick={() => handleChangePage('prev')}
-                    >
-                        Prev
-                    </Button>
-                    <Button
-                        disabled={currentPage === totalPages}
-                        onClick={() => handleChangePage('next')}
-                    >
-                        Next
-                    </Button>
-                </Box>
-            )}
+            <Box style={{ display: 'flex', gap: '8px' }}>
+                <Button
+                    disabled={previousPage === 0}
+                    onClick={() => handleChangePage('prev')}
+                >
+                    Prev
+                </Button>
+                <Button
+                    disabled={nextPage === 0}
+                    onClick={() => handleChangePage('next')}
+                >
+                    Next
+                </Button>
+            </Box>
         </RootContainer>
     );
 }

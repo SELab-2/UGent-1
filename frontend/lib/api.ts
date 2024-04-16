@@ -29,6 +29,8 @@ export type Course = {
     course_id: number;
     name: string;
     description: string;
+    open_course: boolean;
+    invite_token: string;
 }
 
 export type Project = {
@@ -187,16 +189,28 @@ export async function getUser(id: number) : Promise<User>{
     return (await getRequest(`/users/${id}`));
 }
 
-export async function getUsers() : Promise<User[]>{
-    return (await getListRequest('/users'));
+export async function getUsers(page=1) : Promise<User[]>{
+    return (await getRequest(`/users?page=${page}`));
+}
+
+export async function getUsers_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
+    return (await getRequest(`/courses/${courseId}/get_users?page=${page}&page_size=${pageSize}`));
+}
+
+export async function getStudents_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
+    return (await getRequest(`/courses/${courseId}/get_students?page=${page}&page_size=${pageSize}`));
+}
+
+export async function getTeachers_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
+    return (await getRequest(`/courses/${courseId}/get_teachers?page=${page}&page_size=${pageSize}`));
 }
 
 export async function getCourse(id: number) : Promise<Course>{
     return (await getRequest(`/courses/${id}`));
 }
 
-export async function getCourses(): Promise<Course[]> {
-    return (await getListRequest('/courses'));
+export async function getCourses(page = 1, pageSize = 5): Promise<Course[]> {
+    return (await getRequest(`/courses?page=${page}&page_size=${pageSize}`));
 }
 
 export async function getTestFiles(path: string): Promise<Blob> {
@@ -227,8 +241,8 @@ export async function getGroups(): Promise<Group[]> {
     return (await getListRequest('/groups'));
 }
 
-export async function getGroups_by_project(project_id: number) : Promise<Group[]>{
-    return (await getRequest(`/projects/${project_id}/get_groups`));
+export async function getGroups_by_project(projectId: number, page = 1, pageSize = 5): Promise<Group[]> {
+    return (await getRequest(`/projects/${projectId}/get_groups?page=${page}&page_size=${pageSize}`));
 }
 
 export async function getProjectSubmissions(id: number): Promise<Submission[]> {
@@ -240,12 +254,12 @@ let userData : UserData | undefined = undefined;
 export async function getUserData(): Promise<UserData> {
     if (userData) {
         return userData;
-    } else if (localStorage.getItem('user')) {
-        let user: UserData = JSON.parse(localStorage.getItem('user') as string);
+    }/*else if(localStorage.getItem('user')){
+        let user : UserData = JSON.parse(localStorage.getItem('user') as string);
         userData = user;
         return user;
-    } else {
-        let user: UserData = await getRequest('/users/current');
+    }*/else{
+        let user : UserData = await getRequest('/users/current');
         localStorage.setItem('user', JSON.stringify(user));
         console.log(user);
         return user;
@@ -368,4 +382,8 @@ export async function deleteData(path: string){
         apierror.trace = error;
         throw apierror;
     }
+}
+
+export async function joinCourseUsingToken(course_id: number, token: string){
+    return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
