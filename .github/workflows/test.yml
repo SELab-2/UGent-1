@@ -32,8 +32,6 @@ jobs:
       - name: Install your dependencies
         working-directory: ./frontend
         run: npm ci
-      - name: Install ts-jest
+      - name: Run Fronted tests
         working-directory: ./frontend
-        run: npm install --save-dev ts-jest @types/jest
-      - name: Running Cypress tests
         run: npx jest --silent
