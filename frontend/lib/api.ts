@@ -179,20 +179,22 @@ export async function getUser(id: number) : Promise<User>{
     return (await getRequest(`/users/${id}`));
 }
 
-export async function getUsers() : Promise<User[]>{
-    return (await getListRequest('/users'));
+export async function getUsers(page=1) : Promise<User[]>{
+    return (await getRequest(`/users?page=${page}`));
 }
 
-export async function getUsers_by_course(course_id: number) : Promise<User[]>{
-    return (await getRequest(`/courses/${course_id}/get_users`));
+export async function getUsers_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
+    return (await getRequest(`/courses/${courseId}/get_users?page=${page}&page_size=${pageSize}`));
 }
+
+
 
 export async function getCourse(id: number) : Promise<Course>{
     return (await getRequest(`/courses/${id}`));
 }
 
-export async function getCourses(page=1) : Promise<Course[]>{
-    return (await getRequest(`/courses?page=${page}`));
+export async function getCourses(page = 1, pageSize = 5): Promise<Course[]> {
+    return (await getRequest(`/courses?page=${page}&page_size=${pageSize}`));
 }
 
 export async function getTestFiles(path: string): Promise<Blob> {

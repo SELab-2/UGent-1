@@ -2,6 +2,9 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+from django.core.paginator import Paginator
+from django.db.models import QuerySet
 
 from backend.pigeonhole.apps.courses.models import CourseSerializer
 from backend.pigeonhole.apps.groups.models import Group
@@ -13,10 +16,17 @@ from .models import Course
 from .permissions import CourseUserPermissions
 
 
+class CustomPageNumberPagination(PageNumberPagination):
+    page_size = 10  # Set the default page size here
+    page_size_query_param = "page_size"
+    max_page_size = 100
+
+
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated, CourseUserPermissions]
+    pagination_class = CustomPageNumberPagination
 
     def perform_create(self, serializer):
         course = serializer.save()
@@ -85,7 +95,16 @@ class CourseViewSet(viewsets.ModelViewSet):
     def get_selected_courses(self, request, *args, **kwargs):
         user = request.user
         courses = user.course.all()
-        serializer = CourseSerializer(courses, many=True)
+
+        page_number = request.query_params.get("page", 1)
+        page_size = request.query_params.get(
+            "page_size", self.pagination_class.page_size
+        )
+
+        paginator = Paginator(courses, page_size)
+        page_obj = paginator.get_page(page_number)
+
+        serializer = CourseSerializer(page_obj, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["GET"])
@@ -93,12 +112,34 @@ class CourseViewSet(viewsets.ModelViewSet):
         course = self.get_object()
         users = User.objects.filter(course=course)
         res = [user for user in users if course in user.course.all()]
-        return Response(UserSerializer(res, many=True).data, status=status.HTTP_200_OK)
+
+        page_size = request.query_params.get(
+            "page_size", self.pagination_class.page_size
+        )
+
+        paginator = CustomPageNumberPagination()
+        paginator.page_size = page_size
+        paginator.page_query_param = "page"
+        paginator.page_size_query_param = "page_size"
+        paginator.max_page_size = 100
+
+        paginated_users = paginator.paginate_queryset(res, request)
+        serializer = UserSerializer(paginated_users, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["GET"])
     def get_projects(self, request, *args, **kwargs):
         course = self.get_object()
         projects = Project.objects.filter(course_id=course)
-        return Response(
-            ProjectSerializer(projects, many=True).data, status=status.HTTP_200_OK
+
+        page_number = request.query_params.get("page", 1)
+        page_size = request.query_params.get(
+            "page_size", self.pagination_class.page_size
         )
+
+        paginator = Paginator(projects, page_size)
+        page_obj = paginator.get_page(page_number)
+
+        serializer = ProjectSerializer(page_obj, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

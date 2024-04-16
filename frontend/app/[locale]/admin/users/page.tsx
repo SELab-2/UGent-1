@@ -11,7 +11,7 @@ const i18nNamespaces = ['common'];
 export default async function Users({ params: { locale } }: { params: { locale: any } }) {
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
-    const headers = [t('name'), t('email'), t('role')];
+    const headers = [t('email'), t('role')];
 
     return (
         <TranslationsProvider

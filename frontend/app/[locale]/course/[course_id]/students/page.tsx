@@ -11,7 +11,7 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
     const { locale, course_id } = params;
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
-    const headers = [t('name'), t('email'), t('role')];
+    const headers = [t('email')];
     
     return (
         <TranslationsProvider
@@ -29,7 +29,7 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
                     admin={true}
                     headers={headers}
                     get_id={course_id}
-                    get={'course_users'}
+                    get={'course_students'}
                     action_name={'remove_from_course'}
                     tablenames={[t('students'), t('teachers')]}
                     action_text={t('remove_user_from_course')}

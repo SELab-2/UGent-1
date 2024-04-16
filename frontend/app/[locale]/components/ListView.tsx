@@ -143,24 +143,18 @@ const RemoveButton = styled(Button)({
 interface ListViewProps {
     headers: string[];
     values: (string | number)[][];
-    secondvalues?: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablenames, action_name, action_text, search_text }) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_name, action_text, search_text }) => {
     // default listview
-    const [data, setData] = useState<(string | number)[][]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [rows, setRows] = useState<(string | number)[][]>([]);
     const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
-    // student and user page
-    const [secondvalueson, setSecondValuesOn] = useState(false);
-    const [secondValues, setSecondValues] = useState<(string | number)[][]>([]);
     // group screen
     const [user, setUser] = useState<any>();
     const [user_is_in_group, setUserIsInGroup] = useState(false);
     const [project, setProject] = useState<any>();
     // multiple pages
-    const itemsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
     const [previousPage, setPreviousPage] = useState(0);
     const [nextPage, setNextPage] = useState(0);
@@ -175,9 +169,23 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                  * 
                  */
 
+                const parse_pages = (response: any) => {
+                    if(response.previous){
+                        setPreviousPage(1);
+                    } else {
+                        setPreviousPage(0);
+                    }
+                    if(response.next){
+                        setNextPage(1);
+                    } else {
+                        setNextPage(0);
+                    }
+                    return response.results;
+                }
+
                 const hashmap_get_to_parser: { [key: string]: (data: any) => any[] | Promise<any[]> } = {
-                    'users': (data) => [data.id, data.name, data.email, data.role],
-                    'course_users': (data) => [data.id, data.name, data.email, data.role],
+                    'users': (data) => [data.id, data.email, data.role],
+                    'course_students': (data) => [data.id, data.email],
                     'courses': (data) => [data.course_id, data.name, data.description],
                     'groups': async (data) => {
                         let l = [];
@@ -195,43 +203,20 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 };
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
-                    'users': getUsers,
-                    'course_users':  async () => {
-                        const users = await getUsers_by_course(get_id);
-                        return users.filter((d: any) => d.role === 3);
+                    'users': async () => {
+                        const response = await getUsers(currentPage);
+                        return parse_pages(response);
+                    },
+                    'course_students':  async () => {
+                        const users = await getUsers_by_course(get_id, currentPage);
+                        return parse_pages(users);
                     },
                     'courses': async () => {
                         const response = await getCourses(currentPage);
-                        if(response.previous){
-                            setPreviousPage(1);
-                        } else {
-                            setPreviousPage(0);
-                        }
-                        if(response.next){
-                            setNextPage(1);
-                        } else {
-                            setNextPage(0);
-                        }
-                        return response.results;
+                        return parse_pages(response);
                     },
                     'groups': async () => {
-                        return getGroups_by_project(get_id);
-                    }
-                };
-
-                const hashmap_get_to_secondvalues: { [key: string]: () => Promise<any> } = {
-                    'users': async () => {
-                        return undefined;
-                    },
-                    'course_users': async () => {
-                        const users = await getUsers_by_course(get_id);
-                        return users.filter((d: any) => d.role !== 3);
-                    },
-                    'courses': async () => {
-                        return undefined;
-                    },
-                    'groups': async () => {
-                        return undefined;
+                        return await getGroups_by_project(get_id);
                     }
                 };
 
@@ -249,17 +234,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 for (const d of data) {
                     mappedData.push(await hashmap_get_to_parser[get](d));
                 }
-
-                if(hashmap_get_to_secondvalues[get]) {
-                    const secondvalues = await hashmap_get_to_secondvalues[get]();
-                    if(secondvalues) {
-                        const mappedSecondValues = secondvalues.map(hashmap_get_to_parser[get]);
-                        setSecondValues(mappedSecondValues);
-                    }
-                }
     
                 // Filter and slice rows based on current search term and page
-                const filteredRows = secondvalueson ? secondValues : mappedData;
+                const filteredRows = mappedData;
                 const filteredAndSlicedRows = filteredRows
                     .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())));
                 setRows(filteredAndSlicedRows);
@@ -268,8 +245,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
             }
         };
         fetchData();
-        // the values below will be constan
-    }, [currentPage, searchTerm, secondvalueson, currentPage]);
+        // the values below will be constantly updated
+    }, [currentPage, searchTerm, currentPage]);
     
 
     const handleChangePage = (direction: 'next' | 'prev') => {
@@ -278,6 +255,11 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
         } else if (direction === 'prev' && currentPage > 1) {
             setCurrentPage(currentPage - 1);
         }
+        // reset all checkboxes
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach((checkbox) => {
+            (checkbox as HTMLInputElement).checked = false;
+        });
     };
 
     const handleSort = (key: string) => {
@@ -298,10 +280,6 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
         return 0;
     });
 
-    const handleToggleSecondValues = () => {
-        setSecondValuesOn(!secondvalueson);
-    };
-
     return (
         <RootContainer component="main">
             <CssBaseline/>
@@ -312,13 +290,12 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
             />
-            {admin && !secondvalueson && action_name && (
+            {admin && action_name && (
                 <RemoveButton
                 onClick={() => {
                     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
                     checkboxes.forEach((checkbox, index) => {
                         if ((checkbox as HTMLInputElement).checked) {
-                            // if secondvalues are on, use the secondvalues array
                             /**
                              * 
                              *  EDIT
@@ -346,21 +323,14 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, tablena
             </RemoveButton>
 
             )}
-            {tablenames && (
-                <ToggleButton onClick={handleToggleSecondValues} selected={secondvalueson}>
-                    <span>{tablenames[0]}</span>
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    <span>{tablenames[1]}</span>
-                </ToggleButton>
-            )}
                <Table>
                 <thead>
                     <tr>
                         {(get !== 'groups') && <th>Select</th>}
                         {headers.map((header, index) => (
                             <th key={index}>
-                                <IconButton size="small" onClick={() => handleSort(header)}>
-                                    {sortConfig.key === header ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon /> : <WhiteTriangleDownIcon />) : <WhiteSquareIcon />}
+                                <IconButton size="small" onClick={() => handleSort(headers[index])}>
+                                    {sortConfig.key === headers[index] ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon /> : <WhiteTriangleDownIcon />) : <WhiteSquareIcon />}
                                 </IconButton>
                                 {header}
                             </th>
