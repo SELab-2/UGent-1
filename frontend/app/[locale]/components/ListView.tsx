@@ -184,7 +184,6 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                 }
 
                 const data = await hashmap_get_to_function[get]();
-                console.log(data);
                 const mappedData = [];
                 for (const d of data) {
                     mappedData.push(await hashmap_get_to_parser[get](d));
