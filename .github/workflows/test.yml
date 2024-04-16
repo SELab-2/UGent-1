@@ -1,4 +1,4 @@
-name: Backend test CI
+name: Test CI
 
 on:
   - pull_request

@@ -1,4 +1,5 @@
 import {render} from '@testing-library/react';
+import '@testing-library/jest-dom';
 import CourseBanner from '../app/[locale]/components/CourseBanner';
 import React from "react";
 
