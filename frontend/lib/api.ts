@@ -177,12 +177,32 @@ async function getListRequest(path: string){
     
 }
 
+export async function getUser(id: number) : Promise<User>{
+    return (await getRequest(`/users/${id}`));
+}
+
+export async function getUsers(page=1) : Promise<User[]>{
+    return (await getRequest(`/users?page=${page}`));
+}
+
+export async function getUsers_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
+    return (await getRequest(`/courses/${courseId}/get_users?page=${page}&page_size=${pageSize}`));
+}
+
+export async function getStudents_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
+    return (await getRequest(`/courses/${courseId}/get_students?page=${page}&page_size=${pageSize}`));
+}
+
+export async function getTeachers_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
+    return (await getRequest(`/courses/${courseId}/get_teachers?page=${page}&page_size=${pageSize}`));
+}
+
 export async function getCourse(id: number) : Promise<Course>{
     return (await getRequest(`/courses/${id}`));
 }
 
-export async function getCourses() : Promise<Course[]>{
-    return (await getListRequest('/courses'));
+export async function getCourses(page = 1, pageSize = 5): Promise<Course[]> {
+    return (await getRequest(`/courses?page=${page}&page_size=${pageSize}`));
 }
 
 export async function getTestFiles(path: string): Promise<Blob> {
@@ -211,6 +231,10 @@ export async function getGroup(id: number) : Promise<Group>{
 
 export async function getGroups() : Promise<Group[]>{
     return (await getListRequest('/groups'));
+}
+
+export async function getGroups_by_project(projectId: number, page = 1, pageSize = 5): Promise<Group[]> {
+    return (await getRequest(`/projects/${projectId}/get_groups?page=${page}&page_size=${pageSize}`));
 }
 
 let userData : UserData | undefined = undefined;
@@ -333,10 +357,10 @@ export async function putData(path: string, data: any){
 }
 
 export async function deleteData(path: string){
-    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.delete['X-CSRFToken'] = getCookieValue('csrftoken');
 
     try {
-        const response = await axios.delete(backend_url + path, { withCredentials: true });
+        const response = await axios.delete(backend_url + path + '/', { withCredentials: true });
 
     } catch (error) {
         const apierror : APIError = new APIError();
