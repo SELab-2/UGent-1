@@ -5,14 +5,13 @@ import {Container, Grid} from '@mui/material';
 import CourseCard from './CourseCard';
 
 const CoursesGrid = () => {
-    const [user, setUser] = useState<UserData | null>(null);
+    const [user, setUser] = useState<UserData>({id: 0, emai: "", first_name: "", last_name: "", course: [], role: 3});
     const [error, setError] = useState<APIError | null>(null);
 
     useEffect(() => {
         const fetchCoursesAndUser = async () => {
             try {
                 setUser(await getUserData());
-                console.log(user.course);
             } catch (error) {
                 if (error instanceof APIError) setError(error);
             }
@@ -26,9 +25,7 @@ const CoursesGrid = () => {
             <Grid container justifyContent="center" alignItems="flex-start" spacing={2}>
                 {user.course.map((course_id, index) => (
                     <Grid item xs={12} sm={6} md={4} key={index}>
-                        <CourseCard
-                            courseId={course_id}
-                        />
+                        <CourseCard params={{courseId: course_id}}/>
                     </Grid>
                 ))}
             </Grid>
