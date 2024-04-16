@@ -279,13 +279,24 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                              */
                             const id = sortedRows[index][0];
                             if (!isNaN(id)) {
-                                if(action_name === 'remove_from_course') {
-                                    postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id});
-                                } else if (action_name === 'remove') {
-                                    deleteData('/users/' + id);
-                                } else if (action_name === 'join_course') {
-                                    postData('/courses/' + id + '/join_course/', {course_id: id});
-                                }
+                                if (!isNaN(id)) {
+                                    if(action_name === 'remove_from_course') {
+                                        postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id})
+                                        .then(() => {
+                                            window.location.reload();
+                                        });
+                                    } else if (action_name === 'remove') {
+                                        deleteData('/users/' + id)
+                                        .then(() => {
+                                            window.location.reload();
+                                        });
+                                    } else if (action_name === 'join_course') {
+                                        postData('/courses/' + id + '/join_course/', {course_id: id})
+                                        .then(() => {
+                                            window.location.reload();
+                                        });
+                                    }
+                                }                                
                             } else {
                                 console.error("Invalid id", sortedRows[index][0]);
                             }
