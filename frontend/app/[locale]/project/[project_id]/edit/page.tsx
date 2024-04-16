@@ -13,7 +13,7 @@ import Groups from "./groups";
 import TestFiles from './testfiles';
 import UploadTestFile from "./uploadButton";
 import FinishButtons from './finishbuttons';
-import Deadline from "@app/[locale]/home/course/[course_id]/project/[project_id]/edit/deadline";
+import Deadline from "./deadline";
 import RemoveDialog from './removedialog';
 import initTranslations from '@app/i18n';
 import './project_styles.css'
