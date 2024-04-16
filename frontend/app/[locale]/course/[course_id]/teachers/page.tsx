@@ -7,7 +7,7 @@ import BackButton from "@app/[locale]/components/BackButton";
 
 const i18nNamespaces = ['common']
 
-export default async function StudentsPage({ params }: { params: { locale: any, course_id: number } }) {
+export default async function TeachersPage({ params }: { params: { locale: any, course_id: number } }) {
     const { locale, course_id } = params;
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
@@ -29,9 +29,7 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
                     admin={true}
                     headers={headers}
                     get_id={course_id}
-                    get={'course_students'}
-                    action_name={'remove_from_course'}
-                    action_text={t('remove_user_from_course')}
+                    get={'course_teachers'}
                     search_text={t('search')}
                 />
             </div>

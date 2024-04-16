@@ -130,6 +130,51 @@ class CourseViewSet(viewsets.ModelViewSet):
         return paginator.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["GET"])
+    def get_students(self, request, *args, **kwargs):
+        course = self.get_object()
+        res = [
+            user for user in User.objects.all() if course in user.course.all() 
+            and (user.role == 3)
+        ]
+        page_size = request.query_params.get(
+            "page_size", self.pagination_class.page_size
+        )
+
+        paginator = CustomPageNumberPagination()
+        paginator.page_size = page_size
+        paginator.page_query_param = "page"
+        paginator.page_size_query_param = "page_size"
+        paginator.max_page_size = 100
+
+        paginated_users = paginator.paginate_queryset(res, request)
+        serializer = UserSerializer(paginated_users, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
+
+    @action(detail=True, methods=["GET"])
+    def get_teachers(self, request, *args, **kwargs):
+        course = self.get_object()
+        res = [
+            user for user in User.objects.all() if course in user.course.all() 
+            and (user.role != 3)
+        ]
+
+        page_size = request.query_params.get(
+            "page_size", self.pagination_class.page_size
+        )
+
+        paginator = CustomPageNumberPagination()
+        paginator.page_size = page_size
+        paginator.page_query_param = "page"
+        paginator.page_size_query_param = "page_size"
+        paginator.max_page_size = 100
+
+        paginated_users = paginator.paginate_queryset(res, request)
+        serializer = UserSerializer(paginated_users, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
+
+    @action(detail=True, methods=["GET"])
     def get_projects(self, request, *args, **kwargs):
         course = self.get_object()
         projects = Project.objects.filter(course_id=course)

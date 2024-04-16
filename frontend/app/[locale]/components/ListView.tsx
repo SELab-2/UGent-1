@@ -4,7 +4,7 @@ import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } 
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject, getUsers_by_course } from '@lib/api';
+import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject, getStudents_by_course, getTeachers_by_course } from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -172,6 +172,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                 const hashmap_get_to_parser: { [key: string]: (data: any) => any[] | Promise<any[]> } = {
                     'users': (data) => [data.id, data.email, data.role],
                     'course_students': (data) => [data.id, data.email],
+                    'course_teachers': (data) => [data.id, data.email],
                     'courses': (data) => [data.course_id, data.name, data.description],
                     'groups': async (data) => {
                         let l = [];
@@ -190,19 +191,19 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
                     'users': async () => {
-                        const response = await getUsers(currentPage);
-                        return parse_pages(response);
+                        return parse_pages(await getUsers(currentPage));
                     },
-                    'course_students':  async () => {
-                        const users = await getUsers_by_course(get_id, currentPage);
-                        return parse_pages(users);
+                    'course_students': async () => {
+                        return parse_pages(await getStudents_by_course(get_id, currentPage));
+                    },
+                    "course_teachers": async () => {
+                        return parse_pages(await getTeachers_by_course(get_id, currentPage));
                     },
                     'courses': async () => {
-                        const response = await getCourses(currentPage);
-                        return parse_pages(response);
+                        return parse_pages(await getCourses(currentPage));
                     },
                     'groups': async () => {
-                        return await getGroups_by_project(get_id);
+                        return parse_pages(await getGroups_by_project(get_id, currentPage));
                     }
                 };
 

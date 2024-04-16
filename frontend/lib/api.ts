@@ -189,7 +189,13 @@ export async function getUsers_by_course(courseId: number, page = 1, pageSize = 
     return (await getRequest(`/courses/${courseId}/get_users?page=${page}&page_size=${pageSize}`));
 }
 
+export async function getStudents_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
+    return (await getRequest(`/courses/${courseId}/get_students?page=${page}&page_size=${pageSize}`));
+}
 
+export async function getTeachers_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
+    return (await getRequest(`/courses/${courseId}/get_teachers?page=${page}&page_size=${pageSize}`));
+}
 
 export async function getCourse(id: number) : Promise<Course>{
     return (await getRequest(`/courses/${id}`));
@@ -227,8 +233,8 @@ export async function getGroups() : Promise<Group[]>{
     return (await getListRequest('/groups'));
 }
 
-export async function getGroups_by_project(project_id: number) : Promise<Group[]>{
-    return (await getRequest(`/projects/${project_id}/get_groups`));
+export async function getGroups_by_project(projectId: number, page = 1, pageSize = 5): Promise<Group[]> {
+    return (await getRequest(`/projects/${projectId}/get_groups?page=${page}&page_size=${pageSize}`));
 }
 
 let userData : UserData | undefined = undefined;
