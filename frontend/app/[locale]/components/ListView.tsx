@@ -61,39 +61,6 @@ const CustomCheckmarkWrapper = styled('div')({
     height: '100%',
 });
 
-const ToggleButton = styled(Button)(({theme, selected}) => ({
-    width: 'auto',
-    alignSelf: 'flex-start',
-    minWidth: 'fit-content', // Ensures the container fits its content
-    padding: '5px 14px', // Add padding around the text (slightly bigger)
-    position: 'relative',
-    borderRadius: '20px',
-    cursor: 'pointer',
-    border: 'none',
-    transition: 'background-color 0.3s ease',
-    backgroundColor: selected ? theme.palette.secondary.dark : theme.palette.secondary.main, // Background color reversed
-    color: selected ? theme.palette.text.primary : theme.palette.text.secondary, // Default text color
-    '& span': {
-        position: 'relative',
-        zIndex: 1,
-        transition: 'color 0.3s ease',
-    },
-    '&:before': {
-        content: '""',
-        position: 'absolute',
-        top: '-2px', // Adjust the top position for alignment
-        left: selected ? 'calc(50% - 2px)' : '-2px', // Adjust left position for alignment
-        width: 'calc(50% + 4px)', // Increase width to include padding for sliding component
-        height: 'calc(100% + 4px)', // Increase height to include padding for sliding component
-        backgroundColor: theme.palette.primary.light, // Sliding component color
-        transition: 'left 0.3s ease',
-        zIndex: 0,
-        borderRadius: '20px',
-    },
-}));
-
-
-
 const WhiteSquareIcon = () => (
 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="12" height="12" fill="white"/>
