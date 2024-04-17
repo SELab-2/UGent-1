@@ -48,5 +48,7 @@
     "back_to": "Back to",
     "page" : "page",
     "course_detail" : "course detail",
-    "join_course" : "Join course"
+    "join_course" : "Join course",
+    "save_changes" : "Save Changes",
+    "edit_account" : "Edit Account"
 }
