@@ -9,7 +9,6 @@ class AuthAgent {
                 password
             })
             .then(response => {
-                console.log(response)
                 if (response.data.access) {
                     localStorage.setItem("user", JSON.stringify(response.data.user));
                 }

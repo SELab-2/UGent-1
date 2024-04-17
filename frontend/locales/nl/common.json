@@ -23,6 +23,8 @@
     "access": "Toegang",
     "open_course": "Open cursus",
     "private_course": "Privé cursus",
+    "page_not_found": "Pagina niet gevonden",
+    "no_access_message": "Je hebt geen toegang tot deze pagina.",
     "title": "Titel",
     "max_score": "Maximale score",
     "title_required": "Titel is verplicht",
@@ -49,5 +51,17 @@
     "remove_confirm": "Verwijderen",
     "remove_cancel": "Annuleren",
     "copy": "Kopiëren",
-    "copied_to_clipboard": "Gekopieerd naar klembord"
+    "copied_to_clipboard": "Gekopieerd naar klembord",
+    "name": "Naam",
+    "email": "E-mail",
+    "group": "Groep",
+    "role" : "Rol",
+    "remove_user": "Geselecteerde gebruikers verwijderen",
+    "remove_user_from_course": "Geselecteerde gebruikers verwijderen uit cursus",
+    "search" : "Zoeken",
+    "back_to" : "Terug naar",
+    "page" : "pagina",
+    "course_detail" : "cursus details",
+    "join_course" : "Cursus toetreden",
+    "members" : "Leden"
 }
