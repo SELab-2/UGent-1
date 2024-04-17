@@ -38,13 +38,6 @@
     "remove_dialog": "Remove project?",
     "action_dialog": "This action cannot be undone.",
     "remove_confirm": "Remove",
-    "remove_cancel": "Cancel",
-    "filter_courses": "Filter Courses",
-    "create_course": "Create Course",
-    "view_archive": "View Archive",
-    "project": "Project",
-    "deadline": "Deadline",
-    "submissions": "Submissions",
     "name" : "Name",
     "email" : "Email",
     "role" : "Role",
@@ -54,5 +47,12 @@
     "back_to": "Back to",
     "page" : "page",
     "course_detail" : "course detail",
-    "join_course" : "Join course"
+    "join_course" : "Join course",
+    "remove_cancel": "Cancel",
+    "filter_courses": "Filter Courses",
+    "create_course": "Create Course",
+    "view_archive": "View Archive",
+    "project": "Project",
+    "deadline": "Deadline",
+    "submissions": "Submissions"
 }
