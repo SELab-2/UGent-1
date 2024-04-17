@@ -9,11 +9,12 @@ const ProjectSubmissionsList = ({project_id}: { project_id: number }) => {
 
     return (
         <ListView
-            admin={false}
+            admin={true}
             headers={headers}
             get={'submissions'}
             get_id={project_id}
             sortable={sortable}
+            action_name={'download_submission'}
         />
     )
 }

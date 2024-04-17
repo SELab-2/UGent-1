@@ -8,6 +8,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from "@mui/icons-material/Cancel";
 import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject, getStudents_by_course, getTeachers_by_course, getProjectSubmissions } from '@lib/api';
 
+const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
     flexDirection: 'column',
@@ -118,6 +120,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
     const [previousPage, setPreviousPage] = useState(0);
     const [nextPage, setNextPage] = useState(0);
 
+    // ids of selected row items
+    const [selected, setSelected] = useState<number[]>([]);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -197,7 +202,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                 for (const d of data) {
                     mappedData.push(await hashmap_get_to_parser[get](d));
                 }
-    
+
                 setRows(mappedData);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -206,7 +211,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
         fetchData();
         // the values below will be constantly updated
     }, [currentPage, searchTerm, currentPage, sortConfig]);
-    
+
 
     const handleChangePage = (direction: 'next' | 'prev') => {
         if (direction === 'next') {
@@ -261,7 +266,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
             />
-            {admin && action_name && (
+            {admin && action_name && action_name !== 'download_submission' && (
                 <RemoveButton
                 onClick={() => {
                     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -305,6 +310,42 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
             </RemoveButton>
 
             )}
+
+            {admin && action_name && action_name === 'download_submission' && (
+                <RemoveButton
+                    onClick = {() => {
+                        const download_url = `${backend_url}/projects/${get_id}/download_submissions`
+                        window.open(download_url, 'blank_')
+                    }}
+                >
+                    Download all submissions
+                </RemoveButton>
+            )}
+
+            {admin && action_name && action_name === 'download_submission' && (
+                <RemoveButton
+                    onClick = {() => {
+                        const selected_ids = Array.from(document.querySelectorAll('input[type="checkbox"]'))
+                            .filter((checkbox) => (
+                                (checkbox as HTMLInputElement).checked
+                            ))
+                            .map((checkbox, index) => (
+                                rows[index][0]
+                            ))
+
+                        const download_url = `${backend_url}/submissions/download_selection?${
+                            selected_ids
+                                .map((id) => (`id=${id}`))
+                                .join('&')
+                        }`
+
+                        window.open(download_url, 'blank_')
+                    }}
+                >
+                    Download selected submissions
+                </RemoveButton>
+            )}
+
             <Table>
                 <thead>
                     <tr>
