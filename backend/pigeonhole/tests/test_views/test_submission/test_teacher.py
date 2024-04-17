@@ -59,12 +59,12 @@ class SubmissionTestTeacher(TestCase):
 
         self.submission = Submissions.objects.create(
             group_id=self.group,
-            file=SimpleUploadedFile("test_file.txt", b"file_content")
+            file_urls='["test_file.txt"]'
         )
 
         self.submission_not_of_teacher = Submissions.objects.create(
             group_id=self.group_not_of_teacher,
-            file=SimpleUploadedFile("test_file2.txt", b"file_content2")
+            file_urls='["test_file.txt"]'
         )
 
         self.client.force_authenticate(self.teacher)
