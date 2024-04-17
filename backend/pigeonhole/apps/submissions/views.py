@@ -35,9 +35,9 @@ class SubmissionsViewset(viewsets.ModelViewSet):
     filter_backends = [OrderingFilter, DjangoFilterBackend]
 
     def create(self, request, *args, **kwargs):
-        project_id = request.data['project_id']
         request.data._mutable = True  # epic hack
         if 'group_id' not in request.data:
+            project_id = request.data['project_id']
             group = Group.objects.filter(project_id=project_id, user=request.user).first()
             group_id = group.group_id
             request.data['group_id'] = group_id
