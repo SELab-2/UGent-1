@@ -22,8 +22,8 @@ import json as JSON
 
 
 # TODO test timestamp, file, output_test
-def submission_file_url(project_id, group_id, submission_id, relative_path):
-    return (f"{str(settings.STATIC_ROOT)}/submissions/project_{project_id}"
+def submission_file_url(group_id, submission_id, relative_path):
+    return (f"{str(settings.STATIC_ROOT)}/submissions"
             f"/group_{group_id}/{submission_id}/{relative_path}")
 
 
@@ -77,7 +77,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 # TODO: fix major security flaw met .. in relative_path
                 file = request.FILES[relative_path]
                 filepathstring = submission_file_url(
-                    project_id, group_id, str(serializer.data['submission_id']), relative_path)
+                    group_id, str(serializer.data['submission_id']), relative_path)
                 filepath = Path(filepathstring)
                 filepath.parent.mkdir(parents=True, exist_ok=True)
                 with open(filepathstring, 'wb+') as dest:
