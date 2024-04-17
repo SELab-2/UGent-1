@@ -19,7 +19,7 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = [OrderingFilter, DjangoFilterBackend]
     ordering_fields = ["email"]
     filterset_class = UserFilter
-    
+
     def order_queryset(self, queryset):
         order_by = self.request.query_params.get("order_by")
         sort_order = self.request.query_params.get("sort_order")

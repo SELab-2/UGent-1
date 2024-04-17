@@ -164,7 +164,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                         return parse_pages(await getStudents_by_course(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     "course_teachers": async () => {
-                        return parse_pages(await getTeachers_by_course(get_id, currentPage));
+                        return parse_pages(await getTeachers_by_course(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'courses': async () => {
                         return parse_pages(await getCourses(currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
