@@ -32,6 +32,7 @@ export type Course = {
     description: string;
     open_course: boolean;
     invite_token: string;
+    banner: string;
 }
 
 export type Project = {
@@ -177,15 +178,104 @@ async function getListRequest(path: string){
     
 }
 
+export async function getUser(id: number, page = 1, pageSize = 5): Promise<User> {
+    return (await getRequest(`/users/${id}`));
+}
+
+export async function getUsers(page=1, pageSize=5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<User[]> {
+    let url = `/users?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
+export async function getUsers_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
+    return (await getRequest(`/courses/${courseId}/get_users?page=${page}&page_size=${pageSize}`));
+}
+
+export async function getStudents_by_course(courseId: number, page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<User[]> {
+    let url = `/courses/${courseId}/get_students?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
+export async function getTeachers_by_course(courseId: number, page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<User[]> {
+    let url = `/courses/${courseId}/get_teachers?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
 export async function getCourse(id: number) : Promise<Course>{
     return (await getRequest(`/courses/${id}`));
 }
 
-export async function getCourses() : Promise<Course[]>{
-    return (await getListRequest('/courses/'));
+export async function getCourses(page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Course[]> {
+    let url = `/courses?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
+
+export async function updateCourse(id: number, data: any): Promise<Course> {
+    return (await putData(`/courses/${id}/`, data));
+}
+
+export async function deleteCourse(id: number): Promise<void> {
+    return (await deleteData(`/courses/${id}`));
 }
 
 export async function getTestFiles(path: string): Promise<Blob> {
+    return (await getBlobRequest(path));
+}
+
+export async function getImage(path: string): Promise<Blob> {
     return (await getBlobRequest(path));
 }
 
@@ -213,6 +303,24 @@ export async function getGroups() : Promise<Group[]>{
     return (await getListRequest('/groups'));
 }
 
+export async function getGroups_by_project(projectId: number, page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Group[]> {
+    let url = `/projects/${projectId}/get_groups?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
 let userData : UserData | undefined = undefined;
 
 export async function getUserData() : Promise<UserData>{
@@ -224,7 +332,7 @@ export async function getUserData() : Promise<UserData>{
         return user;
     }*/else{
         let user : UserData = await getRequest('/users/current');
-        localStorage.setItem('user', JSON.stringify(user));
+        //localStorage.setItem('user', JSON.stringify(user));
         console.log(user);
         return user;
     }
@@ -252,7 +360,6 @@ export function postForm(path : string){
         event.preventDefault();
         const formData = new FormData(event.target);
         const formDataObject = Object.fromEntries(formData.entries());
-        console.log(formDataObject)
         try {
             await axios.post(backend_url + path, formDataObject, { withCredentials: true });
         } catch (error) {
@@ -272,7 +379,7 @@ export async function postData(path: string, data: any){
     try {
         const response = await axios.post(backend_url + path, data, { withCredentials: true });
 
-        if (response.status === 200 && response?.data) {
+        if ((response.status === 200 || response.status === 201) && response?.data) {
             return response.data;
         } else if(response?.data?.detail) {
             console.error("Unexpected response structure:", response.data);
@@ -300,7 +407,7 @@ export async function postData(path: string, data: any){
 }
 
 export async function putData(path: string, data: any){
-    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.put['X-CSRFToken'] = getCookieValue('csrftoken');
 
     try {
         const response = await axios.put(backend_url + path, data, { withCredentials: true });
@@ -333,10 +440,10 @@ export async function putData(path: string, data: any){
 }
 
 export async function deleteData(path: string){
-    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.delete['X-CSRFToken'] = getCookieValue('csrftoken');
 
     try {
-        const response = await axios.delete(backend_url + path, { withCredentials: true });
+        const response = await axios.delete(backend_url + path + '/', { withCredentials: true });
 
     } catch (error) {
         const apierror : APIError = new APIError();

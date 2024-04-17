@@ -33,7 +33,7 @@ const loginTheme = createTheme({
         }
     },
     typography: {
-        fontFamily: 'Quicksand, sans-serif',
+        fontFamily: 'Quicksand',
         h4: {
             fontWeight: 700,
         },
