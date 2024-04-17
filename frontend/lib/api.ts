@@ -352,7 +352,7 @@ export async function joinCourseUsingToken(course_id: number, token: string){
 }
 
 export async function uploadSubmissionFile(event: any){
-    axios.defaults.headers.put['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
     console.log(event.target.fileList.files);
     const formData = new FormData(event.target);
@@ -362,7 +362,7 @@ export async function uploadSubmissionFile(event: any){
     const formDataObject = Object.fromEntries(formData.entries());
     console.log(formDataObject)
     try {
-        await axios.put(backend_url + '/submissions/27/upload/', formDataObject,
+        await axios.post(backend_url + '/submissions/', formDataObject,
          { withCredentials: true,
             headers: {
                 'Content-Type': 'multipart/form-data'

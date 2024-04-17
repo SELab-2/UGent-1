@@ -12,18 +12,22 @@ class CanAccessSubmission(permissions.BasePermission):
     # to the submission data.
     def has_permission(self, request, view):
         user = request.user
+        if not 'group_id' in request.data:
+            group = Group.objects.filter(project_id=request.data['project_id'], user=request.user).first()
+            group_id = group.group_id
+        else:
+            group_id = request.data['group_id']
+            group = Group.objects.get(group_id=group_id)
         print("checking access for " + str(user))
         if view.action in ['list']:
             return False
         elif view.action in ['create', 'upload']:
             print("upload branch")
             if user.is_student:
-                group_id = request.data.get('group_id')
                 if not Group.objects.filter(group_id=group_id).exists():
                     if user.is_admin or user.is_superuser:
                         return Response(status=status.HTTP_404_NOT_FOUND)
                     return False
-                group = Group.objects.get(group_id=group_id)
                 if group.user.filter(id=user.id).exists():
                     print("ur good wtf")
                     return True

@@ -11,7 +11,6 @@ export default function DropZone(){
     function folderAdded(event : any){
         let newpaths = []
         for (const file of event.target.files) {
-            let item = document.createElement("li");
             let text = file.webkitRelativePath;
             newpaths.push(text);
         }
@@ -22,7 +21,7 @@ export default function DropZone(){
         <section className="container">
             <form onSubmit={uploadSubmissionFile} encType="multipart/form-data">
                 <input onChange={folderAdded} type="file" id="filepicker" name="fileList" webkitdirectory="true" multiple />
-                <input type="hidden" name="group_id" value="2" />
+                <input type="hidden" name="project_id" value="2" />
                 
                 <ul id="listing"></ul>
 
