@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'microsoft_auth',
     'rest_framework',
+    'django_filters'
 ]
 
 AUTHENTICATION_BACKENDS = [

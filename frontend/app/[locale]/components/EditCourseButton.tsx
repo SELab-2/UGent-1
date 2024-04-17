@@ -33,5 +33,4 @@ const EditCourseButton = ({course_id}: EditCourseButtonProps) => {
         </Link>
     )
 }
-
 export default EditCourseButton
