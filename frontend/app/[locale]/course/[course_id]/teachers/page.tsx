@@ -7,11 +7,11 @@ import BackButton from "@app/[locale]/components/BackButton";
 
 const i18nNamespaces = ['common']
 
-export default async function GroupPage({ params }: { params: { locale: any, project_id: number } }) {
-    const { locale, project_id: projectId } = params; 
+export default async function TeachersPage({ params }: { params: { locale: any, course_id: number } }) {
+    const { locale, course_id } = params;
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
-    const headers = [t('group_nr'), t('members'), t('join/leave')];
+    const headers = [t('email')];
     
     return (
         <TranslationsProvider
@@ -21,16 +21,17 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
         >
             <NavBar />
             <BackButton 
-            destination={`/project/${projectId}`} 
-            text={t('back_to') + ' ' + t('project') + ' ' +  t('page')}
+                destination={`/course/${course_id}`}
+                text={t('back_to') + ' ' + t('course_detail') + ' ' +  t('page')}
             />
             <div style={{ marginBottom: '100px' }}>
                 <ListView
                     admin={true}
                     headers={headers}
-                    sortable={[true, false, false]}
-                    get_id={projectId}
-                    get={'groups'}
+                    sortable={[true]}
+                    get_id={course_id}
+                    get={'course_teachers'}
+                    search_text={t('search')}
                 />
             </div>
             <Footer />
