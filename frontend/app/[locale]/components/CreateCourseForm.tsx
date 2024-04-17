@@ -7,8 +7,6 @@ import React, {useState} from 'react';
 import Image from 'next/image';
 import banner from '../../../public/ugent_banner.png'
 
-const i18nNamespaces = ['common']
-
 const CreateCourseForm = () => {
     const {t} = useTranslation();
     const [selectedImage, setSelectedImage] = useState(banner);
@@ -34,8 +32,9 @@ const CreateCourseForm = () => {
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         const courseData = {name: name, description: description, open_course: open};
-        await postData("/courses/", courseData).catch();
-        window.location.reload();
+        await postData("/courses/", courseData).then((response) => {
+            window.location.href = `/course/${response.course_id}`;
+        });
     }
 
     return (
