@@ -28,14 +28,15 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         project_id = request.data['project_id']
+        request.data._mutable = True #epic hack
         if not 'group_id' in request.data:
             group = Group.objects.filter(project_id=project_id, user=request.user).first()
             group_id = group.group_id
+            request.data['group_id'] = group_id
         else:
             group_id = request.data['group_id']
             group = Group.objects.get(group_id=group_id)
         
-        request.data['group_id'] = group_id
         request.data['file_urls'] = JSON.dumps([key for key in request.FILES])
 
         serializer = SubmissionsSerializer(data=request.data)
@@ -56,8 +57,6 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
 
         serializer.save()
-
-        file_paths = []
 
         #upload files
         try:
