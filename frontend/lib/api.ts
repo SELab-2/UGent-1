@@ -267,7 +267,7 @@ export async function updateCourse(id: number, data: any): Promise<Course> {
 }
 
 export async function deleteCourse(id: number): Promise<void> {
-    return (await deleteData(`/courses/${id}/`));
+    return (await deleteData(`/courses/${id}`));
 }
 
 export async function getTestFiles(path: string): Promise<Blob> {

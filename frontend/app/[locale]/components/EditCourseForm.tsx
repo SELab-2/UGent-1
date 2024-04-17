@@ -29,7 +29,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     const data = response.data
                     setName(data.name);
                     setDescription(data.description);
-                    open = data.open_course;
+                    setOpen(data.open_course)
                 } else {
                     console.error("Unexpected response structure:", response.data);
                 }
@@ -70,24 +70,24 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                 <Box sx={{marginTop: '16px'}}>
                     <label htmlFor="name" style={{
                         fontSize: '32px',
-                        fontFamily: 'Arial, sans-serif',
+                        fontFamily: 'Quicksand',
                         marginBottom: '-10px',
                         display: 'block'
                     }}>{t("course name")}</label><br/>
                     <input type="text" id="name" name="name" defaultValue={name}
                            onChange={(event: any) => setName(event.target.value)} required style={{
                         fontSize: '20px',
-                        fontFamily: 'Arial, sans-serif',
+                        fontFamily: 'Quicksand',
                         borderRadius: '6px',
                         height: '30px',
-                        width: '220px'
+                        width: '400px'
                     }}/>
                 </Box>
                 <Box sx={{marginTop: '16px', borderRadius: '12px'}} style={{height: '250px'}}>
                     <label htmlFor="banner" style={{
                         fontSize: '32px',
-                        fontFamily: 'Arial, sans-serif',
-                        color: '#1E64C8'
+                        fontFamily: 'Quicksand',
+                        color: 'black'
                     }}>{t("banner")}</label><br/>
                     <div style={{
                         width: '100%',
@@ -115,8 +115,8 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                         border: '1px solid lightblue',
                         borderRadius: '4px',
                         backgroundColor: 'lightblue',
-                        color: '#1E64C8',
-                        fontFamily: 'Arial, sans-serif'
+                        color: 'black',
+                        fontFamily: 'Quicksand'
                     }}>
                         {t("select image")}
                         <input type="file" id="Image" name="Image" accept="image/*" onChange={handleImageUpload}
@@ -126,8 +126,8 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                 <Box sx={{marginTop: '16px'}}>
                     <label htmlFor="description" style={{
                         fontSize: '32px',
-                        fontFamily: 'Arial, sans-serif',
-                        color: '#1E64C8',
+                        fontFamily: 'Quicksand',
+                        color: 'black',
                         marginBottom: '-10px',
                         display: 'block'
                     }}>{t("description")}</label><br/>
@@ -135,8 +135,8 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                               onChange={(event: any) => setDescription(event.target.value)} required
                               style={{
                                   width: '100%',
-                                  fontFamily: 'Arial, sans-serif',
-                                  color: '#1E64C8',
+                                  fontFamily: 'Quicksand',
+                                  color: 'black',
                                   borderRadius: '6px',
                                   padding: '10px',
                                   boxSizing: 'border-box'
@@ -145,15 +145,15 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                 <Box sx={{marginTop: '16px'}}>
                     <label htmlFor="choice" style={{
                         fontSize: '32px',
-                        fontFamily: 'Arial, sans-serif',
-                        color: '#1E64C8',
+                        fontFamily: 'Quicksand',
+                        color: 'black',
                         marginBottom: '-10px',
                         display: 'block'
                     }}>{t("access")}</label><br/>
                     <select id="choice" name="choice" defaultValue={open.toString()}
                             onChange={(event) => (setOpen(event.target.value === 'true'))} style={{
                         fontSize: '20px',
-                        fontFamily: 'Arial, sans-serif',
+                        fontFamily: 'Quicksand',
                         borderRadius: '6px',
                         padding: '5px'
                     }}>
@@ -169,7 +169,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                         border: 'none',
                         borderRadius: '6px',
                         cursor: 'pointer',
-                        fontFamily: 'Arial, sans-serif',
+                        fontFamily: 'Quicksand',
                         fontSize: '16px',
                         marginTop: '80px'
                     }}>{t("save changes")}</button>

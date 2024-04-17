@@ -26,7 +26,7 @@ const DeleteButton = ({courseId}: EditCourseFormProps) => {
                 border: 'none',
                 borderRadius: '6px',
                 cursor: 'pointer',
-                fontFamily: 'Arial, sans-serif',
+                fontFamily: 'Quicksand',
                 position: 'absolute',
                 top: '20px',
                 right: '20px',

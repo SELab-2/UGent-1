@@ -11,7 +11,7 @@ interface TestFilesProps {
 const TestFiles: React.FC<TestFilesProps> = ({ testfiles, setTestfiles }) => {
   return (
     <>
-      <Typography variant="h5" style={{fontWeight: 'bold', fontFamily: 'Inter', margin: '5px 0 0 0'}}>
+      <Typography variant="h5" style={{fontWeight: 'bold', fontFamily: 'Quicksand', margin: '5px 0 0 0'}}>
         {"Testfiles"}
       </Typography>
       <List dense={true}>

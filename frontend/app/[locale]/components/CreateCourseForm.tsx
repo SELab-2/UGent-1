@@ -43,24 +43,24 @@ const CreateCourseForm = () => {
             <Box sx={{marginTop: '16px'}}>
                 <label htmlFor="name" style={{
                     fontSize: '32px',
-                    fontFamily: 'Arial, sans-serif',
+                    fontFamily: 'Quicksand',
                     marginBottom: '-10px',
                     display: 'block'
                 }}>{t("course name")}</label><br/>
                 <input type="text" id="name" name="name" required
                        onChange={(event: any) => setName(event.target.value)} style={{
                     fontSize: '20px',
-                    fontFamily: 'Arial, sans-serif',
+                    fontFamily: 'Quicksand',
                     borderRadius: '6px',
                     height: '30px',
-                    width: '220px'
+                    width: '400px'
                 }}/>
             </Box>
             <Box sx={{marginTop: '16px', borderRadius: '12px'}} style={{height: '250px'}}>
                 <label htmlFor="banner" style={{
                     fontSize: '32px',
-                    fontFamily: 'Arial, sans-serif',
-                    color: '#1E64C8'
+                    fontFamily: 'Quicksand',
+                    color: 'black'
                 }}>{t("banner")}</label><br/>
                 <div style={{
                     width: '100%',
@@ -88,8 +88,8 @@ const CreateCourseForm = () => {
                     border: '1px solid lightblue',
                     borderRadius: '4px',
                     backgroundColor: 'lightblue',
-                    color: '#1E64C8',
-                    fontFamily: 'Arial, sans-serif'
+                    color: 'black',
+                    fontFamily: 'Quicksand'
                 }}>
                     {t("select image")}
                     <input type="file" id="Image" name="Image" accept="image/*" onChange={handleImageUpload}
@@ -99,16 +99,16 @@ const CreateCourseForm = () => {
             <Box sx={{marginTop: '16px'}}>
                 <label htmlFor="description" style={{
                     fontSize: '32px',
-                    fontFamily: 'Arial, sans-serif',
-                    color: '#1E64C8',
+                    fontFamily: 'Quicksand',
+                    color: 'black',
                     marginBottom: '-10px',
                     display: 'block'
                 }}>{t("description")}</label><br/>
                 <textarea id="description" name="description" rows={5}
                           onChange={(event: any) => setDescription(event.target.value)} required style={{
                     width: '100%',
-                    fontFamily: 'Arial, sans-serif',
-                    color: '#1E64C8',
+                    fontFamily: 'Quicksand',
+                    color: 'black',
                     borderRadius: '6px',
                     padding: '10px',
                     boxSizing: 'border-box'
@@ -117,15 +117,15 @@ const CreateCourseForm = () => {
             <Box sx={{marginTop: '16px'}}>
                 <label htmlFor="choice" style={{
                     fontSize: '32px',
-                    fontFamily: 'Arial, sans-serif',
-                    color: '#1E64C8',
+                    fontFamily: 'Quicksand',
+                    color: 'black',
                     marginBottom: '-10px',
                     display: 'block'
                 }}>{t("access")}</label><br/>
                 <select id="choice" name="choice" onChange={(event) => (setOpen(event.target.value === 'true'))}
                         style={{
                             fontSize: '20px',
-                            fontFamily: 'Arial, sans-serif',
+                            fontFamily: 'Quicksand',
                             borderRadius: '6px',
                             padding: '5px'
                         }}>
@@ -141,7 +141,7 @@ const CreateCourseForm = () => {
                     border: 'none',
                     borderRadius: '6px',
                     cursor: 'pointer',
-                    fontFamily: 'Arial, sans-serif',
+                    fontFamily: 'Quicksand',
                     fontSize: '16px',
                     marginTop: '80px'
                 }}>{t("save course")}</button>
