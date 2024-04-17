@@ -5,11 +5,17 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
-from backend.pigeonhole.apps.submissions.models import Submissions, SubmissionsSerializer
+from backend.pigeonhole.apps.submissions.models import (
+    Submissions,
+    SubmissionsSerializer,
+)
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
+from backend.pigeonhole.filters import CustomPageNumberPagination
 
 from django.conf import settings
 from pathlib import Path
@@ -25,6 +31,8 @@ class SubmissionsViewset(viewsets.ModelViewSet):
     queryset = Submissions.objects.all()
     serializer_class = SubmissionsSerializer
     permission_classes = [IsAuthenticated & CanAccessSubmission]
+    pagination_class = CustomPageNumberPagination
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
 
     def create(self, request, *args, **kwargs):
         project_id = request.data['project_id']
@@ -45,15 +53,23 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
 
         if not group:
-            return Response({"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
         project = Project.objects.get(project_id=group.project_id.project_id)
         if not project:
-            return Response({"message": "Project not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "Project not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
-        now_naive = datetime.now().replace(tzinfo=pytz.UTC)  # Making it timezone-aware in UTC
+        now_naive = datetime.now().replace(
+            tzinfo=pytz.UTC
+        )  # Making it timezone-aware in UTC
         if project.deadline and now_naive > project.deadline:
-            return Response({"message": "Deadline expired"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "Deadline expired"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
         serializer.save()

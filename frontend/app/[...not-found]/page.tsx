@@ -1,12 +1,11 @@
 import NavBar from "@app/[locale]/components/NavBar";
+import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
-import CreateCourseForm from "@app/[locale]/components/CreateCourseForm";
-import CancelButton from "@app/[locale]/components/course_components/CancelButton";
 
 
-async function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
+async function Page_404({params: {locale}}: { params: { locale: any } }) {
     const {t, resources} = await initTranslations(locale, ["common"])
 
     return (
@@ -16,14 +15,13 @@ async function CourseCreatePage({params: {locale}}: { params: { locale: any } })
             namespaces={["common"]}
         >
             <NavBar/>
-            <Box sx={{margin: '64px', marginTop: '96px', position: 'relative'}}>
-                <CancelButton/>
-                <Box sx={{marginRight: '20px'}}>
-                    <CreateCourseForm/>
-                </Box>
+            <Box sx={{marginTop: '64px'}}>
+                <Typography variant="h3">
+                    {t("page_not_found")}
+                </Typography>
             </Box>
         </TranslationsProvider>
-    )
+    );
 }
 
-export default CourseCreatePage;
+export default Page_404;

@@ -21,7 +21,7 @@ const BackButton = ({text, destination}) => {
       onClick={handleClick}
     >
       <span style={{ marginRight: '10px' }}>{'<'}</span> {/* Back Arrow */}
-      <span style={{ fontSize: '20px', fontWeight: 'bold', fontFamily: 'Inter'}}>{text}</span>
+      <span style={{ fontSize: '20px', fontWeight: 'bold', fontFamily: 'Quicksand'}}>{text}</span>
     </button>
   );
 };
