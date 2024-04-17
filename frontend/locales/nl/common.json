@@ -74,5 +74,7 @@
     "course_detail" : "cursus details",
     "join_course" : "Cursus toetreden",
     "members" : "Leden",
-    "course": "Cursus"
+    "course": "Cursus",
+    "return_project": "Terug naar project",
+    "submissions": "Indieningen"
 }

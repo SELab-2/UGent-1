@@ -72,5 +72,7 @@
     "page" : "page",
     "course_detail" : "course detail",
     "join_course" : "Join course",
-    "course": "Course"
+    "course": "Course",
+    "return_project": "Return to project",
+    "submissions": "Submissions"
 }

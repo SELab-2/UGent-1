@@ -28,7 +28,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPageNumberPagination
     filter_backends = [OrderingFilter, DjangoFilterBackend]
     ordering_fields = ["name"]
-    filterset_class = CourseFilter
 
     def order_queryset(self, queryset):
         order_by = self.request.query_params.get("order_by")
@@ -42,8 +41,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        filter_backend = DjangoFilterBackend()
-        queryset = filter_backend.filter_queryset(self.request, queryset, self)
+        queryset = CourseFilter(request.GET, queryset=queryset).qs
         queryset = self.order_queryset(queryset)
         paginated_queryset = self.paginate_queryset(queryset)
         serializer = self.get_serializer(paginated_queryset, many=True)
