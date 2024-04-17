@@ -303,7 +303,25 @@ export async function getProjects(): Promise<Project[]> {
     return (await getListRequest('/projects'));
 }
 
-export async function getGroup(id: number): Promise<Group> {
+export async function getProjects_by_course(courseId: number, page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Project[]> {
+    let url = `/courses/${courseId}/get_projects?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
+export async function getGroup(id: number) : Promise<Group>{
     return (await getRequest(`/groups/${id}`));
 }
 

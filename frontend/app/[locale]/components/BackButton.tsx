@@ -1,39 +1,28 @@
 'use client'
 import React from 'react';
-import { styled } from '@mui/system';
+import {Button} from "@mui/material";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-const backButtonStyle = {
-    marginTop: '80px',
-    marginLeft: '20px',
-    alignSelf: 'flex-end', 
-    fontSize: '1.4rem', 
-    minWidth: 'auto',
-    width: 'auto',
-};
-
-// Define the BackButton as a styled button
-const BackButton_ = styled('button')(({theme}) => ({
-    ...backButtonStyle,
-    backgroundColor: theme.palette.secondary.main,
-    color:  theme.palette.secondary.contrastText,
-    border: '1px solid #000',
-    borderRadius: '5px',
-    padding: '10px 20px',
-    cursor: 'pointer',
-    '&:hover': {
-        backgroundColor: theme.palette.secondary.dark,
-    },
-}));
+interface BackButtonProps {
+    destination: string;
+    text: string;
+}
 
 // back button has to take the destination as a prop and navigate to it
-export default function BackButton({ destination, text}) {
-    const handleClick = () => {
-        window.location.assign(destination);
-    };
+export default function BackButton({destination, text}: BackButtonProps) {
 
     return (
-        <BackButton_ onClick={handleClick}>
+        <Button
+            variant={'contained'}
+            color={'secondary'}
+            href={destination}
+            startIcon={<ArrowBackIcon />}
+            sx={{
+                width: 'fit-content',
+                color: 'secondary.contrastText',
+            }}
+        >
             {text}
-        </BackButton_>
+        </Button>
     );
 }
