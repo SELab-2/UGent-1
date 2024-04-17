@@ -54,7 +54,7 @@ function FinishButtons(
             </Grid>
             <Grid className={"buttonsGrid"}>
                 <button
-                    onClick={() => window.location.href = "home/course/" + course_id + "/"}
+                    onClick={() => window.location.href = "/course/" + course_id + "/"}
                     className={"saveButton"}
                 >
                     {translations.t("cancel")}
