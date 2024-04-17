@@ -8,7 +8,7 @@ from backend.pigeonhole.apps.courses.models import CourseSerializer
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.projects.models import ProjectSerializer
-from backend.pigeonhole.apps.users.models import User, UserSerializer, Roles
+from backend.pigeonhole.apps.users.models import User, UserSerializer
 from .models import Course
 from .permissions import CourseUserPermissions
 
