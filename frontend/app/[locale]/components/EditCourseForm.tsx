@@ -1,13 +1,9 @@
 "use client"
 import React, {useEffect, useState} from "react";
-import axios from "axios";
 import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
-import banner from "../../../public/ugent_banner.png";
 import Image from 'next/image';
-import {updateCourse} from "@lib/api";
-
-const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+import {getCourse, getImage, postData, updateCourse} from "@lib/api";
 
 interface EditCourseFormProps {
     courseId: number
@@ -16,23 +12,32 @@ interface EditCourseFormProps {
 const EditCourseForm = ({courseId}: EditCourseFormProps) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    let [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
     const {t} = useTranslation();
-    const [selectedImage, setSelectedImage] = useState(banner);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [selectedImageURL, setSelectedImageURL] = useState<string>("");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCourseData = async () => {
             try {
-                const response = await axios.get(backend_url + "/courses/" + courseId, {withCredentials: true});
-                if (response.data) {
-                    const data = response.data
-                    setName(data.name);
-                    setDescription(data.description);
-                    setOpen(data.open_course)
-                } else {
-                    console.error("Unexpected response structure:", response.data);
+                const course = await getCourse(courseId);
+                setName(course.name);
+                setDescription(course.description);
+                setOpen(course.open_course);
+                const image = await getImage(course.banner);
+                const fileReader = new FileReader();
+                fileReader.onload = function () {
+                    const arrayBuffer = this.result;
+                    if (arrayBuffer !== null) {
+                        const blob = new Blob([arrayBuffer], {type: 'image/png'});
+                        const file = new File([blob], "filename", {type: "image/png"});
+                        setSelectedImage(file);
+                        setSelectedImageURL(URL.createObjectURL(file));
+                    }
                 }
+
+                fileReader.readAsArrayBuffer(image);
             } catch (error) {
                 console.error("There was an error fetching the course data:", error);
             }
@@ -44,24 +49,31 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        const courseData = {name: name, description: description, open_course: open};
-        await updateCourse(courseId, courseData)
-        window.location.reload();
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('open_course', open.toString());
+        const fileReader = new FileReader();
+        fileReader.onload = async function () {
+            const arrayBuffer = this.result;
+            if (arrayBuffer !== null) {
+                formData.append('banner', new Blob([arrayBuffer], {type: 'image/png'}));
+                await postData("/courses/", formData).then((response) => {
+                    window.location.href = `/course/${response.course_id}`;
+                });
+            }
+        }
+        if (selectedImage) fileReader.readAsArrayBuffer(selectedImage);
+        await updateCourse(courseId, formData);
+        window.location.href = `/course/${courseId}/`;
     };
 
     const handleImageUpload = (event: any) => {
         const imageFile = event.target.files[0];
-        const reader = new FileReader();
+        setSelectedImage(imageFile);
 
-        reader.onload = () => {
-            // Update the selectedImage state with the uploaded image data URL
-            setSelectedImage(reader.result);
-        };
-
-        // Read the uploaded image as a data URL
-        if (imageFile) {
-            reader.readAsDataURL(imageFile);
-        }
+        const imageURL = URL.createObjectURL(imageFile);
+        setSelectedImageURL(imageURL);
     };
 
     return (
@@ -99,7 +111,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     }}>
                         <div style={{position: 'relative', width: '100%', height: '100%'}}>
                             <Image
-                                src={selectedImage}
+                                src={selectedImageURL}
                                 alt="Image"
                                 layout="fill"
                                 objectFit="cover"
@@ -176,17 +188,17 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     <button
                         onClick={() => window.location.href = '/course/' + courseId + "/"}
                         style={{
-                        backgroundColor: '#1E64C8',
-                        color: 'white',
-                        padding: '8px 16px',
-                        border: 'none',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        fontFamily: 'Quicksand',
-                        fontSize: '16px',
-                        marginTop: '80px',
-                        marginLeft: '15px'
-                    }}>{t("cancel")}</button>
+                            backgroundColor: '#1E64C8',
+                            color: 'white',
+                            padding: '8px 16px',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontFamily: 'Quicksand',
+                            fontSize: '16px',
+                            marginTop: '80px',
+                            marginLeft: '15px'
+                        }}>{t("cancel")}</button>
                 </Box>
             </form>
         ));

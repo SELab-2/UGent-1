@@ -3,39 +3,56 @@ import {postData} from "@lib/api";
 import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
 import banner from '../../../public/ugent_banner.png'
 
 const CreateCourseForm = () => {
     const {t} = useTranslation();
-    const [selectedImage, setSelectedImage] = useState(banner);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [selectedImageURL, setSelectedImageURL] = useState<string>("");
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    let [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const handleImageUpload = (event: any) => {
         const imageFile = event.target.files[0];
-        const reader = new FileReader();
+        setSelectedImage(imageFile);
 
-        reader.onload = () => {
-            // Update the selectedImage state with the uploaded image data URL
-            setSelectedImage(reader.result);
-        };
-
-        // Read the uploaded image as a data URL
-        if (imageFile) {
-            reader.readAsDataURL(imageFile);
-        }
+        const imageURL = URL.createObjectURL(imageFile);
+        setSelectedImageURL(imageURL);
     };
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        const courseData = {name: name, description: description, open_course: open};
-        await postData("/courses/", courseData).then((response) => {
-            window.location.href = `/course/${response.course_id}`;
-        });
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('open_course', open.toString());
+        const fileReader = new FileReader();
+         fileReader.onload = async function() {
+            const arrayBuffer = this.result;
+            if (arrayBuffer !== null) {
+                formData.append('banner', new Blob([arrayBuffer], {type: 'image/png'}));
+                await postData("/courses/", formData).then((response) => {
+                    window.location.href = `/course/${response.course_id}`;
+                });
+            }
+        }
+        if (selectedImage) fileReader.readAsArrayBuffer(selectedImage);
     }
+
+    useEffect(() => {
+        if (selectedImage === null) {
+            fetch(banner.src)
+                .then(response => response.blob())
+                .then(blob => {
+                    const file = new File([blob], "filename", {type: "image/png"});
+                    setSelectedImage(file);
+                    setSelectedImageURL(banner.src)
+                })
+        }
+    }, [selectedImageURL, selectedImage]);
 
     return (
         <form onSubmit={handleSubmit}>
@@ -71,7 +88,7 @@ const CreateCourseForm = () => {
                 }}>
                     <div style={{position: 'relative', width: '100%', height: '100%'}}>
                         <Image
-                            src={selectedImage}
+                            src={selectedImageURL}
                             alt="Image"
                             layout="fill"
                             objectFit="cover"
@@ -144,6 +161,20 @@ const CreateCourseForm = () => {
                     fontSize: '16px',
                     marginTop: '80px'
                 }}>{t("save course")}</button>
+                <button
+                    onClick={() => window.location.href = '/home/'}
+                    style={{
+                        backgroundColor: '#1E64C8',
+                        color: 'white',
+                        padding: '8px 16px',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontFamily: 'Quicksand',
+                        fontSize: '16px',
+                        marginTop: '80px',
+                        marginLeft: '15px'
+                    }}>{t("cancel")}</button>
             </Box>
         </form>
     )

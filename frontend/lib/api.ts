@@ -32,6 +32,7 @@ export type Course = {
     description: string;
     open_course: boolean;
     invite_token: string;
+    banner: string;
 }
 
 export type Project = {
@@ -271,6 +272,10 @@ export async function deleteCourse(id: number): Promise<void> {
 }
 
 export async function getTestFiles(path: string): Promise<Blob> {
+    return (await getBlobRequest(path));
+}
+
+export async function getImage(path: string): Promise<Blob> {
     return (await getBlobRequest(path));
 }
 
