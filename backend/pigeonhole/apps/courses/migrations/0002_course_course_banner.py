@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('courses', '0001_initial'),
     ]
@@ -13,6 +12,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='course',
             name='course_banner',
-            field=models.FileField(blank=True, default='course_banners/default.jpg', null=True, upload_to='course_banners/'),
+            field=models.FileField(blank=True, default='course_banners/default.jpg', null=True,
+                                   upload_to='course_banners/'),
         ),
     ]
