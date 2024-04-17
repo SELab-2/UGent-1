@@ -309,7 +309,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                                 }
                                 {header}
                             </th>
-                        )})
+                        )}
                     </tr>
                 </thead>
                 <tbody>
