@@ -4,7 +4,7 @@ import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } 
 import { styled } from '@mui/system';
 import { NextPage } from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject, getStudents_by_course, getTeachers_by_course } from '@lib/api';
+import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject, getStudents_by_course, getTeachers_by_course, getProjects_by_course } from '@lib/api';
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -141,6 +141,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                     'course_students': (data) => [data.id, data.email],
                     'course_teachers': (data) => [data.id, data.email],
                     'courses': (data) => [data.course_id, data.name, data.description, data.open_course],
+                    'projects': (data) => [data.project_id, data.name, data.description, data.status, data.deadline],
                     'groups': async (data) => {
                         let l = [];
                         // Iterate over the values of the object
@@ -168,6 +169,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                     },
                     'courses': async () => {
                         return parse_pages(await getCourses(currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                    },
+                    'projects': async () => {
+                        return parse_pages(await getProjects_by_course(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'groups': async () => {
                         return parse_pages(await getGroups_by_project(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
@@ -299,7 +303,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                <Table>
                 <thead>
                     <tr>
-                        {(get !== 'groups') && <th>Select</th>}
+                        {(get !== 'groups' && get !== 'projects')  && <th>Select</th>}
                         {headers.map((header, index) => 
                             <th key={index}>
                                 {sortable[index] &&
@@ -315,7 +319,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                 <tbody>
                     {rows.map((row, index) => (
                         <TableRow key={index}>
-                            {((get !== 'groups') &&
+                            {((get !== 'groups' && get !== 'projects') &&
                             <td>
                                 {<CheckBoxWithCustomCheck checked={false}/>}
                             </td>)}
@@ -378,6 +382,14 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                                     )}
                                 </td>)
                             }
+                            {get == 'projects' && (
+                                <td>
+                                    <Button onClick={() => window.location.href = '/project/' + row[0]}>
+                                        View
+                                    </Button>
+                                </td>
+                            
+                            )}
                         </TableRow>
                     ))}
                 </tbody>

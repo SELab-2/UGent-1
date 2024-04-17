@@ -2,18 +2,18 @@ import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import {Box, Typography} from "@mui/material";
 import NavBar from "@app/[locale]/components/NavBar";
-import Footer from "@app/[locale]/components/Footer";
 import CourseBanner from "@app/[locale]/components/CourseBanner";
 import CourseDetails from "@app/[locale]/components/CourseDetails";
-import ProjectTableTeacher from "@app/[locale]/components/ProjectTableTeacher";
 import StudentCoTeacherButtons from "@app/[locale]/components/StudentCoTeacherButtons";
 import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
+import ListView from '@app/[locale]/components/ListView';
 
 const i18nNamespaces = ['common']
 
 export default async function Course({params: {locale, course_id}, searchParams: {token}}:
                                          { params: { locale: any, course_id: number }, searchParams: { token: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
+    const headers = [t('name'), t('description'), t('status'), t('deadline'), t('view')]
 
     return (
         <TranslationsProvider
@@ -40,7 +40,13 @@ export default async function Course({params: {locale, course_id}, searchParams:
                 >
                     {t('projects')}
                 </Typography>
-                <ProjectTableTeacher course_id={course_id}/>
+                <ListView
+                    admin={false}
+                    headers={headers}
+                    sortable={[true, true, false, true]}
+                    get={'projects'}
+                    get_id={course_id}
+                />
                 <StudentCoTeacherButtons course_id={course_id}/>
             </Box>
 

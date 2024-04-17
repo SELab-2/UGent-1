@@ -158,7 +158,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["GET"])
     def get_projects(self, request, *args, **kwargs):
         course = self.get_object()
-        projects = Project.objects.filter(course=course)
+        projects = Project.objects.filter(course_id=course)
         project_filter = ProjectFilter(request.GET, queryset=projects)
         queryset = project_filter.qs  # Keep queryset until ordering
         queryset = self.order_queryset(queryset)
