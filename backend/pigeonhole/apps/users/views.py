@@ -3,15 +3,24 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
+
 
 from backend.pigeonhole.apps.users.models import User, UserSerializer
 from .permissions import UserPermissions
+
+
+class CustomPageNumberPagination(PageNumberPagination):
+    page_size = 10  # Set the default page size here
+    page_size_query_param = "page_size"
+    max_page_size = 100
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, UserPermissions]
+    pagination_class = CustomPageNumberPagination
 
     @action(detail=True, methods=["post"])
     def add_course_to_user(self, request, pk=None):
@@ -34,7 +43,7 @@ class UserViewSet(viewsets.ModelViewSet):
         )
 
     def get_object(self):
-        pk = self.kwargs.get('pk')
+        pk = self.kwargs.get("pk")
 
         if pk == "current":
             return self.request.user

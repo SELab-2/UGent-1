@@ -12,6 +12,8 @@
     "add_project": "Project toevoegen",
     "details": "Details",
     "no_courses": "Geen cursussen om weer te geven.",
+    "page_not_found": "Pagina niet gevonden",
+    "no_access_message": "Je hebt geen toegang tot deze pagina.",
     "title": "Titel",
     "max_score": "Maximale score",
     "title_required": "Titel is verplicht",
@@ -42,5 +44,17 @@
     "view_archive": "Bekijk Archief",
     "project": "Project",
     "deadline": "Deadline",
-    "submissions": "Indieningen"
+    "submissions": "Indieningen",
+    "name": "Naam",
+    "email": "E-mail",
+    "group": "Groep",
+    "role" : "Rol",
+    "remove_user": "Geselecteerde gebruikers verwijderen",
+    "remove_user_from_course": "Geselecteerde gebruikers verwijderen uit cursus",
+    "search" : "Zoeken",
+    "back_to" : "Terug naar",
+    "page" : "pagina",
+    "course_detail" : "cursus details",
+    "join_course" : "Cursus toetreden",
+    "members" : "Leden"
 }

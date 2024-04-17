@@ -12,6 +12,8 @@
     "add_project": "Add project",
     "details": "Details",
     "no_courses": "No courses to display.",
+    "page_not_found": "Page not found",
+    "no_access_message": "You don't have access to this page",
     "title": "Title",
     "max_score": "Maximal score",
     "title_required": "Title is required",
@@ -42,5 +44,15 @@
     "view_archive": "View Archive",
     "project": "Project",
     "deadline": "Deadline",
-    "submissions": "Submissions"
+    "submissions": "Submissions",
+    "name" : "Name",
+    "email" : "Email",
+    "role" : "Role",
+    "remove_user": "Remove selected users",
+    "remove_user_from_course": "Remove user from course",
+    "search" : "Search",
+    "back_to": "Back to",
+    "page" : "page",
+    "course_detail" : "course detail",
+    "join_course" : "Join course"
 }
