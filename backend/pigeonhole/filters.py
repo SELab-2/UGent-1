@@ -1,6 +1,4 @@
 from django_filters import FilterSet, CharFilter
-from rest_framework.filters import OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.users.models import User
