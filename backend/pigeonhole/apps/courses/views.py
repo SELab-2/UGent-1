@@ -13,7 +13,12 @@ from backend.pigeonhole.apps.users.models import User
 from backend.pigeonhole.apps.users.models import UserSerializer
 from .models import Course
 from .permissions import CourseUserPermissions
-from backend.pigeonhole.filters import CourseFilter, UserFilter, ProjectFilter, CustomPageNumberPagination
+from backend.pigeonhole.filters import (
+    CourseFilter,
+    UserFilter,
+    ProjectFilter,
+    CustomPageNumberPagination,
+)
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -34,6 +39,15 @@ class CourseViewSet(viewsets.ModelViewSet):
                 order_by = f"-{order_by}"
             return queryset.order_by(order_by)
         return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        filter_backend = DjangoFilterBackend()
+        queryset = filter_backend.filter_queryset(self.request, queryset, self)
+        queryset = self.order_queryset(queryset)
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def perform_create(self, serializer):
         course = serializer.save()
