@@ -1,9 +1,12 @@
 "use client"
 import React, {useEffect, useState} from "react";
-import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
 import Image from 'next/image';
 import {getCourse, getImage, postData, updateCourse} from "@lib/api";
+import Typography from "@mui/material/Typography";
+import {Button, TextField, Box, Input, Select, MenuItem} from "@mui/material";
+import { visuallyHidden } from '@mui/utils';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 
 interface EditCourseFormProps {
     courseId: number
@@ -78,129 +81,129 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
 
     return (
         loading ? (<div>Loading...</div>) : (
-            <form onSubmit={handleSubmit}>
-                <Box sx={{marginTop: '16px'}}>
-                    <label htmlFor="name" style={{
-                        fontSize: '32px',
-                        fontFamily: 'Quicksand',
-                        marginBottom: '-10px',
-                        display: 'block'
-                    }}>{t("course name")}</label><br/>
-                    <input type="text" id="name" name="name" defaultValue={name}
-                           onChange={(event: any) => setName(event.target.value)} required style={{
+            <Box
+                component={"form"}
+                onSubmit={handleSubmit}
+            >
+                <Box sx={{marginTop: '10px'}}>
+                    <Typography
+                        variant="h3"
+                    >
+                        {t("course name")}
+                    </Typography>
+                    <TextField type="text" id="name" name="name" defaultValue={name}
+                               onChange={(event: any) => setName(event.target.value)} required style={{
                         fontSize: '20px',
-                        fontFamily: 'Quicksand',
+                        fontFamily: 'Quicksand, sans-serif',
                         borderRadius: '6px',
                         height: '30px',
                         width: '400px'
                     }}/>
                 </Box>
-                <Box sx={{marginTop: '16px', borderRadius: '12px'}} style={{height: '250px'}}>
-                    <label htmlFor="banner" style={{
-                        fontSize: '32px',
-                        fontFamily: 'Quicksand',
-                        color: 'black'
-                    }}>{t("banner")}</label><br/>
-                    <div style={{
-                        width: '100%',
-                        height: '200px',
-                        overflow: 'hidden',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                        <div style={{position: 'relative', width: '100%', height: '100%'}}>
-                            <Image
-                                src={selectedImageURL}
-                                alt="Image"
-                                layout="fill"
-                                objectFit="cover"
-                            />
-                        </div>
-                    </div>
+                <Box sx={{marginTop: '16px', borderRadius: '12px', height: 'fit-content'}}>
+                    <Typography
+                        variant="h3"
+                    >
+                        {t("banner")}
+                    </Typography>
+                    <Box
+                        borderRadius={'16px'}
+                        sx={{position: 'relative', width: '100%', height: '100%', borderRadius: '16px',}}
+                    >
+                        <Image
+                            src={selectedImageURL}
+                            layout="fill"
+                            objectFit="cover"
+                        />
+                        </Box>
                 </Box>
                 <Box sx={{marginTop: '16px'}}>
-                    <label htmlFor="Image" style={{
-                        cursor: 'pointer',
-                        display: 'inline-block',
-                        padding: '8px 16px',
-                        border: '1px solid lightblue',
-                        borderRadius: '4px',
-                        backgroundColor: 'lightblue',
-                        color: 'black',
-                        fontFamily: 'Quicksand'
-                    }}>
+                    <Button variant={"contained"} color={"secondary"} size={'small'}
+                            startIcon={<UploadFileIcon color={'secondary.contrastText'}/>}
+                            disableElevation
+                            component="label"
+                            role={undefined}
+                            tabIndex={-1}
+                            sx={{
+                                padding: 1,
+                                width: 'fit-content',
+                                color: 'secondary.contrastText'
+                            }}
+                    >
                         {t("select image")}
-                        <input type="file" id="Image" name="Image" accept="image/*" onChange={handleImageUpload}
-                               style={{display: 'none'}}/>
-                    </label>
+                        <Input type="file"
+                               id="Image"
+                               name="Image"
+                               onChange={handleImageUpload}
+                               style={visuallyHidden}
+                        />
+                    </Button>
                 </Box>
                 <Box sx={{marginTop: '16px'}}>
-                    <label htmlFor="description" style={{
-                        fontSize: '32px',
-                        fontFamily: 'Quicksand',
-                        color: 'black',
-                        marginBottom: '-10px',
-                        display: 'block'
-                    }}>{t("description")}</label><br/>
-                    <textarea id="description" name="description" rows={5} defaultValue={description}
-                              onChange={(event: any) => setDescription(event.target.value)} required
-                              style={{
-                                  width: '100%',
-                                  fontFamily: 'Quicksand',
-                                  color: 'black',
-                                  borderRadius: '6px',
-                                  padding: '10px',
-                                  boxSizing: 'border-box'
-                              }}/>
+                    <Typography
+                        variant="h3"
+                    >
+                        {t("description")}
+                    </Typography>
+                    <TextField id="description" name="description" defaultValue={description}
+                               label="Description"
+                               multiline
+                               rows={4}
+                               onChange={(event: any) => setDescription(event.target.value)} required
+                               style={{
+                                   width: '100%',
+                                   fontFamily: 'Quicksand',
+                                   color: 'black',
+                                   borderRadius: '6px',
+                                   padding: '10px',
+                                   boxSizing: 'border-box'
+                               }}/>
                 </Box>
                 <Box sx={{marginTop: '16px'}}>
-                    <label htmlFor="choice" style={{
-                        fontSize: '32px',
-                        fontFamily: 'Quicksand',
-                        color: 'black',
-                        marginBottom: '-10px',
-                        display: 'block'
-                    }}>{t("access")}</label><br/>
-                    <select id="choice" name="choice" defaultValue={open.toString()}
-                            onChange={(event) => (setOpen(event.target.value === 'true'))} style={{
-                        fontSize: '20px',
-                        fontFamily: 'Quicksand',
-                        borderRadius: '6px',
-                        padding: '5px'
-                    }}>
-                        <option value="false">{t("private")}</option>
-                        <option value="true">{t("public")}</option>
-                    </select>
+                    <Typography
+                        variant="h3"
+                    >
+                        {t("access")}
+                    </Typography>
+                    <Select
+                        id="choice"
+                        name="choice"
+                        label={t("access")}
+                        value={open}
+                        onChange={(event: any) => setOpen(event.target.value)}
+                        sx={{
+                            fontSize: '20px',
+                            height: 'fit-content',
+                        }}
+                    >
+                        <MenuItem value="false">{t("private")}</MenuItem>
+                        <MenuItem value="true">{t("public")}</MenuItem>
+                    </Select>
                 </Box>
-                <Box sx={{marginTop: '16px', position: 'absolute', gap: 2}}>
-                    <button type="submit" style={{
-                        backgroundColor: '#1E64C8',
-                        color: 'white',
-                        padding: '8px 16px',
-                        border: 'none',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        fontFamily: 'Quicksand',
-                        fontSize: '16px',
-                        marginTop: '80px'
-                    }}>{t("save changes")}</button>
-                    <button
-                        onClick={() => window.location.href = '/course/' + courseId + "/"}
-                        style={{
-                            backgroundColor: '#1E64C8',
-                            color: 'white',
-                            padding: '8px 16px',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontFamily: 'Quicksand',
-                            fontSize: '16px',
-                            marginTop: '80px',
-                            marginLeft: '15px'
-                        }}>{t("cancel")}</button>
+                <Box
+                    display={'flex'}
+                    sx={{marginTop: '16px', position: 'absolute', gap: 2}}
+                >
+                    <Button
+                        type="submit"
+                        sx={{
+                            width: 'fit-content',
+                        }}
+                    >
+                        {t("save changes")}
+                    </Button>
+                    <Button
+                        href={'/course/' + courseId + "/"}
+                        color={'secondary'}
+                        sx={{
+                            width: 'fit-content',
+                            color: 'secondary.contrastText'
+                        }}
+                    >
+                        {t("cancel")}
+                    </Button>
                 </Box>
-            </form>
+            </Box>
         ));
 
 }

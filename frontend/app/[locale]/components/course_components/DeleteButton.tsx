@@ -3,6 +3,7 @@
 import React from 'react'
 import {useTranslation} from "react-i18next";
 import {deleteCourse} from "@lib/api";
+import {Button} from '@mui/material';
 
 
 interface EditCourseFormProps {
@@ -18,23 +19,17 @@ const DeleteButton = ({courseId}: EditCourseFormProps) => {
     }
 
     return (
-        <div>
-            <button onClick={handleDelete} style={{
-                backgroundColor: 'red',
+        <Button
+            ariant='contained'
+            color='failure'
+            onClick={handleDelete}
+            sx={{
+                width: 'fit-content',
                 color: 'white',
-                padding: '8px 16px',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontFamily: 'Quicksand',
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-                fontSize: '16px'
-            }}>{t("delete course")}
-            </button>
-
-        </div>
+            }}
+        >
+            {t("delete course")}
+        </Button>
     )
 }
 
