@@ -11,7 +11,7 @@ class Course(models.Model):
     open_course = models.BooleanField(default=False)
     invite_token = models.CharField(max_length=20, blank=True, null=True)
     banner = models.FileField(upload_to='course_banners/', blank=True, null=False,
-                                      default='course_banners/ugent_banner.png')
+                              default='course_banners/ugent_banner.png')
 
     objects = models.Manager()
 
