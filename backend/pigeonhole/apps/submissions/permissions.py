@@ -12,7 +12,7 @@ class CanAccessSubmission(permissions.BasePermission):
     # to the submission data.
     def has_permission(self, request, view):
         user = request.user
-        if not 'group_id' in request.data:
+        if 'group_id' not in request.data:
             group = Group.objects.filter(project_id=request.data['project_id'], user=request.user).first()
             group_id = group.group_id
         else:

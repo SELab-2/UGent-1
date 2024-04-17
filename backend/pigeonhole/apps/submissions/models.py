@@ -21,7 +21,7 @@ class Submissions(models.Model):
     group_id = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True)
     submission_nr = models.IntegerField(blank=True)
     # een JSON encoded lijst relative file paths van de geuploade folder,
-    #hiermee kunnen dan de static file urls afgeleid worden
+    # hiermee kunnen dan de static file urls afgeleid worden
     file_urls = models.TextField(null=True)
     timestamp = models.DateTimeField(auto_now_add=True, blank=True)
     draft = models.BooleanField(default=True)
