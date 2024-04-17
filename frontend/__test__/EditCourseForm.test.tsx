@@ -37,7 +37,7 @@ describe('EditCourseForm', () => {
         expect(screen.getByRole('button')).toBeInTheDocument();
     });
 
-    it('populates form fields with course data', async () => {
+    it('fills form fields with course data', async () => {
         render(<EditCourseForm courseId={mockCourse.id}/>);
 
         // wait for the course data to be fetched
@@ -63,7 +63,7 @@ describe('EditCourseForm', () => {
         fireEvent.change(screen.getByLabelText(/description/i), {target: {value: 'new description'}});
 
         // submit the form
-        fireEvent.click(screen.getByRole('button'));
+        fireEvent.click(screen.getByRole('button', {name: /save changes/i}));
 
         // wait for the form to be submitted
         await waitFor(() => expect(axios.put).toHaveBeenCalled());
