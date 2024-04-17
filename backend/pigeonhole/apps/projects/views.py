@@ -118,7 +118,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             path = submissions[0].file.path
 
         else:
-            path = f'backend/downloads/submissions.zip'
+            path = 'backend/downloads/submissions.zip'
             zipf = zipfile.ZipFile(
                 file=path,
                 mode="w",

@@ -4,13 +4,12 @@ from os.path import realpath, basename
 
 import pytz
 from django.http import FileResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.filters import OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
@@ -86,7 +85,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             path = submission.file.path
 
         else:
-            path = f'backend/downloads/submissions.zip'
+            path = 'backend/downloads/submissions.zip'
             zipf = zipfile.ZipFile(
                 file=path,
                 mode="w",

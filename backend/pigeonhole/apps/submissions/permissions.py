@@ -33,7 +33,7 @@ class CanAccessSubmission(permissions.BasePermission):
             else:
                 return False
         else:
-            if (not 'pk' in view.kwargs.keys()) and (user.is_teacher or user.is_admin or user.is_superuser):
+            if ('pk' not in view.kwargs.keys()) and (user.is_teacher or user.is_admin or user.is_superuser):
                 return True
             submission = Submissions.objects.get(submission_id=view.kwargs['pk'])
             group_id = submission.group_id.group_id
