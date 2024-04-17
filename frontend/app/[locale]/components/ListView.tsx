@@ -98,7 +98,7 @@ interface ListViewProps {
     values: (string | number)[][];
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_name, action_text, search_text }) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortable, action_name, action_text, search_text }) => {
     // default listview
     const [searchTerm, setSearchTerm] = useState('');
     const [rows, setRows] = useState<(string | number)[][]>([]);
@@ -158,19 +158,19 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
                     'users': async () => {
-                        return parse_pages(await getUsers(currentPage));
+                        return parse_pages(await getUsers(currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'course_students': async () => {
-                        return parse_pages(await getStudents_by_course(get_id, currentPage));
+                        return parse_pages(await getStudents_by_course(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     "course_teachers": async () => {
-                        return parse_pages(await getTeachers_by_course(get_id, currentPage));
+                        return parse_pages(await getTeachers_by_course(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'courses': async () => {
-                        return parse_pages(await getCourses(currentPage));
+                        return parse_pages(await getCourses(currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'groups': async () => {
-                        return parse_pages(await getGroups_by_project(get_id, currentPage));
+                        return parse_pages(await getGroups_by_project(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     }
                 };
 
@@ -189,18 +189,14 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                     mappedData.push(await hashmap_get_to_parser[get](d));
                 }
     
-                // Filter and slice rows based on current search term and page
-                const filteredRows = mappedData;
-                const filteredAndSlicedRows = filteredRows
-                    .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())));
-                setRows(filteredAndSlicedRows);
+                setRows(mappedData);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
         fetchData();
         // the values below will be constantly updated
-    }, [currentPage, searchTerm, currentPage]);
+    }, [currentPage, searchTerm, currentPage, sortConfig]);
     
 
     const handleChangePage = (direction: 'next' | 'prev') => {
@@ -246,16 +242,6 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
         );
     };
 
-    const sortedRows = [...rows].sort((a, b) => {
-        if (a[headers.indexOf(sortConfig.key)] < b[headers.indexOf(sortConfig.key)]) {
-            return sortConfig.direction === 'asc' ? -1 : 1;
-        }
-        if (a[headers.indexOf(sortConfig.key)] > b[headers.indexOf(sortConfig.key)]) {
-            return sortConfig.direction === 'asc' ? 1 : -1;
-        }
-        return 0;
-    });
-
     return (
         <RootContainer component="main">
             <CssBaseline/>
@@ -277,7 +263,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                              *  EDIT
                              * 
                              */
-                            const id = sortedRows[index][0];
+                            const id = rows[index][0];
                             if (!isNaN(id)) {
                                 if (!isNaN(id)) {
                                     if(action_name === 'remove_from_course') {
@@ -298,7 +284,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                                     }
                                 }                                
                             } else {
-                                console.error("Invalid id", sortedRows[index][0]);
+                                console.error("Invalid id", rows[index][0]);
                             }
                         }
                     });
@@ -314,18 +300,20 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                 <thead>
                     <tr>
                         {(get !== 'groups') && <th>Select</th>}
-                        {headers.map((header, index) => (
+                        {headers.map((header, index) => 
                             <th key={index}>
+                                {sortable[index] &&
                                 <IconButton size="small" onClick={() => handleSort(headers[index])}>
                                     {sortConfig.key === headers[index] ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon /> : <WhiteTriangleDownIcon />) : <WhiteSquareIcon />}
                                 </IconButton>
+                                }
                                 {header}
                             </th>
-                        ))}
+                        )}
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedRows.map((row, index) => (
+                    {rows.map((row, index) => (
                         <TableRow key={index}>
                             {((get !== 'groups') &&
                             <td>

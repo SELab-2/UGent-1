@@ -29,6 +29,7 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
             <ListView
                 admin={true}
                 headers={headers}
+                sortable={[true, false, false, false]}
                 get={'courses'}
                 action_name={'join_course'}
                 action_text={t('join_course')}

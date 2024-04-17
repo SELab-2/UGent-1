@@ -4,7 +4,8 @@ import pytz
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
@@ -13,15 +14,10 @@ from backend.pigeonhole.apps.submissions.models import (
     SubmissionsSerializer,
 )
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
+from backend.pigeonhole.filters import CustomPageNumberPagination
 
 
 # TODO test timestamp, file, output_test
-
-
-class CustomPageNumberPagination(PageNumberPagination):
-    page_size = 10  # Set the default page size here
-    page_size_query_param = "page_size"
-    max_page_size = 100
 
 
 class SubmissionsViewset(viewsets.ModelViewSet):
@@ -29,6 +25,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
     serializer_class = SubmissionsSerializer
     permission_classes = [IsAuthenticated & CanAccessSubmission]
     pagination_class = CustomPageNumberPagination
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
 
     def create(self, request, *args, **kwargs):
         serializer = SubmissionsSerializer(data=request.data)
