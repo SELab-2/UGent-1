@@ -12,6 +12,8 @@
     "add_project": "Project toevoegen",
     "details": "Details",
     "no_courses": "Geen cursussen om weer te geven.",
+    "page_not_found": "Pagina niet gevonden",
+    "no_access_message": "Je hebt geen toegang tot deze pagina.",
     "title": "Titel",
     "max_score": "Maximale score",
     "title_required": "Titel is verplicht",

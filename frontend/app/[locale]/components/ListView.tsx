@@ -63,39 +63,6 @@ const CustomCheckmarkWrapper = styled('div')({
     height: '100%',
 });
 
-const ToggleButton = styled(Button)(({theme, selected}) => ({
-    width: 'auto',
-    alignSelf: 'flex-start',
-    minWidth: 'fit-content', // Ensures the container fits its content
-    padding: '5px 14px', // Add padding around the text (slightly bigger)
-    position: 'relative',
-    borderRadius: '20px',
-    cursor: 'pointer',
-    border: 'none',
-    transition: 'background-color 0.3s ease',
-    backgroundColor: selected ? theme.palette.secondary.dark : theme.palette.secondary.main, // Background color reversed
-    color: selected ? theme.palette.text.primary : theme.palette.text.secondary, // Default text color
-    '& span': {
-        position: 'relative',
-        zIndex: 1,
-        transition: 'color 0.3s ease',
-    },
-    '&:before': {
-        content: '""',
-        position: 'absolute',
-        top: '-2px', // Adjust the top position for alignment
-        left: selected ? 'calc(50% - 2px)' : '-2px', // Adjust left position for alignment
-        width: 'calc(50% + 4px)', // Increase width to include padding for sliding component
-        height: 'calc(100% + 4px)', // Increase height to include padding for sliding component
-        backgroundColor: theme.palette.primary.light, // Sliding component color
-        transition: 'left 0.3s ease',
-        zIndex: 0,
-        borderRadius: '20px',
-    },
-}));
-
-
-
 const WhiteSquareIcon = () => (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="12" height="12" fill="white"/>
@@ -137,7 +104,7 @@ interface ListViewProps {
     action_name: string;
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_name, action_text, search_text }) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortable, action_name, action_text, search_text }) => {
     // default listview
     const [searchTerm, setSearchTerm] = useState('');
     const [rows, setRows] = useState<(string | number | boolean)[][]>([]);
@@ -179,7 +146,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                     'users': (data) => [data.id, data.email, data.role],
                     'course_students': (data) => [data.id, data.email],
                     'course_teachers': (data) => [data.id, data.email],
-                    'courses': (data) => [data.course_id, data.name, data.description],
+                    'courses': (data) => [data.course_id, data.name, data.description, data.open_course],
                     'groups': async (data) => {
                         let l = [];
                         // Iterate over the values of the object
@@ -197,19 +164,19 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
                     'users': async () => {
-                        return parse_pages(await getUsers(currentPage));
+                        return parse_pages(await getUsers(currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'course_students': async () => {
-                        return parse_pages(await getStudents_by_course(get_id, currentPage));
+                        return parse_pages(await getStudents_by_course(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     "course_teachers": async () => {
-                        return parse_pages(await getTeachers_by_course(get_id, currentPage));
+                        return parse_pages(await getTeachers_by_course(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'courses': async () => {
-                        return parse_pages(await getCourses(currentPage));
+                        return parse_pages(await getCourses(currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'groups': async () => {
-                        return parse_pages(await getGroups_by_project(get_id, currentPage));
+                        return parse_pages(await getGroups_by_project(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'submissions': async () => {
                         return getProjectSubmissions(get_id);
@@ -230,19 +197,15 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                 for (const d of data) {
                     mappedData.push(await hashmap_get_to_parser[get](d));
                 }
-
-                // Filter and slice rows based on current search term and page
-                const filteredRows = mappedData;
-                const filteredAndSlicedRows = filteredRows
-                    .filter(row => Array.isArray(row) && row.some(cell => cell && cell.toString().toLowerCase().includes(searchTerm.toLowerCase())));
-                setRows(filteredAndSlicedRows);
+    
+                setRows(mappedData);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
         fetchData();
         // the values below will be constantly updated
-    }, [currentPage, searchTerm, currentPage]);
+    }, [currentPage, searchTerm, currentPage, sortConfig]);
     
 
     const handleChangePage = (direction: 'next' | 'prev') => {
@@ -288,16 +251,6 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
         );
     };
 
-    const sortedRows = [...rows].sort((a, b) => {
-        if (a[headers.indexOf(sortConfig.key)] < b[headers.indexOf(sortConfig.key)]) {
-            return sortConfig.direction === 'asc' ? -1 : 1;
-        }
-        if (a[headers.indexOf(sortConfig.key)] > b[headers.indexOf(sortConfig.key)]) {
-            return sortConfig.direction === 'asc' ? 1 : -1;
-        }
-        return 0;
-    });
-
     return (
         <RootContainer component="main">
             <CssBaseline/>
@@ -319,17 +272,28 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                              *  EDIT
                              *
                              */
-                            const id = sortedRows[index][0];
+                            const id = rows[index][0];
                             if (!isNaN(id)) {
-                                if(action_name === 'remove_from_course') {
-                                    postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id});
-                                } else if (action_name === 'remove') {
-                                    deleteData('/users/' + id);
-                                } else if (action_name === 'join_course') {
-                                    postData('/courses/' + id + '/join_course/', {course_id: id});
+                                if (!isNaN(id)) {
+                                    if(action_name === 'remove_from_course') {
+                                        postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id})
+                                        .then(() => {
+                                            window.location.reload();
+                                        });
+                                    } else if (action_name === 'remove') {
+                                        deleteData('/users/' + id)
+                                        .then(() => {
+                                            window.location.reload();
+                                        });
+                                    } else if (action_name === 'join_course') {
+                                        postData('/courses/' + id + '/join_course/', {course_id: id})
+                                        .then(() => {
+                                            window.location.href = '/course/' + id;
+                                        });
+                                    }
                                 }
                             } else {
-                                console.error("Invalid id", sortedRows[index][0]);
+                                console.error("Invalid id", rows[index][0]);
                             }
                         }
                     });
@@ -345,18 +309,20 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                 <thead>
                     <tr>
                         {(get !== 'groups') && <th>Select</th>}
-                        {headers.map((header, index) => (
+                        {headers.map((header, index) =>
                             <th key={index}>
+                                {sortable[index] &&
                                 <IconButton size="small" onClick={() => handleSort(headers[index])}>
                                     {sortConfig.key === headers[index] ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon /> : <WhiteTriangleDownIcon />) : <WhiteSquareIcon />}
                                 </IconButton>
+                                }
                                 {header}
                             </th>
-                        ))}
+                        )}
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedRows.map((row, index) => (
+                    {rows.map((row, index) => (
                         <TableRow key={index}>
                             {((get !== 'groups') &&
                             <td>
@@ -368,7 +334,30 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                             {get !== 'groups' && row.slice(1).map((cell, cellIndex) => (
                                 <td key={cellIndex}>{typeof cell == "boolean" ? (cell ? <CheckIcon/> :<CancelIcon/>) : cell}</td>
                             ))}
-                            { 
+                            {
+                                // course leave button
+                                get === 'courses' && user.course.includes(row[0]) && (
+                                    <td>
+                                        <Button onClick={() => postData('/courses/' + row[0] + '/leave_course/', {course_id: row[0]})}>
+                                            Leave
+                                        </Button>
+                                    </td>
+                                )
+                            }
+                            {
+                                // course join button
+                                get === 'courses' && (!user.course.includes(row[0])) && (
+                                    <td>
+                                        <Button onClick={() => postData('/courses/' + row[0] + '/join_course/', {course_id: row[0]})}
+                                        disabled={!row[3]}
+                                        style={{backgroundColor: row[3] ? '': 'gray'}}
+                                        >
+                                            Join
+                                        </Button>
+                                    </td>
+                                )
+                            }
+                            {
                             // group join button
                             get === 'groups' && (!row[1].includes(user.id)) && (
                                 <td>
@@ -377,7 +366,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                                     // or when group is full
                                     // TODO i18n join button
                                     (!user_is_in_group) && (row[1].length < project.group_size) && (
-                                    <Button onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]})}>
+                                    <Button onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]}).then(() => window.location.reload())
+                                    }>
                                         Join
                                     </Button>
                                     )
@@ -390,7 +380,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, action_
                                 <td>
                                     {
                                     (user_is_in_group) && (
-                                    <Button onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]})}>
+                                    <Button onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]}).then(() => window.location.reload())
+                                    }>
                                         Leave
                                     </Button>
                                     )}

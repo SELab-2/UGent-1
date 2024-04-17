@@ -10,9 +10,13 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.groups.models import GroupSerializer
+from backend.pigeonhole.filters import GroupFilter, CustomPageNumberPagination
+
 from .models import Project, ProjectSerializer
 from .permissions import CanAccessProject
 from ..submissions.models import Submissions, SubmissionsSerializer
@@ -23,18 +27,13 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
         return  # To not perform the csrf check previously happening
 
 
-class CustomPageNumberPagination(PageNumberPagination):
-    page_size = 10  # Set the default page size here
-    page_size_query_param = "page_size"
-    max_page_size = 100
-
-
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated & CanAccessProject]
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     pagination_class = CustomPageNumberPagination
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
@@ -65,22 +64,21 @@ class ProjectViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
-    @action(detail=True, methods=["get"])
+    @action(detail=True, methods=["GET"])
     def get_groups(self, request, *args, **kwargs):
         project = self.get_object()
         groups = Group.objects.filter(project_id=project)
-
+        groups_filter = GroupFilter(request.GET, queryset=groups)
+        filtered_groups = groups_filter.qs
         page_size = request.query_params.get(
             "page_size", self.pagination_class.page_size
         )
-
         paginator = CustomPageNumberPagination()
         paginator.page_size = page_size
         paginator.page_query_param = "page"
         paginator.page_size_query_param = "page_size"
         paginator.max_page_size = 100
-
-        paginated_groups = paginator.paginate_queryset(groups, request)
+        paginated_groups = paginator.paginate_queryset(filtered_groups, request)
         serializer = GroupSerializer(paginated_groups, many=True)
         return paginator.get_paginated_response(serializer.data)
 

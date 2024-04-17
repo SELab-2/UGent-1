@@ -9,10 +9,10 @@ import BackButton from '@app/[locale]/components/BackButton';
 
 const i18nNamespaces = ['common']
 
-export default async function Users({params: {locale}}: { params: { locale: any} }) {
+export default async function AllCoursesPage({params: {locale}}: { params: { locale: any} }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
-    const headers = [t('name'), t('description')]
+    const headers = [t('name'), t('description'), t('open'), t('join/leave')]
 
     return (
         <TranslationsProvider
@@ -29,6 +29,7 @@ export default async function Users({params: {locale}}: { params: { locale: any}
             <ListView
                 admin={true}
                 headers={headers}
+                sortable={[true, false, false, false]}
                 get={'courses'}
                 action_name={'join_course'}
                 action_text={t('join_course')}

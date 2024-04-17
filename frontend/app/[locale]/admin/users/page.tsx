@@ -28,6 +28,7 @@ export default async function Users({ params: { locale } }: { params: { locale: 
             <ListView
                 admin={true}
                 headers={headers}
+                sortable={[true, false]}
                 get={'users'}
                 action_name={'remove'}
                 action_text={t('remove_user')}
