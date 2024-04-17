@@ -11,7 +11,6 @@
     "projects": "Projects",
     "add_project": "Add project",
     "details": "Details",
-    "no_courses": "No courses to display.",
     "no_description": "No description given.",
     "view_students": "View students",
     "view_co_teachers": "View co-teachers",
@@ -23,6 +22,8 @@
     "access": "Access",
     "open_course": "Open course",
     "private_course": "Private course",
+    "page_not_found": "Page not found",
+    "no_access_message": "You don't have access to this page",
     "title": "Title",
     "max_score": "Maximal score",
     "title_required": "Title is required",
@@ -49,5 +50,15 @@
     "remove_confirm": "Remove",
     "remove_cancel": "Cancel",
     "copy": "Copy",
-    "copied_to_clipboard": "Copied to clipboard"
+    "copied_to_clipboard": "Copied to clipboard",
+    "name" : "Name",
+    "email" : "Email",
+    "role" : "Role",
+    "remove_user": "Remove selected users",
+    "remove_user_from_course": "Remove user from course",
+    "search" : "Search",
+    "back_to": "Back to",
+    "page" : "page",
+    "course_detail" : "course detail",
+    "join_course" : "Join course"
 }
