@@ -1,10 +1,14 @@
 'use client'
-import React, { useState, useEffect } from 'react';
-import { Box, Container, CssBaseline, Checkbox, TextField, Button, IconButton } from '@mui/material';
-import { styled } from '@mui/system';
-import { NextPage } from 'next';
+import React, {useEffect, useState} from 'react';
+import {Box, Button, Checkbox, Container, CssBaseline, IconButton, TextField} from '@mui/material';
+import {styled} from '@mui/system';
+import {NextPage} from 'next';
 import checkMarkImage from './check-mark.png';
-import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject, getStudents_by_course, getTeachers_by_course } from '@lib/api';
+import CheckIcon from '@mui/icons-material/Check';
+import CancelIcon from "@mui/icons-material/Cancel";
+import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject, getStudents_by_course, getTeachers_by_course, getProjectSubmissions } from '@lib/api';
+
+const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 const RootContainer = styled(Container)(({theme}) => ({
     display: 'flex',
@@ -62,21 +66,21 @@ const CustomCheckmarkWrapper = styled('div')({
 });
 
 const WhiteSquareIcon = () => (
-<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="12" height="12" fill="white"/>
-</svg>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="12" height="12" fill="white"/>
+    </svg>
 );
 
 const WhiteTriangleUpIcon = () => (
-<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M6 12L12 0L0 0L6 12Z" fill="white"/>
-</svg>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 12L12 0L0 0L6 12Z" fill="white"/>
+    </svg>
 );
 
 const WhiteTriangleDownIcon = () => (
-<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M6 0L12 12L0 12L6 0Z" fill="white"/>
-</svg>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 0L12 12L0 12L6 0Z" fill="white"/>
+    </svg>
 );
 
 
@@ -94,14 +98,18 @@ const RemoveButton = styled(Button)({
 });
 
 interface ListViewProps {
+    admin: boolean;
+    get: string;
+    get_id: number;
     headers: string[];
-    values: (string | number)[][];
+    tablenames: string[];
+    action_name: string;
 }
 
 const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortable, action_name, action_text, search_text }) => {
     // default listview
     const [searchTerm, setSearchTerm] = useState('');
-    const [rows, setRows] = useState<(string | number)[][]>([]);
+    const [rows, setRows] = useState<(string | number | boolean)[][]>([]);
     const [sortConfig, setSortConfig] = useState({ key: headers[0], direction: 'asc' });
     // group screen
     const [user, setUser] = useState<any>();
@@ -112,14 +120,17 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
     const [previousPage, setPreviousPage] = useState(0);
     const [nextPage, setNextPage] = useState(0);
 
+    // ids of selected row items
+    const [selected, setSelected] = useState<number[]>([]);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
 
                 /**
-                 * 
+                 *
                  *  EDIT
-                 * 
+                 *
                  */
 
                 const parse_pages = (response: any) => {
@@ -152,8 +163,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                             l.push(i.email);
                         }
                         return [data.group_id, data.user, data.group_nr, l.join(', ')];
-                    }
-                    
+                    },
+                    'submissions': (data) => [data.submission_id, data.group_id, data.timestamp, data.output_test !== undefined]
                 };
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
@@ -171,6 +182,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                     },
                     'groups': async () => {
                         return parse_pages(await getGroups_by_project(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                    },
+                    'submissions': async () => {
+                        return parse_pages(await getProjectSubmissions(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     }
                 };
 
@@ -188,7 +202,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                 for (const d of data) {
                     mappedData.push(await hashmap_get_to_parser[get](d));
                 }
-    
+
                 setRows(mappedData);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -197,7 +211,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
         fetchData();
         // the values below will be constantly updated
     }, [currentPage, searchTerm, currentPage, sortConfig]);
-    
+
 
     const handleChangePage = (direction: 'next' | 'prev') => {
         if (direction === 'next') {
@@ -217,7 +231,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
             direction = 'desc';
         }
-        setSortConfig({ key, direction });
+        setSortConfig({key, direction});
     };
 
     const CheckBoxWithCustomCheck = () => {
@@ -225,13 +239,13 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
         const handleCheckboxChange = (event) => {
             setChecked(event.target.checked);
         };
-    
-        
+
+
         useEffect(() => {
             setChecked(false);
         }, [currentPage]);
-    
-    
+
+
         return (
             <GreenCheckbox checked={checked} onChange={handleCheckboxChange}>
                 <CustomCheckmarkWrapper>
@@ -252,16 +266,16 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
             />
-            {admin && action_name && (
+            {admin && action_name && action_name !== 'download_submission' && (
                 <RemoveButton
                 onClick={() => {
                     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
                     checkboxes.forEach((checkbox, index) => {
                         if ((checkbox as HTMLInputElement).checked) {
                             /**
-                             * 
+                             *
                              *  EDIT
-                             * 
+                             *
                              */
                             const id = rows[index][0];
                             if (!isNaN(id)) {
@@ -282,7 +296,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                                             window.location.href = '/course/' + id;
                                         });
                                     }
-                                }                                
+                                }
                             } else {
                                 console.error("Invalid id", rows[index][0]);
                             }
@@ -296,11 +310,47 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
             </RemoveButton>
 
             )}
-               <Table>
+
+            {admin && action_name && action_name === 'download_submission' && (
+                <RemoveButton
+                    onClick = {() => {
+                        const download_url = `${backend_url}/projects/${get_id}/download_submissions`
+                        window.open(download_url, 'blank_')
+                    }}
+                >
+                    Download all submissions
+                </RemoveButton>
+            )}
+
+            {admin && action_name && action_name === 'download_submission' && (
+                <RemoveButton
+                    onClick = {() => {
+                        const selected_ids = Array.from(document.querySelectorAll('input[type="checkbox"]'))
+                            .filter((checkbox) => (
+                                (checkbox as HTMLInputElement).checked
+                            ))
+                            .map((checkbox, index) => (
+                                rows[index][0]
+                            ))
+
+                        const download_url = `${backend_url}/submissions/download_selection?${
+                            selected_ids
+                                .map((id) => (`id=${id}`))
+                                .join('&')
+                        }`
+
+                        window.open(download_url, 'blank_')
+                    }}
+                >
+                    Download selected submissions
+                </RemoveButton>
+            )}
+
+            <Table>
                 <thead>
                     <tr>
                         {(get !== 'groups') && <th>Select</th>}
-                        {headers.map((header, index) => 
+                        {headers.map((header, index) =>
                             <th key={index}>
                                 {sortable[index] &&
                                 <IconButton size="small" onClick={() => handleSort(headers[index])}>
@@ -320,12 +370,12 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                                 {<CheckBoxWithCustomCheck checked={false}/>}
                             </td>)}
                             {get === 'groups' && row.slice(2).map((cell, cellIndex) => (
-                                <td key={cellIndex}>{cell}</td>
+                                <td key={cellIndex}>{typeof cell == "boolean" ? (cell ? <CheckIcon/> :<CancelIcon/>) : cell}</td>
                             ))}
                             {get !== 'groups' && row.slice(1).map((cell, cellIndex) => (
-                                <td key={cellIndex}>{cell}</td>
+                                <td key={cellIndex}>{typeof cell == "boolean" ? (cell ? <CheckIcon/> :<CancelIcon/>) : cell}</td>
                             ))}
-                            {   
+                            {
                                 // course leave button
                                 get === 'courses' && user.course.includes(row[0]) && (
                                     <td>
@@ -340,7 +390,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                                 get === 'courses' && (!user.course.includes(row[0])) && (
                                     <td>
                                         <Button onClick={() => postData('/courses/' + row[0] + '/join_course/', {course_id: row[0]})}
-                                        disabled={!row[3]} 
+                                        disabled={!row[3]}
                                         style={{backgroundColor: row[3] ? '': 'gray'}}
                                         >
                                             Join
@@ -348,7 +398,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                                     </td>
                                 )
                             }
-                            { 
+                            {
                             // group join button
                             get === 'groups' && (!row[1].includes(user.id)) && (
                                 <td>
@@ -365,7 +415,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                                     }
                                 </td>)
                             }
-                            { 
+                            {
                             // group leave button
                             get === 'groups' && (row[1].includes(user.id)) && (
                                 <td>
