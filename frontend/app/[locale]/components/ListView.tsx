@@ -184,7 +184,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                         return parse_pages(await getGroups_by_project(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'submissions': async () => {
-                        return await getProjectSubmissions(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc');
+                        return parse_pages(await getProjectSubmissions(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     }
                 };
 

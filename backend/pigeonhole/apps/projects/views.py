@@ -85,23 +85,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
         project = self.get_object()
         groups = Group.objects.filter(project_id=project)
         submissions = Submissions.objects.filter(group_id__in=groups)
-
         submissions_filter = SubmissionFilter(request.GET, queryset=submissions)
         filtered_submissions = submissions_filter.qs
-
-        page_size = request.query_params.get(
-            "page_size", self.pagination_class.page_size
-        )
-
         paginator = CustomPageNumberPagination()
-        paginator.page_size = page_size
-        paginator.page_query_param = "page"
-        paginator.page_size_query_param = "page_size"
-        paginator.max_page_size = 100
         paginated_submissions = paginator.paginate_queryset(filtered_submissions, request)
-
         serializer = SubmissionsSerializer(paginated_submissions, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return paginator.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["get"])
     def download_submissions(self, request, *args, **kwargs):
