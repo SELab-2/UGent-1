@@ -14,6 +14,8 @@ class CanAccessSubmission(permissions.BasePermission):
         user = request.user
         if view.action in ['list']:
             return False
+        elif view.action in ['download_selection', 'download_all']:
+            return user.is_teacher or user.is_admin or user.is_superuser
         elif view.action in ['create']:
             if user.is_student:
                 group_id = request.data.get('group_id')
@@ -31,6 +33,8 @@ class CanAccessSubmission(permissions.BasePermission):
             else:
                 return False
         else:
+            if (not 'pk' in view.kwargs.keys()) and (user.is_teacher or user.is_admin or user.is_superuser):
+                return True
             submission = Submissions.objects.get(submission_id=view.kwargs['pk'])
             group_id = submission.group_id.group_id
             if not Group.objects.filter(group_id=group_id).exists():
