@@ -216,6 +216,20 @@ export async function getCourses(page = 1, pageSize = 5): Promise<Course[]> {
     return (await getRequest(`/courses?page=${page}&page_size=${pageSize}`));
 }
 
+export async function getCoursesForUser() : Promise<Course[]>{
+    let page = 1;
+    let results: Course[] = []
+    let response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${10}`);
+    if (response.results.length === 0) return [];
+    results = results.concat(response.results);
+    while (response.next !== null) {
+        page++;
+        response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${10}`);
+        results = results.concat(response.results);
+    }
+    return results;
+}
+
 export async function getTestFiles(path: string): Promise<Blob> {
     return (await getBlobRequest(path));
 }

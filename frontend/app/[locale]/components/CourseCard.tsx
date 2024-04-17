@@ -122,7 +122,7 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
                                                 >
                                                     {`#${submissions.get(project.project_id)?.submission_nr}`}
                                                 </a>
-                                            ) : "/"}
+                                            ) : ""}
                                         </TableCell>
                                     </TableRow>
                                 ))}

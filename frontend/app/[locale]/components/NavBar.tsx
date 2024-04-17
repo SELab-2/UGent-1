@@ -27,6 +27,7 @@ const NavBar = () => {
         const fetchCourses = async () => {
             try{
                 setCourses(await getCourses());
+                console.log(await getCourses());
             }catch(error){
                 if(error instanceof APIError) setError(error);
             }

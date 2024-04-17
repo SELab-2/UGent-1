@@ -184,8 +184,8 @@ def run():
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_11, course_12, course_13]
     )
 
-    user_7, _ = User.objects.get_or_create(
-        email='rune.dyselinck@.ugent.be'
+    user_7 = User.objects.get(
+        id=2
     )
     user_7.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_14, course_15, course_16,

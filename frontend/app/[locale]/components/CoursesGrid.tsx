@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import {APIError, Course, getCourses, getUserData, UserData} from '@lib/api';
+import {APIError, Course, getCourses, getCoursesForUser, getUserData, UserData} from '@lib/api';
 import {Container, Grid} from '@mui/material';
 import CourseCard from './CourseCard';
 
@@ -13,7 +13,8 @@ const CoursesGrid = () => {
         const fetchCoursesAndUser = async () => {
             try {
                 setUser(await getUserData());
-                setCourses(await getCourses());
+                setCourses(await getCoursesForUser());
+                console.log(await getCoursesForUser());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
             }
