@@ -28,6 +28,7 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
                 <ListView
                     admin={true}
                     headers={headers}
+                    sortable={[true]}
                     get_id={course_id}
                     get={'course_students'}
                     action_name={'remove_from_course'}
