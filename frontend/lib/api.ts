@@ -291,7 +291,8 @@ export async function getUserData() : Promise<UserData>{
         return user;
     }*/else{
         let user : UserData = await getRequest('/users/current');
-        localStorage.setItem('user', JSON.stringify(user));
+        //localStorage.setItem('user', JSON.stringify(user));
+        console.log(user);
         return user;
     }
 }
