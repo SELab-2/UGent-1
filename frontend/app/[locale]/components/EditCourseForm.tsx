@@ -161,7 +161,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                         <option value="true">{t("public")}</option>
                     </select>
                 </Box>
-                <Box sx={{marginTop: '16px', position: 'absolute'}}>
+                <Box sx={{marginTop: '16px', position: 'absolute', gap: 2}}>
                     <button type="submit" style={{
                         backgroundColor: '#1E64C8',
                         color: 'white',
@@ -173,6 +173,20 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                         fontSize: '16px',
                         marginTop: '80px'
                     }}>{t("save changes")}</button>
+                    <button
+                        onClick={() => window.location.href = '/course/' + courseId + "/"}
+                        style={{
+                        backgroundColor: '#1E64C8',
+                        color: 'white',
+                        padding: '8px 16px',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontFamily: 'Quicksand',
+                        fontSize: '16px',
+                        marginTop: '80px',
+                        marginLeft: '15px'
+                    }}>{t("cancel")}</button>
                 </Box>
             </form>
         ));
