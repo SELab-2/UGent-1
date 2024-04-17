@@ -61,5 +61,7 @@
     "back_to": "Back to",
     "page" : "page",
     "course_detail" : "course detail",
-    "join_course" : "Join course"
+    "join_course" : "Join course",
+    "return_project": "Return to project",
+    "submissions": "Submissions"
 }

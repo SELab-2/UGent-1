@@ -3,6 +3,8 @@
 django/db.sqlite3
 backend/db.sqlite3
 backend/uploads
+backend/downloads/*
+!backend/downloads/__init__.py
 venv/
 .venv/
 

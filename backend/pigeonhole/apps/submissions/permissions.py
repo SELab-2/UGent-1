@@ -21,15 +21,15 @@ class CanAccessSubmission(permissions.BasePermission):
         print("checking access for " + str(user))
         if view.action in ['list']:
             return False
-        elif view.action in ['create', 'upload']:
-            print("upload branch")
+        elif view.action in ['download_selection', 'download_all']:
+            return user.is_teacher or user.is_admin or user.is_superuser
+        elif view.action in ['create']:
             if user.is_student:
                 if not Group.objects.filter(group_id=group_id).exists():
                     if user.is_admin or user.is_superuser:
                         return Response(status=status.HTTP_404_NOT_FOUND)
                     return False
                 if group.user.filter(id=user.id).exists():
-                    print("ur good wtf")
                     return True
                 else:
                     return False
@@ -38,6 +38,8 @@ class CanAccessSubmission(permissions.BasePermission):
             else:
                 return False
         else:
+            if ('pk' not in view.kwargs.keys()) and (user.is_teacher or user.is_admin or user.is_superuser):
+                return True
             submission = Submissions.objects.get(submission_id=view.kwargs['pk'])
             group_id = submission.group_id.group_id
             if not Group.objects.filter(group_id=group_id).exists():
