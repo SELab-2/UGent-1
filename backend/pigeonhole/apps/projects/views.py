@@ -3,20 +3,18 @@ from os.path import basename, realpath
 
 from django.db import transaction
 from django.http import FileResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.filters import OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.groups.models import GroupSerializer
-from backend.pigeonhole.filters import GroupFilter, CustomPageNumberPagination
-
+from backend.pigeonhole.filters import GroupFilter, CustomPageNumberPagination, SubmissionFilter
 from .models import Project, ProjectSerializer
 from .permissions import CanAccessProject
 from ..submissions.models import Submissions, SubmissionsSerializer
@@ -87,7 +85,23 @@ class ProjectViewSet(viewsets.ModelViewSet):
         project = self.get_object()
         groups = Group.objects.filter(project_id=project)
         submissions = Submissions.objects.filter(group_id__in=groups)
-        return Response(SubmissionsSerializer(submissions, many=True).data, status=status.HTTP_200_OK)
+
+        submissions_filter = SubmissionFilter(request.GET, queryset=submissions)
+        filtered_submissions = submissions_filter.qs
+
+        page_size = request.query_params.get(
+            "page_size", self.pagination_class.page_size
+        )
+
+        paginator = CustomPageNumberPagination()
+        paginator.page_size = page_size
+        paginator.page_query_param = "page"
+        paginator.page_size_query_param = "page_size"
+        paginator.max_page_size = 100
+        paginated_submissions = paginator.paginate_queryset(filtered_submissions, request)
+
+        serializer = SubmissionsSerializer(paginated_submissions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"])
     def download_submissions(self, request, *args, **kwargs):
