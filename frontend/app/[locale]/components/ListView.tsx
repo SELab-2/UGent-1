@@ -158,7 +158,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
                     'users': async () => {
-                        return parse_pages(await getUsers(currentPage));
+                        return parse_pages(await getUsers(currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'course_students': async () => {
                         return parse_pages(await getStudents_by_course(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));

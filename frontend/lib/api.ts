@@ -177,12 +177,26 @@ async function getListRequest(path: string){
     
 }
 
-export async function getUser(id: number) : Promise<User>{
+export async function getUser(id: number, page = 1, pageSize = 5): Promise<User> {
     return (await getRequest(`/users/${id}`));
 }
 
-export async function getUsers(page=1) : Promise<User[]>{
-    return (await getRequest(`/users?page=${page}`));
+export async function getUsers(page=1, pageSize=5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<User[]> {
+    let url = `/users?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
 }
 
 export async function getUsers_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
