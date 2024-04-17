@@ -5,20 +5,57 @@ from backend.pigeonhole.apps.users.models import User
 
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ('username', 'id', 'email', 'first_name', 'last_name',)
-    search_fields = ('username', 'id', 'email', 'first_name', 'last_name',)
-    ordering = ('username',)
-    filter_horizontal = ()
+    list_display = (
+        'username',
+        'first_name',
+        'last_name',
+        'id',
+        'email',
+    )
+    search_fields = (
+        'username',
+        'id',
+        'email',
+        'first_name',
+        'last_name',
+    )
+    ordering = (
+        'username',
+    )
+
     fieldsets = (
-        (None, {'fields': (
-            'username',
-            'email',
-            'password',
-            'first_name',
-            'last_name',
-            'course',
-            'role',
-        )}),
+        (
+            None,
+            {
+                'fields': (
+                    'username',
+                    'email',
+                    'password',
+                    'first_name',
+                    'last_name',
+                )
+            }
+        ),
+        (
+            'Courses',
+            {
+                'fields': (
+                    'course',
+                )
+            }
+        ),
+        (
+            'Permissions',
+            {
+                'fields': (
+                    'role',
+                )
+            }
+        ),
+    )
+
+    raw_id_fields = (
+        'course',
     )
 
 

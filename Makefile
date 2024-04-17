@@ -11,6 +11,9 @@ lint:
 superuser:
 	docker exec -it pigeonhole-backend python manage.py createsuperuser
 
+mockdata:
+	docker exec -it pigeonhole-backend python manage.py runscript mockdata
+
 reset:
 	docker image prune -af
 	docker system prune
@@ -23,3 +26,7 @@ backendshell:
 
 frontshell:
 	docker exec -it pigeonhole-frontend sh
+
+componenttest:
+	docker exec -it pigeonhole-frontend npx jest
+
