@@ -186,7 +186,7 @@ function ProjectDetailPage({params: {locale, project_id}}: { params: { locale: a
                                 {TestFiles(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
                                 {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
                             </Box>
-                            <Box className={"pageBoxRight"}>
+                            <Box className={"pageBoxRight"} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                 {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations, course_id, setHasDeadline, hasDeadline)}
                                 {Deadline(deadline, setDeadline, hasDeadline)}
                             </Box>

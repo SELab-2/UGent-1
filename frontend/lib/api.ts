@@ -41,6 +41,7 @@ export type Course = {
     description: string;
     open_course: boolean;
     invite_token: string;
+    banner: string;
 }
 
 export type Project = {
@@ -272,7 +273,6 @@ export async function getCourses(page = 1, pageSize = 5, keyword?: string, order
     return await getRequest(url);
 }
 
-
 export async function getCoursesForUser() : Promise<Course[]>{
     let page = 1;
     let results: Course[] = []
@@ -287,7 +287,19 @@ export async function getCoursesForUser() : Promise<Course[]>{
     return results;
 }
 
+export async function updateCourse(id: number, data: any): Promise<Course> {
+    return (await putData(`/courses/${id}/`, data));
+}
+
+export async function deleteCourse(id: number): Promise<void> {
+    return (await deleteData(`/courses/${id}`));
+}
+
 export async function getTestFiles(path: string): Promise<Blob> {
+    return (await getBlobRequest(path));
+}
+
+export async function getImage(path: string): Promise<Blob> {
     return (await getBlobRequest(path));
 }
 
@@ -403,7 +415,7 @@ export async function postData(path: string, data: any){
     try {
         const response = await axios.post(backend_url + path, data, { withCredentials: true });
 
-        if (response.status === 200 && response?.data) {
+        if ((response.status === 200 || response.status === 201) && response?.data) {
             return response.data;
         } else if(response?.data?.detail) {
             console.error("Unexpected response structure:", response.data);
@@ -431,7 +443,7 @@ export async function postData(path: string, data: any){
 }
 
 export async function putData(path: string, data: any){
-    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.put['X-CSRFToken'] = getCookieValue('csrftoken');
 
     try {
         const response = await axios.put(backend_url + path, data, { withCredentials: true });
