@@ -33,7 +33,8 @@ class SubmissionTestTeacher(TestCase):
 
         self.project = Project.objects.create(
             name="Test Project",
-            course_id=self.course
+            course_id=self.course,
+            deadline="2025-12-12 12:12:12",
         )
 
         self.group = Group.objects.create(
