@@ -81,5 +81,5 @@ class GroupFilter(FilterSet):
 
     def filter_keyword(self, queryset, name, value):
         return queryset.filter(
-            Q(group_nr__icontains=value) | Q(user__icontains=value)
+            Q(group_nr__icontains=value)
         )
