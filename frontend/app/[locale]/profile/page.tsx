@@ -1,3 +1,5 @@
+<<<<<<<<< Temporary merge branch 1
+// profile/page.tsx
 import React from 'react';
 import ProfileCard from '../components/ProfileCard';
 import NavBar from '../components/NavBar';

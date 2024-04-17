@@ -10,6 +10,8 @@ class Course(models.Model):
     description = models.TextField()
     open_course = models.BooleanField(default=False)
     invite_token = models.CharField(max_length=20, blank=True, null=True)
+    banner = models.FileField(upload_to='course_banners/', blank=True, null=False,
+                              default='course_banners/ugent_banner.png')
 
     objects = models.Manager()
 
@@ -32,7 +34,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['course_id', 'name', 'open_course', 'description', 'invite_token']
+        fields = ['course_id', 'name', 'open_course', 'description', 'invite_token', 'banner']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
