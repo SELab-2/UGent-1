@@ -22,7 +22,6 @@ class GroupViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPageNumberPagination
     filter_backends = [OrderingFilter, DjangoFilterBackend]
 
-
     @action(detail=True, methods=["post"])
     def join(self, request, pk=None):
         group_id = pk
@@ -48,6 +47,7 @@ class GroupViewSet(viewsets.ModelViewSet):
         return Response({"message": "User left group"}, status=status.HTTP_200_OK)
 
     # get all submissions for a group
+    @action(detail=True, methods=["get"])
     def get_submissions(self, request, pk=None):
         group = self.get_object()
         submissions = Submissions.objects.filter(group_id=group.group_id)
