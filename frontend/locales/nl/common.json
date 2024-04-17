@@ -63,5 +63,6 @@
     "page" : "pagina",
     "course_detail" : "cursus details",
     "join_course" : "Cursus toetreden",
-    "members" : "Leden"
+    "members" : "Leden",
+    "course": "Cursus"
 }

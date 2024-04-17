@@ -11,6 +11,7 @@
     "projects": "Projects",
     "add_project": "Add project",
     "details": "Details",
+    "no_courses": "Geen cursussen om weer te geven.",
     "no_description": "No description given.",
     "view_students": "View students",
     "view_co_teachers": "View co-teachers",
@@ -60,5 +61,6 @@
     "back_to": "Back to",
     "page" : "page",
     "course_detail" : "course detail",
-    "join_course" : "Join course"
+    "join_course" : "Join course",
+    "course": "Course"
 }
