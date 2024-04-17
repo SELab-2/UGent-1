@@ -1,11 +1,15 @@
+import zipfile
+from os.path import basename, realpath
+
 from django.db import transaction
+from django.http import FileResponse
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
 
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.groups.models import GroupSerializer
@@ -86,3 +90,42 @@ class ProjectViewSet(viewsets.ModelViewSet):
         groups = Group.objects.filter(project_id=project)
         submissions = Submissions.objects.filter(group_id__in=groups)
         return Response(SubmissionsSerializer(submissions, many=True).data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
+    def download_submissions(self, request, *args, **kwargs):
+        project = self.get_object()
+        groups = Group.objects.filter(project_id=project)
+        submissions = Submissions.objects.filter(group_id__in=groups)
+
+        if len(submissions) == 0:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        path = ''
+
+        if len(submissions) == 1:
+            path = submissions[0].file.path
+
+        else:
+            path = f'backend/downloads/submissions.zip'
+            zipf = zipfile.ZipFile(
+                file=path,
+                mode="w",
+                compression=zipfile.ZIP_STORED
+            )
+
+            for submission in submissions:
+                zipf.write(
+                    filename=submission.file.path,
+                    arcname=basename(submission.file.path)
+                )
+
+            zipf.close()
+
+        path = realpath(path)
+        response = FileResponse(
+            open(path, 'rb'),
+            content_type="application/force-download"
+        )
+        response['Content-Disposition'] = f'inline; filename={basename(path)}'
+
+        return response
