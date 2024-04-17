@@ -192,9 +192,3 @@ class CourseViewSet(viewsets.ModelViewSet):
         paginated_projects = paginator.paginate_queryset(projects, request)
         serializer = ProjectSerializer(paginated_projects, many=True)
         return paginator.get_paginated_response(serializer.data)
-
-    @action(detail=True, methods=['GET'])
-    def get_teachers(self, request, *args, **kwargs):
-        course = self.get_object()
-        teachers = User.objects.filter(course=course, role__in=[Roles.TEACHER, Roles.ADMIN])
-        return Response(UserSerializer(teachers, many=True).data, status=status.HTTP_200_OK)
