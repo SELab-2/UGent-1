@@ -2,9 +2,11 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.pigeonhole.apps.groups.models import Group, GroupSerializer
+from backend.pigeonhole.filters import SubmissionFilter, CustomPageNumberPagination
 from backend.pigeonhole.apps.submissions.models import (
     Submissions,
     SubmissionsSerializer,
@@ -13,17 +15,13 @@ from .permission import CanAccessGroup
 from ..projects.models import Project
 
 
-class CustomPageNumberPagination(PageNumberPagination):
-    page_size = 10  # Set the default page size here
-    page_size_query_param = "page_size"
-    max_page_size = 100
-
-
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [IsAuthenticated and CanAccessGroup]
     pagination_class = CustomPageNumberPagination
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
+
 
     @action(detail=True, methods=["post"])
     def join(self, request, pk=None):
@@ -50,27 +48,14 @@ class GroupViewSet(viewsets.ModelViewSet):
         return Response({"message": "User left group"}, status=status.HTTP_200_OK)
 
     # get all submissions for a group
-    @action(detail=True, methods=["get"])
     def get_submissions(self, request, pk=None):
         group = self.get_object()
-
-        # Retrieve the page size from the request query parameters
-        page_size = request.query_params.get(
-            "page_size", self.pagination_class.page_size
-        )
-
-        # Filter submissions queryset by group_id
         submissions = Submissions.objects.filter(group_id=group.group_id)
-
-        # Paginate the queryset
+        submissions_filter = SubmissionFilter(request.GET, queryset=submissions)
+        filtered_submissions = submissions_filter.qs
         paginator = CustomPageNumberPagination()
-        paginator.page_size = page_size
-        paginator.page_query_param = "page"
-        paginator.page_size_query_param = "page_size"
-        paginator.max_page_size = 100
-
-        paginated_submissions = paginator.paginate_queryset(submissions, request)
-
-        # Serialize paginated submissions and return response
+        paginated_submissions = paginator.paginate_queryset(
+            filtered_submissions, request
+        )
         serializer = SubmissionsSerializer(paginated_submissions, many=True)
         return paginator.get_paginated_response(serializer.data)

@@ -2,8 +2,6 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
-from django_filters import FilterSet, CharFilter
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -15,27 +13,7 @@ from backend.pigeonhole.apps.users.models import User
 from backend.pigeonhole.apps.users.models import UserSerializer
 from .models import Course
 from .permissions import CourseUserPermissions
-from django.db.models import Q
-
-
-class CustomPageNumberPagination(PageNumberPagination):
-    page_size = 10  # Set the default page size here
-    page_size_query_param = "page_size"
-    max_page_size = 100
-
-
-class CourseFilter(FilterSet):
-    # Define filters for fields you want to filter on
-    keyword = CharFilter(method="filter_keyword")
-
-    class Meta:
-        model = Course
-        fields = []
-
-    def filter_keyword(self, queryset, name, value):
-        return queryset.filter(
-            Q(name__icontains=value) | Q(description__icontains=value)
-        )
+from backend.pigeonhole.filters import CourseFilter, UserFilter, ProjectFilter, CustomPageNumberPagination
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -47,16 +25,14 @@ class CourseViewSet(viewsets.ModelViewSet):
     ordering_fields = ["name"]
     filterset_class = CourseFilter
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
+    def order_queryset(self, queryset):
         order_by = self.request.query_params.get("order_by")
         sort_order = self.request.query_params.get("sort_order")
 
         if order_by and sort_order:
             if sort_order.lower() == "desc":
                 order_by = f"-{order_by}"
-            queryset = queryset.order_by(order_by)
-
+            return queryset.order_by(order_by)
         return queryset
 
     def perform_create(self, serializer):
@@ -125,105 +101,53 @@ class CourseViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["GET"])
     def get_selected_courses(self, request, *args, **kwargs):
         user = request.user
-        courses = user.course.all()
-
-        page_size = request.query_params.get(
-            "page_size", self.pagination_class.page_size
-        )
-
-        paginator = CustomPageNumberPagination()
-        paginator.page_size = page_size
-        paginator.page_query_param = "page"
-        paginator.page_size_query_param = "page_size"
-        paginator.max_page_size = 100
-
-        paginated_courses = paginator.paginate_queryset(courses, request)
-        serializer = CourseSerializer(paginated_courses, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        courses = Course.objects.filter(user=user)
+        course_filter = CourseFilter(request.GET, queryset=courses)
+        paginated_queryset = self.paginate_queryset(course_filter.qs)
+        queryset = self.order_queryset(paginated_queryset)
+        serializer = CourseSerializer(queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["GET"])
     def get_users(self, request, *args, **kwargs):
         course = self.get_object()
         users = User.objects.filter(course=course)
-        res = [user for user in users if course in user.course.all()]
-
-        page_size = request.query_params.get(
-            "page_size", self.pagination_class.page_size
-        )
-
-        paginator = CustomPageNumberPagination()
-        paginator.page_size = page_size
-        paginator.page_query_param = "page"
-        paginator.page_size_query_param = "page_size"
-        paginator.max_page_size = 100
-
-        paginated_users = paginator.paginate_queryset(res, request)
-        serializer = UserSerializer(paginated_users, many=True)
-
-        return paginator.get_paginated_response(serializer.data)
+        user_filter = UserFilter(request.GET, queryset=users)
+        queryset = user_filter.qs  # Keep queryset until ordering
+        queryset = self.order_queryset(queryset)
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = UserSerializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["GET"])
     def get_students(self, request, *args, **kwargs):
         course = self.get_object()
-        res = [
-            user
-            for user in User.objects.all()
-            if course in user.course.all() and (user.role == 3)
-        ]
-        page_size = request.query_params.get(
-            "page_size", self.pagination_class.page_size
-        )
-
-        paginator = CustomPageNumberPagination()
-        paginator.page_size = page_size
-        paginator.page_query_param = "page"
-        paginator.page_size_query_param = "page_size"
-        paginator.max_page_size = 100
-
-        paginated_users = paginator.paginate_queryset(res, request)
-        serializer = UserSerializer(paginated_users, many=True)
-
-        return paginator.get_paginated_response(serializer.data)
+        users = User.objects.filter(course=course, role=3)
+        user_filter = UserFilter(request.GET, queryset=users)
+        queryset = user_filter.qs  # Keep queryset until ordering
+        queryset = self.order_queryset(queryset)
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = UserSerializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["GET"])
     def get_teachers(self, request, *args, **kwargs):
         course = self.get_object()
-        res = [
-            user
-            for user in User.objects.all()
-            if course in user.course.all() and (user.role != 3)
-        ]
-
-        page_size = request.query_params.get(
-            "page_size", self.pagination_class.page_size
-        )
-
-        paginator = CustomPageNumberPagination()
-        paginator.page_size = page_size
-        paginator.page_query_param = "page"
-        paginator.page_size_query_param = "page_size"
-        paginator.max_page_size = 100
-
-        paginated_users = paginator.paginate_queryset(res, request)
-        serializer = UserSerializer(paginated_users, many=True)
-
-        return paginator.get_paginated_response(serializer.data)
+        users = User.objects.filter(course=course).exclude(role=3)
+        user_filter = UserFilter(request.GET, queryset=users)
+        queryset = user_filter.qs  # Keep queryset until ordering
+        queryset = self.order_queryset(queryset)
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = UserSerializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["GET"])
     def get_projects(self, request, *args, **kwargs):
         course = self.get_object()
-        projects = Project.objects.filter(course_id=course)
-
-        page_size = request.query_params.get(
-            "page_size", self.pagination_class.page_size
-        )
-
-        paginator = CustomPageNumberPagination()
-        paginator.page_size = page_size
-        paginator.page_query_param = "page"
-        paginator.page_size_query_param = "page_size"
-        paginator.max_page_size = 100
-
-        paginated_projects = paginator.paginate_queryset(projects, request)
-        serializer = ProjectSerializer(paginated_projects, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        projects = Project.objects.filter(course=course)
+        project_filter = ProjectFilter(request.GET, queryset=projects)
+        queryset = project_filter.qs  # Keep queryset until ordering
+        queryset = self.order_queryset(queryset)
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = ProjectSerializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)

@@ -189,8 +189,22 @@ export async function getUsers_by_course(courseId: number, page = 1, pageSize = 
     return (await getRequest(`/courses/${courseId}/get_users?page=${page}&page_size=${pageSize}`));
 }
 
-export async function getStudents_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
-    return (await getRequest(`/courses/${courseId}/get_students?page=${page}&page_size=${pageSize}`));
+export async function getStudents_by_course(courseId: number, page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<User[]> {
+    let url = `/courses/${courseId}/get_students?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
 }
 
 export async function getTeachers_by_course(courseId: number, page = 1, pageSize = 5): Promise<User[]> {
@@ -248,8 +262,22 @@ export async function getGroups() : Promise<Group[]>{
     return (await getListRequest('/groups'));
 }
 
-export async function getGroups_by_project(projectId: number, page = 1, pageSize = 5): Promise<Group[]> {
-    return (await getRequest(`/projects/${projectId}/get_groups?page=${page}&page_size=${pageSize}`));
+export async function getGroups_by_project(projectId: number, page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Group[]> {
+    let url = `/projects/${projectId}/get_groups?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
 }
 
 let userData : UserData | undefined = undefined;

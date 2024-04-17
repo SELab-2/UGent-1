@@ -3,17 +3,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
-
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.pigeonhole.apps.users.models import User, UserSerializer
 from .permissions import UserPermissions
-
-
-class CustomPageNumberPagination(PageNumberPagination):
-    page_size = 10  # Set the default page size here
-    page_size_query_param = "page_size"
-    max_page_size = 100
+from backend.pigeonhole.filters import CustomPageNumberPagination
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -21,6 +16,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, UserPermissions]
     pagination_class = CustomPageNumberPagination
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
 
     @action(detail=True, methods=["post"])
     def add_course_to_user(self, request, pk=None):
