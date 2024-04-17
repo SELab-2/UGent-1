@@ -20,8 +20,8 @@ from django.conf import settings
 from pathlib import Path
 import json as JSON
 
-# TODO test timestamp, file, output_test
 
+# TODO test timestamp, file, output_test
 def submission_file_url(project_id, group_id, submission_id, relative_path):
     return (f"{str(settings.STATIC_ROOT)}/submissions/project_{project_id}"
             f"/group_{group_id}/{submission_id}/{relative_path}")
@@ -83,13 +83,13 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 with open(filepathstring, 'wb+') as dest:
                     for chunk in file.chunks():
                         dest.write(chunk)
-                #submission.file_urls = '[el path]'
-        except IOError as _:
-            return Response({"message": "Error uploading files"}
-                            , status=status.HTTP_400_BAD_REQUEST)
+                # submission.file_urls = '[el path]'
+        except IOError as e:
+            print(e)
+            return Response({"message": "Error uploading files"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
