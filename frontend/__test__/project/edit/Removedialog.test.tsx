@@ -1,6 +1,6 @@
 import {fireEvent, render} from "@testing-library/react";
 import React from "react";
-import RemoveDialog from "@app/[locale]/project/[project_id]/edit/removedialog";
+import RemoveDialog from "@app/[locale]/components/project_components/removedialog";
 import getTranslations from "../../translations";
 
 jest.mock('react-i18next', () => ({

@@ -1,6 +1,6 @@
 import {fireEvent, render} from "@testing-library/react";
 import React from "react";
-import UploadTestFile from "@app/[locale]/project/[project_id]/edit/uploadButton";
+import UploadTestFile from "@app/[locale]/components/project_components/uploadButton";
 import getTranslations from "../../translations";
 
 jest.mock('react-i18next', () => ({

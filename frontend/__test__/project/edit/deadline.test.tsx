@@ -1,6 +1,6 @@
 import {render} from "@testing-library/react";
 import React from "react";
-import Deadline from "@app/[locale]/project/[project_id]/edit/deadline";
+import Deadline from "@app/[locale]/components/project_components/deadline";
 import dayjs from "dayjs";
 
 jest.mock('react-i18next', () => ({

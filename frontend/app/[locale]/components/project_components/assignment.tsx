@@ -2,7 +2,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {TextField} from "@mui/material";
 import React from "react";
-import './project_styles.css';
+import '../../project/[project_id]/edit/project_styles.css';
 
 interface AssignmentProps {
     isAssignmentEmpty: boolean,

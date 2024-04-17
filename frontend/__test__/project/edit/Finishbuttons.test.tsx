@@ -1,6 +1,6 @@
 import {fireEvent, render} from "@testing-library/react";
 import React from "react";
-import FinishButtons from "@app/[locale]/project/[project_id]/edit/finishbuttons";
+import FinishButtons from "@app/[locale]/components/project_components/finishbuttons";
 import getTranslations from "../../translations";
 
 jest.mock('react-i18next', () => ({

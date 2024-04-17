@@ -1,6 +1,6 @@
 import getTranslations from "../../translations";
 import {render} from "@testing-library/react";
-import Groups from "@app/[locale]/project/[project_id]/edit/groups";
+import Groups from "@app/[locale]/components/project_components/groups";
 import React from "react";
 
 describe('Groups', () => {

@@ -1,6 +1,6 @@
 import {render} from "@testing-library/react";
 import React from "react";
-import Assignment from "@app/[locale]/project/[project_id]/edit/assignment";
+import Assignment from "@app/[locale]/components/project_components/assignment";
 import getTranslations from "../../translations";
 
 jest.mock('react-i18next', () => ({
