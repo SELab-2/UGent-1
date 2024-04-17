@@ -2,7 +2,6 @@ import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import {Box, Typography} from "@mui/material";
 import NavBar from "@app/[locale]/components/NavBar";
-import Footer from "@app/[locale]/components/Footer";
 import CourseBanner from "@app/[locale]/components/CourseBanner";
 import CourseDetails from "@app/[locale]/components/CourseDetails";
 import ProjectTableTeacher from "@app/[locale]/components/ProjectTableTeacher";
@@ -25,7 +24,6 @@ export default async function Course({params: {locale, course_id}, searchParams:
             <NavBar/>
             <Box
                 sx={{
-                    marginTop: '64px',
                     padding: 5
                 }}
             >

@@ -5,7 +5,6 @@ import React from "react";
 
 import '../i18n'
 import Footer from "@app/[locale]/components/Footer";
-import {height} from "@mui/system";
 
 export const metadata = {
     title: 'Next.js',
@@ -19,7 +18,7 @@ export default function RootLayout(props: React.PropsWithChildren<{}>) {
         <body>
         <AppRouterCacheProvider>
             <ThemeProvider theme={loginTheme}>
-                <div>
+                <div style={{marginTop: "40px", marginBottom: "40px"}}>
                     {children}
                 </div>
                 <Footer/>
