@@ -9,8 +9,7 @@ from backend.pigeonhole.apps.courses.models import CourseSerializer
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.projects.models import ProjectSerializer
-from backend.pigeonhole.apps.users.models import User
-from backend.pigeonhole.apps.users.models import UserSerializer
+from backend.pigeonhole.apps.users.models import User, UserSerializer
 from .models import Course
 from .permissions import CourseUserPermissions
 from backend.pigeonhole.filters import (
@@ -156,7 +155,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["GET"])
     def get_projects(self, request, *args, **kwargs):
         course = self.get_object()
-        projects = Project.objects.filter(course=course)
+        projects = Project.objects.filter(course_id=course)
         project_filter = ProjectFilter(request.GET, queryset=projects)
         queryset = project_filter.qs  # Keep queryset until ordering
         queryset = self.order_queryset(queryset)

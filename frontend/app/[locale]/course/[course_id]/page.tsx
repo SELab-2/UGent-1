@@ -1,24 +1,19 @@
-import React from 'react';
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import {Box, Typography} from "@mui/material";
 import NavBar from "@app/[locale]/components/NavBar";
-import Footer from "@app/[locale]/components/Footer";
 import CourseBanner from "@app/[locale]/components/CourseBanner";
-import AddButton from "@app/[locale]/components/AddButton";
-import {Button} from "@mui/material";
+import CourseDetails from "@app/[locale]/components/CourseDetails";
+import StudentCoTeacherButtons from "@app/[locale]/components/StudentCoTeacherButtons";
 import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
+import ListView from '@app/[locale]/components/ListView';
 
 const i18nNamespaces = ['common']
 
 export default async function Course({params: {locale, course_id}, searchParams: {token}}:
-                                         { params: { locale: any, course_id: string }, searchParams: { token: string } }) {
+                                         { params: { locale: any, course_id: number }, searchParams: { token: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
-
-    const project_selected = false
-
-    const desc_mock = "This is a mock description for the course, it should be replaced with the actual course description. It should be a brief description of the course."
+    const headers = [t('name'), t('description'), t('status'), t('deadline'), t('view')]
 
     return (
         <TranslationsProvider
@@ -28,20 +23,13 @@ export default async function Course({params: {locale, course_id}, searchParams:
         >
             <JoinCourseWithToken token={token} course_id={course_id}></JoinCourseWithToken>
             <NavBar/>
-            <Box sx={{marginTop: '64px', padding: 5}}>
-                <CourseBanner/>
-                <Typography
-                    variant="h3"
-                    sx={{
-                        fontWeight: 'medium',
-                        marginTop: 2
-                    }}
-                >
-                    {t('description')}
-                </Typography>
-                <Typography variant="h6">
-                    {desc_mock}
-                </Typography>
+            <Box
+                sx={{
+                    padding: 5
+                }}
+            >
+                <CourseBanner course_id={course_id}/>
+                <CourseDetails course_id={course_id}/>
                 <Typography
                     variant="h3"
                     sx={{
@@ -51,34 +39,16 @@ export default async function Course({params: {locale, course_id}, searchParams:
                 >
                     {t('projects')}
                 </Typography>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        width: "calc(100% - 40px)",
-                        paddingX: 2,
-                    }}
-                >
-                    <AddButton translationkey='add_project'/>
-                    <Button
-                        variant="contained"
-                        color='secondary'
-                        disabled={!project_selected}
-                        sx={{
-                            width: 'fit-content',
-                            color: 'secondary.contrastText',
-                        }}
-                    >
-                        {t("details")}
-                    </Button>
-                </Box>
-                <h1>
-                    {course_id}
-                </h1>
+                <ListView
+                    admin={false}
+                    headers={headers}
+                    sortable={[true, true, false, true]}
+                    get={'projects'}
+                    get_id={course_id}
+                />
+                <StudentCoTeacherButtons course_id={course_id}/>
             </Box>
 
-            <Footer/>
         </TranslationsProvider>
     )
 }
