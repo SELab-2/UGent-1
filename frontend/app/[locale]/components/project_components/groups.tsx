@@ -5,7 +5,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import {Grid, TextField} from "@mui/material";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 
-function Groups(
+interface GroupsProps {
     groupAmount: number,
     isGroupAmountEmpty: boolean,
     groupSize: number,
@@ -13,6 +13,18 @@ function Groups(
     setGroupAmount: (value: (((prevState: number) => number) | number)) => void,
     setGroupSize: (value: (((prevState: number) => number) | number)) => void,
     translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
+}
+
+function Groups(
+    {
+        groupAmount,
+        isGroupAmountEmpty,
+        groupSize,
+        isGroupSizeEmpty,
+        setGroupAmount,
+        setGroupSize,
+        translations
+    }: GroupsProps
 ) {
     const handleGroupAmountChange = (event: any) => {
         if (event.target.value === '') {
@@ -38,7 +50,8 @@ function Groups(
         }
     }
 
-    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
+    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces}
+                                 resources={translations.resources}>
         <Typography variant="h5" className={"typographyStyle"}>
             {translations.t("groups")}
             <Tooltip title={
@@ -51,7 +64,7 @@ function Groups(
                     ))}
                 </Typography>
             } placement={"right"}>
-                <HelpOutlineIcon className={"conditionsHelp"} />
+                <HelpOutlineIcon className={"conditionsHelp"}/>
             </Tooltip>
         </Typography>
         <Grid container spacing={1}>

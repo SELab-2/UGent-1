@@ -4,16 +4,16 @@ import React, {useEffect, useState} from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
     AppBar,
-    IconButton,
-    Toolbar,
     Box,
+    Divider,
+    Drawer,
+    IconButton,
     List,
     ListItem,
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    Divider,
-    Drawer
+    Toolbar
 } from '@mui/material';
 import Link from "next/link";
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -25,8 +25,7 @@ import HomeButton from "./HomeButton";
 import LanguageSelect from "./LanguageSelect";
 import AccountMenu from "./AccountMenu";
 import {useTranslation} from "react-i18next";
-import {APIError, Course, getCourses, UserData, getUserData} from "@lib/api";
-import { locale } from 'dayjs';
+import {APIError, Course, getCoursesForUser, getUserData, UserData} from "@lib/api";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -39,7 +38,7 @@ const NavBar = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                setCourses(await getCourses());
+                setCourses(await getCoursesForUser());
                 setUser(await getUserData());
             } catch (error) {
                 if (error instanceof APIError) setError(error);

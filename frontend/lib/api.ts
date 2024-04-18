@@ -1,4 +1,5 @@
 import axios, {AxiosError} from 'axios';
+import dayjs from "dayjs";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -23,15 +24,6 @@ export class APIError {
     status: number | undefined = 0;
     type: ErrorType = ErrorType.UNKNOWN;
     trace: unknown;
-}
-
-export type Submission = {
-    submission_id: number;
-    group_id: number;
-    submission_nr: number;
-    file: string;
-    timestamp: string;
-    output_test: string;
 }
 
 export type Course = {
@@ -88,11 +80,12 @@ export type Submission = {
 
 export type UserData = {
     id: number;
-    emai: string;
+    email: string;
     first_name: string;
     last_name: string;
     course: number[];
     role: Role;
+    picture: string;
 }
 
 async function getRequest(path: string) {
@@ -297,6 +290,10 @@ export async function updateCourse(id: number, data: any): Promise<Course> {
     return (await putData(`/courses/${id}/`, data));
 }
 
+export async function updateUserData(id: number, data: any): Promise<UserData> {
+    return (await putData(`/users/${id}/`, data));
+}
+
 export async function deleteCourse(id: number): Promise<void> {
     return (await deleteData(`/courses/${id}`));
 }
@@ -323,6 +320,22 @@ export async function deleteProject(id: number): Promise<void> {
 
 export async function getProjects(): Promise<Project[]> {
     return (await getListRequest('/projects'));
+}
+
+export async function addProject(course_id: number): Promise<number> {
+    return (await postData('/projects/', {
+        name: "New Project",
+        course_id: course_id,
+        description: "Description",
+        deadline: dayjs(),
+        visible: true,
+        max_score: 100,
+        number_of_groups: 1,
+        group_size: 1,
+        file_structure: "extra/verslag.pdf",
+        test_files: null,
+        conditions: "Project must compile and run without errors."
+    })).project_id;
 }
 
 export async function getProjectsFromCourse(id: number): Promise<Project[]>{
@@ -429,7 +442,6 @@ export async function getUserData(): Promise<UserData> {
     }*/ else {
         let user: UserData = await getRequest('/users/current');
         //localStorage.setItem('user', JSON.stringify(user));
-        console.log(user);
         return user;
     }
 }

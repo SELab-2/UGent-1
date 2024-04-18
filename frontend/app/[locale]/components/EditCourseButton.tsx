@@ -18,6 +18,9 @@ const EditCourseButton = ({course_id}: EditCourseButtonProps) => {
                 variant="contained"
                 color="secondary"
                 href={""}
+                sx={{
+                    margin: '10px'
+                }}
             >
                 <Typography
                     variant="subtitle1"
