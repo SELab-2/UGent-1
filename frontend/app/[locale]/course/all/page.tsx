@@ -37,7 +37,6 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
                 action_text={t('join_course')}
             />
             </div>
-            <Footer/>
         </TranslationsProvider>
     )
 }

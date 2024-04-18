@@ -19,6 +19,7 @@ const StudentCoTeacherButtons = ({course_id}: StudentCoTeacherButtonsProps) => {
                 justifyContent: 'flex-start',
                 width: '100%',
                 gap: 2,
+                marginTop: 2,
             }}
         >
             <Button

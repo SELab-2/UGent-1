@@ -1,7 +1,6 @@
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
-import Footer from "@app/[locale]/components/Footer";
 import ListView from '@app/[locale]/components/ListView';
 import BackButton from "@app/[locale]/components/BackButton";
 
@@ -20,23 +19,23 @@ export default async function TeachersPage({ params }: { params: { locale: any, 
             locale={locale}
             namespaces={i18nNamespaces}
         >
-            <NavBar />
-            <div style={{marginTop:60, padding:20}}>
-            <BackButton 
-                destination={`/course/${course_id}`}
-                text={t('back_to') + ' ' + t('course_detail') + ' ' +  t('page')}
-            />
-                <ListView
-                    admin={true}
-                    headers={headers}
-                    headers_backend={headers_backend}
-                    sortable={[true]}
-                    get_id={course_id}
-                    get={'course_teachers'}
-                    search_text={t('search')}
+            <NavBar/>
+            <div style={{marginTop: 60, padding: 20}}>
+                <BackButton
+                    destination={`/course/${course_id}`}
+                    text={t('back_to') + ' ' + t('course')}
                 />
+                <div style={{marginBottom: '100px'}}>
+                    <ListView
+                        admin={true}
+                        headers={headers}
+                        sortable={[true]}
+                        get_id={course_id}
+                        get={'course_teachers'}
+                        search_text={t('search')}
+                    />
+                </div>
             </div>
-            <Footer />
         </TranslationsProvider>
-    );
+);
 }

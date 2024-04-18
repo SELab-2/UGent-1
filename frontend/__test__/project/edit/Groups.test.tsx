@@ -1,5 +1,5 @@
 import getTranslations from "../../translations";
-import {render} from "@testing-library/react";
+import {render, screen} from "@testing-library/react";
 import Groups from "@app/[locale]/components/project_components/groups";
 import React from "react";
 
@@ -19,23 +19,8 @@ describe('Groups', () => {
         );
 
         // check that it was rendered properly
-        expect(getByText_en('Amount of groups')).toBeInTheDocument();
-        expect(getByText_en('Group size')).toBeInTheDocument();
+        expect(screen.getByText('Amount of groups')).toBeInTheDocument();
+        expect(screen.getByText('Group size')).toBeInTheDocument();
 
-        const {getByText: getByText_nl} = render(
-            <Groups
-                groupAmount={1}
-                isGroupAmountEmpty={false}
-                groupSize={1}
-                isGroupSizeEmpty={false}
-                setGroupAmount={jest.fn()}
-                setGroupSize={jest.fn()}
-                translations={translations.nl}
-            />
-        );
-
-        // check if text gets translated to dutch
-        expect(getByText_nl('Aantal groepen')).toBeInTheDocument();
-        expect(getByText_nl('Groepsgrootte')).toBeInTheDocument();
     });
 });

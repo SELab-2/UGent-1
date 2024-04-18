@@ -69,15 +69,6 @@ export type Group = {
 
 }
 
-export type Submission = {
-    submission_id: number;
-    group_id: number;
-    submission_nr: number;
-    file: string;
-    timestamp: string;
-    output_test: string;
-}
-
 export type UserData = {
     id: number;
     email: string;

@@ -15,12 +15,16 @@ async function CourseEditPage({params: {locale, course_id}}: { params: { locale:
             namespaces={["common"]}
         >
             <NavBar/>
-            <Box sx={{margin: '64px', marginTop: '96px', position: 'relative'}}>
+            <Box
+                padding={5}
+                sx={{
+                    display: 'flex',
+                    alignItems: 'space-between',
+                    justifyContent: 'space-between',
+                }}
+            >
+                <EditCourseForm courseId={course_id}/>
                 <DeleteButton courseId={course_id}/>
-                <Box sx={{marginRight: '20px'}}>
-                    <EditCourseForm courseId={course_id}/>
-                </Box>
-
             </Box>
             <div id="extramargin" style={{height: "100px"}}></div>
         </TranslationsProvider>
