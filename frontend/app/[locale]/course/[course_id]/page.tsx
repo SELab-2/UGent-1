@@ -14,6 +14,7 @@ export default async function Course({params: {locale, course_id}, searchParams:
                                          { params: { locale: any, course_id: number }, searchParams: { token: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
     const headers = [t('name'), t('description'), t('status'), t('deadline'), t('view')]
+    const headers_backend = ['name', 'description', 'status', 'deadline', 'view']
 
     return (
         <TranslationsProvider
@@ -42,6 +43,7 @@ export default async function Course({params: {locale, course_id}, searchParams:
                 <ListView
                     admin={false}
                     headers={headers}
+                    headers_backend={headers_backend}
                     sortable={[true, true, false, true]}
                     get={'projects'}
                     get_id={course_id}

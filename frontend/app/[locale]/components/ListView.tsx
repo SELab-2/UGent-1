@@ -418,7 +418,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers
                                 // course leave button
                                 get === 'courses' && user.course.includes(row[0]) && (
                                     <td>
-                                        <Button onClick={() => postData('/courses/' + row[0] + '/leave_course/', {course_id: row[0]})}>
+                                        <Button onClick={() => postData('/courses/' + row[0] + '/leave_course/', {course_id: row[0]}).then(() => window.location.reload())
+                                    }>
                                             Leave
                                         </Button>
                                     </td>
@@ -428,7 +429,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers
                                 // course join button
                                 get === 'courses' && (!user.course.includes(row[0])) && (
                                     <td>
-                                        <Button onClick={() => postData('/courses/' + row[0] + '/join_course/', {course_id: row[0]})}
+                                        <Button onClick={() => postData('/courses/' + row[0] + '/join_course/', {course_id: row[0]}).then(() =>window.location.href = '/course/' + row[0])
+                                        }
                                         disabled={!row[3]}
                                         style={{backgroundColor: row[3] ? '': 'gray'}}
                                         >

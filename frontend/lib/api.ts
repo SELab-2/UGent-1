@@ -458,8 +458,8 @@ export async function postData(path: string, data: any) {
     try {
         const response = await axios.post(backend_url + path, data, {withCredentials: true});
 
-        if ((response.status === 200 || response.status === 201) && response?.data) {
-            return response.data;
+        if ((response.status === 200 || response.status === 201)) {
+            return response?.data;
         } else if (response?.data?.detail) {
             console.error("Unexpected response structure:", response.data);
             const error: APIError = new APIError();
