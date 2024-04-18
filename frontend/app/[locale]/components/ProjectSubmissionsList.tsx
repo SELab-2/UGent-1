@@ -4,8 +4,8 @@ import ListView from "@app/[locale]/components/ListView";
 import React from "react";
 
 const ProjectSubmissionsList = ({project_id, showActions, page_size=5}: { project_id: number, showActions: boolean, page_size: number }) => {
-    const headers = ["Group number", "Submission date", "Status"]
-    const headers_backend = ["group_nr", "submission_date", "status"]
+    const headers = ["Group number", "Submission date", "Status", "View"]
+    const headers_backend = ["group_nr", "submission_date", "status", "View"]
     const sortable = [true, true, false]
 
     return (
