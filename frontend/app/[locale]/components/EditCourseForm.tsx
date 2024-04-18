@@ -68,7 +68,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
         }
         if (selectedImage) fileReader.readAsArrayBuffer(selectedImage);
         await updateCourse(courseId, formData);
-        window.location.href = `/course/${courseId}/`;
+        // window.location.href = `/course/${courseId}/`;
     };
 
     const handleImageUpload = (event: any) => {

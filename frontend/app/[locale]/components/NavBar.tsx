@@ -2,64 +2,74 @@
 import React, {useEffect, useState} from 'react';
 
 import MenuIcon from '@mui/icons-material/Menu';
-import {AppBar, IconButton, Toolbar, Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer} from '@mui/material';
+import {
+    AppBar,
+    IconButton,
+    Toolbar,
+    Box,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Divider,
+    Drawer
+} from '@mui/material';
+import Link from "next/link";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Logout from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ConstructionIcon from '@mui/icons-material/Construction';
 import HomeButton from "./HomeButton";
 import LanguageSelect from "./LanguageSelect";
 import AccountMenu from "./AccountMenu";
 import {useTranslation} from "react-i18next";
-import {APIError, Course, getCourses} from "@lib/api";
-import initTranslations from "@app/i18n";
-import {any} from "prop-types";
+import {APIError, Course, getCourses, UserData, getUserData} from "@lib/api";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
-const i18nNamespaces = ['common']
 
 const NavBar = () => {
     const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
+    const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<APIError | null>(null);
-    const [translations, setTranslations] = useState<{t: ((key: string) => string), resources: any, locale: string, i18nNamespaces: string[]}>
-        ({t: (key: string) => key, resources: null, locale: "en", i18nNamespaces: [""]})
+    const {t} = useTranslation();
+
     useEffect(() => {
         const fetchCourses = async () => {
-            try{
+            try {
                 setCourses(await getCourses());
-            }catch(error){
-                if(error instanceof APIError) setError(error);
+                setUser(await getUserData());
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
             }
 
         };
 
-        const fetchTranslations = async () => {
-            const url = window.location.pathname;
-            const locale = url.split('/')[1];
-            const {t, resources} = await initTranslations(locale, i18nNamespaces)
-            setTranslations({t, resources, locale, i18nNamespaces})
-        }
-
-        fetchTranslations();
         fetchCourses();
     }, []);
 
     //Function that handles the bottom menu items
-    const handleBottomItems = (event: React.MouseEvent<HTMLElement>, button:string) => {
+    const handleBottomItems = (event: React.MouseEvent<HTMLElement>, button: string) => {
         switch (button) {
-            case translations.t('manual'):
+            case t('manual'):
                 //TODO: Route to manual page(in wiki or separate page?)
                 break;
-            case translations.t('github'):
+            case t('github'):
                 window.location.href = 'https://github.com/SELab-2/UGent-1'
                 break;
-            case translations.t('my_profile'):
-                //TODO: Route to profile page
+            case t('my_profile'):
+                window.location.href = '/profile'
                 break;
-            case translations.t('logout'):
+            case t('logout'):
                 doLogout();
         }
     };
+
+    const handleCourseClick = (course_id: number) => {
+        window.location.href = '/course/' + course_id;
+    }
+
     const doLogout = (): void => {
         // Implement CAS login logic here
         window.location.href = backend_url + "/auth/logout";
@@ -74,7 +84,7 @@ const NavBar = () => {
     //const courses = ["Course1", "Course2", "Course3", "Course4"];
 
     const DrawerList = (
-        <Box sx={{ width: 250 }}
+        <Box sx={{width: 250}}
              role="presentation"
              onClick={toggleDrawer(open)}
              display="flex"
@@ -86,15 +96,15 @@ const NavBar = () => {
                 {courses.length > 0 ? (
                     courses.map((course) => (
                         <ListItem key={course.course_id} disablePadding>
-                            <ListItemButton>
-                                <ListItemText primary={course.name} />
+                            <ListItemButton onClick={(event) => handleCourseClick(course.course_id)}>
+                                <ListItemText primary={course.name}/>
                             </ListItemButton>
                         </ListItem>
                     ))
                 ) : (
                     <ListItem>
                         <ListItemText
-                            primary={translations.t("no_courses")}
+                            primary={t("no_courses")}
                             sx={{
                                 color: 'text.disabled'
                             }}
@@ -102,18 +112,31 @@ const NavBar = () => {
                     </ListItem>
                 )}
             </List>
-            <Divider />
+            {user?.role === 1 ? (
+                <>
+                    <Divider/>
+                    <Link href={'/admin'} style={{textDecoration: 'none', color: 'inherit'}}>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <ConstructionIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={t("admin_page")}/>
+                        </ListItemButton>
+                    </Link>
+                </>
+            ) : null}
+            <Divider/>
             <List>
-                {[translations.t('manual'), translations.t('github'), translations.t('my_profile'), translations.t('logout')].map((text, index) => (
+                {[t('manual'), t('github'), t('my_profile'), t('logout')].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton onClick={(event) => handleBottomItems(event, text)}>
                             <ListItemIcon>
-                                {index === 0 ? <QuestionMarkIcon /> :
-                                    index === 1 ? <GitHubIcon /> :
-                                        index === 2 ? <AccountCircleIcon /> :
-                                            <Logout />}
+                                {index === 0 ? <QuestionMarkIcon/> :
+                                    index === 1 ? <GitHubIcon/> :
+                                        index === 2 ? <AccountCircleIcon/> :
+                                            <Logout/>}
                             </ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemText primary={text}/>
                         </ListItemButton>
                     </ListItem>
                 ))}
@@ -123,9 +146,9 @@ const NavBar = () => {
 
     return (
         <>
-            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-                <Toolbar sx={{ justifyContent: 'space-between', left: 0, right: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+            <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
+                <Toolbar sx={{justifyContent: 'space-between', left: 0, right: 0}}>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
                         <IconButton
                             size="large"
                             edge="start"
@@ -135,11 +158,11 @@ const NavBar = () => {
                         >
                             <MenuIcon/>
                         </IconButton>
-                        <HomeButton />
+                        <HomeButton/>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                        <AccountMenu />
-                        <LanguageSelect />
+                    <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
+                        <AccountMenu/>
+                        <LanguageSelect/>
                     </div>
                 </Toolbar>
             </AppBar>
@@ -147,10 +170,10 @@ const NavBar = () => {
                     onClose={toggleDrawer(false)}
                     sx={{
                         flexShrink: 0,
-                        [`& .MuiDrawer-paper`]: { boxSizing: 'border-box' },
+                        [`& .MuiDrawer-paper`]: {boxSizing: 'border-box'},
                     }}
             >
-                <Toolbar />
+                <Toolbar/>
                 {DrawerList}
             </Drawer>
         </>
