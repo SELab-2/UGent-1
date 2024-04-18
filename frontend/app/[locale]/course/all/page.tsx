@@ -21,11 +21,11 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
             namespaces={i18nNamespaces}
         >
             <NavBar/>
+            <div style={{marginTop:60, padding:20}}>
             <BackButton 
                 destination={'/home'}
                 text={t('back_to') + ' ' + t('home') + ' ' +  t('page')}
             />
-            <div style={{ marginBottom: '100px' }}>
             <ListView
                 admin={true}
                 headers={headers}

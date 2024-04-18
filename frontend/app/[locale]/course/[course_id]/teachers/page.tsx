@@ -20,11 +20,11 @@ export default async function TeachersPage({ params }: { params: { locale: any, 
             namespaces={i18nNamespaces}
         >
             <NavBar />
+            <div style={{marginTop:60, padding:20}}>
             <BackButton 
                 destination={`/course/${course_id}`}
                 text={t('back_to') + ' ' + t('course_detail') + ' ' +  t('page')}
             />
-            <div style={{ marginBottom: '100px' }}>
                 <ListView
                     admin={true}
                     headers={headers}
