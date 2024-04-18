@@ -11,6 +11,7 @@ export default async function TeachersPage({ params }: { params: { locale: any, 
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
     const headers = [t('email')];
+    const headers_backend = ['email'];
     
     return (
         <TranslationsProvider

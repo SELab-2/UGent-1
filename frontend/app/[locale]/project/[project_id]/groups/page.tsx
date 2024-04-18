@@ -12,6 +12,7 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
     const headers = [t('group_nr'), t('members'), t('join/leave')];
+    const headers_backend = ['group_nr', 'members', 'join/leave'];
     
     return (
         <TranslationsProvider
@@ -20,14 +21,15 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
             namespaces={i18nNamespaces}
         >
             <NavBar />
+            <div style={{marginTop:60, padding:20}}>
             <BackButton 
             destination={`/project/${projectId}`} 
             text={t('back_to') + ' ' + t('project') + ' ' +  t('page')}
             />
-            <div style={{ marginBottom: '100px' }}>
                 <ListView
                     admin={true}
                     headers={headers}
+                    headers_backend={headers_backend}
                     sortable={[true, false, false]}
                     get_id={projectId}
                     get={'groups'}

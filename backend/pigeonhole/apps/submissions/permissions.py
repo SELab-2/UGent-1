@@ -14,7 +14,7 @@ class CanAccessSubmission(permissions.BasePermission):
         user = request.user
         if view.action in ['list']:
             return False
-        elif view.action in ['download_selection', 'download_all']:
+        elif view.action in ['download_selection']:
             return user.is_teacher or user.is_admin or user.is_superuser
         elif view.action in ['create']:
             if user.is_student:

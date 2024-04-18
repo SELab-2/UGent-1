@@ -1,26 +1,39 @@
-"use client"
-import { Button } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+"use client";
 import {useTranslation} from "react-i18next";
+import {Button, Typography} from "@mui/material";
+import Link from "next/link";
+import {addProject} from "@lib/api";
 
-//TODO: route to add project page
-const AddProjectButton = () => {
-    const { t } = useTranslation()
+interface EditCourseButtonProps{
+    course_id:number
+}
 
-    return(
+const AddProjectButton = ({course_id}: EditCourseButtonProps) => {
+    const {t} = useTranslation();
+
+    return (
         <Button
             variant="contained"
-            color='secondary'
-            href={'/project/add'}
-            startIcon={<AddCircleOutlineIcon />}
+            color="secondary"
             sx={{
-                width: 'fit-content',
-                color: 'secondary.contrastText',
+                margin: '10px'
+            }}
+            onClick={async () => {
+                const project_id = await addProject(course_id);
+                window.location.href = `/project/${project_id}/edit`;
             }}
         >
-            {t("add_project")}
+            <Typography
+                variant="subtitle1"
+                sx={{
+                    color: 'secondary.contrastText',
+                    display: 'inline-block',
+                    whiteSpace: 'nowrap',
+                }}
+            >
+                {t("add_project")}
+            </Typography>
         </Button>
     )
 }
-
 export default AddProjectButton

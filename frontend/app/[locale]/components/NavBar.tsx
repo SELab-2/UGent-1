@@ -4,16 +4,16 @@ import React, {useEffect, useState} from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
     AppBar,
-    IconButton,
-    Toolbar,
     Box,
+    Divider,
+    Drawer,
+    IconButton,
     List,
     ListItem,
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    Divider,
-    Drawer
+    Toolbar
 } from '@mui/material';
 import Link from "next/link";
 import GitHubIcon from '@mui/icons-material/GitHub';

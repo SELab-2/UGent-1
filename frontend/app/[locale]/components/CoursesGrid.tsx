@@ -14,7 +14,6 @@ const CoursesGrid = () => {
             try {
                 setUser(await getUserData());
                 setCourses(await getCoursesForUser());
-                console.log(await getCoursesForUser());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
             }
@@ -24,10 +23,10 @@ const CoursesGrid = () => {
     }, []);  // assuming locale might affect how courses are fetched, though not used directly here
 
     return (
-        <Container sx={{pt: 2, pb: 4, maxHeight: 'calc(100vh - 180px)', overflowY: 'auto'}}>
+        <Container sx={{pt: 2, pb: 4, maxHeight: 'calc(150vh - 260px)', overflowY: 'auto'}}>
             <Grid container justifyContent="center" alignItems="flex-start" spacing={2}>
                 {courses.map((course: Course, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Grid  md={6} key={index}>
                         <CourseCard params={{course: course}}/>
                     </Grid>
                 ))}

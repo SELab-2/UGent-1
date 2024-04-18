@@ -51,6 +51,7 @@ class ProjectAdmin(admin.ModelAdmin):
             {
                 'fields': (
                     'file_structure',
+                    'conditions',
                 )
             }
         ),

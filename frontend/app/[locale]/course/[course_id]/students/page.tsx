@@ -11,6 +11,7 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
     const headers = [t('email')];
+    const headers_backend = ['email'];
     
     return (
         <TranslationsProvider
@@ -24,18 +25,17 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
                     destination={`/course/${course_id}`}
                     text={t('back_to') + ' ' + t('course')}
                 />
-                <div style={{ marginBottom: '100px' }}>
-                    <ListView
-                        admin={true}
-                        headers={headers}
-                        sortable={[true]}
-                        get_id={course_id}
-                        get={'course_students'}
-                        action_name={'remove_from_course'}
-                        action_text={t('remove_user_from_course')}
-                        search_text={t('search')}
-                    />
-                </div>
+                <ListView
+                    admin={true}
+                    headers={headers}
+                    headers_backend={headers_backend}
+                    sortable={[true]}
+                    get_id={course_id}
+                    get={'course_students'}
+                    action_name={'remove_from_course'}
+                    action_text={t('remove_user_from_course')}
+                    search_text={t('search')}
+                />
             </div>
         </TranslationsProvider>
     );
