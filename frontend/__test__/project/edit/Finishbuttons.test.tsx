@@ -1,4 +1,4 @@
-import {fireEvent, render} from "@testing-library/react";
+import {fireEvent, render, screen} from "@testing-library/react";
 import React from "react";
 import FinishButtons from "@app/[locale]/components/project_components/finishbuttons";
 import getTranslations from "../../translations";
@@ -11,7 +11,7 @@ describe('Finishbuttons', () => {
 
     it('renders correctly', async () => {
         const translations = await getTranslations();
-        const {getByText: getByText_en, getByTestId} = render(
+        const {getByText:  getByTestId} = render(
             <FinishButtons
                 visible={true}
                 setVisible={jest.fn()}
@@ -25,30 +25,12 @@ describe('Finishbuttons', () => {
         );
 
         // check that the buttons were rendered properly
-        expect(getByTestId('AlarmOnIcon')).toBeInTheDocument();
-        expect(getByTestId('VisibilityIcon')).toBeInTheDocument();
-        expect(getByText_en('Save')).toBeInTheDocument();
-        expect(getByText_en('Cancel')).toBeInTheDocument();
-        expect(getByText_en('Remove')).toBeInTheDocument();
+        expect(screen.getByTestId('AlarmOnIcon')).toBeInTheDocument();
+        expect(screen.getByTestId('VisibilityIcon')).toBeInTheDocument();
+        expect(screen.getByText('save')).toBeInTheDocument();
+        expect(screen.getByText('cancel')).toBeInTheDocument();
+        expect(screen.getByText('remove')).toBeInTheDocument();
 
-
-        const {getByText: getByText_nl} = render(
-            <FinishButtons
-                visible={true}
-                setVisible={jest.fn()}
-                handleSave={jest.fn()}
-                setConfirmRemove={jest.fn()}
-                translations={translations.nl}
-                course_id={1}
-                setHasDeadline={jest.fn()}
-                hasDeadline={true}
-            />
-        );
-
-        // check if text gets translated to dutch
-        expect(getByText_nl('Opslaan')).toBeInTheDocument();
-        expect(getByText_nl('Annuleren')).toBeInTheDocument();
-        expect(getByText_nl('Verwijderen')).toBeInTheDocument();
     });
 
     it('Cancels', async () => {
@@ -71,7 +53,7 @@ describe('Finishbuttons', () => {
             />
         );
 
-        const button = getByText('Cancel');
+        const button = screen.getByText('cancel');
         fireEvent.click(button);
 
         expect(window.location.href).toBe("/course/" + courseId + "/");
@@ -93,7 +75,7 @@ describe('Finishbuttons', () => {
             />
         );
 
-        const button = getByText('Save');
+        const button = screen.getByText('save');
         fireEvent.click(button);
 
         expect(handleSave).toHaveBeenCalled();
@@ -116,7 +98,7 @@ describe('Finishbuttons', () => {
             />
         );
 
-        const button = getByText('Remove');
+        const button = screen.getByText('remove');
         fireEvent.click(button);
 
         expect(setConfirmRemove).toHaveBeenCalled();

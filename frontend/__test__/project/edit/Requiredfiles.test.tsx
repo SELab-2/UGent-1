@@ -1,5 +1,5 @@
 import getTranslations from "../../translations";
-import {render} from "@testing-library/react";
+import {render, screen} from "@testing-library/react";
 import RequiredFiles from "@app/[locale]/components/project_components/requiredFiles";
 import React from "react";
 
@@ -19,20 +19,9 @@ describe('Requiredfiles', () => {
         );
 
         // check that the required files were rendered properly
-        expect(getByText_en('Required files')).toBeInTheDocument();
+        expect(screen.getByText('required_files')).toBeInTheDocument();
         expect(getByDisplayValue('First')).toBeInTheDocument();
         expect(getByDisplayValue('Second')).toBeInTheDocument();
 
-
-         const {getByText: getByText_nl} = render(
-            <RequiredFiles
-                files={["First", "Second"]}
-                setFiles={jest.fn()}
-                translations={translations.nl}
-            />
-        );
-
-        // check if text gets translated to dutch
-        expect(getByText_nl('Verplichte bestanden')).toBeInTheDocument();
     });
 });

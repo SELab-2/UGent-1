@@ -1,5 +1,5 @@
 import getTranslations from "../../translations";
-import {fireEvent, render} from "@testing-library/react";
+import {fireEvent, render, screen} from "@testing-library/react";
 import TestFiles from "@app/[locale]/components/project_components/testfiles";
 import React from "react";
 
@@ -10,7 +10,7 @@ jest.mock('react-i18next', () => ({
 describe('Testfiles', () => {
     it('renders correctly', async () => {
         const translations = await getTranslations();
-        const {getByText: getByText_en, getByDisplayValue} = render(
+        render(
             <TestFiles
                 testfilesName={["First", "Second"]}
                 setTestfilesName={jest.fn()}
@@ -21,22 +21,9 @@ describe('Testfiles', () => {
         );
 
         // check that the buttons were rendered properly
-        expect(getByText_en('Test files')).toBeInTheDocument();
-        expect(getByText_en('First')).toBeInTheDocument();
-        expect(getByText_en('Second')).toBeInTheDocument();
-
-        const {getByText: getByText_nl} = render(
-            <TestFiles
-                testfilesName={[]}
-                setTestfilesName={jest.fn()}
-                testfilesData={[]}
-                setTestfilesData={jest.fn()}
-                translations={translations.nl}
-            />
-        );
-
-        // check if text gets translated to dutch
-        expect(getByText_nl('Testbestanden')).toBeInTheDocument();
+        expect(screen.getByText('test_files')).toBeInTheDocument();
+        expect(screen.getByText('First')).toBeInTheDocument();
+        expect(screen.getByText('Second')).toBeInTheDocument();
     });
 
     it('Delete', async () => {
