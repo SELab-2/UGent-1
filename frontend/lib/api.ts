@@ -272,7 +272,7 @@ export async function getCourses(page = 1, pageSize = 5, keyword?: string, order
     return await getRequest(url);
 }
 
-export async function getCoursesForUser() : Promise<Course[]>{
+export async function getCoursesForUser(): Promise<Course[]> {
     let page = 1;
     let results: Course[] = []
     let response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${20}`);
@@ -338,12 +338,16 @@ export async function addProject(course_id: number): Promise<number> {
     })).project_id;
 }
 
-export async function getProjectsFromCourse(id: number): Promise<Project[]>{
+export async function getProjectsFromCourse(id: number): Promise<Project[]> {
     return (await getListRequest('/courses/' + id + '/get_projects'))
 }
 
-export async function getTeachersFromCourse(id: number): Promise<User[]>{
+export async function getTeachersFromCourse(id: number): Promise<User[]> {
     return (await getListRequest('/courses/' + id + '/get_teachers'))
+}
+
+export async function getSubmission(id: number): Promise<Submission> {
+    return (await getRequest(`/submissions/${id}`));
 }
 
 export async function getLastSubmissionFromProject(id: number): Promise<Submission> {
@@ -368,7 +372,7 @@ export async function getProjects_by_course(courseId: number, page = 1, pageSize
     return await getRequest(url);
 }
 
-export async function getGroup(id: number) : Promise<Group>{
+export async function getGroup(id: number): Promise<Group> {
     return (await getRequest(`/groups/${id}`));
 }
 
@@ -567,13 +571,16 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any) : Promise<string>{
+export async function uploadSubmissionFile(event: any): Promise<string> {
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
     const formData = new FormData(event.target);
     const formDataObject = Object.fromEntries(formData.entries());
     try {
-        await axios.post(backend_url + "/submissions/", formDataObject, {withCredentials: true, headers: {'Content-Type': 'multipart/form-data'}});
+        await axios.post(backend_url + "/submissions/", formDataObject, {
+            withCredentials: true,
+            headers: {'Content-Type': 'multipart/form-data'}
+        });
         return "yes";
     } catch (error) {
         const apierror: APIError = new APIError();
