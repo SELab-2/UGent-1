@@ -150,8 +150,7 @@ interface ListViewProps {
 
 const convertDate = (date_str: string) => {
     let date = new Date(date_str);
-    const userTimeZoneOffset = date.getTimezoneOffset();
-    date = new Date(date.getTime() - userTimeZoneOffset * 60000);
+    date = new Date(date.getTime());
     let date_local = date.toLocaleString('en-US', {
         month: '2-digit',
         day: '2-digit',
