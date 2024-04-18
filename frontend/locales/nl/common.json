@@ -82,5 +82,7 @@
     "project": "Project",
     "course": "Cursus",
     "return_project": "Terug naar project",
-    "submissions": "Indieningen"
+    "submissions": "Indieningen",
+    "submission_error": "Fout bij inleveren, probeer het opnieuw",
+    "submitted": "Inlevering bevestigd!"
 }

@@ -80,5 +80,7 @@
     "project": "Project",
     "course": "Course",
     "return_project": "Return to project",
-    "submissions": "Submissions"
+    "submissions": "Submissions",
+    "submission_error": "Submission error, try again",
+    "submitted": "Sucessfully submitted"
 }

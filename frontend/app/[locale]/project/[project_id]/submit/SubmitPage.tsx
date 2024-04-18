@@ -14,6 +14,7 @@ export default function SubmitPage({project_id}: { project_id: string }){
 
     const [projectData, setProjectData] = useState<Project>()
     const [paths, setPaths] = useState<string[]>([]);
+    const [submitted, setSubmitted] = useState<string>("no");
 
     
     function folderAdded(event : any){
@@ -36,6 +37,7 @@ export default function SubmitPage({project_id}: { project_id: string }){
         }
         fetchProject();
     }, [project_id]);
+
 
     return (
         <Box sx={{marginTop: '64px', padding: 5}}>
@@ -62,7 +64,7 @@ export default function SubmitPage({project_id}: { project_id: string }){
                 </Typography>
                 
 
-                <form onSubmit={uploadSubmissionFile} encType="multipart/form-data">
+                <form onSubmit={async (e)=>{setSubmitted(await uploadSubmissionFile(e));}} encType="multipart/form-data">
 
                     <input onChange={folderAdded} type="file" id="filepicker" name="fileList" webkitdirectory="true" multiple />
                     
@@ -75,10 +77,13 @@ export default function SubmitPage({project_id}: { project_id: string }){
                         <li key={path}>{path}</li>
                         ))}
                     </ul>
-
-                    <button type="submit">
-                        <AddButton translationkey='submit_project' />
-                    </button>
+                    {submitted === "yes" && <Typography variant="h6">{t('submitted')}</Typography>}
+                    {submitted === "error" && <Typography variant="h6">{t('submission_error')}</Typography>}
+                    {submitted !== "yes" && 
+                        <button type="submit">
+                            <AddButton translationkey='submit_project' href={undefined} />
+                        </button>
+                    }
                 </form>
 
             </Box>
