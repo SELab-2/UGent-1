@@ -22,6 +22,7 @@ import ProjectEditButton from "@app/[locale]/project/[project_id]/details/Projec
 import ProjectGroupButton from "@app/[locale]/project/[project_id]/details/ProjectGroupButton";
 import GroupSubmissionList from "@app/[locale]/components/GroupSubmissionList";
 import AddSubmissionButton from "@app/[locale]/project/[project_id]/details/AddSubmissionButton";
+import TeacherSubmissionListButton from "@app/[locale]/project/[project_id]/details/TeacherSubmissionListButton";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -176,9 +177,15 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                     </Box>
                 ) : (
                     <Box sx={{marginTop: 4, marginBottom: 4}} className={"submissionContainer"}>
-                        <Typography variant={"h4"}>
+                        <div style={{display: "flex"}}>
+                        <TeacherSubmissionListButton
+                            locale={locale}
+                            project_id={project_id}
+                        />
+                        <Typography variant={"h4"} style={{ marginLeft: "8px" }}>
                             {t("submissions")}
                         </Typography>
+                        </div>
                         <ProjectSubmissionsList
                             project_id={project_id}
                             showActions={false}
