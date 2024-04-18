@@ -178,6 +178,10 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                 ) : (
                     <Box sx={{marginTop: 4, marginBottom: 4}} className={"submissionContainer"}>
                         <div style={{display: "flex"}}>
+                        <AddSubmissionButton
+                            locale={locale}
+                            project_id={project_id}
+                        />
                         <TeacherSubmissionListButton
                             locale={locale}
                             project_id={project_id}
