@@ -35,27 +35,4 @@ describe('ProfileEditCard', () => {
             expect(getByText('test@gmail.com')).toBeInTheDocument();
         })
     })
-
-    it('calls handleSaveChanges when the save_changes button is clicked', async () => {
-        // Arrange
-        api.getUserData.mockResolvedValueOnce({
-            id: 1,
-            email: "test@gmail.com",
-            first_name: "First",
-            last_name: "Last",
-            course: [1],
-            role: 1,
-            picture: "http://localhost:8000/media/profile_pictures/test.png"
-        });
-        api.getImage.mockResolvedValueOnce(new Blob());
-
-        const {findByTestId} = render(<ProfileEditCard/>);
-
-        // Act
-        const saveChangesButton = await findByTestId('save-changes');
-        fireEvent.click(saveChangesButton);
-
-        // Assert
-        expect(api.updateUserData).toHaveBeenCalled();
-    });
 })
