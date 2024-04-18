@@ -24,6 +24,8 @@ function Assignment(
                 value={description}
                 helperText={isAssignmentEmpty ? translations.t("assignment_required") : ""}
                 size="small"
+                className={"assignmentTextField"}
+                rows={5}
             />
         </Box>
     </TranslationsProvider>;

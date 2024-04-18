@@ -1,7 +1,7 @@
 {
     "test": "English: Hello world!",
-    "courses": "My courses",
-    "my_profile": "My profile",
+    "courses": "My Courses",
+    "my_profile": "My Profile",
     "settings": "Settings",
     "logout": "Log out",
     "github": "GitHub",
@@ -59,7 +59,6 @@
     "save course": "Save course",
     "banner": "Banner",
     "select image": "Select image",
-    "access": "Access",
     "public": "Public",
     "private": "Private",
     "name" : "Name",
@@ -72,6 +71,10 @@
     "page" : "page",
     "course_detail" : "course detail",
     "join_course" : "Join course",
+    "filter_courses": "Filter Courses",
+    "create_course": "Create Course",
+    "view_archive": "View Archive",
+    "project": "Project",
     "course": "Course",
     "return_project": "Return to project",
     "submissions": "Submissions"

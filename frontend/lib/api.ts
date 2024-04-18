@@ -25,6 +25,15 @@ export class APIError {
     trace: unknown;
 }
 
+export type Submission = {
+    submission_id: number;
+    group_id: number;
+    submission_nr: number;
+    file: string;
+    timestamp: string;
+    output_test: string;
+}
+
 export type Course = {
     course_id: number;
     name: string;
@@ -270,6 +279,19 @@ export async function getCourses(page = 1, pageSize = 5, keyword?: string, order
     return await getRequest(url);
 }
 
+export async function getCoursesForUser() : Promise<Course[]>{
+    let page = 1;
+    let results: Course[] = []
+    let response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${10}`);
+    if (response.results.length === 0) return [];
+    results = results.concat(response.results);
+    while (response.next !== null) {
+        page++;
+        response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${10}`);
+        results = results.concat(response.results);
+    }
+    return results;
+}
 
 export async function updateCourse(id: number, data: any): Promise<Course> {
     return (await putData(`/courses/${id}/`, data));
@@ -301,6 +323,18 @@ export async function deleteProject(id: number): Promise<void> {
 
 export async function getProjects(): Promise<Project[]> {
     return (await getListRequest('/projects'));
+}
+
+export async function getProjectsFromCourse(id: number): Promise<Project[]>{
+    return (await getListRequest('/courses/' + id + '/get_projects'))
+}
+
+export async function getTeachersFromCourse(id: number): Promise<User[]>{
+    return (await getListRequest('/courses/' + id + '/get_teachers'))
+}
+
+export async function getLastSubmissionFromProject(id: number): Promise<Submission> {
+    return (await getRequest(`/projects/${id}/get_last_submission`))
 }
 
 export async function getProjects_by_course(courseId: number, page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Project[]> {
