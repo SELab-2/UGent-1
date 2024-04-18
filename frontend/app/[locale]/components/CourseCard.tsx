@@ -76,6 +76,7 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
                         get={'projects'}
                         get_id={course.course_id}
                         search={false}
+                        page_size={3}
                     />
                 </CardContent>
             </Card>

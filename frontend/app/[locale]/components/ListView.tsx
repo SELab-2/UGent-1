@@ -134,6 +134,22 @@ interface ListViewProps {
     search: boolean;
 }
 
+const convertDate = (date_str: string) => {
+    let date = new Date(date_str);
+    const userTimeZoneOffset = date.getTimezoneOffset();
+    date = new Date(date.getTime() - userTimeZoneOffset * 60000);
+    let date_local = date.toLocaleString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+    date_local = date_local.replace(" at", "").replace(",", "");
+    return date_local;
+};
+
 const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers_backend, sortable, action_name, action_text, search_text, page_size=5, search=true }: ListViewProps) => {
     // default listview
     const [searchTerm, setSearchTerm] = useState('');
@@ -180,7 +196,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers
                     'course_students': (data) => [data.id, data.email],
                     'course_teachers': (data) => [data.id, data.email],
                     'courses': (data) => [data.course_id, data.name, data.description, data.open_course],
-                    'projects': (data) => [data.project_id, data.name, data.deadline],
+                    'projects': (data) => [data.project_id, data.name, convertDate(data.deadline)],
                     'groups': async (data) => {
                         let l = [];
                         // Iterate over the values of the object
@@ -193,7 +209,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers
                         }
                         return [data.group_id, data.user, data.group_nr, l.join(', ')];
                     },
-                    'submissions': (data) => [data.submission_id, data.group_id, data.timestamp, data.output_test !== undefined]
+                    'submissions': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_test !== undefined]
                 };
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
@@ -217,7 +233,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers
                     },
                     'submissions': async () => {
                         return parse_pages(await getProjectSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
-                    }
+                    },
                 };
 
                 // Get user data
