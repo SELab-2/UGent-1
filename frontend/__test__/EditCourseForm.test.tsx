@@ -72,7 +72,7 @@ describe('EditCourseForm', () => {
     });
 
     it('submits the form correctly', async () => {
-        const file = new File(['(⌐□_□)'], 'chucknorris.png', {type: 'image/png'});
+        const file = new File(['...'], 'test.png', {type: 'image/png'});
 
         render(<EditCourseForm courseId={mockCourse.id}/>);
 
