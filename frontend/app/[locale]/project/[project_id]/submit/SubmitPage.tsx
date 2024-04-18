@@ -54,7 +54,7 @@ export default function SubmitPage({project_id}: { project_id: string }){
                 </Typography>
                 
 
-                <form onSubmit={async (e)=>{setSubmitted(await uploadSubmissionFile(e));}} encType="multipart/form-data">
+                <form onSubmit={async (e)=>{setSubmitted(await uploadSubmissionFile(e, project_id));}} encType="multipart/form-data">
 
                     <input style={{width: "300px", height: "120px", backgroundColor: "lightgrey", border: "6px dotted black"}} type="file" id="filepicker" name="file"/>
                     

@@ -181,3 +181,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
         response["Content-Disposition"] = f"inline; filename={basename(path)}"
 
         return response
+
+    @action(detail=True, methods=["GET"])
+    def get_group(self, request, *args, **kwargs):
+        project = self.get_object()
+        group = Group.objects.get(
+            project_id=project.project_id, user=request.user)
+        if not group:
+            return Response({"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"group_id": group.group_id}, status=status.HTTP_200_OK)
