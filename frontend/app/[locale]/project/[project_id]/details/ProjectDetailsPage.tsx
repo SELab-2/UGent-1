@@ -85,7 +85,6 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                                     project_id={project_id}
                                 />
                             </Grid>
-                            <AddButton translationkey="submit_project" href={`/project/${project_id}/submit`}></AddButton>
                             <Typography variant={"h4"}>
                                 {t("assignment")}
                             </Typography>
