@@ -17,14 +17,17 @@ async function CourseEditPage({params: {locale, course_id}}: { params: { locale:
         >
             <NavBar/>
             <Box
+                margin={5}
                 padding={5}
                 sx={{
+                    display: 'flex',
                     marginTop: '64px',
-                    justifyContent: 'center',
+                    alignItems: 'space-between',
+                    justifyContent: 'space-between',
                 }}
             >
-                <DeleteButton courseId={course_id}/>
                 <EditCourseForm courseId={course_id}/>
+                <DeleteButton courseId={course_id}/>
             </Box>
         </TranslationsProvider>
     );

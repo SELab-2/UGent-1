@@ -84,8 +84,17 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
             <Box
                 component={"form"}
                 onSubmit={handleSubmit}
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-evenly',
+                    height: 'fit-content',
+                    width: '100%',
+                }}
             >
-                <Box sx={{marginTop: '10px'}}>
+                <Box
+                    height={'fit-content'}
+                >
                     <Typography
                         variant="h3"
                     >
@@ -100,7 +109,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                         width: '400px'
                     }}/>
                 </Box>
-                <Box sx={{marginTop: '16px', borderRadius: '12px', height: 'fit-content'}}>
+                <Box sx={{marginTop: '32px', height: 'fit-content'}}>
                     <Typography
                         variant="h3"
                     >
@@ -108,18 +117,24 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     </Typography>
                     <Box
                         borderRadius={'16px'}
-                        sx={{position: 'relative', width: '100%', height: '100%', borderRadius: '16px',}}
+                        sx={{position: 'relative', width: '100%', height: 'fit-content', borderRadius: '16px',}}
                     >
-                        <Image
+                        <Box
+                            component={'img'}
+                            alt={t('select image')}
                             src={selectedImageURL}
-                            layout="fill"
-                            objectFit="cover"
+                            sx={{
+                                borderRadius: '16px',
+                                height: 'fit-content',
+                                maxHeight: '200px',
+                                width: '100%'
+                            }}
                         />
                         </Box>
                 </Box>
-                <Box sx={{marginTop: '16px'}}>
+                <Box>
                     <Button variant={"contained"} color={"secondary"} size={'small'}
-                            startIcon={<UploadFileIcon color={'secondary.contrastText'}/>}
+                            startIcon={<UploadFileIcon sx={{color: 'secondary.contrastText'}}/>}
                             disableElevation
                             component="label"
                             role={undefined}
@@ -127,7 +142,8 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                             sx={{
                                 padding: 1,
                                 width: 'fit-content',
-                                color: 'secondary.contrastText'
+                                color: 'secondary.contrastText',
+                                marginTop: '16px'
                             }}
                     >
                         {t("select image")}
@@ -182,21 +198,24 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                 </Box>
                 <Box
                     display={'flex'}
-                    sx={{marginTop: '16px', position: 'absolute', gap: 2}}
+                    sx={{marginTop: '16px', gap: 2}}
                 >
                     <Button
                         type="submit"
+                        color={'primary'}
                         sx={{
                             width: 'fit-content',
+                            backgroundColor: 'primary.main',
+                            color: 'primary.contrastText'
                         }}
                     >
                         {t("save changes")}
                     </Button>
                     <Button
                         href={'/course/' + courseId + "/"}
-                        color={'secondary'}
                         sx={{
                             width: 'fit-content',
+                            backgroundColor: 'secondary.main',
                             color: 'secondary.contrastText'
                         }}
                     >

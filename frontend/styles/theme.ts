@@ -39,7 +39,7 @@ const loginTheme = createTheme({
         },
         primary: {
             main: '#1E64C8',
-            contrastText: '#FFFFFF'
+            contrastText: '#FFFFFF',
         },
         secondary: {
             main: '#D0E4FF',

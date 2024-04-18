@@ -20,12 +20,13 @@ const DeleteButton = ({courseId}: EditCourseFormProps) => {
 
     return (
         <Button
-            ariant='contained'
-            color='failure'
+            variant='contained'
             onClick={handleDelete}
+            color='error'
             sx={{
                 width: 'fit-content',
-                color: 'white',
+                height: 'fit-content',
+                whiteSpace: 'nowrap',
             }}
         >
             {t("delete course")}
