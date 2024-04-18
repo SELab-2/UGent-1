@@ -21,6 +21,7 @@ import CourseReturnButton from "@app/[locale]/project/[project_id]/details/Cours
 import ProjectEditButton from "@app/[locale]/project/[project_id]/details/ProjectEditButton";
 import ProjectGroupButton from "@app/[locale]/project/[project_id]/details/ProjectGroupButton";
 import GroupSubmissionList from "@app/[locale]/components/GroupSubmissionList";
+import AddButton from "@app/[locale]/components/AddButton";
 import AddSubmissionButton from "@app/[locale]/project/[project_id]/details/AddSubmissionButton";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
@@ -84,6 +85,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                                     project_id={project_id}
                                 />
                             </Grid>
+                            <AddButton translationkey="submit_project" href={`/project/${project_id}/submit`}></AddButton>
                             <Typography variant={"h4"}>
                                 {t("assignment")}
                             </Typography>
