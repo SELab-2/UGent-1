@@ -20,8 +20,15 @@ from backend.pigeonhole.apps.submissions.models import (
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
 from backend.pigeonhole.filters import CustomPageNumberPagination
 
+from django.conf import settings
+from pathlib import Path
+import json as JSON
+
 
 # TODO test timestamp, file, output_test
+def submission_file_url(group_id, submission_id, relative_path):
+    return (f"{str(settings.STATIC_ROOT)}/submissions"
+            f"/group_{group_id}/{submission_id}/{relative_path}")
 
 
 class SubmissionsViewset(viewsets.ModelViewSet):
@@ -32,12 +39,21 @@ class SubmissionsViewset(viewsets.ModelViewSet):
     filter_backends = [OrderingFilter, DjangoFilterBackend]
 
     def create(self, request, *args, **kwargs):
+        request.data._mutable = True  # epic hack
+        if 'group_id' not in request.data:
+            project_id = request.data['project_id']
+            group = Group.objects.filter(project_id=project_id, user=request.user).first()
+            group_id = group.group_id
+            request.data['group_id'] = group_id
+        else:
+            group_id = request.data['group_id']
+            group = Group.objects.get(group_id=group_id)
+
+        request.data['file_urls'] = JSON.dumps([key for key in request.FILES])
+
         serializer = SubmissionsSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
 
-        group_id = serializer.data["group_id"]
-        group = Group.objects.get(group_id=group_id)
         if not group:
             return Response(
                 {"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND
@@ -56,6 +72,26 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             return Response(
                 {"message": "Deadline expired"}, status=status.HTTP_400_BAD_REQUEST
             )
+
+        serializer.save()
+
+        # upload files
+        try:
+            for relative_path in request.FILES:
+                # TODO: fix major security flaw met .. in relative_path
+                file = request.FILES[relative_path]
+                filepathstring = submission_file_url(
+                    group_id, str(serializer.data['submission_id']), relative_path)
+                filepath = Path(filepathstring)
+                filepath.parent.mkdir(parents=True, exist_ok=True)
+                with open(filepathstring, 'wb+') as dest:
+                    for chunk in file.chunks():
+                        dest.write(chunk)
+                # submission.file_urls = '[el path]'
+        except IOError as e:
+            print(e)
+            return Response({"message": "Error uploading files"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

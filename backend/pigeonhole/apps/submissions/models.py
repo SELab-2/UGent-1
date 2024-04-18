@@ -20,14 +20,11 @@ class Submissions(models.Model):
     submission_id = models.BigAutoField(primary_key=True)
     group_id = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True)
     submission_nr = models.IntegerField(blank=True)
-    file = models.FileField(upload_to=get_upload_to,
-                            null=True, blank=False, max_length=255)
+    # een JSON encoded lijst relative file paths van de geuploade folder,
+    # hiermee kunnen dan de static file urls afgeleid worden
+    file_urls = models.TextField(null=True)
     timestamp = models.DateTimeField(auto_now_add=True, blank=True)
-    output_test = models.FileField(upload_to='uploads/submissions/outputs/' +
-                                             str(group_id) + '/' + str(submission_nr) +
-                                             '/output_test/', null=True, blank=True,
-                                   max_length=255)
-
+    draft = models.BooleanField(default=True)
     objects = models.Manager()
 
     # submission_nr is automatically assigned and unique per group, and
@@ -43,9 +40,8 @@ class Submissions(models.Model):
 
 class SubmissionsSerializer(serializers.ModelSerializer):
     submission_nr = serializers.IntegerField(read_only=True)
-    output_test = serializers.FileField(read_only=True)
     group_id = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())
 
     class Meta:
         model = Submissions
-        fields = ['submission_id', 'file', 'timestamp', 'submission_nr', 'output_test', 'group_id']
+        fields = ['submission_id', 'file_urls', 'timestamp', 'submission_nr', 'group_id', 'draft']

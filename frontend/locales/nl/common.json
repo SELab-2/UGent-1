@@ -50,6 +50,9 @@
     "action_dialog": "Deze actie kan niet ongedaan worden gemaakt.",
     "remove_confirm": "Verwijderen",
     "remove_cancel": "Annuleren",
+    "add_file_folder": "Bestand of map toevoegen",
+    "files": "Bestanden",
+    "submit_project": "Project inleveren",
     "copy": "Kopiëren",
     "copied_to_clipboard": "Gekopieerd naar klembord",
     "course name": "Cursus naam",
@@ -79,5 +82,7 @@
     "project": "Project",
     "course": "Cursus",
     "return_project": "Terug naar project",
-    "submissions": "Indieningen"
+    "submissions": "Indieningen",
+    "submission_error": "Fout bij inleveren, probeer het opnieuw",
+    "submitted": "Inlevering bevestigd!"
 }
