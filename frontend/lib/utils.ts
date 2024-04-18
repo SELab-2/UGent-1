@@ -12,9 +12,9 @@ export const displayRole = (roleNumber: number) => {
         case 1:
             return "Admin";
         case 2:
-            return "Student";
-        case 3:
             return "Teacher";
+        case 3:
+            return "Student";
         default:
             return "Unknown";
     }
