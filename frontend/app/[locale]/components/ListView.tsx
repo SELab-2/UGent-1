@@ -435,7 +435,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                                     // join button isn't shown when user is already in group
                                     // or when group is full
                                     // TODO i18n join button
-                                    (!user_is_in_group) && (row[1].length < project.group_size) && (
+                                    (user.role == 3) && (!user_is_in_group) && (row[1].length < project.group_size) && (
                                     <Button onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]}).then(() => window.location.reload())
                                     }>
                                         Join
@@ -449,7 +449,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                             get === 'groups' && (row[1].includes(user.id)) && (
                                 <td>
                                     {
-                                    (user_is_in_group) && (
+                                    (user.role == 3) && (user_is_in_group) && (
                                     <Button onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]}).then(() => window.location.reload())
                                     }>
                                         Leave
