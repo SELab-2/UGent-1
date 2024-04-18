@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
 import Image from 'next/image';
 import {getCourse, getImage, postData, updateCourse} from "@lib/api";
+import { Typography } from "@mui/material";
 
 interface EditCourseFormProps {
     courseId: number
@@ -85,7 +86,9 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                         fontFamily: 'Quicksand',
                         marginBottom: '-10px',
                         display: 'block'
-                    }}>{t("course name")}</label><br/>
+                    }}>
+                        <Typography variant="h3">{t("course name")}</Typography>
+                        </label><br/>
                     <input type="text" id="name" name="name" defaultValue={name}
                            onChange={(event: any) => setName(event.target.value)} required style={{
                         fontSize: '20px',
@@ -97,10 +100,9 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                 </Box>
                 <Box sx={{marginTop: '16px', borderRadius: '12px'}} style={{height: '250px'}}>
                     <label htmlFor="banner" style={{
-                        fontSize: '32px',
-                        fontFamily: 'Quicksand',
-                        color: 'black'
-                    }}>{t("banner")}</label><br/>
+                    }}>
+                        <Typography variant="h4">{t("banner")}</Typography>
+                    </label><br/>
                     <div style={{
                         width: '100%',
                         height: '200px',
@@ -142,7 +144,9 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                         color: 'black',
                         marginBottom: '-10px',
                         display: 'block'
-                    }}>{t("description")}</label><br/>
+                    }}>
+                        <Typography variant="h4">{t("description")}</Typography>    
+                    </label><br/>
                     <textarea id="description" name="description" rows={5} defaultValue={description}
                               onChange={(event: any) => setDescription(event.target.value)} required
                               style={{
@@ -161,7 +165,9 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                         color: 'black',
                         marginBottom: '-10px',
                         display: 'block'
-                    }}>{t("access")}</label><br/>
+                    }}>
+                        <Typography variant="h4">{t("access")}</Typography>    
+                    </label><br/>
                     <select id="choice" name="choice" defaultValue={open.toString()}
                             onChange={(event) => (setOpen(event.target.value === 'true'))} style={{
                         fontSize: '20px',
@@ -173,7 +179,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                         <option value="true">{t("public")}</option>
                     </select>
                 </Box>
-                <Box sx={{marginTop: '16px', position: 'absolute', gap: 2}}>
+                <Box sx={{marginTop: '0px', position: 'absolute', gap: 0}}>
                     <button type="submit" style={{
                         backgroundColor: '#1E64C8',
                         color: 'white',
@@ -183,8 +189,10 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                         cursor: 'pointer',
                         fontFamily: 'Quicksand',
                         fontSize: '16px',
-                        marginTop: '80px'
-                    }}>{t("save changes")}</button>
+                        marginTop: '10px',
+                    }}>
+                        <Typography variant="h6">{t("save changes")}</Typography>
+                    </button>
                     <button
                         onClick={() => window.location.href = '/course/' + courseId + "/"}
                         style={{
@@ -196,9 +204,11 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                             cursor: 'pointer',
                             fontFamily: 'Quicksand',
                             fontSize: '16px',
-                            marginTop: '80px',
+                            marginTop: '10px',
                             marginLeft: '15px'
-                        }}>{t("cancel")}</button>
+                        }}>
+                            <Typography variant="h6">{t("cancel")}</Typography>
+                    </button>
                 </Box>
             </form>
         ));

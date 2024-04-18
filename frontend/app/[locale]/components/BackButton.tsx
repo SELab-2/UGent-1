@@ -20,6 +20,7 @@ export default function BackButton({destination, text}: BackButtonProps) {
             sx={{
                 width: 'fit-content',
                 color: 'secondary.contrastText',
+                marginTop: '50px'
             }}
         >
             {text}

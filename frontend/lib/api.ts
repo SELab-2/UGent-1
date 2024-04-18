@@ -282,12 +282,12 @@ export async function getCourses(page = 1, pageSize = 5, keyword?: string, order
 export async function getCoursesForUser() : Promise<Course[]>{
     let page = 1;
     let results: Course[] = []
-    let response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${10}`);
+    let response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${20}`);
     if (response.results.length === 0) return [];
     results = results.concat(response.results);
     while (response.next !== null) {
         page++;
-        response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${10}`);
+        response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${20}`);
         results = results.concat(response.results);
     }
     return results;
@@ -458,8 +458,8 @@ export async function postData(path: string, data: any) {
     try {
         const response = await axios.post(backend_url + path, data, {withCredentials: true});
 
-        if ((response.status === 200 || response.status === 201) && response?.data) {
-            return response.data;
+        if ((response.status === 200 || response.status === 201)) {
+            return response?.data;
         } else if (response?.data?.detail) {
             console.error("Unexpected response structure:", response.data);
             const error: APIError = new APIError();
@@ -535,4 +535,32 @@ export async function deleteData(path: string) {
 
 export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
+}
+
+export async function uploadSubmissionFile(event: any) : string{
+    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+    event.preventDefault();
+    console.log(event.target.fileList.files);
+    const formData = new FormData(event.target);
+    for(const file of event.target.fileList.files){
+        formData.append(file.webkitRelativePath, file);
+    }
+    const formDataObject = Object.fromEntries(formData.entries());
+    console.log(formDataObject)
+    try {
+        await axios.post(backend_url + '/submissions/', formDataObject,
+         { withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+          });
+        return "yes";
+    } catch (error) {
+        const apierror : APIError = new APIError();
+        apierror.message = "error posting form";
+        apierror.type = ErrorType.REQUEST_ERROR;
+        apierror.trace = error;
+        console.error(apierror);
+        return "error";
+    }
 }
