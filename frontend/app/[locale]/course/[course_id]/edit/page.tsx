@@ -17,11 +17,9 @@ async function CourseEditPage({params: {locale, course_id}}: { params: { locale:
         >
             <NavBar/>
             <Box
-                margin={5}
                 padding={5}
                 sx={{
                     display: 'flex',
-                    marginTop: '64px',
                     alignItems: 'space-between',
                     justifyContent: 'space-between',
                 }}

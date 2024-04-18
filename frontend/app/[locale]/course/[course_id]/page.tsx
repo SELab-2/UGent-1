@@ -41,13 +41,19 @@ export default async function Course({params: {locale, course_id}, searchParams:
                     {t('projects')}
                 </Typography>
                 <AddProjectButton/>
-                <ListView
-                    admin={false}
-                    headers={headers}
-                    sortable={[true, true, false, true]}
-                    get={'projects'}
-                    get_id={course_id}
-                />
+                <Box
+                    justifyContent={'left'}
+                    width={'100%'}
+                >
+                    <ListView
+                        admin={false}
+                        headers={headers}
+                        sortable={[true, true, false, true]}
+                        get={'projects'}
+                        get_id={course_id}
+                    />
+
+                </Box>
                 <StudentCoTeacherButtons course_id={course_id}/>
             </Box>
 
