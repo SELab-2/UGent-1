@@ -18,6 +18,8 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=150)
     course = models.ManyToManyField(Course, blank=True)
     role = models.IntegerField(choices=Roles.choices, default=Roles.STUDENT)
+    picture = models.FileField(upload_to='profile_pictures/', blank=True, null=False,
+                               default='profile_pictures/default_picture.png')
 
     objects = UserManager()
 
