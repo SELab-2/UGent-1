@@ -1,4 +1,5 @@
 import axios, {AxiosError} from 'axios';
+import dayjs from "dayjs";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -23,15 +24,6 @@ export class APIError {
     status: number | undefined = 0;
     type: ErrorType = ErrorType.UNKNOWN;
     trace: unknown;
-}
-
-export type Submission = {
-    submission_id: number;
-    group_id: number;
-    submission_nr: number;
-    file: string;
-    timestamp: string;
-    output_test: string;
 }
 
 export type Course = {
@@ -316,6 +308,22 @@ export async function getProjects(): Promise<Project[]> {
     return (await getListRequest('/projects'));
 }
 
+export async function addProject(course_id: number): Promise<number> {
+    return (await postData('/projects/', {
+        name: "New Project",
+        course_id: course_id,
+        description: "Description",
+        deadline: dayjs(),
+        visible: true,
+        max_score: 100,
+        number_of_groups: 1,
+        group_size: 1,
+        file_structure: "extra/verslag.pdf",
+        test_files: null,
+        conditions: "Project must compile and run without errors."
+    })).project_id;
+}
+
 export async function getProjectsFromCourse(id: number): Promise<Project[]>{
     return (await getListRequest('/courses/' + id + '/get_projects'))
 }
@@ -526,4 +534,32 @@ export async function deleteData(path: string) {
 
 export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
+}
+
+export async function uploadSubmissionFile(event: any) : string{
+    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+    event.preventDefault();
+    console.log(event.target.fileList.files);
+    const formData = new FormData(event.target);
+    for(const file of event.target.fileList.files){
+        formData.append(file.webkitRelativePath, file);
+    }
+    const formDataObject = Object.fromEntries(formData.entries());
+    console.log(formDataObject)
+    try {
+        await axios.post(backend_url + '/submissions/', formDataObject,
+         { withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+          });
+        return "yes";
+    } catch (error) {
+        const apierror : APIError = new APIError();
+        apierror.message = "error posting form";
+        apierror.type = ErrorType.REQUEST_ERROR;
+        apierror.trace = error;
+        console.error(apierror);
+        return "error";
+    }
 }

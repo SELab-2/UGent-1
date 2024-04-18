@@ -4,6 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {Box, Typography} from "@mui/material";
 import EditCourseButton from "@app/[locale]/components/EditCourseButton";
 import {APIError, Course, getCourse, UserData, getUserData} from "@lib/api";
+import AddProjectButton from "@app/[locale]/components/AddProjectButton";
 
 interface CourseBannerProps {
     course_id: number;
@@ -74,6 +75,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                     paddingY={2}
                 >
                     <EditCourseButton course_id={course_id}/>
+                    <AddProjectButton course_id={course_id}/>
                 </Box>
             ): null}
         </Box>

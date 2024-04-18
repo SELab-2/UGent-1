@@ -11,7 +11,7 @@
     "projects": "Projects",
     "add_project": "Add project",
     "details": "Details",
-    "no_courses": "Geen cursussen om weer te geven.",
+    "no_courses": "No courses found",
     "no_description": "No description given.",
     "view_students": "View students",
     "view_co_teachers": "View co-teachers",
@@ -50,6 +50,9 @@
     "action_dialog": "This action cannot be undone.",
     "remove_confirm": "Remove",
     "remove_cancel": "Cancel",
+    "add_file_folder": "Add file or folder",
+    "files": "files",
+    "submit_project": "Submit project",
     "copy": "Copy",
     "copied_to_clipboard": "Copied to clipboard",
     "course name": "Course name",
@@ -79,4 +82,6 @@
     "return_project": "Return to project",
     "submissions": "Submissions",
     "description_of_your_course": "Description of your course"
+    "submission_error": "Submission error, try again",
+    "submitted": "Sucessfully submitted"
 }
