@@ -40,6 +40,7 @@ const SubmissionsPage = async ({params: {locale, project_id}}: {
                 project_id={project_id}
                 showActions={true}
             />
+            <Footer/>
         </TranslationsProvider>
     )
 }
