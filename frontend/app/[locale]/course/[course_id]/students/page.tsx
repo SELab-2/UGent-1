@@ -1,7 +1,6 @@
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
-import Footer from "@app/[locale]/components/Footer";
 import ListView from '@app/[locale]/components/ListView';
 import BackButton from "@app/[locale]/components/BackButton";
 
@@ -38,7 +37,6 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
                     />
                 </div>
             </div>
-            <Footer />
         </TranslationsProvider>
     );
 }
