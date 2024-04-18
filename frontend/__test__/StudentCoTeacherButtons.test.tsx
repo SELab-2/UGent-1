@@ -25,7 +25,7 @@ describe('StudentCoTeacherButtons', () => {
 
         // Assert that the links have the correct URLs
         expect(studentsLink).toHaveAttribute('href', `/course/${course_id}/students`);
-        expect(coTeachersLink).toHaveAttribute('href', `/course/${course_id}/co_teachers`);
+        expect(coTeachersLink).toHaveAttribute('href', `/course/${course_id}/teachers`);
 
         // Optionally check styles
         expect(studentsLink).toHaveStyle({ width: 'fit-content' });
