@@ -50,6 +50,9 @@
     "action_dialog": "This action cannot be undone.",
     "remove_confirm": "Remove",
     "remove_cancel": "Cancel",
+    "add_file_folder": "Add file or folder",
+    "files": "files",
+    "submit_project": "Submit project",
     "copy": "Copy",
     "copied_to_clipboard": "Copied to clipboard",
     "course name": "Course name",
@@ -79,5 +82,8 @@
     "return_project": "Return to project",
     "submissions": "Submissions",
     "return_course": "Return to course",
-    "edit_project": "Edit"
+    "edit_project": "Edit",
+    "submission_error": "Submission error, try again",
+    "submitted": "Sucessfully submitted",
+    "all_courses": "View All Courses"
 }

@@ -50,6 +50,9 @@
     "action_dialog": "Deze actie kan niet ongedaan worden gemaakt.",
     "remove_confirm": "Verwijderen",
     "remove_cancel": "Annuleren",
+    "add_file_folder": "Bestand of map toevoegen",
+    "files": "Bestanden",
+    "submit_project": "Project inleveren",
     "copy": "Kopiëren",
     "copied_to_clipboard": "Gekopieerd naar klembord",
     "course name": "Cursus naam",
@@ -62,7 +65,7 @@
     "private": "Privé",
     "public": "Publiek",
     "name": "Naam",
-    "email": "E-mail",
+    "email": "email",
     "group": "Groep",
     "role" : "Rol",
     "remove_user": "Geselecteerde gebruikers verwijderen",
@@ -81,5 +84,8 @@
     "return_project": "Terug naar project",
     "submissions": "Indieningen",
     "return_course": "Terug naar vak",
-    "edit_project": "Aanpassen"
+    "edit_project": "Aanpassen",
+    "submission_error": "Fout bij inleveren, probeer het opnieuw",
+    "submitted": "Inlevering bevestigd!",
+    "all_courses": "Bekijk Alle Cursussen"
 }
