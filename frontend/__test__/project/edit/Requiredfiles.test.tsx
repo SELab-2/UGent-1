@@ -19,7 +19,7 @@ describe('Requiredfiles', () => {
         );
 
         // check that the required files were rendered properly
-        expect(screen.getByText('required_files')).toBeInTheDocument();
+        expect(screen.getByText('Required files')).toBeInTheDocument();
         expect(getByDisplayValue('First')).toBeInTheDocument();
         expect(getByDisplayValue('Second')).toBeInTheDocument();
 

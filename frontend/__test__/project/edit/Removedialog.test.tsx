@@ -21,10 +21,10 @@ describe('Removedialog', () => {
         );
 
         // check that the text was rendered properly
-        expect(screen.getByText('remove_dialog')).toBeInTheDocument();
-        expect(screen.getByText('action_dialog')).toBeInTheDocument();
-        expect(screen.getByText('remove_confirm')).toBeInTheDocument();
-        expect(screen.getByText('remove_cancel')).toBeInTheDocument();
+        expect(screen.getByText('Remove project?')).toBeInTheDocument();
+        expect(screen.getByText('This action cannot be undone.')).toBeInTheDocument();
+        expect(screen.getByText('Remove')).toBeInTheDocument();
+        expect(screen.getByText('Cancel')).toBeInTheDocument();
 
     });
 
@@ -41,7 +41,7 @@ describe('Removedialog', () => {
             />
         );
 
-        const button = screen.getByText('remove_cancel');
+        const button = screen.getByText('Cancel');
         fireEvent.click(button);
 
         expect(setConfirmRemove).toHaveBeenCalled();
@@ -61,9 +61,10 @@ describe('Removedialog', () => {
             />
         );
 
-        const button = screen.getByText('remove_confirm');
+        const button = screen.getByText('Remove');
         fireEvent.click(button);
 
+        // @ts-ignore
         expect(handle_remove).toHaveBeenCalled();
     });
 });

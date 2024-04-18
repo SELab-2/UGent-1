@@ -22,7 +22,7 @@ describe('Assignment', () => {
         );
 
         // check that the assignment was rendered properly
-        expect(getByText_en('assignment')).toBeInTheDocument();
+        expect(getByText_en('Assignment')).toBeInTheDocument();
 
         // check that the text field was rendered properly
         const textField = getByRole('textbox');
@@ -50,6 +50,6 @@ describe('Assignment', () => {
         );
 
         // check that the helper text was rendered properly
-        expect(getByText('assignment_required')).toBeInTheDocument();
+        expect(getByText('Assignment is required')).toBeInTheDocument();
     });
 });

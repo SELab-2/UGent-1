@@ -20,7 +20,7 @@ describe('Conditions', () => {
         );
 
         // check that the conditions were rendered properly
-        expect(screen.getByText('conditions')).toBeInTheDocument();
+        expect(screen.getByText('Conditions')).toBeInTheDocument();
         expect(getByDisplayValue('First')).toBeInTheDocument();
         expect(getByDisplayValue('Second')).toBeInTheDocument();
 

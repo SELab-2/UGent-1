@@ -21,7 +21,7 @@ describe('Testfiles', () => {
         );
 
         // check that the buttons were rendered properly
-        expect(screen.getByText('test_files')).toBeInTheDocument();
+        expect(screen.getByText('Test files')).toBeInTheDocument();
         expect(screen.getByText('First')).toBeInTheDocument();
         expect(screen.getByText('Second')).toBeInTheDocument();
     });

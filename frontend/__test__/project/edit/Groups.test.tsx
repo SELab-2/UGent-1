@@ -19,8 +19,8 @@ describe('Groups', () => {
         );
 
         // check that it was rendered properly
-        expect(screen.getByText('group_amount')).toBeInTheDocument();
-        expect(screen.getByText('group_size')).toBeInTheDocument();
+        expect(screen.getByText('Amount of groups')).toBeInTheDocument();
+        expect(screen.getByText('Group size')).toBeInTheDocument();
 
     });
 });

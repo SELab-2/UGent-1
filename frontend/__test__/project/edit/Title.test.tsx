@@ -24,8 +24,8 @@ describe('Title', () => {
         );
 
         // check that the title and score were rendered properly
-        expect(screen.getByText('title')).toBeInTheDocument();
-        expect(screen.getByText('max_score')).toBeInTheDocument();
+        expect(screen.getByText('Title')).toBeInTheDocument();
+        expect(screen.getByText('Maximal score')).toBeInTheDocument();
 
     });
 });

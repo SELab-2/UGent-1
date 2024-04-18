@@ -27,9 +27,9 @@ describe('Finishbuttons', () => {
         // check that the buttons were rendered properly
         expect(screen.getByTestId('AlarmOnIcon')).toBeInTheDocument();
         expect(screen.getByTestId('VisibilityIcon')).toBeInTheDocument();
-        expect(screen.getByText('save')).toBeInTheDocument();
-        expect(screen.getByText('cancel')).toBeInTheDocument();
-        expect(screen.getByText('remove')).toBeInTheDocument();
+        expect(screen.getByText('Save')).toBeInTheDocument();
+        expect(screen.getByText('Cancel')).toBeInTheDocument();
+        expect(screen.getByText('Remove')).toBeInTheDocument();
 
     });
 
@@ -53,7 +53,7 @@ describe('Finishbuttons', () => {
             />
         );
 
-        const button = screen.getByText('cancel');
+        const button = screen.getByText('Cancel');
         fireEvent.click(button);
 
         expect(window.location.href).toBe("/course/" + courseId + "/");
@@ -75,7 +75,7 @@ describe('Finishbuttons', () => {
             />
         );
 
-        const button = screen.getByText('save');
+        const button = screen.getByText('Save');
         fireEvent.click(button);
 
         expect(handleSave).toHaveBeenCalled();
@@ -98,7 +98,7 @@ describe('Finishbuttons', () => {
             />
         );
 
-        const button = screen.getByText('remove');
+        const button = screen.getByText('Remove');
         fireEvent.click(button);
 
         expect(setConfirmRemove).toHaveBeenCalled();
