@@ -145,3 +145,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
         response["Content-Disposition"] = f"inline; filename={basename(path)}"
 
         return response
+
+    @action(detail=True, methods=["get"])
+    def download_testfiles(self, request, *args, **kwargs):
+        project = self.get_object()
+
+        path = realpath(project.test_files.path)
+        response = FileResponse(
+            open(path, "rb"), content_type="application/force-download"
+        )
+        response["Content-Disposition"] = f"inline; filename={basename(path)}"
+
+        return response
