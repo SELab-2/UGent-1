@@ -20,11 +20,9 @@ export default async function Users({ params: { locale } }: { params: { locale: 
             namespaces={i18nNamespaces}
         >
             <NavBar />
-            <BackButton 
-                destination={'/admin'} 
-                text={t('back_to') + ' ' + t('admin') + ' ' +  t('page')}
-            />
+            
             <div style={{ marginBottom: '100px' }}>
+            
             <ListView
                 admin={true}
                 headers={headers}
@@ -36,6 +34,10 @@ export default async function Users({ params: { locale } }: { params: { locale: 
             />
             </div>
             <Footer />
+            <BackButton 
+                destination={'/admin'} 
+                text={t('back_to') + ' ' + t('admin') + ' ' +  t('page')}
+            />
         </TranslationsProvider>
     );
 }

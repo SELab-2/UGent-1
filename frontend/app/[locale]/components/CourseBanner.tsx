@@ -36,7 +36,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                height: '200px',
+                height: '140px',
                 width: "calc(100% - 40px)",
                 borderRadius: '16px',
                 marginTop: 50,
@@ -49,12 +49,11 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 display="flex"
                 justifyContent="flex-start"
                 alignItems="center"
-                width={"calc(100% - 200px)"}
+                width={"calc(100% - 10px)"}
             >
                 <Typography
-                    variant="h1"
+                    variant="h3"
                     textAlign="left"
-                    width={"inherit"}
                     noWrap={false}
                     sx={{
                         color: 'white',

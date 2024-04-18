@@ -21,6 +21,7 @@ export default function RootLayout(props: React.PropsWithChildren<{}>) {
                 <div style={{marginTop: "40px", marginBottom: "40px"}}>
                     {children}
                 </div>
+                <div id='extrapadding' style={{height: "20px"}}></div>
                 <Footer/>
             </ThemeProvider>
         </AppRouterCacheProvider>
