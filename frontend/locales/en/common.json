@@ -77,5 +77,6 @@
     "project": "Project",
     "course": "Course",
     "return_project": "Return to project",
-    "submissions": "Submissions"
+    "submissions": "Submissions",
+    "description_of_your_course": "Description of your course"
 }

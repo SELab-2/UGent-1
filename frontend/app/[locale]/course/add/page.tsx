@@ -17,7 +17,6 @@ async function CourseCreatePage({params: {locale}}: { params: { locale: any } })
         >
             <NavBar/>
             <Box sx={{margin: '64px', marginTop: '96px', position: 'relative'}}>
-                <CancelButton/>
                 <Box sx={{marginRight: '20px'}}>
                     <CreateCourseForm/>
                 </Box>

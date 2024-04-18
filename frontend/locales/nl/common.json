@@ -79,5 +79,6 @@
     "project": "Project",
     "course": "Cursus",
     "return_project": "Terug naar project",
-    "submissions": "Indieningen"
+    "submissions": "Indieningen",
+    "description_of_your_course": "Beschrijving van je cursus"
 }

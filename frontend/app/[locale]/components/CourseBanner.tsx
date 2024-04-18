@@ -21,6 +21,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 setUser(await getUserData());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
+                console.log(error);
             }
 
         };
@@ -71,6 +72,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                     justifyContent="flex-start"
                     alignItems="flex-start"
                     textAlign="left"
+                    paddingY={2}
                 >
                     <EditCourseButton course_id={course_id}/>
                 </Box>

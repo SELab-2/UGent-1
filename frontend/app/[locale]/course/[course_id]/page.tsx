@@ -7,6 +7,7 @@ import CourseDetails from "@app/[locale]/components/CourseDetails";
 import StudentCoTeacherButtons from "@app/[locale]/components/StudentCoTeacherButtons";
 import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
 import ListView from '@app/[locale]/components/ListView';
+import AddProjectButton from "@app/[locale]/components/AddProjectButton";
 
 const i18nNamespaces = ['common']
 
@@ -39,6 +40,7 @@ export default async function Course({params: {locale, course_id}, searchParams:
                 >
                     {t('projects')}
                 </Typography>
+                <AddProjectButton/>
                 <ListView
                     admin={false}
                     headers={headers}
