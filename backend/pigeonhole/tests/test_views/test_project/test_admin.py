@@ -33,7 +33,8 @@ class ProjectTestAdminTeacher(TestCase):
 
         self.project = Project.objects.create(
             name="Test Project",
-            course_id=self.course
+            course_id=self.course,
+            deadline="2021-12-12 12:12:12",
         )
 
         self.client.force_authenticate(self.admin)
@@ -46,6 +47,7 @@ class ProjectTestAdminTeacher(TestCase):
                 "description": "Test Project 2 Description",
                 "course_id": self.course.course_id,
                 "number_of_groups": 4,
+                "deadline": "2021-12-12 12:12:12",
             },
             format='json'
         )
@@ -131,7 +133,7 @@ class ProjectTestAdminTeacher(TestCase):
 
     def test_delete_invalid_project(self):
         response = self.client.delete(
-            API_ENDPOINT + '100/'
+            API_ENDPOINT + '999/'
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 

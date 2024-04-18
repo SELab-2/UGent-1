@@ -12,6 +12,26 @@ declare module '@mui/material/styles/createPalette' {
     }
 }
 
+export const baseTheme = createTheme({
+    palette: {
+        primary: {
+            main: '#1E64C8',
+            contrastText: '#FFFFFF'
+        },
+        secondary: {
+            main: '#D0E4FF',
+            contrastText: '#001D36'
+        },
+        background: {
+            default: '#f4f5fd',
+        },
+        text: {
+            primary: '#001D36',
+            secondary: '#FFFFFF'
+        },
+    },
+});
+
 const loginTheme = createTheme({
     palette: {
         background: {
@@ -19,7 +39,7 @@ const loginTheme = createTheme({
         },
         primary: {
             main: '#1E64C8',
-            contrastText: '#FFFFFF'
+            contrastText: '#FFFFFF',
         },
         secondary: {
             main: '#D0E4FF',
@@ -36,6 +56,9 @@ const loginTheme = createTheme({
         fontFamily: 'Quicksand, sans-serif',
         h4: {
             fontWeight: 700,
+        },
+        h1: {
+            fontWeight: 400,
         },
     },
     components: {
@@ -80,4 +103,52 @@ export const theme = createTheme({
     },
 });
 
-export default loginTheme;
+export const CourseCardTheme = createTheme(baseTheme, {
+    components: {
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    maxWidth: 600,
+                    margin: '16px',
+                    boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)',
+                    borderRadius: '4px',
+                },
+            },
+        },
+
+        MuiTableContainer: {
+            styleOverrides: {
+                root: {
+                    boxShadow: 'none',
+                    border: '1px solid #E0E0E0', // This will add the outline to the table
+                    borderRadius: '4px',
+                },
+            },
+        },
+
+        MuiTableCell: {
+            styleOverrides: {
+                head: {
+                    backgroundColor: '#D0E4FF',
+                    color: '#001D36',
+                    fontWeight: 'bold',
+                },
+                body: {
+                    fontSize: '0.875rem',
+                },
+            },
+        },
+        MuiTableHead: {
+            styleOverrides: {
+                root: {
+                    '.MuiTableCell-root': {
+                        padding: '8px',
+                        fontSize: '0.875rem',
+                    },
+                },
+            },
+        },
+    }
+});
+
+export default baseTheme;

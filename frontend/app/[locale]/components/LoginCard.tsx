@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box, Container, CssBaseline } from '@mui/material';
+import {Box, Container, CssBaseline} from '@mui/material';
 import CASButton from "./CASButton";
 import Image from 'next/image';
-import logo from '../../../public/logo.png'
+import logo from '../../../public/logo.png';
 
 const LoginCard: React.FC = () => {
     return (
@@ -20,27 +20,27 @@ const LoginCard: React.FC = () => {
                     boxShadow: 1,
                 }}
             >
+                {/* Image container Box */}
                 <Box
                     sx={{
-                        height: 120,
+                        height: 120, // Adjust the height as needed
                         width: '100%',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
+                        marginBottom: 4, // Adds space below the logo; adjust as needed
                     }}
                 >
+                    {/* Next Image component */}
                     <Image
                         alt="logo"
                         src={logo}
-                        style={{
-                            width: 200,
-                            height: 200,
-                            objectFit: 'contain',
-                        }}
-                        fill={false}
+                        layout="intrinsic" // Use 'intrinsic' layout for Image component
+                        width={200} // Set the width of the logo
+                        height={120} // Set the height of the logo
                     />
                 </Box>
-                <CASButton></CASButton>
+                <CASButton/>
             </Box>
         </Container>
     );

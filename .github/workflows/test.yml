@@ -1,4 +1,4 @@
-name: Backend test CI
+name: Test CI
 
 on:
   - pull_request
@@ -20,3 +20,18 @@ jobs:
       - name: Running Django tests
         run: |
           sh ./backend/runtests.sh
+
+  frontend-test:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js v18.
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.17.0
+      - name: Install your dependencies
+        working-directory: ./frontend
+        run: npm ci
+      - name: Run Fronted tests
+        working-directory: ./frontend
+        run: npx jest --silent

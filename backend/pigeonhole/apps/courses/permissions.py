@@ -9,21 +9,33 @@ class CourseUserPermissions(permissions.BasePermission):
         if request.user.is_admin or request.user.is_superuser:
             return True
 
-        if view.action in ['join_course', 'get_selected_courses']:
+        if view.action in [
+            "join_course",
+            "get_selected_courses",
+            "join_course_with_token",
+            "leave_course",
+            "get_teachers",
+            "get_students",
+        ]:
             return True
 
         if request.user.is_teacher:
-            if view.action in ['create', 'list', 'retrieve']:
+            if view.action in ["create", "list", "retrieve"]:
                 return True
-            elif view.action in ['update', 'partial_update', 'destroy', 'get_projects'] and User.objects.filter(
-                    id=request.user.id,
-                    course=view.kwargs[
-                        'pk']).exists():
+            elif (
+                view.action in ["update", "partial_update", "destroy",
+                                "get_projects"]
+                and User.objects.filter(
+                    id=request.user.id, course=view.kwargs["pk"]
+                ).exists()
+            ):
                 return True
-            return
+            return False
 
         if request.user.is_student:
-            if view.action == 'get_projects':
-                return Course.objects.filter(course_id=view.kwargs['pk'], user=request.user).exists()
-            return view.action in ['list', 'retrieve']
+            if view.action == "get_projects":
+                return Course.objects.filter(
+                    course_id=view.kwargs["pk"], user=request.user
+                ).exists()
+            return view.action in ["list", "retrieve"]
         return False

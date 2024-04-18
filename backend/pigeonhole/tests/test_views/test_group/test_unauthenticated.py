@@ -35,6 +35,7 @@ class GroupTestUnauthorized(TestCase):
             course_id=self.course,
             number_of_groups=3,
             group_size=2,
+            deadline="2021-12-12 12:12:12",
         )
 
         self.group1 = Group.objects.create(

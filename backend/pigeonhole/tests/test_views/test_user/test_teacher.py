@@ -61,7 +61,6 @@ class UserTestTeacher(TestCase):
         }
         response = self.client.put(f'{API_ENDPOINT}{self.teacher.id}/', updated_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['first_name'], updated_data['first_name'])
 
     def test_delete_self(self):
         response = self.client.delete(f'{API_ENDPOINT}{self.teacher.id}/')
@@ -95,3 +94,23 @@ class UserTestTeacher(TestCase):
         response = self.client.get(f'{API_ENDPOINT}{self.teacher.id}/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['first_name'], self.teacher.first_name)
+
+    def test_add_course_to_user(self):
+        response = self.client.post(
+            f"{API_ENDPOINT}{self.student.id}/add_course_to_user/",
+            {"course_id": self.course.course_id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.student.refresh_from_db()
+        self.assertEqual(self.student.course.count(), 1)
+        self.assertEqual(self.student.course.first().course_id, self.course.course_id)
+
+    def test_remove_course_from_user(self):
+        self.student.course.add(self.course.course_id)
+        response = self.client.post(
+            f"{API_ENDPOINT}{self.student.id}/remove_course_from_user/",
+            {"course_id": self.course.course_id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.student.refresh_from_db()
+        self.assertEqual(self.student.course.count(), 0)

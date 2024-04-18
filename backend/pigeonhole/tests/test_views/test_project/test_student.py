@@ -35,18 +35,21 @@ class ProjectTestStudent(TestCase):
 
         self.invisible_project = Project.objects.create(
             name="Test Project",
-            course_id=self.course
+            course_id=self.course,
+            deadline="2021-12-12 12:12:12",
         )
 
         self.visible_project = Project.objects.create(
             name="Test Project 2",
             course_id=self.course,
-            visible=True
+            visible=True,
+            deadline="2021-12-12 12:12:12",
         )
 
         self.project_not_of_student = Project.objects.create(
             name="Test Project",
-            course_id=self.course_not_of_student
+            course_id=self.course_not_of_student,
+            deadline="2021-12-12 12:12:12",
         )
 
         self.client.force_authenticate(self.student)
@@ -57,7 +60,8 @@ class ProjectTestStudent(TestCase):
             {
                 "name": "Test Project 2",
                 "description": "Test Project 2 Description",
-                "course_id": self.course.course_id
+                "course_id": self.course.course_id,
+                "deadline": "2021-12-12 12:12:12",
             },
             format='json'
         )
