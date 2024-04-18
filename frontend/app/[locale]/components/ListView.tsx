@@ -129,9 +129,11 @@ interface ListViewProps {
     action_text: string;
     search_text: string;
     sortable: boolean[];
+    page_size: number;
+    headers_backend: string[];
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers_backend, sortable, action_name, action_text, search_text }: ListViewProps) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers_backend, sortable, action_name, action_text, search_text, page_size=5 }: ListViewProps) => {
     // default listview
     const [searchTerm, setSearchTerm] = useState('');
     const [rows, setRows] = useState<(string | number | boolean)[][]>([]);
@@ -195,25 +197,25 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
                     'users': async () => {
-                        return parse_pages(await getUsers(currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                        return parse_pages(await getUsers(currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'course_students': async () => {
-                        return parse_pages(await getStudents_by_course(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                        return parse_pages(await getStudents_by_course(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     "course_teachers": async () => {
-                        return parse_pages(await getTeachers_by_course(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                        return parse_pages(await getTeachers_by_course(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'courses': async () => {
-                        return parse_pages(await getCourses(currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                        return parse_pages(await getCourses(currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'projects': async () => {
-                        return parse_pages(await getProjects_by_course(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                        return parse_pages(await getProjects_by_course(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'groups': async () => {
-                        return parse_pages(await getGroups_by_project(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                        return parse_pages(await getGroups_by_project(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'submissions': async () => {
-                        return parse_pages(await getProjectSubmissions(get_id, currentPage, 5, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                        return parse_pages(await getProjectSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     }
                 };
 
