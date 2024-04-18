@@ -2,11 +2,10 @@ import {Grid, IconButton} from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import React from "react";
-import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import AlarmOnIcon from '@mui/icons-material/AlarmOn';
 import AlarmOffIcon from '@mui/icons-material/AlarmOff';
 
-function FinishButtons(
+interface FinishButtonsProps {
     visible: boolean,
     setVisible: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     handleSave: () => Promise<void>,
@@ -15,8 +14,15 @@ function FinishButtons(
     course_id: number,
     setHasDeadline: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     hasDeadline: boolean
+}
+
+function FinishButtons(
+    {
+        visible, setVisible, handleSave, setConfirmRemove, translations,
+        course_id, setHasDeadline, hasDeadline
+    }: FinishButtonsProps
 ) {
-    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
+    return <div>
         <Grid container spacing={0} alignItems={"center"} justifyContent={"space-between"}>
             <Grid display={"flex"}>
                 {
@@ -69,7 +75,7 @@ function FinishButtons(
                 </button>
             </Grid>
         </Grid>
-    </TranslationsProvider>
+    </div>
 }
 
 export default FinishButtons;

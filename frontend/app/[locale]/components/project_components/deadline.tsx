@@ -5,10 +5,14 @@ import {DateCalendar} from "@mui/x-date-pickers/DateCalendar";
 import {TimePicker} from "@mui/x-date-pickers";
 import React from "react";
 
-function Deadline(deadline: dayjs.Dayjs,
-                  setDeadline: (value: (((prevState: dayjs.Dayjs) => dayjs.Dayjs) | dayjs.Dayjs)) => void,
-                  hasDeadline: boolean
-) {
+interface DeadlineProps {
+    deadline: dayjs.Dayjs,
+    setDeadline: (value: (((prevState: dayjs.Dayjs) => dayjs.Dayjs) | dayjs.Dayjs)) => void,
+    hasDeadline: boolean
+
+}
+
+function Deadline({deadline, setDeadline, hasDeadline}: DeadlineProps) {
     return <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateCalendar
             value={deadline}

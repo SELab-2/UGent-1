@@ -1,11 +1,11 @@
 import React from 'react';
-import ProfileCard from '../components/ProfileCard';
-import NavBar from '../components/NavBar';
 import Box from '@mui/material/Box';
+import NavBar from "../../components/NavBar";
+import ProfileEditCard from "@app/[locale]/components/ProfileEditCard";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import initTranslations from "@app/i18n";
 
-const ProfilePage = async ({params: {locale}}: { params: { locale: any } }) => {
+const EditProfilePage = async ({params: {locale}}: { params: { locale: any } }) => {
     const {t, resources} = await initTranslations(locale, ['common'])
 
     return (
@@ -16,10 +16,10 @@ const ProfilePage = async ({params: {locale}}: { params: { locale: any } }) => {
         >
             <NavBar/>
             <Box sx={{pt: 9}}>
-                <ProfileCard/>
+                <ProfileEditCard/>
             </Box>
         </TranslationsProvider>
     );
 };
 
-export default ProfilePage;
+export default EditProfilePage;
