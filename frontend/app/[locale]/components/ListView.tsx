@@ -180,7 +180,7 @@ const ListView: NextPage<ListViewProps> = ({
     // default listview
     const [searchTerm, setSearchTerm] = useState('');
     const [rows, setRows] = useState<(string | number | boolean)[][]>([]);
-    const [sortConfig, setSortConfig] = useState({key: headers[0], direction: 'asc'});
+    const [sortConfig, setSortConfig] = useState({key: headers_backend[0], direction: 'asc'});
     // group screen
     const [user, setUser] = useState<any>();
     const [user_is_in_group, setUserIsInGroup] = useState(false);
