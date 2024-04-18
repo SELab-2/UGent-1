@@ -25,15 +25,6 @@ export class APIError {
     trace: unknown;
 }
 
-export type Submission = {
-    submission_id: number;
-    group_id: number;
-    submission_nr: number;
-    file: string;
-    timestamp: string;
-    output_test: string;
-}
-
 export type Course = {
     course_id: number;
     name: string;
@@ -88,7 +79,7 @@ export type Submission = {
 
 export type UserData = {
     id: number;
-    emai: string;
+    email: string;
     first_name: string;
     last_name: string;
     course: number[];
