@@ -153,7 +153,11 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                         </Grid>
                     </Grid>
                 </Box>
-                <ProjectSubmissionsList project_id={project_id} showActions={false}/>
+                <ProjectSubmissionsList
+                    project_id={project_id}
+                    showActions={false}
+                    page_size={10}
+                />
             </div>
         ))
     )
