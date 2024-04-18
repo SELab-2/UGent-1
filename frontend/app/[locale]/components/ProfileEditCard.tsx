@@ -143,7 +143,7 @@ const ProfileEditCard = () => {
                             </Typography>
                         </Box>
                         <Box sx={{display: 'flex', gap: 2, width: '100%', justifyContent: 'center'}}>
-                            <Button variant="contained" color="primary" onClick={handleSaveChanges}>
+                            <Button variant="contained" color="primary" data-testid="save-changes" onClick={handleSaveChanges}>
                                 {t('save_changes')}
                             </Button>
                             <Link href="/profile" passHref>

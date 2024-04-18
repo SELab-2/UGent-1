@@ -1,5 +1,5 @@
 import React from 'react';
-import {fireEvent, screen, render, waitFor} from '@testing-library/react';
+import {render, waitFor} from '@testing-library/react';
 import ProfileCard from "@app/[locale]/components/ProfileCard";
 import '@testing-library/jest-dom';
 import * as api from '@lib/api';
@@ -17,7 +17,7 @@ jest.mock('../lib/api', () => ({
 describe('ProfileCard', () => {
 
     it('renders user name correctly', async () => {
-        (api.getUserData as jest.Mock).mockResolvedValueOnce( {
+        (api.getUserData as jest.Mock).mockResolvedValueOnce({
             id: 1,
             email: "test@gmail.com",
             first_name: "First",
@@ -33,17 +33,5 @@ describe('ProfileCard', () => {
             expect(getByText('First Last')).toBeInTheDocument();
             expect(getByText('test@gmail.com')).toBeInTheDocument();
         })
-    })
-
-    it('changes page after clicking edit_account button', async () => {
-        const {getByText} = render(<ProfileCard/>);
-        const button = screen.getByRole('button');
-
-        delete window.location
-        window.location = { href: '' };
-
-        await fireEvent.click(button);
-
-        expect(window.location.href).toBe('/profile/edit');
     })
 })

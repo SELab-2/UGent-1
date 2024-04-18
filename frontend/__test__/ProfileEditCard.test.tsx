@@ -1,6 +1,6 @@
 import React from 'react';
-import {fireEvent, screen, render, waitFor} from '@testing-library/react';
-import ProfileEditCard from "@app/[locale]/components/ProfileCard";
+import {fireEvent, render, waitFor} from '@testing-library/react';
+import ProfileEditCard from "@app/[locale]/components/ProfileEditCard";
 import '@testing-library/jest-dom';
 import * as api from '@lib/api';
 
@@ -10,6 +10,7 @@ jest.mock('react-i18next', () => ({
 
 jest.mock('../lib/api', () => ({
     getUserData: jest.fn(),
+    updateUserData: jest.fn(),
     getImage: jest.fn(),
     APIError: jest.fn(),
 }));
@@ -35,15 +36,26 @@ describe('ProfileEditCard', () => {
         })
     })
 
-    it('changes page after clicking save_changes button', async () => {
-        const {getByText} = render(<ProfileEditCard/>);
-        const button = screen.getByRole('button');
+    it('calls handleSaveChanges when the save_changes button is clicked', async () => {
+        // Arrange
+        api.getUserData.mockResolvedValueOnce({
+            id: 1,
+            email: "test@gmail.com",
+            first_name: "First",
+            last_name: "Last",
+            course: [1],
+            role: 1,
+            picture: "http://localhost:8000/media/profile_pictures/test.png"
+        });
+        api.getImage.mockResolvedValueOnce(new Blob());
 
-        delete window.location
-        window.location = {href: ''};
+        const {findByTestId} = render(<ProfileEditCard/>);
 
-        await fireEvent.click(button);
+        // Act
+        const saveChangesButton = await findByTestId('save-changes');
+        fireEvent.click(saveChangesButton);
 
-        expect(window.location.href).toBe('/profile');
-    })
+        // Assert
+        expect(api.updateUserData).toHaveBeenCalled();
+    });
 })
