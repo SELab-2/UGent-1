@@ -6,10 +6,14 @@ import Box from "@mui/material/Box";
 import {TextField} from "@mui/material";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 
-function RequiredFiles(
+interface RequiredFilesProps {
     files: any[],
     setFiles: (value: (((prevState: any[]) => any[]) | any[])) => void,
     translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
+}
+
+function RequiredFiles(
+    {files, setFiles, translations}: RequiredFilesProps
 ) {
     const handleFieldChange = (index: number, event: any) => {
         const newFields = [...files];
@@ -24,7 +28,7 @@ function RequiredFiles(
         }
     }
 
-    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
+    return <div>
         <Typography variant="h5" className={"typographyStyle"}>
             {translations.t("required_files")}
             <Tooltip title={
@@ -48,12 +52,11 @@ function RequiredFiles(
                     className={"conditionsSummation"}
                     value={field}
                     onChange={(event) => handleFieldChange(index, event)}
-                    defaultValue={"/extra/verslag.pdf , *.py"}
                     size="small"
                 />
             ))}
         </Box>
-    </TranslationsProvider>;
+    </div>;
 }
 
 export default RequiredFiles;

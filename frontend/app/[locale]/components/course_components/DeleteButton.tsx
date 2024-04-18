@@ -6,6 +6,7 @@ import {deleteCourse} from "@lib/api";
 import {Button} from '@mui/material';
 
 
+
 interface EditCourseFormProps {
     courseId: number
 }

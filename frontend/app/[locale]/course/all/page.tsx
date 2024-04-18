@@ -13,6 +13,7 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
     const headers = [t('name'), t('description'), t('open'), t('join/leave')]
+    const headers_backend = ['name', 'description', 'open', 'join/leave']
 
     return (
         <TranslationsProvider
@@ -21,14 +22,15 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
             namespaces={i18nNamespaces}
         >
             <NavBar/>
+            <div style={{marginTop:60, padding:20}}>
             <BackButton 
                 destination={'/home'}
                 text={t('back_to') + ' ' + t('home') + ' ' +  t('page')}
             />
-            <div style={{ marginBottom: '100px' }}>
             <ListView
                 admin={true}
                 headers={headers}
+                headers_backend={headers_backend}
                 sortable={[true, false, false, false]}
                 get={'courses'}
                 action_name={'join_course'}

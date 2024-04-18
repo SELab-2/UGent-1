@@ -38,7 +38,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                height: '200px',
+                height: '140px',
                 width: "calc(100% - 40px)",
                 borderRadius: '16px',
                 margin: "0 auto",

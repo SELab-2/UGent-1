@@ -16,16 +16,6 @@ export default function SubmitPage({project_id}: { project_id: string }){
     const [paths, setPaths] = useState<string[]>([]);
     const [submitted, setSubmitted] = useState<string>("no");
 
-    
-    function folderAdded(event : any){
-        let newpaths = []
-        for (const file of event.target.files) {
-            let text = file.webkitRelativePath;
-            newpaths.push(text);
-        }
-        setPaths(newpaths);
-    }
-
     useEffect(() => {
         const fetchProject = async () => {
             try {
@@ -66,9 +56,10 @@ export default function SubmitPage({project_id}: { project_id: string }){
 
                 <form onSubmit={async (e)=>{setSubmitted(await uploadSubmissionFile(e));}} encType="multipart/form-data">
 
-                    <input onChange={folderAdded} type="file" id="filepicker" name="fileList" webkitdirectory="true" multiple />
+                    <input style={{width: "300px", height: "120px", backgroundColor: "lightgrey", border: "6px dotted black"}} type="file" id="filepicker" name="file"/>
                     
                     <input type="hidden" name="project_id" value={project_id}/>
+                    <input type="hidden" name="mode" value="submitform"/>
                     
                     <ul id="listing"></ul>
 
@@ -80,8 +71,20 @@ export default function SubmitPage({project_id}: { project_id: string }){
                     {submitted === "yes" && <Typography variant="h6">{t('submitted')}</Typography>}
                     {submitted === "error" && <Typography variant="h6">{t('submission_error')}</Typography>}
                     {submitted !== "yes" && 
-                        <button type="submit">
-                            <AddButton translationkey='submit_project' href={undefined} />
+                        <button type='submit'
+                        style={{
+                            backgroundColor: '#1E64C8',
+                            color: 'white',
+                            padding: '8px 16px',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontFamily: 'Quicksand',
+                            fontSize: '16px',
+                            marginTop: '10px',
+                            marginLeft: '15px'
+                        }}>
+                            <Typography variant="h6">{t("submit")}</Typography>
                         </button>
                     }
                 </form>

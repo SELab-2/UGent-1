@@ -7,7 +7,6 @@ import TranslationsProvider from "@app/[locale]/components/TranslationsProvider"
 
 async function CourseEditPage({params: {locale, course_id}}: { params: { locale: any, course_id: number } }) {
     const {t, resources} = await initTranslations(locale, ["common"])
-    console.log(course_id);
 
     return (
         <TranslationsProvider
@@ -27,6 +26,7 @@ async function CourseEditPage({params: {locale, course_id}}: { params: { locale:
                 <EditCourseForm courseId={course_id}/>
                 <DeleteButton courseId={course_id}/>
             </Box>
+            <div id="extramargin" style={{height: "100px"}}></div>
         </TranslationsProvider>
     );
 }
