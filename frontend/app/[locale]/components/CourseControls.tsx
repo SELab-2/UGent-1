@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import {Box, Button, MenuItem, Select, SelectChangeEvent, Stack, Typography} from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ViewListIcon from '@mui/icons-material/ViewList';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {useTranslation} from "react-i18next";
@@ -37,6 +38,11 @@ const CourseControls = () => {
                     <Link href="/course/add" passHref>
                         <Button variant="contained" color="secondary" startIcon={<AddCircleIcon/>}>
                             {t("create_course")}
+                        </Button>
+                    </Link>
+                    <Link href="/course/all" passHref>
+                        <Button variant="contained" color="secondary" startIcon={<ViewListIcon/>}>
+                            {t("all_courses")}
                         </Button>
                     </Link>
                     <Button variant="contained" color="secondary" startIcon={<ArchiveIcon/>}>

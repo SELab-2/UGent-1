@@ -21,7 +21,9 @@ async function CourseEditPage({params: {locale, course_id}}: { params: { locale:
                 <Box sx={{marginRight: '20px'}}>
                     <EditCourseForm courseId={course_id}/>
                 </Box>
+
             </Box>
+            <div id="extramargin" style={{height: "100px"}}></div>
         </TranslationsProvider>
     );
 }

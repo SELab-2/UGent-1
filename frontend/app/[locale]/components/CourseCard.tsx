@@ -11,7 +11,6 @@ import {
     Course,
     getLastSubmissionFromProject,
     getProjectsFromCourse,
-    getTeachersFromCourse,
     Project,
     Submission,
     User
@@ -51,7 +50,6 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
         };
 
         fetchProjects();
-        fetchTeachers();
     }, [course.course_id]);
 
     const headers = [t('name'), t('deadline'), t('view')]
@@ -63,7 +61,9 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
             <Card>
                 <CardContent>
                     <Typography variant="h6" component="div" gutterBottom>
-                        {course.name}
+                        <a href={`/course/${course.course_id}`} style={{color: 'black'}}>
+                            {course.name}
+                        </a>
                     </Typography>
                     <Typography color="text.text" gutterBottom style={{whiteSpace: 'pre-line'}}>
                         {teachers.map((teacher: User) => teacher.first_name + " " + teacher.last_name).join('\n')}
