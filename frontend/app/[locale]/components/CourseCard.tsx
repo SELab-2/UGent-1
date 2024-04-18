@@ -18,7 +18,6 @@ import {
     Course,
     getLastSubmissionFromProject,
     getProjectsFromCourse,
-    getTeachersFromCourse,
     Project,
     Submission,
     User
@@ -29,7 +28,6 @@ const options = {month: 'long', day: '2-digit', year: 'numeric', hour: '2-digit'
 
 const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
     const [projects, setProjects] = useState<Project[]>([]);
-    const [teachers, setTeachers] = useState<User[]>([]);
     const [error, setError] = useState<APIError | null>(null);
     const [submissions, setSubmissions] = useState<Map<number, Submission>>(new Map());
     const {t} = useTranslation()
@@ -38,15 +36,6 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
         const fetchProjects = async () => {
             try {
                 const fetched_projects: Project[] = await getProjectsFromCourse(course.course_id);
-                const fetched_submissions = new Map<number, Submission>();
-                for (let i = 0; i < fetched_projects.length; i++) {
-                    const project = fetched_projects[i];
-                    const last_submission = await getLastSubmissionFromProject(project.project_id);
-                    if (last_submission.group_id !== null) {
-                        fetched_submissions.set(project.project_id, last_submission);
-                    }
-                }
-                setSubmissions(fetched_submissions);
                 setProjects(fetched_projects);
             } catch (error) {
                 if (error instanceof APIError) setError(error);
@@ -54,17 +43,7 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
 
         };
 
-        const fetchTeachers = async () => {
-            try {
-                setTeachers(await getTeachersFromCourse(course.course_id));
-            } catch (error) {
-                if (error instanceof APIError) setError(error);
-            }
-
-        };
-
         fetchProjects();
-        fetchTeachers();
     }, [course.course_id]);
 
     const convertDate = (date_str: string) => {
@@ -87,16 +66,12 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
                     <Typography variant="h6" component="div" gutterBottom>
                         {course.name}
                     </Typography>
-                    <Typography color="text.text" gutterBottom style={{whiteSpace: 'pre-line'}}>
-                        {teachers.map((teacher: User) => teacher.first_name + " " + teacher.last_name).join('\n')}
-                    </Typography>
                     <TableContainer>
                         <Table aria-label="simple table" size="small">
                             <TableHead>
                                 <TableRow>
                                     <TableCell>{t('project')}</TableCell>
                                     <TableCell align="right">{t('deadline')}</TableCell>
-                                    <TableCell align="right">{t('submissions')}</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -113,16 +88,6 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
                                         </TableCell>
                                         <TableCell align="right">
                                             {convertDate(project['deadline'])}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {submissions.has(project.project_id) ? (
-                                                <a
-                                                    href={`/submission/${submissions.get(project.project_id)?.submission_id}/`}
-                                                    style={{color: '#1E64C8'}}
-                                                >
-                                                    {`#${submissions.get(project.project_id)?.submission_nr}`}
-                                                </a>
-                                            ) : ""}
                                         </TableCell>
                                     </TableRow>
                                 ))}
