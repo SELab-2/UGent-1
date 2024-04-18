@@ -558,12 +558,16 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any) : Promise<string>{
+export async function uploadSubmissionFile(event: any, project_id : string) : Promise<string>{
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
     const formData = new FormData(event.target);
     const formDataObject = Object.fromEntries(formData.entries());
     try {
+        let groupres = await axios.get(backend_url + "/projects/" + project_id + "/get_group/", {withCredentials: true});
+        const group_id = groupres.data.group_id;
+        formDataObject.group_id = group_id;
         await axios.post(backend_url + "/submissions/", formDataObject, {withCredentials: true, headers: {'Content-Type': 'multipart/form-data'}});
         return "yes";
     } catch (error) {
