@@ -21,6 +21,7 @@ import CourseReturnButton from "@app/[locale]/project/[project_id]/details/Cours
 import ProjectEditButton from "@app/[locale]/project/[project_id]/details/ProjectEditButton";
 import ProjectGroupButton from "@app/[locale]/project/[project_id]/details/ProjectGroupButton";
 import GroupSubmissionList from "@app/[locale]/components/GroupSubmissionList";
+import AddSubmissionButton from "@app/[locale]/project/[project_id]/details/AddSubmissionButton";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -154,18 +155,34 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                         </Grid>
                     </Grid>
                 </Box>
-                {user?.role === 3 ? (
-                    <GroupSubmissionList
-                        project_id={project_id}
-                        showActions={false}
-                        page_size={10}
-                    />
+                {user?.role !== 3 ? (
+                    <Box sx={{marginTop: 4, marginBottom: 4}}>
+                        <div style={{display: "flex"}}>
+                            <Typography variant={"h4"}>
+                                {t("my_submissions")}
+                            </Typography>
+                            <AddSubmissionButton
+                                locale={locale}
+                                project_id={project_id}
+                            />
+                        </div>
+                        <GroupSubmissionList
+                            project_id={project_id}
+                            showActions={false}
+                            page_size={10}
+                        />
+                    </Box>
                 ) : (
-                    <ProjectSubmissionsList
-                        project_id={project_id}
-                        showActions={false}
-                        page_size={10}
-                    />
+                    <Box sx={{marginTop: 4, marginBottom: 4}} className={"submissionContainer"}>
+                        <Typography variant={"h4"}>
+                            {t("submissions")}
+                        </Typography>
+                        <ProjectSubmissionsList
+                            project_id={project_id}
+                            showActions={false}
+                            page_size={10}
+                        />
+                    </Box>
                 )}
             </div>
         ))

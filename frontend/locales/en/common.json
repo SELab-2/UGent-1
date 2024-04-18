@@ -85,5 +85,7 @@
     "edit_project": "Edit",
     "submission_error": "Submission error, try again",
     "submitted": "Sucessfully submitted",
-    "all_courses": "View All Courses"
+    "all_courses": "View All Courses",
+    "my_submissions": "My submissions",
+    "add_submission": "Add submission"
 }

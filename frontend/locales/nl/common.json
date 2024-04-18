@@ -87,5 +87,7 @@
     "edit_project": "Aanpassen",
     "submission_error": "Fout bij inleveren, probeer het opnieuw",
     "submitted": "Inlevering bevestigd!",
-    "all_courses": "Bekijk Alle Cursussen"
+    "all_courses": "Bekijk Alle Cursussen",
+    "my_submissions": "Mijn indieningen",
+    "add_submission": "Indiening toevoegen"
 }
