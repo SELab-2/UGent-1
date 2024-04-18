@@ -22,7 +22,6 @@ const JoinCourseWithToken = ({token, course_id}: { token: any, course_id: any })
                             throw new Error('Failed to join course');
                         }
                     } catch (error) {
-                        console.error(error)
                         // if user couldn't join the course, redirect to home page
                         if (!userData.course.includes(Number(course_id))) {
                             window.location.href = '/home';
@@ -30,7 +29,6 @@ const JoinCourseWithToken = ({token, course_id}: { token: any, course_id: any })
                     }
                 } catch (error) {
                     // this shouldn't happen
-                    console.error(error)
                 }
             }
         };

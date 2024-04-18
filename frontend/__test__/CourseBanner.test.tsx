@@ -1,4 +1,4 @@
-import {render, waitFor} from '@testing-library/react';
+import {act, render, waitFor} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import CourseBanner from '../app/[locale]/components/CourseBanner';
 import * as api from "@lib/api";
