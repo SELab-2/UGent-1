@@ -8,8 +8,8 @@ const GroupSubmissionList = ({project_id, showActions, page_size = 5}: {
     showActions: boolean,
     page_size: number
 }) => {
-    const headers = ["Group number", "Submission date", "Status"]
-    const headers_backend = ["group_nr", "submission_date", "status"]
+    const headers = ["Group number", "Submission date", "Status", "View"]
+    const headers_backend = ["group_nr", "submission_date", "status", "View"]
     const sortable = [true, true, false]
 
     return (
