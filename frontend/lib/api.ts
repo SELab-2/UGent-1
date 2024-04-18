@@ -80,7 +80,7 @@ export type Submission = {
 
 export type UserData = {
     id: number;
-    emai: string;
+    email: string;
     first_name: string;
     last_name: string;
     course: number[];

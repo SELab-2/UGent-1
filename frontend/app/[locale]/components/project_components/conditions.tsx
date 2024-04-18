@@ -4,13 +4,14 @@ import React from "react";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Box from "@mui/material/Box";
 import {TextField} from "@mui/material";
-import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 
-function Conditions(
+interface ConditionsProps {
     conditions: string[],
     setConditions: (value: (((prevState: string[]) => string[]) | string[])) => void,
     translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
-) {
+}
+
+function Conditions({conditions, setConditions, translations}: ConditionsProps) {
     const handleConditionsChange = (index: number, event: any) => {
         const newConditions = [...conditions];
         newConditions[index] = event.target.value;
@@ -24,7 +25,7 @@ function Conditions(
         }
     }
 
-    return <TranslationsProvider locale={translations.locale} namespaces={translations.i18nNamespaces} resources={translations.resources}>
+    return <div>
         <Typography variant="h5" className={"typographyStyle"}>
             {translations.t("conditions")}
             <Tooltip title={
@@ -53,7 +54,7 @@ function Conditions(
                 />
             ))}
         </Box>
-    </TranslationsProvider>;
+    </div>;
 }
 
 export default Conditions;
