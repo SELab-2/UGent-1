@@ -102,6 +102,30 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return paginator.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=["get"])
+    def get_group_submissions(self, request, *args, **kwargs):
+        project = self.get_object()
+        groups = Group.objects.filter(
+            project_id=project, user=request.user)
+
+        if not groups:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        if len(groups) > 1:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        group = groups[0]
+
+        submissions = Submissions.objects.filter(group_id=group)
+        submissions_filter = SubmissionFilter(request.GET, queryset=submissions)
+        filtered_submissions = submissions_filter.qs
+        paginator = CustomPageNumberPagination()
+        paginated_submissions = paginator.paginate_queryset(
+            filtered_submissions, request
+        )
+        serializer = SubmissionsSerializer(paginated_submissions, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+    @action(detail=True, methods=["get"])
     def get_last_submission(self, request, *args, **kwargs):
         project = self.get_object()
         groups = Group.objects.filter(project_id=project)
