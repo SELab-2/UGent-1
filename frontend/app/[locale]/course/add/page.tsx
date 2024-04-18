@@ -1,10 +1,10 @@
 import NavBar from "@app/[locale]/components/NavBar";
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import CreateCourseForm from "@app/[locale]/components/CreateCourseForm";
-import CancelButton from "@app/[locale]/components/course_components/CancelButton";
 
+const i18nNamespaces = ['common']
 
 async function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
     const {t, resources} = await initTranslations(locale, ["common"])
@@ -13,15 +13,17 @@ async function CourseCreatePage({params: {locale}}: { params: { locale: any } })
         <TranslationsProvider
             resources={resources}
             locale={locale}
-            namespaces={["common"]}
+            namespaces={i18nNamespaces}
         >
             <NavBar/>
-            <Box sx={{margin: '64px', marginTop: '96px', position: 'relative'}}>
-                <CancelButton/>
-                <Box sx={{marginRight: '20px'}}>
-                    <CreateCourseForm/>
-                </Box>
+            <Box
+                sx={{
+                    padding: 5,
+                }}
+            >
+                <CreateCourseForm/>
             </Box>
+
         </TranslationsProvider>
     )
 }

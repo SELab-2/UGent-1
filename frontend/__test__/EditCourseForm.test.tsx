@@ -51,16 +51,13 @@ describe('EditCourseForm', () => {
             render(<EditCourseForm courseId={1}/>);
         })
         // check if the name input was rendered properly
-        expect(screen.getByLabelText(/course name/i)).toBeInTheDocument();
+        expect(screen.getByText("course name")).toBeInTheDocument();
 
         // check if the description input was rendered properly
-        expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
+        expect(screen.getByText("description")).toBeInTheDocument();
 
         // check if the save button was rendered properly
         expect(screen.getByRole('button', {name: /save changes/i})).toBeInTheDocument();
-
-        // check if the cancel button was rendered properly
-        expect(screen.getByRole('button', {name: /cancel/i})).toBeInTheDocument();
     });
 
     // it('fills form fields with course data', async () => {

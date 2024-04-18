@@ -18,7 +18,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {useTranslation} from "react-i18next";
 import AddProjectButton from "@app/[locale]/components/AddProjectButton";
-import {Project, getProjectsForCourse, APIError, UserData, getUserData} from "@lib/api";
+import {Project, getProjectsFromCourse, APIError, UserData, getUserData} from "@lib/api";
 
 interface ProjectTableTeacherProps {
     course_id: number;
@@ -35,7 +35,7 @@ function ProjectTableTeacher({course_id}: ProjectTableTeacherProps) {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                setProjects(await getProjectsForCourse(course_id));
+                setProjects(await getProjectsFromCourse(course_id));
                 setUser(await getUserData());
             } catch (error) {
                 if (error instanceof APIError) setError(error);

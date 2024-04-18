@@ -19,6 +19,7 @@ const StudentCoTeacherButtons = ({course_id}: StudentCoTeacherButtonsProps) => {
                 justifyContent: 'flex-start',
                 width: '100%',
                 gap: 2,
+                marginTop: 2,
             }}
         >
             <Button
@@ -35,7 +36,7 @@ const StudentCoTeacherButtons = ({course_id}: StudentCoTeacherButtonsProps) => {
             <Button
                 variant="contained"
                 color='secondary'
-                href={'/course/'+course_id+'/co_teachers'}
+                href={'/course/'+course_id+'/teachers'}
                 sx={{
                     width: 'fit-content',
                     color: 'secondary.contrastText',

@@ -17,10 +17,6 @@ const EditCourseButton = ({course_id}: EditCourseButtonProps) => {
             <Button
                 variant="contained"
                 color="secondary"
-                href={""}
-                sx={{
-                    margin: '10px'
-                }}
             >
                 <Typography
                     variant="subtitle1"

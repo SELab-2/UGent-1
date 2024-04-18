@@ -3,7 +3,8 @@
 import React from 'react'
 import {useTranslation} from "react-i18next";
 import {deleteCourse} from "@lib/api";
-import { Typography } from '@mui/material';
+import {Button} from '@mui/material';
+
 
 
 interface EditCourseFormProps {
@@ -19,24 +20,18 @@ const DeleteButton = ({courseId}: EditCourseFormProps) => {
     }
 
     return (
-        <div style={{margin: "4px"}}>
-            <button onClick={handleDelete} style={{
-                backgroundColor: 'red',
-                color: 'white',
-                padding: '8px 16px',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontFamily: 'Quicksand',
-                position: 'absolute',
-                top: '10px',
-                right: '20px',
-                fontSize: '16px'
-            }}>
-                <Typography variant="h6">{t("delete course")}</Typography>
-            </button>
-
-        </div>
+        <Button
+            variant='contained'
+            onClick={handleDelete}
+            color='error'
+            sx={{
+                width: 'fit-content',
+                height: 'fit-content',
+                whiteSpace: 'nowrap',
+            }}
+        >
+            {t("delete course")}
+        </Button>
     )
 }
 

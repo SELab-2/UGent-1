@@ -4,8 +4,11 @@ import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
 
 import React, {useEffect, useState} from 'react';
-import Image from 'next/image';
 import banner from '../../../public/ugent_banner.png'
+import Typography from "@mui/material/Typography";
+import {Button, Input, MenuItem, Select, TextField} from "@mui/material";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import {visuallyHidden} from "@mui/utils";
 
 const CreateCourseForm = () => {
     const {t} = useTranslation();
@@ -30,7 +33,7 @@ const CreateCourseForm = () => {
         formData.append('description', description);
         formData.append('open_course', open.toString());
         const fileReader = new FileReader();
-         fileReader.onload = async function() {
+        fileReader.onload = async function () {
             const arrayBuffer = this.result;
             if (arrayBuffer !== null) {
                 formData.append('banner', new Blob([arrayBuffer], {type: 'image/png'}));
@@ -55,128 +58,156 @@ const CreateCourseForm = () => {
     }, [selectedImageURL, selectedImage]);
 
     return (
-        <form onSubmit={handleSubmit}>
-            <Box sx={{marginTop: '16px'}}>
-                <label htmlFor="name" style={{
-                    fontSize: '32px',
-                    fontFamily: 'Quicksand',
-                    marginBottom: '-10px',
-                    display: 'block'
-                }}>{t("course name")}</label><br/>
-                <input type="text" id="name" name="name" required
-                       onChange={(event: any) => setName(event.target.value)} style={{
-                    fontSize: '20px',
-                    fontFamily: 'Quicksand',
-                    borderRadius: '6px',
-                    height: '30px',
-                    width: '400px'
-                }}/>
+        <Box
+            component={"form"}
+            onSubmit={handleSubmit}
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-evenly',
+                height: 'fit-content',
+                width: '100%',
+            }}
+        >
+            <Box>
+                <Typography
+                    variant="h3"
+                >
+                    {t("course name")}
+                </Typography>
+                <TextField
+                    type="text"
+                    id="name"
+                    name="name"
+                    defaultValue={name}
+                    onChange={(event: any) => setName(event.target.value)}
+                    required
+                    label={t('name')}
+                    placeholder={t("course name")}
+                    style={{
+                        fontSize: '20px',
+                        fontFamily: 'Quicksand, sans-serif',
+                        borderRadius: '6px',
+                        height: '30px',
+                        width: '400px'
+                    }}
+                />
             </Box>
-            <Box sx={{marginTop: '16px', borderRadius: '12px'}} style={{height: '250px'}}>
-                <label htmlFor="banner" style={{
-                    fontSize: '32px',
-                    fontFamily: 'Quicksand',
-                    color: 'black'
-                }}>{t("banner")}</label><br/>
-                <div style={{
-                    width: '100%',
-                    height: '200px',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}>
-                    <div style={{position: 'relative', width: '100%', height: '100%'}}>
-                        <Image
-                            src={selectedImageURL}
-                            alt="Image"
-                            layout="fill"
-                            objectFit="cover"
-                        />
-                    </div>
-                </div>
+            <Box sx={{marginTop: '32px', height: 'fit-content'}}>
+                <Typography
+                    variant="h3"
+                >
+                    {t("banner")}
+                </Typography>
+                <Box
+                    borderRadius={'16px'}
+                    sx={{position: 'relative', width: '100%', height: 'fit-content', borderRadius: '16px',}}
+                >
+                    <Box
+                        component={'img'}
+                        alt={t('select image')}
+                        src={selectedImageURL}
+                        sx={{
+                            borderRadius: '16px',
+                            height: 'fit-content',
+                            maxHeight: '200px',
+                            width: '100%'
+                        }}
+                    />
+                </Box>
             </Box>
             <Box>
-                <label htmlFor="Image" style={{
-                    cursor: 'pointer',
-                    display: 'inline-block',
-                    padding: '8px 16px',
-                    border: '1px solid lightblue',
-                    borderRadius: '4px',
-                    backgroundColor: 'lightblue',
-                    color: 'black',
-                    fontFamily: 'Quicksand'
-                }}>
+                <Button variant={"contained"} color={"secondary"} size={'small'}
+                        startIcon={<UploadFileIcon sx={{color: 'secondary.contrastText'}}/>}
+                        disableElevation
+                        component="label"
+                        role={undefined}
+                        tabIndex={-1}
+                        sx={{
+                            padding: 1,
+                            width: 'fit-content',
+                            color: 'secondary.contrastText',
+                            marginTop: '16px'
+                        }}
+                >
                     {t("select image")}
-                    <input type="file" id="Image" name="Image" accept="image/*" onChange={handleImageUpload}
-                           style={{display: 'none'}}/>
-                </label>
+                    <Input type="file"
+                           id="Image"
+                           name="Image"
+                           onChange={handleImageUpload}
+                           style={visuallyHidden}
+                    />
+                </Button>
             </Box>
             <Box sx={{marginTop: '16px'}}>
-                <label htmlFor="description" style={{
-                    fontSize: '32px',
-                    fontFamily: 'Quicksand',
-                    color: 'black',
-                    marginBottom: '-10px',
-                    display: 'block'
-                }}>{t("description")}</label><br/>
-                <textarea id="description" name="description" rows={5}
-                          onChange={(event: any) => setDescription(event.target.value)} required style={{
-                    width: '100%',
-                    fontFamily: 'Quicksand',
-                    color: 'black',
-                    borderRadius: '6px',
-                    padding: '10px',
-                    boxSizing: 'border-box'
-                }}/>
+                <Typography
+                    variant="h3"
+                >
+                    {t("description")}
+                </Typography>
+                <TextField id="description" name="description"
+                           label="Description"
+                           placeholder={t('description_of_your_course')}
+                           multiline
+                           rows={4}
+                           onChange={(event: any) => setDescription(event.target.value)} required
+                           style={{
+                               width: '100%',
+                               fontFamily: 'Quicksand',
+                               color: 'black',
+                               borderRadius: '6px',
+                               padding: '10px',
+                               boxSizing: 'border-box'
+                           }}/>
             </Box>
             <Box sx={{marginTop: '16px'}}>
-                <label htmlFor="choice" style={{
-                    fontSize: '32px',
-                    fontFamily: 'Quicksand',
-                    color: 'black',
-                    marginBottom: '-10px',
-                    display: 'block'
-                }}>{t("access")}</label><br/>
-                <select id="choice" name="choice" onChange={(event) => (setOpen(event.target.value === 'true'))}
-                        style={{
-                            fontSize: '20px',
-                            fontFamily: 'Quicksand',
-                            borderRadius: '6px',
-                            padding: '5px'
-                        }}>
-                    <option value="false">{t("private")}</option>
-                    <option value="true">{t("public")}</option>
-                </select>
+                <Typography
+                    variant="h3"
+                >
+                    {t("access")}
+                </Typography>
+                <Select
+                    id="choice"
+                    name="choice"
+                    label={t("access")}
+                    value={open}
+                    onChange={(event: any) => setOpen(event.target.value)}
+                    sx={{
+                        fontSize: '20px',
+                        height: 'fit-content',
+                    }}
+                >
+                    <MenuItem value="false">{t("private")}</MenuItem>
+                    <MenuItem value="true">{t("public")}</MenuItem>
+                </Select>
             </Box>
-            <Box sx={{marginTop: '16px', position: 'absolute'}}>
-                <button type="submit" style={{
-                    backgroundColor: '#1E64C8',
-                    color: 'white',
-                    padding: '8px 16px',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontFamily: 'Quicksand',
-                    fontSize: '16px',
-                    marginTop: '80px'
-                }}>{t("save course")}</button>
-                <button
-                    onClick={() => window.location.href = '/home/'}
-                    style={{
-                        backgroundColor: '#1E64C8',
-                        color: 'white',
-                        padding: '8px 16px',
-                        border: 'none',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        fontFamily: 'Quicksand',
-                        fontSize: '16px',
-                        marginTop: '80px',
-                        marginLeft: '15px'
-                    }}>{t("cancel")}</button>
+            <Box
+                display={'flex'}
+                sx={{marginTop: '16px', gap: 2}}
+            >
+                <Button
+                    type="submit"
+                    color={'primary'}
+                    sx={{
+                        width: 'fit-content',
+                        backgroundColor: 'primary.main',
+                        color: 'primary.contrastText'
+                    }}
+                >
+                    {t("create_course")}
+                </Button>
+                <Button
+                    href={'/home'}
+                    sx={{
+                        width: 'fit-content',
+                        backgroundColor: 'secondary.main',
+                        color: 'secondary.contrastText'
+                    }}
+                >
+                    {t("cancel")}
+                </Button>
             </Box>
-        </form>
+        </Box>
     )
 }
 
