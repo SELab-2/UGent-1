@@ -178,20 +178,20 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> =  ({project_id, locale}) 
                             height="100vh"
                         >
                             <Box className={"pageBoxLeft"}>
-                                {Title(isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations)}
-                                {Assignment(isAssignmentEmpty, setDescription, description, translations)}
-                                {RequiredFiles(files, setFiles, translations)}
-                                {Conditions(conditions, setConditions, translations)}
-                                {Groups(groupAmount, isGroupAmountEmpty, groupSize, isGroupSizeEmpty, setGroupAmount, setGroupSize, translations)}
-                                {TestFiles(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
-                                {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
+                                {Title({isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations})}
+                                {Assignment({isAssignmentEmpty, setDescription, description, translations})}
+                                {RequiredFiles({files, setFiles, translations})}
+                                {Conditions({conditions, setConditions, translations})}
+                                {Groups({groupAmount, isGroupAmountEmpty, groupSize, isGroupSizeEmpty, setGroupAmount, setGroupSize, translations})}
+                                {TestFiles({testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations})}
+                                {UploadTestFile({testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations})}
                             </Box>
                             <Box className={"pageBoxRight"}>
-                                {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations, course_id, setHasDeadline, hasDeadline)}
-                                {Deadline(deadline, setDeadline, hasDeadline)}
+                                {FinishButtons({visible, setVisible, handleSave, setConfirmRemove, translations, course_id, setHasDeadline, hasDeadline})}
+                                {Deadline({deadline, setDeadline, hasDeadline})}
                             </Box>
                         </Box>
-                        {RemoveDialog(confirmRemove, handle_remove, setConfirmRemove, translations)}
+                        {RemoveDialog({confirmRemove, handle_remove, setConfirmRemove, translations})}
                     </div>
                 ) : (
                     <div>Students cannot edit project</div>
