@@ -131,7 +131,7 @@ interface ListViewProps {
     sortable: boolean[];
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortable, action_name, action_text, search_text }: ListViewProps) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers_backend, sortable, action_name, action_text, search_text }: ListViewProps) => {
     // default listview
     const [searchTerm, setSearchTerm] = useState('');
     const [rows, setRows] = useState<(string | number | boolean)[][]>([]);
@@ -382,8 +382,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                         {headers.map((header, index) => 
                             <th key={index}>
                                 {sortable[index] &&
-                                <IconButton size="small" onClick={() => handleSort(headers[index])}>
-                                    {sortConfig.key === headers[index] ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon /> : <WhiteTriangleDownIcon />) : <WhiteSquareIcon />}
+                                <IconButton size="small" onClick={() => handleSort(headers_backend[index])}>
+                                    {sortConfig.key === headers_backend[index] ? (sortConfig.direction === 'asc' ? <WhiteTriangleUpIcon /> : <WhiteTriangleDownIcon />) : <WhiteSquareIcon />}
                                 </IconButton>
                                 }
                                 {header}

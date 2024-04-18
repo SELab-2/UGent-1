@@ -12,6 +12,7 @@ export default async function Users({ params: { locale } }: { params: { locale: 
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
     const headers = [t('email'), t('role')];
+    const headers_backend = ['email', 'role'];
 
     return (
         <TranslationsProvider
@@ -28,6 +29,7 @@ export default async function Users({ params: { locale } }: { params: { locale: 
             <ListView
                 admin={true}
                 headers={headers}
+                headers_backend={headers_backend}
                 sortable={[true, false]}
                 get={'users'}
                 action_name={'remove'}

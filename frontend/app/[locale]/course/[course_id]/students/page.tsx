@@ -12,6 +12,7 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
     const headers = [t('email')];
+    const headers_backend = ['email'];
     
     return (
         <TranslationsProvider
@@ -28,6 +29,7 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
                 <ListView
                     admin={true}
                     headers={headers}
+                    headers_backend={headers_backend}
                     sortable={[true]}
                     get_id={course_id}
                     get={'course_students'}
