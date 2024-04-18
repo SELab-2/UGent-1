@@ -22,7 +22,6 @@ const ProjectPage = async ({params: {locale, project_id}}: {
                 locale={locale}
                 project_id={project_id}
             />
-            <Footer/>
         </TranslationsProvider>
     )
 }

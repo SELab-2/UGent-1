@@ -25,9 +25,6 @@ export default async function Course({params: {locale, project_id}, searchParams
 
             </SubmitPage>
 
-            
-
-            <Footer/>
         </TranslationsProvider>
     )
 }

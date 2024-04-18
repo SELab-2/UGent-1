@@ -37,7 +37,6 @@ export default async function Users({ params: { locale } }: { params: { locale: 
                 search_text={t('search')}
             />
             </div>
-            <Footer />
             <BackButton 
                 destination={'/admin'} 
                 text={t('back_to') + ' ' + t('admin') + ' ' +  t('page')}

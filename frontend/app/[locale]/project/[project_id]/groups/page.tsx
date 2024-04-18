@@ -35,7 +35,6 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
                     get={'groups'}
                 />
             </div>
-            <Footer />
         </TranslationsProvider>
     );
 }
