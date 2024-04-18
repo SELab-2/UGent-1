@@ -37,7 +37,8 @@
       "jest",
       "@testing-library/jest-dom",
       "node"
-    ]
+    ],
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
