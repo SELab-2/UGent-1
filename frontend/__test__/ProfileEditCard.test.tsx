@@ -23,7 +23,7 @@ describe('ProfileEditCard', () => {
             first_name: "First",
             last_name: "Last",
             course: [1],
-            role: 2,
+            role: 1,
             picture: "http://localhost:8000/media/profile_pictures/test.png"
         })
 
