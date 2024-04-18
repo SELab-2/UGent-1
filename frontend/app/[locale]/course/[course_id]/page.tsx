@@ -13,8 +13,8 @@ const i18nNamespaces = ['common']
 export default async function Course({params: {locale, course_id}, searchParams: {token}}:
                                          { params: { locale: any, course_id: number }, searchParams: { token: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
-    const headers = [t('name'), t('description'), t('status'), t('deadline'), t('view')]
-    const headers_backend = ['name', 'description', 'status', 'deadline', 'view']
+    const headers = [t('name'), t('deadline'), t('view')]
+    const headers_backend = ['name', 'deadline', 'view']
 
     return (
         <TranslationsProvider
@@ -44,7 +44,7 @@ export default async function Course({params: {locale, course_id}, searchParams:
                     admin={false}
                     headers={headers}
                     headers_backend={headers_backend}
-                    sortable={[true, true, false, true]}
+                    sortable={[true, true, false]}
                     get={'projects'}
                     get_id={course_id}
                 />

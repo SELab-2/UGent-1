@@ -131,9 +131,10 @@ interface ListViewProps {
     sortable: boolean[];
     page_size: number;
     headers_backend: string[];
+    search: boolean;
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers_backend, sortable, action_name, action_text, search_text, page_size=5 }: ListViewProps) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers_backend, sortable, action_name, action_text, search_text, page_size=5, search=true }: ListViewProps) => {
     // default listview
     const [searchTerm, setSearchTerm] = useState('');
     const [rows, setRows] = useState<(string | number | boolean)[][]>([]);
@@ -179,7 +180,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers
                     'course_students': (data) => [data.id, data.email],
                     'course_teachers': (data) => [data.id, data.email],
                     'courses': (data) => [data.course_id, data.name, data.description, data.open_course],
-                    'projects': (data) => [data.project_id, data.name, data.description, data.status, data.deadline],
+                    'projects': (data) => [data.project_id, data.name, data.deadline],
                     'groups': async (data) => {
                         let l = [];
                         // Iterate over the values of the object
@@ -290,21 +291,23 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers
     return (
         <RootContainer component="main">
             <CssBaseline/>
-            <SearchBar
-                label={search_text}
-                variant="outlined"
-                fullWidth
-                value={searchTerm}
-                onChange={(e: { target: { value: any; }; }) => {
-                    setCurrentPage(1);
-                    setSearchTerm(e.target.value);
-                    // reset all checkboxes
-                    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-                    checkboxes.forEach((checkbox) => {
-                        (checkbox as HTMLInputElement).checked = false;
-                    });
-                }}
-            />
+            {search &&
+                <SearchBar
+                    label={search_text}
+                    variant="outlined"
+                    fullWidth
+                    value={searchTerm}
+                    onChange={(e: { target: { value: any; }; }) => {
+                        setCurrentPage(1);
+                        setSearchTerm(e.target.value);
+                        // reset all checkboxes
+                        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                        checkboxes.forEach((checkbox) => {
+                            (checkbox as HTMLInputElement).checked = false;
+                        });
+                    }}
+                />
+                }
             {admin && action_name && action_name !== 'download_submission' && (
                 <RemoveButton
                 onClick={() => {
