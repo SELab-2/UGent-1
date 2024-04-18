@@ -58,7 +58,7 @@ export default function CourseDetails({course_id}: CourseDetailsProps) {
                 </Typography>
             )
             }
-            {user?.role !== 3 ? (
+            {user && user?.role !== 3 ? (
                 <>
                     <Typography
                         variant="h3"
@@ -84,9 +84,9 @@ export default function CourseDetails({course_id}: CourseDetailsProps) {
                         <Typography
                             variant="h6"
                         >
-                            {window.location + "?token=" + course?.invite_token}
+                            {"https://sel2-1.ugent.be/" + "?token=" + course?.invite_token}
                         </Typography>
-                        <CopyToClipboardButton text={window.location + "?token=" + course?.invite_token}/>
+                        <CopyToClipboardButton text={"https://sel2-1.ugent.be/" + "?token=" + course?.invite_token}/>
                     </Box>
                 </>
             ) : null

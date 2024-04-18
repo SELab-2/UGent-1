@@ -26,6 +26,7 @@ import LanguageSelect from "./LanguageSelect";
 import AccountMenu from "./AccountMenu";
 import {useTranslation} from "react-i18next";
 import {APIError, Course, getCourses, UserData, getUserData} from "@lib/api";
+import { locale } from 'dayjs';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 

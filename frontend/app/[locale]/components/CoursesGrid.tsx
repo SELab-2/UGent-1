@@ -14,7 +14,7 @@ const CoursesGrid = () => {
             try {
                 setUser(await getUserData());
                 setCourses(await getCoursesForUser());
-                console.log(await getCoursesForUser());
+                console.log(courses);
             } catch (error) {
                 if (error instanceof APIError) setError(error);
             }

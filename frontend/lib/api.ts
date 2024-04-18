@@ -282,12 +282,12 @@ export async function getCourses(page = 1, pageSize = 5, keyword?: string, order
 export async function getCoursesForUser() : Promise<Course[]>{
     let page = 1;
     let results: Course[] = []
-    let response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${10}`);
+    let response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${20}`);
     if (response.results.length === 0) return [];
     results = results.concat(response.results);
     while (response.next !== null) {
         page++;
-        response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${10}`);
+        response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${20}`);
         results = results.concat(response.results);
     }
     return results;

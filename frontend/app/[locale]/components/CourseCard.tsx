@@ -11,7 +11,6 @@ import {
     Course,
     getLastSubmissionFromProject,
     getProjectsFromCourse,
-    getTeachersFromCourse,
     Project,
     Submission,
     User
@@ -51,7 +50,6 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
         };
 
         fetchProjects();
-        fetchTeachers();
     }, [course.course_id]);
 
     const headers = [t('name'), t('deadline'), t('view')]
