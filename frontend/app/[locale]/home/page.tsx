@@ -1,66 +1,29 @@
-"use client";
-import React, {useEffect, useState} from 'react';
-import NavBar from "@app/[locale]/components/NavBar";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import initTranslations from "@app/i18n";
-import { getCourses, APIError, Course, UserData, getUserData } from '@lib/api';
+import React from 'react';
+import initTranslations from "../../i18n";
+import {Box, Container} from '@mui/material';
+import NavBar from '../components/NavBar';
+import CourseControls from '../components/CourseControls';
+import TranslationsProvider from "../components/TranslationsProvider";
+import CoursesGrid from '../components/CoursesGrid';
 
-
-
-function HomePage({params: {locale}} : {params: {locale: any}}) {
-    const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
-    const [user, setUser] = useState<UserData | null>(null);
-    const [translations, setTranslations] = useState({t: (key: any) => key}); // Default 't' function
-    const [error, setError] = useState<APIError | null>(null);
-
-    useEffect(() => {
-        const initialize = async () => {
-            const translations = await initTranslations(locale, ['common']);
-            setTranslations(translations);
-        };
-
-        initialize();
-    }, [locale]);
-
-    useEffect(() => {
-        
-
-        const fetchCourses = async () => {
-            try{
-                setCourses(await getCourses());
-                setUser(await getUserData());
-            }catch(error){
-                if(error instanceof APIError) setError(error);
-            }
-            
-        };
-
-        fetchCourses();
-    }, []);
+const HomePage = async ({params: {locale}}: { params: { locale: any } }) => {
+    const {t, resources} = await initTranslations(locale, ['common'])
 
     return (
-        <div>
-            <Box sx={{marginTop: '64px'}}>
-                <Typography variant="h3">
-                    {translations.t("courses")}
-                </Typography>
-                {/* Render the list of course names */}
-                <Typography variant="h5">{error?.message}</Typography>
-                <Box>
-                    {courses.map(course => (
-                        <Typography key={course.course_id} variant="h5">{course.name}</Typography>
-                    ))}
-                </Box>
-                
-                {user && 
-                <ul>
-                    <li><b>first name: </b>{user.first_name}</li>
-                    <li><b>courses: </b>{user.course.join(', ')}</li>
-                </ul>}
+        <TranslationsProvider
+            resources={resources}
+            locale={locale}
+            namespaces={["common"]}
+        >
+            <NavBar/>
+            <Box sx={{position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#fff'}}>
+                <Container>
+                    <CourseControls/>
+                </Container>
             </Box>
-        </div>
+            <CoursesGrid/>
+        </TranslationsProvider>
     );
-}
+};
 
 export default HomePage;

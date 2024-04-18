@@ -22,6 +22,8 @@ class CanAccessProject(permissions.BasePermission):
             if user.is_admin or user.is_superuser:
                 return True
             return False
+        elif view.action in ['download_submissions']:
+            return user.is_teacher or user.is_admin or user.is_superuser
         else:
             project_id = int(view.kwargs.get('pk'))
             if not Project.objects.filter(project_id=project_id).exists():

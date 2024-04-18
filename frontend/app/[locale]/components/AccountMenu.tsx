@@ -14,18 +14,16 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {useTranslation} from "react-i18next";
-import {APIError, getCourses, getUserData, UserData} from "@lib/api";
+import {APIError, getUserData, UserData} from "@lib/api";
 import {useEffect, useState} from "react";
-import initTranslations from "@app/i18n";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
-const i18nNamespaces = ['common']
 
 export default function AccountMenu() {
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<APIError | null>(null);
-    const [translations, setTranslations] = useState<{t: ((key: string) => string), resources: any, locale: string, i18nNamespaces: string[]}>
-        ({t: (key: string) => key, resources: null, locale: "en", i18nNamespaces: [""]})
+    const { t } = useTranslation()
+
     useEffect(() => {
 
 
@@ -38,14 +36,6 @@ export default function AccountMenu() {
 
         };
 
-        const fetchTranslations = async () => {
-            const url = window.location.pathname;
-            const locale = url.split('/')[1];
-            const {t, resources} = await initTranslations(locale, i18nNamespaces)
-            setTranslations({t, resources, locale, i18nNamespaces})
-        }
-
-        fetchTranslations();
         fetchCourses();
     }, []);
 
@@ -60,6 +50,10 @@ export default function AccountMenu() {
         //TODO: Handle settings and My profile actions!!
         setAnchorEl(null);
     };
+
+    const toProfile = () => {
+        window.location.href = '/profile'
+    }
 
     const handleLogout = () => {
         setAnchorEl(null);
@@ -110,21 +104,21 @@ export default function AccountMenu() {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem onClick={handleClose}>
-                    <Avatar /> {translations.t('my_profile')}
+                <MenuItem onClick={toProfile}>
+                    <Avatar /> {t('my_profile')}
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleClose}>
                     <ListItemIcon>
                         <Settings fontSize="small" />
                     </ListItemIcon>
-                    {translations.t('settings')}
+                    {t('settings')}
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>
-                    {translations.t('logout')}
+                    {t('logout')}
                 </MenuItem>
             </Menu>
         </React.Fragment>

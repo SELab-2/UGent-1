@@ -1,11 +1,15 @@
+import zipfile
 from datetime import datetime
-import pytz
+from os.path import realpath, basename
 
+import pytz
+from django.http import FileResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.filters import OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
@@ -60,3 +64,54 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @action(detail=False, methods=["get"])
+    def download_selection(self, request, *args, **kwargs):
+        ids = request.query_params.getlist("id", None)
+
+        if not ids:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        path = ''
+
+        if len(ids) == 1:
+            submission = Submissions.objects.get(submission_id=ids[0])
+            if submission is None:
+                return Response(
+                    {"message": f"Submission with id {ids[0]} not found"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            path = submission.file.path
+
+        else:
+            path = 'backend/downloads/submissions.zip'
+            zipf = zipfile.ZipFile(
+                file=path,
+                mode="w",
+                compression=zipfile.ZIP_STORED
+            )
+
+            for id in ids:
+                submission = Submissions.objects.get(submission_id=id)
+                if submission is None:
+                    return Response(
+                        {"message": f"Submission with id {id} not found"},
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+
+                zipf.write(
+                    filename=submission.file.path,
+                    arcname=basename(submission.file.path)
+                )
+
+            zipf.close()
+
+        path = realpath(path)
+        response = FileResponse(
+            open(path, 'rb'),
+            content_type="application/force-download"
+        )
+        response['Content-Disposition'] = f'inline; filename={basename(path)}'
+
+        return response
