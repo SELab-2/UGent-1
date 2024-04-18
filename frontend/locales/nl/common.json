@@ -62,7 +62,7 @@
     "private": "Privé",
     "public": "Publiek",
     "name": "Naam",
-    "email": "E-mail",
+    "email": "email",
     "group": "Groep",
     "role" : "Rol",
     "remove_user": "Geselecteerde gebruikers verwijderen",
