@@ -295,7 +295,15 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers
                 variant="outlined"
                 fullWidth
                 value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
+                onChange={(e: { target: { value: any; }; }) => {
+                    setCurrentPage(1);
+                    setSearchTerm(e.target.value);
+                    // reset all checkboxes
+                    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach((checkbox) => {
+                        (checkbox as HTMLInputElement).checked = false;
+                    });
+                }}
             />
             {admin && action_name && action_name !== 'download_submission' && (
                 <RemoveButton
