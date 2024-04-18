@@ -2,6 +2,7 @@
 import React from "react";
 import {useTranslation} from "react-i18next";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import "./submission-details-styles.css"
 
 interface ProjectReturnButtonProps {
     locale: any,

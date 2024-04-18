@@ -533,6 +533,14 @@ const ListView: NextPage<ListViewProps> = ({
                             </td>
 
                         )}
+                        {get == 'submissions' && (
+                            <td>
+                                <Button onClick={() => window.location.href = '/submission/' + row[0]}>
+                                    View
+                                </Button>
+                            </td>
+
+                        )}
                     </TableRow>
                 ))}
                 </tbody>

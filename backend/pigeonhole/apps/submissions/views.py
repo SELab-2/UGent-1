@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from backend.pigeonhole.apps.groups.models import Group
-from backend.pigeonhole.apps.projects.models import Project
+from backend.pigeonhole.apps.projects.models import Project, ProjectSerializer
 from backend.pigeonhole.apps.submissions.models import Submissions, SubmissionsSerializer
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
 
@@ -48,6 +48,15 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @action(detail=True, methods=["get"])
+    def get_project(self, request, *args, **kwargs):
+        submission = self.get_object()
+        group = submission.group_id
+        project = group.project_id
+
+        serializer = ProjectSerializer(project)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["get"])
     def download_selection(self, request, *args, **kwargs):
@@ -98,4 +107,15 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         )
         response['Content-Disposition'] = f'inline; filename={basename(path)}'
 
+        return response
+
+    @action(detail=True, methods=["get"])
+    def download(self, request, *args, **kwargs):
+        submission = self.get_object()
+        path = realpath(submission.file.path)
+        response = FileResponse(
+            open(path, 'rb'),
+            content_type="application/force-download"
+        )
+        response['Content-Disposition'] = f'inline; filename={basename(path)}'
         return response
