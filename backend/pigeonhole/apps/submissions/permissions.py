@@ -54,5 +54,5 @@ class CanAccessSubmission(permissions.BasePermission):
                     return True
             elif user.is_student:
                 if group.user.filter(id=user.id).exists():
-                    return view.action in ['retrieve', 'create']
+                    return view.action in ['retrieve', 'create', 'download', 'get_project']
             return False

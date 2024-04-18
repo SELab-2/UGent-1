@@ -1,7 +1,7 @@
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
-import SubmissionDetailsPage from "@app/[locale]/submission/[submission_id]/SubmissionDetailsPage";
+import SubmissionDetailsPage from "@app/[locale]/submission/[submission_id]/details/SubmissionDetailsPage";
 
 const i18nNamespaces = ['common']
 
