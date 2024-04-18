@@ -6,16 +6,16 @@ import {any} from "prop-types";
 import {deleteProject, getProject, getTestFiles, getUserData, Project, updateProject} from "@lib/api";
 import initTranslations from "@app/i18n";
 import Box from "@mui/material/Box";
-import Title from "@app/[locale]/project/[project_id]/edit/title";
-import Assignment from "@app/[locale]/project/[project_id]/edit/assignment";
-import RequiredFiles from "@app/[locale]/project/[project_id]/edit/requiredFiles";
-import Conditions from "@app/[locale]/project/[project_id]/edit/conditions";
-import Groups from "@app/[locale]/project/[project_id]/edit/groups";
-import TestFiles from "@app/[locale]/project/[project_id]/edit/testfiles";
-import UploadTestFile from "@app/[locale]/project/[project_id]/edit/uploadButton";
-import FinishButtons from "@app/[locale]/project/[project_id]/edit/finishbuttons";
-import Deadline from "@app/[locale]/project/[project_id]/edit/deadline";
-import RemoveDialog from "@app/[locale]/project/[project_id]/edit/removedialog";
+import Title from "@app/[locale]/components/project_components/title";
+import Assignment from "@app/[locale]/components/project_components/assignment";
+import RequiredFiles from "@app/[locale]/components/project_components/requiredFiles";
+import Conditions from "@app/[locale]/components/project_components/conditions";
+import Groups from "@app/[locale]/components/project_components/groups";
+import TestFiles from "@app/[locale]/components/project_components/testfiles";
+import UploadTestFile from "@app/[locale]/components/project_components/uploadButton";
+import FinishButtons from "@app/[locale]/components/project_components/finishbuttons";
+import Deadline from "@app/[locale]/components/project_components/deadline";
+import RemoveDialog from "@app/[locale]/components/project_components/removedialog";
 
 const i18nNamespaces = ['common']
 
@@ -178,20 +178,20 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> =  ({project_id, locale}) 
                             height="100vh"
                         >
                             <Box className={"pageBoxLeft"}>
-                                {Title(isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations)}
-                                {Assignment(isAssignmentEmpty, setDescription, description, translations)}
-                                {RequiredFiles(files, setFiles, translations)}
-                                {Conditions(conditions, setConditions, translations)}
-                                {Groups(groupAmount, isGroupAmountEmpty, groupSize, isGroupSizeEmpty, setGroupAmount, setGroupSize, translations)}
-                                {TestFiles(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
-                                {UploadTestFile(testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations)}
+                                {Title({isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations})}
+                                {Assignment({isAssignmentEmpty, setDescription, description, translations})}
+                                {RequiredFiles({files, setFiles, translations})}
+                                {Conditions({conditions, setConditions, translations})}
+                                {Groups({groupAmount, isGroupAmountEmpty, groupSize, isGroupSizeEmpty, setGroupAmount, setGroupSize, translations})}
+                                {TestFiles({testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations})}
+                                {UploadTestFile({testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations})}
                             </Box>
                             <Box className={"pageBoxRight"}>
-                                {FinishButtons(visible, setVisible, handleSave, setConfirmRemove, translations, course_id, setHasDeadline, hasDeadline)}
-                                {Deadline(deadline, setDeadline, hasDeadline)}
+                                {FinishButtons({visible, setVisible, handleSave, setConfirmRemove, translations, course_id, setHasDeadline, hasDeadline})}
+                                {Deadline({deadline, setDeadline, hasDeadline})}
                             </Box>
                         </Box>
-                        {RemoveDialog(confirmRemove, handle_remove, setConfirmRemove, translations)}
+                        {RemoveDialog({confirmRemove, handle_remove, setConfirmRemove, translations})}
                     </div>
                 ) : (
                     <div>Students cannot edit project</div>
