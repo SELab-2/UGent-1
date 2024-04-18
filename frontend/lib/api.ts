@@ -567,30 +567,20 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any) : string{
+export async function uploadSubmissionFile(event: any) : Promise<string>{
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
-    console.log(event.target.fileList.files);
     const formData = new FormData(event.target);
-    for(const file of event.target.fileList.files){
-        formData.append(file.webkitRelativePath, file);
-    }
     const formDataObject = Object.fromEntries(formData.entries());
-    console.log(formDataObject)
     try {
-        await axios.post(backend_url + '/submissions/', formDataObject,
-         { withCredentials: true,
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-          });
+        await axios.post(backend_url + "/submissions/", formDataObject, {withCredentials: true, headers: {'Content-Type': 'multipart/form-data'}});
         return "yes";
     } catch (error) {
-        const apierror : APIError = new APIError();
+        const apierror: APIError = new APIError();
         apierror.message = "error posting form";
         apierror.type = ErrorType.REQUEST_ERROR;
         apierror.trace = error;
-        console.error(apierror);
-        return "error";
+        console.error(error);
+        return "error"
     }
 }
