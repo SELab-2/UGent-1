@@ -49,6 +49,7 @@ export default async function Course({params: {locale, course_id}, searchParams:
                     <ListView
                         admin={false}
                         headers={headers}
+                        headers_backend={headers_backend}
                         sortable={[true, true, false, true]}
                         get={'projects'}
                         get_id={course_id}
