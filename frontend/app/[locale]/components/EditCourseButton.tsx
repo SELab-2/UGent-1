@@ -1,16 +1,26 @@
 "use client";
 import {useTranslation} from "react-i18next";
 import {Button, Typography} from "@mui/material";
+import Link from "next/link";
 
-const EditCourseButton = () => {
+interface EditCourseButtonProps{
+    course_id:number
+}
+
+const EditCourseButton = ({course_id}: EditCourseButtonProps) => {
     const {t} = useTranslation();
 
-    //TODO: add href to edit course page
     return (
-        <div>
+        <Link
+        href={'/course/' + course_id + '/edit'}
+        >
             <Button
                 variant="contained"
                 color="secondary"
+                href={""}
+                sx={{
+                    margin: '10px'
+                }}
             >
                 <Typography
                     variant="subtitle1"
@@ -23,8 +33,7 @@ const EditCourseButton = () => {
                     {t("edit_course")}
                 </Typography>
             </Button>
-        </div>
+        </Link>
     )
 }
-
 export default EditCourseButton

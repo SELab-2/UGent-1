@@ -1,6 +1,5 @@
 .typographyStyle, .MuiTypography-h5.typographyStyle {
     font-weight: bold !important;
-    font-family: Inter, serif !important;
     margin: 5px 0 0 0 !important;
 }
 
@@ -14,9 +13,7 @@
     padding: 50px 50px 50px 100px !important;
 }
 
-.conditionsText .MuiTypography-body1.ConditionsText {
-    font-family: Inter, serif !important;
-}
+.conditionsText .MuiTypography-body1.ConditionsText {}
 
 .conditionsHelp {
     font-size: large !important;
@@ -60,6 +57,11 @@
 
 .titleGrids {
     margin: 0 !important;
+    width: 100% !important;
+}
+
+.assignmentTextField {
+    width: 100% !important;
 }
 
 .uploadButton {

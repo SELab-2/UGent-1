@@ -3,6 +3,8 @@
 django/db.sqlite3
 backend/db.sqlite3
 backend/uploads
+backend/downloads/*
+!backend/downloads/__init__.py
 venv/
 .venv/
 
@@ -15,3 +17,4 @@ letsencrypt
 .env.prod
 node_modules
 /node_modules/
+backend/static/*
