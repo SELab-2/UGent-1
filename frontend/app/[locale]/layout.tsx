@@ -18,7 +18,7 @@ export default function RootLayout(props: React.PropsWithChildren<{}>) {
         <body>
         <AppRouterCacheProvider>
             <ThemeProvider theme={loginTheme}>
-                <div style={{marginTop: "40px", marginBottom: "40px"}}>
+                <div style={{marginTop: "40px"}}>
                     {children}
                 </div>
                 <Footer/>

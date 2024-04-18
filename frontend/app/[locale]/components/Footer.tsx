@@ -16,24 +16,23 @@ const Footer = () => {
                     justifyContent: 'space-between',
                     color: 'primary.main',
                     backgroundColor: 'primary.main',
-                    height: 60,
+                    height: 80,
                     marginX: 0,
-                    marginTop: "100vh",
-                    position: 'fixed',
+                    position: 'static',
                     right: 0,
                     bottom: 0,
                     clear: 'both',
                 }}
             >
                 <IconButton
-                    sx={{width: 60, height: 60, padding: 0, margin: 0}}
+                    sx={{width: 80, height: 80, padding: 0, margin: 0}}
                     href={'https://www.ugent.be/'}
                 >
                     <Box
                         component="img"
                         src="/logo_UGent_EN_RGB_2400_white.png"
                         alt="logo"
-                        style={{width: 60, height: 60}}
+                        style={{width: 80, height: 80}}
                     />
                 </IconButton>
             </Box>
