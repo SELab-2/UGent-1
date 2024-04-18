@@ -399,6 +399,24 @@ export async function getProjectSubmissions(id: number, page = 1, pageSize = 5, 
     return (await getRequest(url))
 }
 
+export async function getGroupSubmissions(id: number, page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Submission[]> {
+    let url = `/projects/${id}/get_group_submissions?page=${page}&page_size=${pageSize}`
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return (await getRequest(url))
+}
+
 let userData: UserData | undefined = undefined;
 
 export async function getUserData(): Promise<UserData> {

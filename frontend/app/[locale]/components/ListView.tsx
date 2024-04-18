@@ -6,7 +6,21 @@ import {NextPage} from 'next';
 import checkMarkImage from './check-mark.png';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from "@mui/icons-material/Cancel";
-import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUserData, getUser, getProject, getStudents_by_course, getTeachers_by_course, getProjectSubmissions, getProjects_by_course } from '@lib/api';
+import {
+    getUsers,
+    deleteData,
+    postData,
+    getCourses,
+    getGroups_by_project,
+    getUserData,
+    getUser,
+    getProject,
+    getStudents_by_course,
+    getTeachers_by_course,
+    getProjectSubmissions,
+    getProjects_by_course,
+    getGroupSubmissions
+} from '@lib/api';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -209,7 +223,8 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers
                         }
                         return [data.group_id, data.user, data.group_nr, l.join(', ')];
                     },
-                    'submissions': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_test !== undefined]
+                    'submissions': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_test !== undefined],
+                    'submissions_group': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_test !== undefined]
                 };
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
@@ -234,6 +249,9 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, headers
                     'submissions': async () => {
                         return parse_pages(await getProjectSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
+                    'submissions_group': async () => {
+                        return parse_pages(await getGroupSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                    }
                 };
 
                 // Get user data

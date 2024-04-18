@@ -20,6 +20,7 @@ import {MultiSectionDigitalClock} from "@mui/x-date-pickers";
 import CourseReturnButton from "@app/[locale]/project/[project_id]/details/CourseReturnButton";
 import ProjectEditButton from "@app/[locale]/project/[project_id]/details/ProjectEditButton";
 import ProjectGroupButton from "@app/[locale]/project/[project_id]/details/ProjectGroupButton";
+import GroupSubmissionList from "@app/[locale]/components/GroupSubmissionList";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -107,7 +108,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                                     </Typography>
                                     <a href={`${backend_url}/projects/${project_id}/download_testfiles`}>
                                         <Typography sx={{marginBottom: 2}}>
-                                            {t("conditions")}
+                                            Download
                                         </Typography>
                                     </a>
                                 </div>
@@ -153,11 +154,19 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                         </Grid>
                     </Grid>
                 </Box>
-                <ProjectSubmissionsList
-                    project_id={project_id}
-                    showActions={false}
-                    page_size={10}
-                />
+                {user?.role === 3 ? (
+                    <GroupSubmissionList
+                        project_id={project_id}
+                        showActions={false}
+                        page_size={10}
+                    />
+                ) : (
+                    <ProjectSubmissionsList
+                        project_id={project_id}
+                        showActions={false}
+                        page_size={10}
+                    />
+                )}
             </div>
         ))
     )
