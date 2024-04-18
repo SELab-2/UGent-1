@@ -13,13 +13,13 @@ const JoinCourseWithToken = ({token, course_id}: { token: any, course_id: any })
                 try {
                     const userData = await getUserData();
                     if (!userData) {
-                        new Error('User not logged in');
+                        throw new Error('User not logged in');
                     }
                     try {
                         const response = await joinCourseUsingToken(course_id, token);
                         setJoined(true);
                         if (!response.ok) {
-                            new Error('Failed to join course');
+                            throw new Error('Failed to join course');
                         }
                     } catch (error) {
                         console.error(error)

@@ -5,7 +5,7 @@ import React from "react";
 
 describe('NavBar', () => {
     it('renders correctly', () => {
-        // render(<NavBar/>);
+        render(<NavBar/>);
         //TODO navbar render is doing weird stuff
     });
 });
