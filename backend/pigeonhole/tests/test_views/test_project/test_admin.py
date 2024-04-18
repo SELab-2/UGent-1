@@ -133,7 +133,7 @@ class ProjectTestAdminTeacher(TestCase):
 
     def test_delete_invalid_project(self):
         response = self.client.delete(
-            API_ENDPOINT + '100/'
+            API_ENDPOINT + '999/'
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 

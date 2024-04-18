@@ -3,7 +3,11 @@
 import ListView from "@app/[locale]/components/ListView";
 import React from "react";
 
-const ProjectSubmissionsList = ({project_id, showActions, page_size=5}: { project_id: number, showActions: boolean, page_size: number }) => {
+const GroupSubmissionList = ({project_id, showActions, page_size = 5}: {
+    project_id: number,
+    showActions: boolean,
+    page_size: number
+}) => {
     const headers = ["Group number", "Submission date", "Status"]
     const headers_backend = ["group_nr", "submission_date", "status"]
     const sortable = [true, true, false]
@@ -13,25 +17,25 @@ const ProjectSubmissionsList = ({project_id, showActions, page_size=5}: { projec
                 <ListView
                     admin={true}
                     headers={headers}
-                    headers_backend={headers_backend}
-                    get={'submissions'}
+                    get={'submissions_group'}
                     get_id={project_id}
                     sortable={sortable}
                     action_name={'download_submission'}
                     page_size={page_size}
+                    headers_backend={headers_backend}
                 />
                 :
                 <ListView
                     admin={true}
                     headers={headers}
-                    headers_backend={headers_backend}
-                    get={'submissions'}
+                    get={'submissions_group'}
                     get_id={project_id}
                     sortable={sortable}
                     page_size={page_size}
+                    headers_backend={headers_backend}
                 />
         )
     )
 }
 
-export default ProjectSubmissionsList;
+export default GroupSubmissionList;

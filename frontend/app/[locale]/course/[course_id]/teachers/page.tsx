@@ -12,6 +12,7 @@ export default async function TeachersPage({ params }: { params: { locale: any, 
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
     const headers = [t('email')];
+    const headers_backend = ['email'];
     
     return (
         <TranslationsProvider
@@ -20,14 +21,15 @@ export default async function TeachersPage({ params }: { params: { locale: any, 
             namespaces={i18nNamespaces}
         >
             <NavBar />
+            <div style={{marginTop:60, padding:20}}>
             <BackButton 
                 destination={`/course/${course_id}`}
                 text={t('back_to') + ' ' + t('course_detail') + ' ' +  t('page')}
             />
-            <div style={{ marginBottom: '100px' }}>
                 <ListView
                     admin={true}
                     headers={headers}
+                    headers_backend={headers_backend}
                     sortable={[true]}
                     get_id={course_id}
                     get={'course_teachers'}

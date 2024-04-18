@@ -22,7 +22,9 @@ class CanAccessProject(permissions.BasePermission):
             if user.is_admin or user.is_superuser:
                 return True
             return False
-        elif view.action in ['download_submissions']:
+        elif view.action in ['get_group_submissions']:
+            return True
+        elif view.action in ['download_submissions', 'download_testfiles']:
             return user.is_teacher or user.is_admin or user.is_superuser
         else:
             project_id = int(view.kwargs.get('pk'))
