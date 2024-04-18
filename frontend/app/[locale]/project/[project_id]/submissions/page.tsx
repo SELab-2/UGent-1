@@ -37,7 +37,6 @@ const SubmissionsPage = async ({params: {locale, project_id}}: {
                 </Box>
             </Box>
             <ProjectSubmissionsList project_id={project_id}/>
-            <Footer/>
         </TranslationsProvider>
     )
 }
