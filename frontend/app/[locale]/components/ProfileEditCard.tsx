@@ -11,20 +11,35 @@ import Button from "@mui/material/Button";
 import Link from "next/link";
 import React, {useEffect, useState} from "react";
 import {displayRole} from '@lib/utils';
-import {APIError, getUserData, UserData} from "@lib/api";
+import {APIError, getImage, getUserData, updateUserData, UserData} from "@lib/api"; // Assume updateUserData is the method to update user data
 import {useTranslation} from "react-i18next";
 
 const ProfileEditCard = () => {
-    const [user, setUser] = useState<UserData>({id: 0, email: "", first_name: "", last_name: "", course: [], role: 3});
+    const [user, setUser] = useState<UserData>({
+        id: 0,
+        email: "",
+        first_name: "",
+        last_name: "",
+        course: [],
+        role: 3,
+        picture: ""
+    });
     const [error, setError] = useState<APIError | null>(null);
-    const [profilePic, setProfilePic] = useState('/path-to-current-profile-picture.jpg'); // Replace with your profile picture path
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [selectedImageURL, setSelectedImageURL] = useState<string>("");
     const [showEditIcon, setShowEditIcon] = useState(false);
-    const {t} = useTranslation()
+    const {t} = useTranslation();
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                setUser(await getUserData());
+                const userData = await getUserData();
+                setUser(userData);
+                if (userData.picture) {
+                    const imageBlob = await getImage(userData.picture);
+                    const imageUrl = URL.createObjectURL(imageBlob);
+                    setSelectedImageURL(imageUrl);
+                }
             } catch (error) {
                 if (error instanceof APIError) setError(error);
             }
@@ -33,16 +48,35 @@ const ProfileEditCard = () => {
         fetchUser();
     }, []);
 
-    const handleProfilePicChange = (event) => {
+    const handleProfilePicChange = (event: any) => {
         const file = event.target.files[0];
         if (file) {
-            setProfilePic(URL.createObjectURL(file));
+            setSelectedImage(file);
+            setSelectedImageURL(URL.createObjectURL(file));  // Preview the selected image
         }
     };
 
-    const handleSaveChanges = () => {
-        // Implement save logic here
-        console.log("saved")
+    const handleSaveChanges = async (event: any) => {
+        event.preventDefault();
+        if (selectedImage) {
+            const formData = new FormData();
+            formData.append('email', user.email);  // Assuming you want to send email or other user details
+            formData.append('first_name', user.first_name);
+            formData.append('last_name', user.last_name);
+            const fileReader = new FileReader();
+            fileReader.onload = async () => {
+                const arrayBuffer = fileReader.result;
+                formData.append('picture', new Blob([arrayBuffer], {type: 'image/png'}));
+                try {
+                    await updateUserData(user.id, formData).then((response) => {
+                        window.location.href = '/profile/';
+                    });
+                } catch (error) {
+                    if (error instanceof APIError) setError(error);
+                }
+            };
+            fileReader.readAsArrayBuffer(selectedImage);
+        }
     };
 
     const handleAvatarHover = () => {
@@ -61,7 +95,7 @@ const ProfileEditCard = () => {
                         <Box sx={{position: 'relative', display: 'inline-block'}}
                              onMouseEnter={handleAvatarHover} onMouseLeave={handleAvatarLeave}>
                             <Avatar
-                                src={profilePic}
+                                src={selectedImageURL}
                                 alt="Profile Image"
                                 sx={{width: 140, height: 140, cursor: 'pointer'}}
                             />
@@ -122,7 +156,7 @@ const ProfileEditCard = () => {
                 </CardContent>
             </Card>
         </Box>
-    )
+    );
 }
 
 export default ProfileEditCard;

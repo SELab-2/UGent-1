@@ -76,6 +76,7 @@ export type UserData = {
     last_name: string;
     course: number[];
     role: Role;
+    picture: string;
 }
 
 async function getRequest(path: string){
@@ -265,6 +266,10 @@ export async function getCourses(page = 1, pageSize = 5, keyword?: string, order
 
 export async function updateCourse(id: number, data: any): Promise<Course> {
     return (await putData(`/courses/${id}/`, data));
+}
+
+export async function updateUserData(id: number, data: any): Promise<UserData> {
+    return (await putData(`/users/${id}/`, data));
 }
 
 export async function deleteCourse(id: number): Promise<void> {
