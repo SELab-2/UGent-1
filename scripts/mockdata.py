@@ -212,6 +212,7 @@ def run():
 
     project_1, _ = Project.objects.get_or_create(
         name='SELab 2 project',
+        description=lorem_ipsum,
         course_id=course_5,
         deadline='2021-12-12 12:12:14',
         visible=True,
@@ -221,6 +222,7 @@ def run():
 
     project_2, _ = Project.objects.get_or_create(
         name='AI project',
+        description=lorem_ipsum,
         course_id=course_1,
         deadline='2021-12-12 12:12:14',
         visible=True,
@@ -230,6 +232,7 @@ def run():
 
     project_3, _ = Project.objects.get_or_create(
         name='Opdracht 1',
+        description=lorem_ipsum,
         course_id=course_6,
         deadline='2021-12-12 12:12:14',
         visible=True,
@@ -239,6 +242,7 @@ def run():
 
     project_4, _ = Project.objects.get_or_create(
         name='Opdracht 2',
+        description=lorem_ipsum,
         course_id=course_6,
         deadline='2021-12-12 12:12:14',
         visible=True,
