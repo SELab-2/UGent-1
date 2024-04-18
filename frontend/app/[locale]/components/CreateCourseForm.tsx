@@ -4,7 +4,6 @@ import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
 
 import React, {useEffect, useState} from 'react';
-import Image from 'next/image';
 import banner from '../../../public/ugent_banner.png'
 import Typography from "@mui/material/Typography";
 import {Button, Input, MenuItem, Select, TextField} from "@mui/material";
@@ -34,7 +33,7 @@ const CreateCourseForm = () => {
         formData.append('description', description);
         formData.append('open_course', open.toString());
         const fileReader = new FileReader();
-         fileReader.onload = async function() {
+        fileReader.onload = async function () {
             const arrayBuffer = this.result;
             if (arrayBuffer !== null) {
                 formData.append('banner', new Blob([arrayBuffer], {type: 'image/png'}));

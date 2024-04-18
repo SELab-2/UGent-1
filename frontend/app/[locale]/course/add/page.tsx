@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import CreateCourseForm from "@app/[locale]/components/CreateCourseForm";
-import CancelButton from "@app/[locale]/components/course_components/CancelButton";
 
 
 async function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
@@ -16,10 +15,17 @@ async function CourseCreatePage({params: {locale}}: { params: { locale: any } })
             namespaces={["common"]}
         >
             <NavBar/>
-            <Box sx={{margin: '64px', marginTop: '96px', position: 'relative'}}>
-                <Box sx={{marginRight: '20px'}}>
-                    <CreateCourseForm/>
-                </Box>
+            <Box
+                margin={5}
+                padding={5}
+                sx={{
+                    display: 'flex',
+                    marginTop: '64px',
+                    alignItems: 'space-between',
+                    justifyContent: 'space-between',
+                }}
+            >
+                <CreateCourseForm/>
             </Box>
         </TranslationsProvider>
     )

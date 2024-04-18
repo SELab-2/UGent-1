@@ -25,7 +25,7 @@ import HomeButton from "./HomeButton";
 import LanguageSelect from "./LanguageSelect";
 import AccountMenu from "./AccountMenu";
 import {useTranslation} from "react-i18next";
-import {APIError, Course, getCourses, UserData, getUserData} from "@lib/api";
+import {APIError, Course, getCoursesForUser, UserData, getUserData} from "@lib/api";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -38,7 +38,7 @@ const NavBar = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                setCourses(await getCourses());
+                setCourses(await getCoursesForUser());
                 setUser(await getUserData());
             } catch (error) {
                 if (error instanceof APIError) setError(error);

@@ -40,25 +40,24 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 height: '200px',
                 width: "calc(100% - 40px)",
                 borderRadius: '16px',
-                marginTop: 50,
                 margin: "0 auto",
-                paddingX: 2,
             }}
         >
             <Box
-                textAlign="left"
                 display="flex"
                 justifyContent="flex-start"
                 alignItems="center"
                 width={"calc(100% - 200px)"}
+                height={'100%'}
             >
                 <Typography
                     variant="h1"
-                    textAlign="left"
-                    width={"inherit"}
-                    noWrap={false}
+                    textAlign="center"
+                    noWrap={true}
+                    padding={0}
                     sx={{
                         color: 'white',
+                        height: 'fit-content',
                     }}
                 >
                     {course?.name}

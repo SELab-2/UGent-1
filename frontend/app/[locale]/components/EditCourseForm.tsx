@@ -1,11 +1,10 @@
 "use client"
 import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
-import Image from 'next/image';
 import {getCourse, getImage, postData, updateCourse} from "@lib/api";
 import Typography from "@mui/material/Typography";
-import {Button, TextField, Box, Input, Select, MenuItem} from "@mui/material";
-import { visuallyHidden } from '@mui/utils';
+import {Box, Button, Input, MenuItem, Select, TextField} from "@mui/material";
+import {visuallyHidden} from '@mui/utils';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 
 interface EditCourseFormProps {
