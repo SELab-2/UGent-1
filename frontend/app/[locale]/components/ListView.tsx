@@ -10,7 +10,29 @@ import { getUsers, deleteData, postData, getCourses, getGroups_by_project, getUs
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
-const RootContainer = styled(Container)(({theme}) => ({
+interface Theme {
+    theme: {
+        spacing: (multiplier: number) => number;
+        shadows: string[];
+        palette: {
+            primary: {
+                dark: string;
+                contrastText: string;
+            };
+            secondary: {
+                main: string;
+            };
+            background: {
+                default: string;
+            };
+            success: {
+                main: string;
+            };
+        };
+    };
+}
+
+const RootContainer = styled(Container)(({theme}:Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -23,7 +45,7 @@ const RootContainer = styled(Container)(({theme}) => ({
     maxWidth: '100%',
 }));
 
-const Table = styled('table')(({theme}) => ({
+const Table = styled('table')(({theme}:Theme) => ({
     marginTop: theme.spacing(2),
     width: '100%',
     borderCollapse: 'collapse',
@@ -40,7 +62,7 @@ const Table = styled('table')(({theme}) => ({
     },
 }));
 
-const TableRow = styled('tr')(({theme}) => ({
+const TableRow = styled('tr')(({theme}:Theme) => ({
     '&:nth-child(even)': {
         backgroundColor: theme.palette.background.default,
     },
@@ -49,7 +71,7 @@ const TableRow = styled('tr')(({theme}) => ({
     },
 }));
 
-const GreenCheckbox = styled(Checkbox)(({theme}) => ({
+const GreenCheckbox = styled(Checkbox)(({theme}:Theme) => ({
     color: theme.palette.success.main,
     '&.Mui-checked': {
         color: theme.palette.success.main,
@@ -104,9 +126,12 @@ interface ListViewProps {
     headers: string[];
     tablenames: string[];
     action_name: string;
+    action_text: string;
+    search_text: string;
+    sortable: boolean[];
 }
 
-const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortable, action_name, action_text, search_text }) => {
+const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortable, action_name, action_text, search_text }: ListViewProps) => {
     // default listview
     const [searchTerm, setSearchTerm] = useState('');
     const [rows, setRows] = useState<(string | number | boolean)[][]>([]);
