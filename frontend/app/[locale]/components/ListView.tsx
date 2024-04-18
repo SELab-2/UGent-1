@@ -353,7 +353,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
             <Table>
                 <thead>
                     <tr>
-                        {(get !== 'groups' && get !== 'projects' && (get !== 'submissions' && !action_name))  && <th>Select</th>}
+                        {(get !== 'groups' && get !== 'projects' && !(get === 'submissions' && !action_name))  && <th>Select</th>}
                         {headers.map((header, index) => 
                             <th key={index}>
                                 {sortable[index] &&
@@ -369,7 +369,7 @@ const ListView: NextPage<ListViewProps> = ({admin, get, get_id, headers, sortabl
                 <tbody>
                     {rows.map((row, index) => (
                         <TableRow key={index}>
-                            {((get !== 'groups' && get !== 'projects'  && (get !== 'submissions' && !action_name)) &&
+                            {((get !== 'groups' && get !== 'projects'  && !(get === 'submissions' && !action_name)) &&
                             <td>
                                 {<CheckBoxWithCustomCheck checked={false}/>}
                             </td>)}
