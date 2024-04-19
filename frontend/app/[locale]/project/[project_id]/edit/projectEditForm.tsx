@@ -175,9 +175,9 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> =  ({project_id, locale}) 
                         <Box
                             display="grid"
                             gridTemplateColumns="65% 35%"
-                            height="100vh"
+                            height="fit-content"
                         >
-                            <Box className={"pageBoxLeft"}>
+                            <Box className={"pageBoxLeft"} height={'fit-content'}>
                                 {Title({isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations})}
                                 {Assignment({isAssignmentEmpty, setDescription, description, translations})}
                                 {RequiredFiles({files, setFiles, translations})}

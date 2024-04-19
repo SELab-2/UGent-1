@@ -2,14 +2,30 @@
 import {Box, Button} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {useEffect, useState} from "react";
-import {APIError, Course, getCourse} from "@lib/api";
+import {APIError, Course, getCourse, getProjectsFromCourse, getUserData, UserData} from "@lib/api";
 
 interface StudentCoTeacherButtonsProps {
     course_id:number
 }
 
 const StudentCoTeacherButtons = ({course_id}: StudentCoTeacherButtonsProps) => {
+    const [user, setUser] = useState<UserData | null>(null);
+    const [error, setError] = useState<APIError | null>(null);
     const {t} = useTranslation()
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                setUser(await getUserData());
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
+                console.error(error);
+            }
+
+        };
+
+        fetchProjects();
+    }, [course_id]);
 
     return (
         <Box
@@ -33,17 +49,20 @@ const StudentCoTeacherButtons = ({course_id}: StudentCoTeacherButtonsProps) => {
             >
                 {t("view_students")}
             </Button>
-            <Button
-                variant="contained"
-                color='secondary'
-                href={'/course/'+course_id+'/teachers'}
-                sx={{
-                    width: 'fit-content',
-                    color: 'secondary.contrastText',
-                }}
-            >
-                {t("view_co_teachers")}
-            </Button>
+            {user?.role !== 3 ? (
+                <Button
+                    variant="contained"
+                    color='secondary'
+                    href={'/course/'+course_id+'/teachers'}
+                    sx={{
+                        width: 'fit-content',
+                        color: 'secondary.contrastText',
+                    }}
+                >
+                    {t("view_co_teachers")}
+                </Button>
+            ): null
+            }
         </Box>
     );
 }

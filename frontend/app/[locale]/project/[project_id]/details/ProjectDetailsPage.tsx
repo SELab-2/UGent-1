@@ -64,7 +64,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
 
     return (
         (!loadingProject && (
-            <div className={"mainContainer"}>
+            <div className={"mainContainer"} style={{height: 'fit-content'}}>
                 <Box sx={{marginTop: 4, marginBottom: 4}}>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item xs={12}>
