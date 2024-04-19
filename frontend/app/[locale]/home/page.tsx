@@ -16,10 +16,10 @@ const HomePage = async ({params: {locale}}: { params: { locale: any } }) => {
             namespaces={["common"]}
         >
             <NavBar/>
-            <Box sx={{position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#fff'}}>
-                <Container>
+            <Box sx={{height:'fit-content', top: 0, zIndex: 10, backgroundColor: '#fff'}}>
+
                     <CourseControls/>
-                </Container>
+
             </Box>
             <CoursesGrid/>
         </TranslationsProvider>

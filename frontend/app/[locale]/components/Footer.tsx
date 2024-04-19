@@ -18,7 +18,7 @@ const Footer = () => {
                     backgroundColor: 'primary.main',
                     height: 80,
                     marginX: 0,
-                    position: 'fixed',
+                    position: 'static',
                     right: 0,
                     bottom: 0,
                     clear: 'both',
