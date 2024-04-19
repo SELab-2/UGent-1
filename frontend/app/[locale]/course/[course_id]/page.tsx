@@ -41,7 +41,6 @@ export default async function Course({params: {locale, course_id}, searchParams:
                 >
                     {t('projects')}
                 </Typography>
-                <AddProjectButton/>
                 <Box
                     justifyContent={'left'}
                     width={'100%'}
