@@ -29,6 +29,7 @@ export default async function TeachersPage({ params }: { params: { locale: any, 
                     <ListView
                         admin={true}
                         headers={headers}
+                        headers_backend={headers_backend}
                         sortable={[true]}
                         get_id={course_id}
                         get={'course_teachers'}
