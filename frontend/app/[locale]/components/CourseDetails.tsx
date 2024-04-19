@@ -86,7 +86,7 @@ export default function CourseDetails({course_id}: CourseDetailsProps) {
                         >
                             {"https://sel2-1.ugent.be/course/" + course?.course_id + "?token=" + course?.invite_token}
                         </Typography>
-                        <CopyToClipboardButton text={"https://sel2-1.ugent.be/" + "?token=" + course?.invite_token}/>
+                        <CopyToClipboardButton text={"https://sel2-1.ugent.be/course/" + course?.course_id + "?token=" + course?.invite_token}/>
                     </Box>
                 </>
             ) : null
