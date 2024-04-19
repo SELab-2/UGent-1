@@ -158,7 +158,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                         </Grid>
                     </Grid>
                 </Box>
-                {user?.role !== 3 ? (
+                {user?.role === 3 ? (
                     <Box sx={{marginTop: 4, marginBottom: 4}}>
                         <div style={{display: "flex"}}>
                             <Typography variant={"h4"}>
