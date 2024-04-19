@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Button, MenuItem, Select, SelectChangeEvent, Stack, Typography} from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -8,12 +8,29 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {useTranslation} from "react-i18next";
 import Link from 'next/link';
+import {APIError, getUserData, UserData} from "@lib/api";
 
 const CourseControls = () => {
     const currentYear = new Date().getFullYear();
     const academicYear = `${currentYear - 1}-${currentYear.toString().slice(-2)}`;
     const [selectedYear, setSelectedYear] = useState(academicYear);
+    const [user, setUser] = useState<UserData | null>(null);
+    const [error, setError] = useState<APIError | null>(null);
     const {t} = useTranslation()
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                setUser(await getUserData());
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
+                console.error(error);
+            }
+
+        };
+
+        fetchUser();
+    });
 
     const handleYearChange = (event: SelectChangeEvent) => {
         setSelectedYear(event.target.value as string);
@@ -35,11 +52,14 @@ const CourseControls = () => {
                     <Button variant="contained" color="secondary" startIcon={<FilterListIcon/>}>
                         {t("filter_courses")}
                     </Button>
-                    <Link href="/course/add" passHref>
-                        <Button variant="contained" color="secondary" startIcon={<AddCircleIcon/>}>
-                            {t("create_course")}
-                        </Button>
-                    </Link>
+                    {user?.role !== 3 ? (
+                        <Link href="/course/add" passHref>
+                            <Button variant="contained" color="secondary" startIcon={<AddCircleIcon/>}>
+                                {t("create_course")}
+                            </Button>
+                        </Link>
+                    ):null
+                    }
                     <Link href="/course/all" passHref>
                         <Button variant="contained" color="secondary" startIcon={<ViewListIcon/>}>
                             {t("all_courses")}
