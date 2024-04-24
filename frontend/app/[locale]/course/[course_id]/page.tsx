@@ -27,7 +27,8 @@ export default async function Course({params: {locale, course_id}, searchParams:
             <NavBar/>
             <Box
                 sx={{
-                    padding: 5
+                    paddingTop: 5,
+                    width: '100%',
                 }}
             >
                 <CourseBanner course_id={course_id}/>
