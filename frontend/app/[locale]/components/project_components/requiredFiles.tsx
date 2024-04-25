@@ -5,16 +5,17 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Box from "@mui/material/Box";
 import {TextField} from "@mui/material";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
+import {useTranslation} from "react-i18next";
 
 interface RequiredFilesProps {
     files: any[],
     setFiles: (value: (((prevState: any[]) => any[]) | any[])) => void,
-    translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
 }
 
 function RequiredFiles(
-    {files, setFiles, translations}: RequiredFilesProps
+    {files, setFiles}: RequiredFilesProps
 ) {
+    const {t} = useTranslation();
     const handleFieldChange = (index: number, event: any) => {
         const newFields = [...files];
         newFields[index] = event.target.value;
@@ -30,10 +31,10 @@ function RequiredFiles(
 
     return <div>
         <Typography variant="h5" className={"typographyStyle"}>
-            {translations.t("required_files")}
+            {t("required_files")}
             <Tooltip title={
                 <Typography variant="body1" className={"conditionsText"}>
-                    {translations.t("required_files_info").split('\n').map((line: string, index: number) => (
+                    {t("required_files_info").split('\n').map((line: string, index: number) => (
                         <React.Fragment key={index}>
                             {line}
                             <br/>

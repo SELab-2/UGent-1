@@ -4,14 +4,16 @@ import React from "react";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Box from "@mui/material/Box";
 import {TextField} from "@mui/material";
+import {useTranslation} from "react-i18next";
 
 interface ConditionsProps {
     conditions: string[],
     setConditions: (value: (((prevState: string[]) => string[]) | string[])) => void,
-    translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
 }
 
-function Conditions({conditions, setConditions, translations}: ConditionsProps) {
+function Conditions({conditions, setConditions}: ConditionsProps) {
+    const {t} = useTranslation();
+
     const handleConditionsChange = (index: number, event: any) => {
         const newConditions = [...conditions];
         newConditions[index] = event.target.value;
@@ -27,10 +29,10 @@ function Conditions({conditions, setConditions, translations}: ConditionsProps) 
 
     return <div>
         <Typography variant="h5" className={"typographyStyle"}>
-            {translations.t("conditions")}
+            {t("conditions")}
             <Tooltip title={
                 <Typography variant="body1" className={"conditionsText"}>
-                    {translations.t("conditions_info").split('\n').map((line: string, index: number) => (
+                    {t("conditions_info").split('\n').map((line: string, index: number) => (
                         <React.Fragment key={index}>
                             {line}
                             <br/>

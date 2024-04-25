@@ -1,5 +1,6 @@
 import axios, {AxiosError} from 'axios';
 import dayjs from "dayjs";
+import {JSZipObject} from "jszip";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -322,19 +323,30 @@ export async function getProjects(): Promise<Project[]> {
     return (await getListRequest('/projects'));
 }
 
-export async function addProject(course_id: number): Promise<number> {
+export async function addProject(course_id: number,
+                                    name: string,
+                                    description: string,
+                                    deadline: string,
+                                    visible: string,
+                                    max_score: string,
+                                    number_of_groups: string,
+                                    group_size: string,
+                                    file_structure: string,
+                                    test_files: JSZipObject[],
+                                    conditions: string): Promise<number> {
+
     return (await postData('/projects/', {
-        name: "New Project",
+        name: name,
         course_id: course_id,
-        description: "Description",
-        deadline: dayjs(),
-        visible: true,
-        max_score: 100,
-        number_of_groups: 1,
-        group_size: 1,
-        file_structure: "extra/verslag.pdf",
-        test_files: null,
-        conditions: "Project must compile and run without errors."
+        description: description,
+        deadline: deadline,
+        visible: visible,
+        max_score: max_score,
+        number_of_groups: number_of_groups,
+        group_size: group_size,
+        file_structure: file_structure,
+        test_files: test_files,
+        conditions: conditions
     })).project_id;
 }
 
@@ -575,7 +587,7 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any, project_id : string) : Promise<string>{
+export async function uploadSubmissionFile(event: any, project_id: string): Promise<string> {
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
@@ -585,7 +597,10 @@ export async function uploadSubmissionFile(event: any, project_id : string) : Pr
         let groupres = await axios.get(backend_url + "/projects/" + project_id + "/get_group/", {withCredentials: true});
         const group_id = groupres.data.group_id;
         formDataObject.group_id = group_id;
-        await axios.post(backend_url + "/submissions/", formDataObject, {withCredentials: true, headers: {'Content-Type': 'multipart/form-data'}});
+        await axios.post(backend_url + "/submissions/", formDataObject, {
+            withCredentials: true,
+            headers: {'Content-Type': 'multipart/form-data'}
+        });
         return "yes";
     } catch (error) {
         const apierror: APIError = new APIError();

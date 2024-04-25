@@ -184,5 +184,8 @@
   "view_archive": "Bekijk Archief",
   "view_co_teachers": "Bekijk mede-docenten",
   "view_students": "Bekijk studenten",
-  "visibility": "Zichtbaarheid"
+  "visibility": "Zichtbaarheid",
+  "has_deadline": "Heeft deadline",
+  "no_test_files_selected": "Geen testbestanden geselecteerd",
+  "create": "Aanmaken"
 }
