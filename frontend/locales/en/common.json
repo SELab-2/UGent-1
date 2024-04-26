@@ -185,5 +185,8 @@
   "visibility": "Visibility",
   "has_deadline": "Has deadline",
   "no_test_files_selected": "No test files selected",
-  "create": "Create"
+  "create": "Create",
+  "new_file_example": "E.g.: /extra/report.pdf",
+  "no_required_files": "No required files",
+  "add": "Add"
 }

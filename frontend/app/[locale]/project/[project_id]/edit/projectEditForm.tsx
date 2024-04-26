@@ -58,8 +58,8 @@ function ProjectEditForm({project_id}: ProjectEditFormProps){
                     setDescription(project.description)
                     if (project.file_structure !== null) {
                         const file_structure = project.file_structure.split(",").map((item: string) => item.trim().replace(/"/g, ''));
-                        file_structure.push("");
                         setFiles(file_structure);
+                        console.log(files);
                     }
                     setGroupSize(project["group_size"])
                     setTitle(project["name"])
@@ -113,6 +113,7 @@ function ProjectEditForm({project_id}: ProjectEditFormProps){
     }
 
     const handleSave = async () => {
+        console.log(files);
         let message = "The following fields are required:\n";
 
         if (isTitleEmpty) message += "- Title\n";
@@ -135,8 +136,7 @@ function ProjectEditForm({project_id}: ProjectEditFormProps){
             const zipFileBlob = await zip.generateAsync({type: "blob"});
             const formData = new FormData();
             const zipFile = new File([zipFileBlob], "test_files.zip");
-            files.pop();
-            conditions.pop();
+            conditions.pop(); //FIXME: remove when ItemsList is used
             formData.append("test_files", zipFile);
             formData.append("name", title);
             formData.append("description", description);
@@ -156,7 +156,7 @@ function ProjectEditForm({project_id}: ProjectEditFormProps){
             if (project_id !== null) {
                 await updateProject(project_id, formData).then((response) => console.log(response));
             }
-            location.reload();
+            location.href = "/project/" + project_id + "/";
         }
     }
 
