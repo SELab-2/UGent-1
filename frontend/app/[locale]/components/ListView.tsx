@@ -262,6 +262,9 @@ const ListView: NextPage<ListViewProps> = ({
                     },
                     'submissions_group': async () => {
                         return parse_pages(await getGroupSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                    },
+                    'archived_courses': async () => {
+                        return parse_pages(await getArchivedCourses_by_user)
                     }
                 };
 
