@@ -7,7 +7,7 @@ import checkMarkImage from './check-mark.png';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from "@mui/icons-material/Cancel";
 import {
-    deleteData,
+    deleteData, getArchivedCourses,
     getCourses,
     getGroups_by_project,
     getGroupSubmissions,
@@ -264,7 +264,7 @@ const ListView: NextPage<ListViewProps> = ({
                         return parse_pages(await getGroupSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'archived_courses': async () => {
-                        return parse_pages(await getArchivedCourses_by_user)
+                        return parse_pages(await getArchivedCourses(currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     }
                 };
 

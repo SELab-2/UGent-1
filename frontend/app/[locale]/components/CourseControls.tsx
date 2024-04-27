@@ -58,16 +58,18 @@ const CourseControls = () => {
                                 {t("create_course")}
                             </Button>
                         </Link>
-                    ):null
+                    ) : null
                     }
                     <Link href="/course/all" passHref>
                         <Button variant="contained" color="secondary" startIcon={<ViewListIcon/>}>
                             {t("all_courses")}
                         </Button>
                     </Link>
-                    <Button variant="contained" color="secondary" startIcon={<ArchiveIcon/>}>
-                        {t("view_archive")}
-                    </Button>
+                    <Link href="/course/archived" passHref>
+                        <Button variant="contained" color="secondary" startIcon={<ArchiveIcon/>}>
+                            {t("view_archive")}
+                        </Button>
+                    </Link>
                     <Select
                         value={selectedYear}
                         onChange={handleYearChange}

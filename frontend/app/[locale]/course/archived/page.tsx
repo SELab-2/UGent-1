@@ -10,8 +10,8 @@ const i18nNamespaces = ['common']
 const ArchivePage = async ({params: {locale}}) => {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
-    const headers = [t('name'), t('description'), t('open'), t('join/leave')]
-    const headers_backend = ['name', 'description', 'open', 'join/leave']
+    const headers = [t('name'), t('description'), t('open')]
+    const headers_backend = ['name', 'description', 'open']
 
     return (
         <TranslationsProvider
@@ -31,8 +31,6 @@ const ArchivePage = async ({params: {locale}}) => {
                     headers_backend={headers_backend}
                     sortable={[true, false, false, false]}
                     get={'archived_courses'}
-                    action_name={'join_course'}
-                    action_text={t('join_course')}
                 />
             </div>
         </TranslationsProvider>
