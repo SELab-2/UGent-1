@@ -162,3 +162,13 @@ class CourseViewSet(viewsets.ModelViewSet):
         paginated_queryset = self.paginate_queryset(queryset)
         serializer = ProjectSerializer(paginated_queryset, many=True)
         return self.get_paginated_response(serializer.data)
+
+    @action(detail=False, methods=["GET"])
+    def get_archived_courses(self, request, *args, **kwargs):
+        user = request.user
+        courses = Course.objects.filter(user=user, archived=True)
+        course_filter = CourseFilter(request.GET, queryset=courses)
+        paginated_queryset = self.paginate_queryset(course_filter.qs)
+        queryset = self.order_queryset(paginated_queryset)
+        serializer = CourseSerializer(queryset, many=True)
+        return self.get_paginated_response(serializer.data)
