@@ -30,7 +30,7 @@ const CourseControls = () => {
         };
 
         fetchUser();
-    });
+    }, []);
 
     const handleYearChange = (event: SelectChangeEvent) => {
         setSelectedYear(event.target.value as string);

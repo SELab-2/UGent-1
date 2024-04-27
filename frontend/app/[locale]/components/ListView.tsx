@@ -287,7 +287,7 @@ const ListView: NextPage<ListViewProps> = ({
         };
         fetchData();
         // the values below will be constantly updated
-    }, [currentPage, searchTerm, currentPage, sortConfig]);
+    }, [searchTerm, currentPage, sortConfig, get, get_id, page_size]);
 
 
     const handleChangePage = (direction: 'next' | 'prev') => {
