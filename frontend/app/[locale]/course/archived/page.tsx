@@ -29,7 +29,7 @@ const ArchivePage = async ({params: {locale}}) => {
                     admin={true}
                     headers={headers}
                     headers_backend={headers_backend}
-                    sortable={[true, false, false, false]}
+                    sortable={[true, false, false]}
                     get={'archived_courses'}
                 />
             </div>

@@ -235,7 +235,8 @@ const ListView: NextPage<ListViewProps> = ({
                         return [data.group_id, data.user, data.group_nr, l.join(', ')];
                     },
                     'submissions': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_test !== undefined],
-                    'submissions_group': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_test !== undefined]
+                    'submissions_group': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_test !== undefined],
+                    'archived_courses': (data) => [data.course_id, data.name, data.description, data.open_course],
                 };
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
@@ -264,7 +265,7 @@ const ListView: NextPage<ListViewProps> = ({
                         return parse_pages(await getGroupSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'archived_courses': async () => {
-                        return parse_pages(await getArchivedCourses(currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                        return parse_pages(await getArchivedCourses(currentPage, page_size, searchTerm));
                     }
                 };
 
