@@ -1,17 +1,16 @@
-import React from 'react'
-import initTranslations from "@app/i18n";
-import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
+import React from 'react';
 import NavBar from "@app/[locale]/components/NavBar";
 import ListView from '@app/[locale]/components/ListView';
-import BackButton from '@app/[locale]/components/BackButton';
+import initTranslations from "@app/i18n";
+import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
+import BackButton from "@app/[locale]/components/BackButton";
 
-const i18nNamespaces = ['common']
+const i18nNamespaces = ['common'];
 
 const ArchivePage = async ({params: {locale}}) => {
-    const {t, resources} = await initTranslations(locale, i18nNamespaces)
-
-    const headers = [t('name'), t('description'), t('open')]
-    const headers_backend = ['name', 'description', 'open']
+    const {t, resources} = await initTranslations(locale, i18nNamespaces);
+    const headers = [t('name'), t('description'), t('open')];
+    const headers_backend = ['name', 'description', 'open'];
 
     return (
         <TranslationsProvider
@@ -20,7 +19,7 @@ const ArchivePage = async ({params: {locale}}) => {
             namespaces={i18nNamespaces}
         >
             <NavBar/>
-            <div style={{marginTop:60, padding:20}}>
+            <div style={{padding: 20}}>
                 <BackButton
                     destination={'/home'}
                     text={t('back_to') + ' ' + t('home') + ' ' + t('page')}
@@ -34,7 +33,7 @@ const ArchivePage = async ({params: {locale}}) => {
                 />
             </div>
         </TranslationsProvider>
-    )
-}
+    );
+};
 
 export default ArchivePage;
