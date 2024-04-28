@@ -1,4 +1,5 @@
 import zipfile
+import shutil
 from datetime import datetime
 from os.path import realpath, basename
 
@@ -24,11 +25,12 @@ from django.conf import settings
 from pathlib import Path
 import json as JSON
 
+def submission_folder_path(group_id, submission_id):
+    return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
 
 # TODO test timestamp, file, output_test
-def submission_file_url(group_id, submission_id, relative_path):
-    return (f"{str(settings.STATIC_ROOT)}/submissions"
-            f"/group_{group_id}/{submission_id}/{relative_path}")
+def submission_file_path(group_id, submission_id, relative_path):
+    return submission_folder_path(group_id, submission_id) + '/' + relative_path
 
 
 class SubmissionsViewset(viewsets.ModelViewSet):
@@ -74,7 +76,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             for relative_path in request.FILES:
                 # TODO: fix major security flaw met .. in relative_path
                 file = request.FILES[relative_path]
-                filepathstring = submission_file_url(
+                filepathstring = submission_file_path(
                     group_id, str(serializer.data['submission_id']), relative_path)
                 filepath = Path(filepathstring)
                 filepath.parent.mkdir(parents=True, exist_ok=True)
@@ -94,6 +96,30 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @action(detail=True, methods=["get"])
+    def download(self, request, *args, **kwargs):
+        submission = self.get_object()
+        if submission is None:
+            return Response(
+                {"message": f"Submission with id {id} not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        archivename = "submission"
+        downloadspath = 'backend/downloads/'
+        submission_path = submission_folder_path(submission.group_id.group_id, submission.submission_id)
+
+        shutil.make_archive(downloadspath + archivename, 'zip', submission_path)
+
+        path = realpath(downloadspath + archivename + '.zip')
+        response = FileResponse(
+            open(path, 'rb'),
+            content_type="application/force-download"
+        )
+        response['Content-Disposition'] = f'inline; filename={basename(path)}'
+
+        return response
 
     @action(detail=False, methods=["get"])
     def download_selection(self, request, *args, **kwargs):
