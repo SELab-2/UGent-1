@@ -1,4 +1,5 @@
 import zipfile
+import shutil
 from datetime import datetime
 from os.path import realpath, basename
 
@@ -25,13 +26,37 @@ from django.conf import settings
 from pathlib import Path
 import json as JSON
 
+import os
+
+
+class ZipUtilities:
+
+    def toZip(self, folderpaths, zip_path):
+        zip_file = zipfile.ZipFile(zip_path, 'w')
+
+        for folder_path in folderpaths:
+            if os.path.isfile(folder_path):
+                zip_file.write(folder_path)
+            else:
+                self.addFolderToZip(zip_file, folder_path)
+        zip_file.close()
+
+    def addFolderToZip(self, zip_file, folder):
+        for file in os.listdir(folder):
+            full_path = os.path.join(folder, file)
+            if os.path.isfile(full_path):
+                zip_file.write(full_path)
+            elif os.path.isdir(full_path):
+                self.addFolderToZip(zip_file, full_path)
+
+
+def submission_folder_path(group_id, submission_id):
+    return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
+
 
 # TODO test timestamp, file, output_test
-def submission_file_url(group_id, submission_id, relative_path):
-    return (
-        f"{str(settings.STATIC_ROOT)}/submissions"
-        f"/group_{group_id}/{submission_id}/{relative_path}"
-    )
+def submission_file_path(group_id, submission_id, relative_path):
+    return submission_folder_path(group_id, submission_id) + '/' + relative_path
 
 
 class SubmissionsViewset(viewsets.ModelViewSet):
@@ -77,9 +102,8 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             for relative_path in request.FILES:
                 # TODO: fix major security flaw met .. in relative_path
                 file = request.FILES[relative_path]
-                filepathstring = submission_file_url(
-                    group_id, str(serializer.data["submission_id"]), relative_path
-                )
+                filepathstring = submission_file_path(
+                    group_id, str(serializer.data['submission_id']), relative_path)
                 filepath = Path(filepathstring)
                 filepath.parent.mkdir(parents=True, exist_ok=True)
                 with open(filepathstring, "wb+") as dest:
@@ -99,6 +123,30 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @action(detail=True, methods=["get"])
+    def download(self, request, *args, **kwargs):
+        submission = self.get_object()
+        if submission is None:
+            return Response(
+                {"message": f"Submission with id {id} not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        archivename = "submission_" + str(submission.submission_id)
+        downloadspath = 'backend/downloads/'
+        submission_path = submission_folder_path(submission.group_id.group_id, submission.submission_id)
+
+        shutil.make_archive(downloadspath + archivename, 'zip', submission_path)
+
+        path = realpath(downloadspath + archivename + '.zip')
+        response = FileResponse(
+            open(path, 'rb'),
+            content_type="application/force-download"
+        )
+        response['Content-Disposition'] = f'inline; filename={basename(path)}'
+
+        return response
 
     @action(detail=False, methods=["get"])
     def download_selection(self, request, *args, **kwargs):
@@ -120,23 +168,25 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             path = submission.file.path
 
         else:
-            path = "backend/downloads/submissions.zip"
-            zipf = zipfile.ZipFile(file=path, mode="w", compression=zipfile.ZIP_STORED)
+            path = 'backend/downloads/submissions.zip'
+            submission_folders = []
 
-            for id in ids:
-                submission = Submissions.objects.get(submission_id=id)
+            for sid in ids:
+                submission = Submissions.objects.get(submission_id=sid)
                 if submission is None:
                     return Response(
                         {"message": f"Submission with id {id} not found"},
-                        status=status.HTTP_404_NOT_FOUND,
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+                submission_folders.append(
+                    submission_folder_path(
+                        submission.group_id.group_id, submission.submission_id
+                        )
                     )
 
-                zipf.write(
-                    filename=submission.file.path,
-                    arcname=basename(submission.file.path),
-                )
-
-            zipf.close()
+            utilities = ZipUtilities()
+            filename = path
+            utilities.toZip(submission_folders, filename)
 
         path = realpath(path)
         response = FileResponse(

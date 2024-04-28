@@ -581,9 +581,17 @@ export async function uploadSubmissionFile(event: any, project_id : string) : Pr
     event.preventDefault();
     console.log(event.target.fileList.files);
     const formData = new FormData(event.target);
-    for(const file of event.target.fileList.files){
-        formData.append(file.webkitRelativePath, file);
+    //filter files by key
+
+    for(let file of event.target.fileList.files){
+        let path = file.webkitRelativePath;
+        if(path)
+        if (path.includes("/")) {
+            path = path.substring((path.indexOf("/")??0)+1, path.length);
+        }
+        formData.append(path, file);
     }
+    formData.delete("fileList");
     const formDataObject = Object.fromEntries(formData.entries());
     console.log(formDataObject)
     try {
