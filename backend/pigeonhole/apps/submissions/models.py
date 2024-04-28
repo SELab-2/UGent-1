@@ -30,13 +30,9 @@ class Submissions(models.Model):
     # submission_nr is automatically assigned and unique per group, and
     # increments
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if not self.submission_id:
-            max_submission_nr = Submissions.objects.filter(
-                group_id=self.group_id).aggregate(
-                models.Max('submission_nr'))['submission_nr__max'] or 0
-            self.submission_nr = max_submission_nr + 1
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
-
+        if not self.submission_nr:
+            self.submission_nr = Submissions.objects.filter(group_id=self.group_id).count() + 1
+        super(Submissions, self).save(force_insert, force_update, using, update_fields)
 
 class SubmissionsSerializer(serializers.ModelSerializer):
     submission_nr = serializers.IntegerField(read_only=True)

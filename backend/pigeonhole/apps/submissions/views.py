@@ -10,6 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
@@ -27,8 +28,10 @@ import json as JSON
 
 # TODO test timestamp, file, output_test
 def submission_file_url(group_id, submission_id, relative_path):
-    return (f"{str(settings.STATIC_ROOT)}/submissions"
-            f"/group_{group_id}/{submission_id}/{relative_path}")
+    return (
+        f"{str(settings.STATIC_ROOT)}/submissions"
+        f"/group_{group_id}/{submission_id}/{relative_path}"
+    )
 
 
 class SubmissionsViewset(viewsets.ModelViewSet):
@@ -39,13 +42,13 @@ class SubmissionsViewset(viewsets.ModelViewSet):
     filter_backends = [OrderingFilter, DjangoFilterBackend]
 
     def create(self, request, *args, **kwargs):
-        
-        group_id = request.data['group_id']
-        group = Group.objects.get(group_id=group_id)
+        group_id = request.data["group_id"]
+        group = get_object_or_404(Group, group_id=group_id)
 
-        request.data['file_urls'] = JSON.dumps([key for key in request.FILES])
+        data = request.data.copy()  # Create a mutable copy
+        data["file_urls"] = JSON.dumps([key for key in request.FILES])
 
-        serializer = SubmissionsSerializer(data=request.data)
+        serializer = SubmissionsSerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
         if not group:
@@ -75,17 +78,19 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 # TODO: fix major security flaw met .. in relative_path
                 file = request.FILES[relative_path]
                 filepathstring = submission_file_url(
-                    group_id, str(serializer.data['submission_id']), relative_path)
+                    group_id, str(serializer.data["submission_id"]), relative_path
+                )
                 filepath = Path(filepathstring)
                 filepath.parent.mkdir(parents=True, exist_ok=True)
-                with open(filepathstring, 'wb+') as dest:
+                with open(filepathstring, "wb+") as dest:
                     for chunk in file.chunks():
                         dest.write(chunk)
                 # submission.file_urls = '[el path]'
         except IOError as e:
             print(e)
-            return Response({"message": "Error uploading files"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "Error uploading files"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -102,46 +107,41 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         if not ids:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        path = ''
+        path = ""
 
         if len(ids) == 1:
             submission = Submissions.objects.get(submission_id=ids[0])
             if submission is None:
                 return Response(
                     {"message": f"Submission with id {ids[0]} not found"},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_404_NOT_FOUND,
                 )
 
             path = submission.file.path
 
         else:
-            path = 'backend/downloads/submissions.zip'
-            zipf = zipfile.ZipFile(
-                file=path,
-                mode="w",
-                compression=zipfile.ZIP_STORED
-            )
+            path = "backend/downloads/submissions.zip"
+            zipf = zipfile.ZipFile(file=path, mode="w", compression=zipfile.ZIP_STORED)
 
             for id in ids:
                 submission = Submissions.objects.get(submission_id=id)
                 if submission is None:
                     return Response(
                         {"message": f"Submission with id {id} not found"},
-                        status=status.HTTP_404_NOT_FOUND
+                        status=status.HTTP_404_NOT_FOUND,
                     )
 
                 zipf.write(
                     filename=submission.file.path,
-                    arcname=basename(submission.file.path)
+                    arcname=basename(submission.file.path),
                 )
 
             zipf.close()
 
         path = realpath(path)
         response = FileResponse(
-            open(path, 'rb'),
-            content_type="application/force-download"
+            open(path, "rb"), content_type="application/force-download"
         )
-        response['Content-Disposition'] = f'inline; filename={basename(path)}'
+        response["Content-Disposition"] = f"inline; filename={basename(path)}"
 
         return response
