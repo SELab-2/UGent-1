@@ -3,8 +3,8 @@ import Tooltip from "@mui/material/Tooltip";
 import React from "react";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Box from "@mui/material/Box";
-import {TextField} from "@mui/material";
 import {useTranslation} from "react-i18next";
+import ItemsList from "@app/[locale]/components/general/ItemsList";
 
 interface ConditionsProps {
     conditions: string[],
@@ -14,18 +14,7 @@ interface ConditionsProps {
 function Conditions({conditions, setConditions}: ConditionsProps) {
     const {t} = useTranslation();
 
-    const handleConditionsChange = (index: number, event: any) => {
-        const newConditions = [...conditions];
-        newConditions[index] = event.target.value;
-        setConditions(newConditions);
-
-        if (index === conditions.length - 1 && event.target.value !== '') {
-            setConditions([...newConditions, '']);
-        } else if (event.target.value === '' && index < conditions.length - 1) {
-            newConditions.splice(index, 1);
-            setConditions(newConditions);
-        }
-    }
+    console.log(conditions)
 
     return <div>
         <Typography variant="h5" className={"typographyStyle"}>
@@ -44,17 +33,13 @@ function Conditions({conditions, setConditions}: ConditionsProps) {
             </Tooltip>
         </Typography>
         <Box className={"conditionsBox"}>
-            {conditions.map((condition, index) => (
-                <TextField
-                    key={index}
-                    variant="outlined"
-                    className={"conditionsSummation"}
-                    value={condition}
-                    onChange={(event) => handleConditionsChange(index, event)}
-                    margin={'normal'}
-                    size="small"
-                />
-            ))}
+            <ItemsList
+                items={conditions}
+                setItems={setConditions}
+                input_placeholder={t("conditions_example")}
+                empty_list_placeholder={t("no_conditions")}
+                button_text={t("add")}
+            />
         </Box>
     </div>;
 }

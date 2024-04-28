@@ -190,5 +190,7 @@
   "create": "Aanmaken",
   "new_file_example": "Bv.: /extra/verslag.pdf",
   "no_required_files": "Geen verplichte bestanden",
-  "add": "Toevoegen"
+  "add": "Toevoegen",
+  "conditions_example": "Bv.: Het programma moet compileren",
+  "no_conditions": "Geen voorwaarden"
 }

@@ -10,7 +10,7 @@ async function ProjectDetailPage({params: {locale, project_id}}: { params: { loc
     return (
         <TranslationsProvider locale={locale} namespaces={i18nNamespaces} resources={resources}>
             <NavBar/>
-            <ProjectEditForm project_id={project_id}/>
+            <ProjectEditForm project_id={project_id} add_course_id={-1}/>
         </TranslationsProvider>
     );
 }

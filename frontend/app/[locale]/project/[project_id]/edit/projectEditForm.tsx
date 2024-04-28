@@ -19,15 +19,16 @@ const i18nNamespaces = ['common']
 
 interface ProjectEditFormProps {
     project_id: number|null;
+    add_course_id: number;
 }
 
-function ProjectEditForm({project_id}: ProjectEditFormProps){
+function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
     const [files, setFiles] = useState<string[]>([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [groupAmount, setGroupAmount] = useState(1);
     const [groupSize, setGroupSize] = useState(1);
-    const [conditions, setConditions] = useState(['']);
+    const [conditions, setConditions] = useState<string[]>([]);
     const [testfilesName, setTestfilesName] = useState<string[]>([]);
     const [visible, setVisible] = useState(true);
     const [deadline, setDeadline] = React.useState(dayjs());
@@ -40,13 +41,15 @@ function ProjectEditForm({project_id}: ProjectEditFormProps){
     const [isTeacher, setIsTeacher] = useState(false);
     const [loadingUser, setLoadingUser] = useState(true);
     const [hasDeadline, setHasDeadline] = useState(false);
-    const [course_id, setCourseId] = useState(0);
+    const [course_id, setCourseId] = useState<number>(0);
 
     const isTitleEmpty = !title
     const isAssignmentEmpty = !description
     const isScoreEmpty = !score
     const isGroupAmountEmpty = !groupAmount
     const isGroupSizeEmpty = !groupSize
+
+    console.log(add_course_id);
 
 
     useEffect(() => {
@@ -65,12 +68,16 @@ function ProjectEditForm({project_id}: ProjectEditFormProps){
                     setTitle(project["name"])
                     setGroupAmount(project["number_of_groups"])
                     setVisible(project["visible"])
-                    setCourseId(project.course_id);
+                    if (project.project_id !== null) {
+                        setCourseId(project.course_id);
+                    }
                     if (project.test_files !== null) await setTestFiles(project);
                     setScore(+project["max_score"]);
                     if (project["conditions"] != null) {
-                        const conditions_parsed = project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, ''));
-                        conditions_parsed.push("");
+                        let conditions_parsed:string[] = [];
+                        if (project["conditions"] !== "") {
+                            conditions_parsed = project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, ''));
+                        }
                         setConditions(conditions_parsed);
                     }
                     if (project.deadline !== null) setHasDeadline(true);
@@ -136,7 +143,6 @@ function ProjectEditForm({project_id}: ProjectEditFormProps){
             const zipFileBlob = await zip.generateAsync({type: "blob"});
             const formData = new FormData();
             const zipFile = new File([zipFileBlob], "test_files.zip");
-            conditions.pop(); //FIXME: remove when ItemsList is used
             formData.append("test_files", zipFile);
             formData.append("name", title);
             formData.append("description", description);
@@ -146,7 +152,11 @@ function ProjectEditForm({project_id}: ProjectEditFormProps){
             formData.append("file_structure", files.join(","));
             formData.append("conditions", conditions.join(","));
             formData.append("visible", visible.toString());
-            formData.append("course_id", course_id.toString());
+            if (add_course_id < 0) {
+                formData.append("course_id", course_id.toString());
+            } else {
+                formData.append("course_id", add_course_id.toString());
+            }
             if (hasDeadline) {
                 formData.append("deadline", deadline.format());
             } else {
@@ -154,9 +164,12 @@ function ProjectEditForm({project_id}: ProjectEditFormProps){
             }
 
             if (project_id !== null) {
-                await updateProject(project_id, formData).then((response) => console.log(response));
+                await updateProject(project_id, formData);
+                location.href = "/project/" + project_id + "/";
+            } else {
+                const new_project_id = await addProject(formData);
+                location.href = "/project/" + new_project_id + "/"
             }
-            location.href = "/project/" + project_id + "/";
         }
     }
 

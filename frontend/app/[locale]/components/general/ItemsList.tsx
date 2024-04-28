@@ -83,6 +83,9 @@ const ItemsList = ({items, setItems, input_placeholder, empty_list_placeholder, 
                     size="small"
                     error={noInput}
                     placeholder={input_placeholder}
+                    sx={{
+                        width: 'fit-content',
+                    }}
                 />
                 <Button
                     onClick={() => addNewFile()}

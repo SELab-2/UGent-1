@@ -323,31 +323,8 @@ export async function getProjects(): Promise<Project[]> {
     return (await getListRequest('/projects'));
 }
 
-export async function addProject(course_id: number,
-                                    name: string,
-                                    description: string,
-                                    deadline: string,
-                                    visible: string,
-                                    max_score: string,
-                                    number_of_groups: string,
-                                    group_size: string,
-                                    file_structure: string,
-                                    test_files: JSZipObject[],
-                                    conditions: string): Promise<number> {
-
-    return (await postData('/projects/', {
-        name: name,
-        course_id: course_id,
-        description: description,
-        deadline: deadline,
-        visible: visible,
-        max_score: max_score,
-        number_of_groups: number_of_groups,
-        group_size: group_size,
-        file_structure: file_structure,
-        test_files: test_files,
-        conditions: conditions
-    })).project_id;
+export async function addProject(data: any): Promise<number> {
+    return (await postData(`/projects/`, data)).project_id;
 }
 
 export async function getProjectsFromCourse(id: number): Promise<Project[]> {
