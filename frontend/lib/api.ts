@@ -33,6 +33,8 @@ export type Course = {
     open_course: boolean;
     invite_token: string;
     banner: string;
+    archived: boolean;
+    year: number;
 }
 
 export type Project = {
