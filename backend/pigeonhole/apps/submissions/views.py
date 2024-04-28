@@ -25,6 +25,30 @@ from django.conf import settings
 from pathlib import Path
 import json as JSON
 
+import os
+
+
+class ZipUtilities:
+
+    def toZip(self, folderpaths, zip_path):
+        zip_file = zipfile.ZipFile(zip_path, 'w')
+
+        for folder_path in folderpaths:
+            if os.path.isfile(folder_path):
+                zip_file.write(folder_path)
+            else:
+                self.addFolderToZip(zip_file, folder_path)
+        zip_file.close()
+
+    def addFolderToZip(self, zip_file, folder): 
+        for file in os.listdir(folder):
+            full_path = os.path.join(folder, file)
+            if os.path.isfile(full_path):
+                zip_file.write(full_path)
+            elif os.path.isdir(full_path):
+                self.addFolderToZip(zip_file, full_path)
+
+
 def submission_folder_path(group_id, submission_id):
     return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
 
@@ -142,26 +166,25 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
         else:
             path = 'backend/downloads/submissions.zip'
-            zipf = zipfile.ZipFile(
-                file=path,
-                mode="w",
-                compression=zipfile.ZIP_STORED
-            )
 
-            for id in ids:
-                submission = Submissions.objects.get(submission_id=id)
+            submission_folders = []
+
+            for sid in ids:
+                submission = Submissions.objects.get(submission_id=sid)
                 if submission is None:
                     return Response(
                         {"message": f"Submission with id {id} not found"},
                         status=status.HTTP_404_NOT_FOUND
                     )
+                submission_folders.append(
+                    submission_folder_path(
+                        submission.group_id.group_id, submission.submission_id
+                        )
+                    )
 
-                zipf.write(
-                    filename=submission.file.path,
-                    arcname=basename(submission.file.path)
-                )
-
-            zipf.close()
+            utilities = ZipUtilities()
+            filename = path
+            utilities.toZip(submission_folders, filename)
 
         path = realpath(path)
         response = FileResponse(
