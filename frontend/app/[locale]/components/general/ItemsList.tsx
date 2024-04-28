@@ -39,7 +39,7 @@ const ItemsList = ({items, setItems, input_placeholder, empty_list_placeholder, 
     return (
         <Box>
             {items.length === 0 ? (
-                <Typography variant={"h6"} color={"text.disabled"}>{empty_list_placeholder}</Typography>
+                <Typography variant={"body1"} color={"text.disabled"} sx={{padding: 1}}>{empty_list_placeholder}</Typography>
             ) : (
                 <List
                     sx={{
