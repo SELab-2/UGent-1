@@ -21,6 +21,9 @@ export default function SubmitPage({project_id}: { project_id: string }){
         let newpaths : string[] = []
         for (const file of event.target.files) {
             let text : string = file.webkitRelativePath;
+            if (text.includes("/")) {
+                text = text.substring((text.indexOf("/")??0)+1, text.length);
+            }
             newpaths.push(text);
         }
         setPaths(newpaths);

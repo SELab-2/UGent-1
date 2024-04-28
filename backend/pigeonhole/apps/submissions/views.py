@@ -40,7 +40,7 @@ class ZipUtilities:
                 self.addFolderToZip(zip_file, folder_path)
         zip_file.close()
 
-    def addFolderToZip(self, zip_file, folder): 
+    def addFolderToZip(self, zip_file, folder):
         for file in os.listdir(folder):
             full_path = os.path.join(folder, file)
             if os.path.isfile(full_path):
@@ -51,6 +51,7 @@ class ZipUtilities:
 
 def submission_folder_path(group_id, submission_id):
     return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
+
 
 # TODO test timestamp, file, output_test
 def submission_file_path(group_id, submission_id, relative_path):
@@ -65,7 +66,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
     filter_backends = [OrderingFilter, DjangoFilterBackend]
 
     def create(self, request, *args, **kwargs):
-        
+
         group_id = request.data['group_id']
         group = Group.objects.get(group_id=group_id)
 
