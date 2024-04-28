@@ -7,7 +7,7 @@ import CourseDetails from "@app/[locale]/components/CourseDetails";
 import StudentCoTeacherButtons from "@app/[locale]/components/StudentCoTeacherButtons";
 import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
 import ListView from '@app/[locale]/components/ListView';
-import AddProjectButton from "@app/[locale]/components/AddProjectButton";
+import ProjectTable from "@app/[locale]/components/ProjectTable";
 
 const i18nNamespaces = ['common']
 
@@ -45,14 +45,7 @@ export default async function Course({params: {locale, course_id}, searchParams:
                     justifyContent={'left'}
                     width={'100%'}
                 >
-                    <ListView
-                        admin={false}
-                        headers={headers}
-                        headers_backend={headers_backend}
-                        sortable={[true, true, false, true]}
-                        get={'projects'}
-                        get_id={course_id}
-                    />
+                    <ProjectTable course_id={course_id}/>
 
                 </Box>
                 <StudentCoTeacherButtons course_id={course_id}/>
