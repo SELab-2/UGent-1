@@ -130,7 +130,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        archivename = "submission"
+        archivename = "submission_" + str(submission.submission_id)
         downloadspath = 'backend/downloads/'
         submission_path = submission_folder_path(submission.group_id.group_id, submission.submission_id)
 
