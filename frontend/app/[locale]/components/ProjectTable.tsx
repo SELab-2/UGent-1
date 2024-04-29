@@ -49,6 +49,11 @@ const StyledTableRow = styled(TableRow)(() => ({
     },
 }));
 
+interface Data {
+    id: number;
+
+}
+
 const convertDate = (date_str: string) => {
     let date = new Date(date_str);
     date = new Date(date.getTime());
@@ -239,6 +244,7 @@ function ProjectTable({course_id}: ProjectTableTeacherProps) {
                     sx={{
                         width: 'fit-content',
                         color: 'secondary.contrastText',
+                        marginBottom: 1
                     }}
                 >
                     {t("details")}
