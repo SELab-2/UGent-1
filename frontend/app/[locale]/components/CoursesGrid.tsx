@@ -1,13 +1,16 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import {APIError, Course, getCoursesForUser, getUserData, UserData} from '@lib/api';
+import {APIError, Course, getCoursesForUser} from '@lib/api';
 import {Container, Grid} from '@mui/material';
-import CourseCard from './CourseCard';
+import CourseCard from '@app/[locale]/components/CourseCard';
+import {useTranslation} from "react-i18next";
 
 const CoursesGrid = ({selectedYear}) => {
-    const [error, setError] = useState<APIError | null>(null);
     const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
     const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
+    const [error, setError] = useState<APIError | null>(null);
+
+    const {t} = useTranslation()
 
     useEffect(() => {
         const fetchCourses = async () => {

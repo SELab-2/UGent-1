@@ -15,6 +15,7 @@ const CourseControls = ({selectedYear, onYearChange}) => {
     const academicYear = `${currentYear - 1}-${currentYear.toString().slice(-2)}`;
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<APIError | null>(null);
+
     const {t} = useTranslation()
 
     useEffect(() => {

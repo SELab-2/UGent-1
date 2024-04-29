@@ -2,25 +2,23 @@
 import React, {useEffect, useState} from 'react';
 import {ThemeProvider} from '@mui/material/styles';
 import {CourseCardTheme} from '@styles/theme';
-import {
-    Card,
-    CardContent,
-    Typography,
-} from '@mui/material';
-import {
-    Course,
-    getLastSubmissionFromProject,
-    getProjectsFromCourse,
-    Project,
-    Submission,
-} from "@lib/api";
+import {Card, CardContent, Typography,} from '@mui/material';
+import {Course, getLastSubmissionFromProject, getProjectsFromCourse, Project, Submission,} from "@lib/api";
 import {useTranslation} from "react-i18next";
-import ListView from './ListView';
+import ListView from '@app/[locale]/components/ListView';
 
 const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [last_submission, setSubmission] =
-        useState<Submission>({ submission_id: 0, group_id: 0, submission_nr: 0, file: '', timestamp: '', output_test: '', });
+        useState<Submission>({
+            submission_id: 0,
+            group_id: 0,
+            submission_nr: 0,
+            file: '',
+            timestamp: '',
+            output_test: '',
+        });
+
     const {t} = useTranslation()
 
     useEffect(() => {
