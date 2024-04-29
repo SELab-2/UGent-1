@@ -5,22 +5,20 @@ import {Container, Grid} from '@mui/material';
 import CourseCard from './CourseCard';
 
 const CoursesGrid = ({selectedYear}) => {
-    const [user, setUser] = useState<UserData>({id: 0, email: "", first_name: "", last_name: "", course: [], role: 3, picture: ""});
     const [error, setError] = useState<APIError | null>(null);
     const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
     const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
 
     useEffect(() => {
-        const fetchCoursesAndUser = async () => {
+        const fetchCourses = async () => {
             try {
-                setUser(await getUserData());
                 setCourses(await getCoursesForUser());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
             }
         };
 
-        fetchCoursesAndUser();
+        fetchCourses();
     }, []);
 
     useEffect(() => {

@@ -40,15 +40,6 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
 
         };
 
-        const fetchTeachers = async () => {
-            try {
-                setTeachers(await getTeachersFromCourse(course.course_id));
-            } catch (error) {
-                console.log(error);
-            }
-
-        };
-
         fetchProjects();
     }, [course.course_id]);
 
