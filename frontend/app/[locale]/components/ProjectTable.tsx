@@ -50,8 +50,10 @@ const StyledTableRow = styled(TableRow)(() => ({
 }));
 
 interface Data {
-    id: number;
-
+    id: string;
+    name: string;
+    deadline: string;
+    visibility: boolean;
 }
 
 const convertDate = (date_str: string) => {
