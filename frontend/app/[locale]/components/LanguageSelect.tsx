@@ -1,11 +1,10 @@
-'use client'
+"use client"
 
 import {MenuItem, Select, SelectChangeEvent} from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import i18nConfig from '../../../i18nConfig';
-import {ChangeEvent} from "react";
 
 const LanguageSelect = () => {
     const { i18n } = useTranslation();
@@ -46,7 +45,7 @@ const LanguageSelect = () => {
             <Select
                 autoWidth
                 value={currentLocale}
-                defaultValue={window.location.pathname.split("/")[1]}
+                defaultValue={"nl"}
                 onChange={handleChange}
                 sx={{
                     color: "white",

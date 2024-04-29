@@ -272,15 +272,15 @@ export async function getCourses(page = 1, pageSize = 5, keyword?: string, order
     return await getRequest(url);
 }
 
-export async function getCoursesForUser() : Promise<Course[]>{
+export async function getCoursesForUser(): Promise<Course[]> {
     let page = 1;
     let results: Course[] = []
-    let response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${10}`);
+    let response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${20}`);
     if (response.results.length === 0) return [];
     results = results.concat(response.results);
     while (response.next !== null) {
         page++;
-        response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${10}`);
+        response = await getRequest(`/courses/get_selected_courses?page=${page}&page_size=${20}`);
         results = results.concat(response.results);
     }
     return results;
@@ -338,12 +338,20 @@ export async function addProject(course_id: number): Promise<number> {
     })).project_id;
 }
 
-export async function getProjectsFromCourse(id: number): Promise<Project[]>{
+export async function getProjectsFromCourse(id: number): Promise<Project[]> {
     return (await getListRequest('/courses/' + id + '/get_projects'))
 }
 
-export async function getTeachersFromCourse(id: number): Promise<User[]>{
+export async function getProjectFromSubmission(id: number): Promise<Project> {
+    return (await getRequest(`/submissions/${id}/get_project`))
+}
+
+export async function getTeachersFromCourse(id: number): Promise<User[]> {
     return (await getListRequest('/courses/' + id + '/get_teachers'))
+}
+
+export async function getSubmission(id: number): Promise<Submission> {
+    return (await getRequest(`/submissions/${id}`));
 }
 
 export async function getLastSubmissionFromProject(id: number): Promise<Submission> {
@@ -368,7 +376,7 @@ export async function getProjects_by_course(courseId: number, page = 1, pageSize
     return await getRequest(url);
 }
 
-export async function getGroup(id: number) : Promise<Group>{
+export async function getGroup(id: number): Promise<Group> {
     return (await getRequest(`/groups/${id}`));
 }
 
@@ -412,6 +420,24 @@ export async function getProjectSubmissions(id: number, page = 1, pageSize = 5, 
     return (await getRequest(url))
 }
 
+export async function getGroupSubmissions(id: number, page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Submission[]> {
+    let url = `/projects/${id}/get_group_submissions?page=${page}&page_size=${pageSize}`
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return (await getRequest(url))
+}
+
 let userData: UserData | undefined = undefined;
 
 export async function getUserData(): Promise<UserData> {
@@ -424,7 +450,6 @@ export async function getUserData(): Promise<UserData> {
     }*/ else {
         let user: UserData = await getRequest('/users/current');
         //localStorage.setItem('user', JSON.stringify(user));
-        console.log(user);
         return user;
     }
 }
@@ -471,8 +496,8 @@ export async function postData(path: string, data: any) {
     try {
         const response = await axios.post(backend_url + path, data, {withCredentials: true});
 
-        if ((response.status === 200 || response.status === 201) && response?.data) {
-            return response.data;
+        if ((response.status === 200 || response.status === 201)) {
+            return response?.data;
         } else if (response?.data?.detail) {
             console.error("Unexpected response structure:", response.data);
             const error: APIError = new APIError();
@@ -550,30 +575,24 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any) : string{
+export async function uploadSubmissionFile(event: any, project_id : string) : Promise<string>{
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
-    console.log(event.target.fileList.files);
     const formData = new FormData(event.target);
-    for(const file of event.target.fileList.files){
-        formData.append(file.webkitRelativePath, file);
-    }
     const formDataObject = Object.fromEntries(formData.entries());
-    console.log(formDataObject)
     try {
-        await axios.post(backend_url + '/submissions/', formDataObject,
-         { withCredentials: true,
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-          });
+        let groupres = await axios.get(backend_url + "/projects/" + project_id + "/get_group/", {withCredentials: true});
+        const group_id = groupres.data.group_id;
+        formDataObject.group_id = group_id;
+        await axios.post(backend_url + "/submissions/", formDataObject, {withCredentials: true, headers: {'Content-Type': 'multipart/form-data'}});
         return "yes";
     } catch (error) {
-        const apierror : APIError = new APIError();
+        const apierror: APIError = new APIError();
         apierror.message = "error posting form";
         apierror.type = ErrorType.REQUEST_ERROR;
         apierror.trace = error;
-        console.error(apierror);
-        return "error";
+        console.error(error);
+        return "error"
     }
 }

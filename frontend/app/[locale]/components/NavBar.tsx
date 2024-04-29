@@ -25,7 +25,7 @@ import HomeButton from "./HomeButton";
 import LanguageSelect from "./LanguageSelect";
 import AccountMenu from "./AccountMenu";
 import {useTranslation} from "react-i18next";
-import {APIError, Course, getCoursesForUser, getUserData, UserData} from "@lib/api";
+import {APIError, Course, getCoursesForUser, UserData, getUserData} from "@lib/api";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 

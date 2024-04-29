@@ -22,6 +22,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 setUser(await getUserData());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
+                console.log(error);
             }
 
         };
@@ -37,28 +38,27 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                height: '200px',
+                height: '140px',
                 width: "calc(100% - 40px)",
                 borderRadius: '16px',
-                marginTop: 50,
                 margin: "0 auto",
-                paddingX: 2,
             }}
         >
             <Box
-                textAlign="left"
                 display="flex"
                 justifyContent="flex-start"
                 alignItems="center"
                 width={"calc(100% - 200px)"}
+                height={'100%'}
             >
                 <Typography
                     variant="h1"
-                    textAlign="left"
-                    width={"inherit"}
-                    noWrap={false}
+                    textAlign="center"
+                    noWrap={true}
+                    padding={0}
                     sx={{
                         color: 'white',
+                        height: 'fit-content',
                     }}
                 >
                     {course?.name}
@@ -72,6 +72,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                     justifyContent="flex-start"
                     alignItems="flex-start"
                     textAlign="left"
+                    paddingY={2}
                 >
                     <EditCourseButton course_id={course_id}/>
                     <AddProjectButton course_id={course_id}/>

@@ -184,13 +184,17 @@ def run():
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_11, course_12, course_13]
     )
 
-    user_7 = User.objects.get(
-        id=1
+    user_7, _ = User.objects.get_or_create(
+        username='runedyselinck',
+        email='rune.dyselinck@sel2-1.ugent.be',
+        first_name='Rune',
+        last_name='Dyselinck',
+        role=3
     )
     user_7.course.set(
-        [course_4, course_5, course_6]
+        [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_14, course_15, course_16,
+         course_17]
     )
-    user_7.role.set(1)
 
     user_8, _ = User.objects.get_or_create(
         username='thibaudcollyn',
@@ -208,6 +212,7 @@ def run():
 
     project_1, _ = Project.objects.get_or_create(
         name='SELab 2 project',
+        description=lorem_ipsum,
         course_id=course_5,
         deadline='2021-12-12 12:12:14',
         visible=True,
@@ -217,6 +222,7 @@ def run():
 
     project_2, _ = Project.objects.get_or_create(
         name='AI project',
+        description=lorem_ipsum,
         course_id=course_1,
         deadline='2021-12-12 12:12:14',
         visible=True,
@@ -226,6 +232,7 @@ def run():
 
     project_3, _ = Project.objects.get_or_create(
         name='Opdracht 1',
+        description=lorem_ipsum,
         course_id=course_6,
         deadline='2021-12-12 12:12:14',
         visible=True,
@@ -235,6 +242,7 @@ def run():
 
     project_4, _ = Project.objects.get_or_create(
         name='Opdracht 2',
+        description=lorem_ipsum,
         course_id=course_6,
         deadline='2021-12-12 12:12:14',
         visible=True,

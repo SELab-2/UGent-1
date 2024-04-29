@@ -5,7 +5,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface ProjectReturnButtonProps {
     locale: any,
-    project_id: number;
+    project_id: number | undefined;
 }
 
 const ProjectReturnButton = (

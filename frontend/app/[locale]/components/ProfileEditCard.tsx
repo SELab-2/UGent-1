@@ -63,6 +63,7 @@ const ProfileEditCard = () => {
             formData.append('email', user.email);  // Assuming you want to send email or other user details
             formData.append('first_name', user.first_name);
             formData.append('last_name', user.last_name);
+            formData.append('course', user.course);
             const fileReader = new FileReader();
             fileReader.onload = async () => {
                 const arrayBuffer = fileReader.result;

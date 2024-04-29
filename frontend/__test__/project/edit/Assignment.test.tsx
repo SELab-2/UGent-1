@@ -1,4 +1,4 @@
-import {render} from "@testing-library/react";
+import {render, fireEvent} from "@testing-library/react";
 import React from "react";
 import Assignment from "@app/[locale]/components/project_components/assignment";
 import getTranslations from "../../translations";
@@ -29,16 +29,27 @@ describe('Assignment', () => {
         expect(textField).toBeInTheDocument();
         expect(textField).toHaveValue('Test description');
 
-        const {getByText: getByText_nl} = render(
+        // simulate change event
+        fireEvent.change(textField, {target: {value: 'New description'}});
+
+        // check that setDescription was called with the new value
+        expect(setDescription).toHaveBeenCalledWith('New description');
+    });
+
+    it('renders helper text when isAssignmentEmpty is true', async () => {
+        const setDescription = jest.fn();
+        const translations = await getTranslations();
+
+        const {getByText} = render(
             <Assignment
-                isAssignmentEmpty={false}
+                isAssignmentEmpty={true}
                 setDescription={setDescription}
                 description="Test description"
-                translations={translations.nl}
+                translations={translations.en}
             />
         );
 
-        // check if text gets translated to dutch
-        expect(getByText_nl('Opdrachtomschrijving')).toBeInTheDocument();
+        // check that the helper text was rendered properly
+        expect(getByText('Assignment is required')).toBeInTheDocument();
     });
 });
