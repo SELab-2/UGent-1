@@ -13,23 +13,24 @@ import {
     getProjectsFromCourse,
     Project,
     Submission,
-    User
 } from "@lib/api";
 import {useTranslation} from "react-i18next";
 import ListView from './ListView';
 
 const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
-    const [teachers, setTeachers] = useState<User[]>([]);
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [last_submission, setSubmission] =
+        useState<Submission>({ submission_id: 0, group_id: 0, submission_nr: 0, file: '', timestamp: '', output_test: '', });
     const {t} = useTranslation()
 
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const fetched_projects: Project[] = await getProjectsFromCourse(course.course_id);
+                setProjects(await getProjectsFromCourse(course.course_id));
                 const fetched_submissions = new Map<number, Submission>();
-                for (let i = 0; i < fetched_projects.length; i++) {
-                    const project = fetched_projects[i];
-                    const last_submission = await getLastSubmissionFromProject(project.project_id);
+                for (let i = 0; i < projects.length; i++) {
+                    const project = projects[i];
+                    setSubmission(await getLastSubmissionFromProject(project.project_id));
                     if (last_submission.group_id !== null) {
                         fetched_submissions.set(project.project_id, last_submission);
                     }
@@ -55,9 +56,6 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
                         <a href={`/course/${course.course_id}`} style={{color: 'black'}}>
                             {course.name}
                         </a>
-                    </Typography>
-                    <Typography color="text.text" gutterBottom style={{whiteSpace: 'pre-line'}}>
-                        {teachers.map((teacher: User) => teacher.first_name + " " + teacher.last_name).join('\n')}
                     </Typography>
                     <ListView
                         admin={false}
