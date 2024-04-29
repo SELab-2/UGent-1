@@ -33,6 +33,8 @@ export type Course = {
     open_course: boolean;
     invite_token: string;
     banner: string;
+    archived: boolean;
+    year: number;
 }
 
 export type Project = {
@@ -272,6 +274,24 @@ export async function getCourses(page = 1, pageSize = 5, keyword?: string, order
     return await getRequest(url);
 }
 
+export async function getArchivedCourses(page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Course[]> {
+    let url = `/courses/get_archived_courses?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
 export async function getCoursesForUser(): Promise<Course[]> {
     let page = 1;
     let results: Course[] = []
@@ -443,13 +463,8 @@ let userData: UserData | undefined = undefined;
 export async function getUserData(): Promise<UserData> {
     if (userData) {
         return userData;
-    }/*else if(localStorage.getItem('user')){
-        let user : UserData = JSON.parse(localStorage.getItem('user') as string);
-        userData = user;
-        return user;
-    }*/ else {
+    } else {
         let user: UserData = await getRequest('/users/current');
-        //localStorage.setItem('user', JSON.stringify(user));
         return user;
     }
 }
@@ -575,7 +590,7 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any, project_id : string) : Promise<string>{
+export async function uploadSubmissionFile(event: any, project_id: string): Promise<string> {
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
@@ -585,7 +600,10 @@ export async function uploadSubmissionFile(event: any, project_id : string) : Pr
         let groupres = await axios.get(backend_url + "/projects/" + project_id + "/get_group/", {withCredentials: true});
         const group_id = groupres.data.group_id;
         formDataObject.group_id = group_id;
-        await axios.post(backend_url + "/submissions/", formDataObject, {withCredentials: true, headers: {'Content-Type': 'multipart/form-data'}});
+        await axios.post(backend_url + "/submissions/", formDataObject, {
+            withCredentials: true,
+            headers: {'Content-Type': 'multipart/form-data'}
+        });
         return "yes";
     } catch (error) {
         const apierror: APIError = new APIError();
