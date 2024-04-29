@@ -1,7 +1,7 @@
 "use client";
 import React, {useEffect, useState} from 'react';
 import {ThemeProvider} from '@mui/material/styles';
-import {CourseCardTheme} from '../../../styles/theme';
+import {CourseCardTheme} from '@styles/theme';
 import {
     Card,
     CardContent,
