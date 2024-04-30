@@ -3,9 +3,13 @@ import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {getCourse, getImage, postData, updateCourse} from "@lib/api";
 import Typography from "@mui/material/Typography";
-import {Box, Button, Input, MenuItem, Select, TextField} from "@mui/material";
+import {Box, Button, Input, MenuItem, Select, TextField } from "@mui/material";
+import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {visuallyHidden} from '@mui/utils';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import dayjs from "dayjs";
 
 interface EditCourseFormProps {
     courseId: number
@@ -15,6 +19,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [open, setOpen] = useState(false);
+    const [year, setYear] = useState(0);
     const {t} = useTranslation();
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [selectedImageURL, setSelectedImageURL] = useState<string>("");
@@ -27,6 +32,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                 setName(course.name);
                 setDescription(course.description);
                 setOpen(course.open_course);
+                setYear(course.year);
                 const image = await getImage(course.banner);
                 const fileReader = new FileReader();
                 fileReader.onload = function () {
@@ -55,6 +61,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
         formData.append('name', name);
         formData.append('description', description);
         formData.append('open_course', open.toString());
+        formData.append('year', year.toString());
         const fileReader = new FileReader();
         fileReader.onload = async function () {
             const arrayBuffer = this.result;
@@ -87,6 +94,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-evenly',
+                    flexWrap: 'no-wrap',
                     height: 'fit-content',
                     width: '100%',
                 }}
@@ -99,14 +107,39 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     >
                         {t("course name")}
                     </Typography>
-                    <TextField type="text" id="name" name="name" defaultValue={name}
-                               onChange={(event: any) => setName(event.target.value)} required style={{
-                        fontSize: '20px',
-                        fontFamily: 'Quicksand, sans-serif',
-                        borderRadius: '6px',
-                        height: '30px',
-                        width: '400px'
+                    <TextField
+                        type="text"
+                        id="name"
+                        name="name"
+                        defaultValue={name}
+                        onChange={(event: any) => setName(event.target.value)}
+                        required
+                        style={{
+                            fontSize: '20px',
+                            fontFamily: 'Quicksand, sans-serif',
+                            borderRadius: '6px',
+                            height: '30px',
+                            width: '400px',
+                            marginBottom: '32px'
                     }}/>
+                </Box>
+                <Box
+                    height={'fit-content'}
+                >
+                    <Typography variant={"h3"}>
+                        {t("year")}
+                    </Typography>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            views={['year']}
+                            value={year !== 0 ? dayjs().year(year) : null}
+                            onChange={(date: any) => setYear(date.year())}
+                            sx={{
+                                width: 'fit-content',
+                                height: 'fit-content',
+                            }}
+                        />
+                    </LocalizationProvider>
                 </Box>
                 <Box sx={{marginTop: '32px', height: 'fit-content'}}>
                     <Typography

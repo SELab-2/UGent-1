@@ -21,6 +21,7 @@ async function CourseEditPage({params: {locale, course_id}}: { params: { locale:
                     display: 'flex',
                     alignItems: 'space-between',
                     justifyContent: 'space-between',
+                    width: '100%',
                 }}
             >
                 <EditCourseForm courseId={course_id}/>

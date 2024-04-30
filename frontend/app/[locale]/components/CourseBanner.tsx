@@ -52,7 +52,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    height: '200px',
+                    height: '150px',
                     borderRadius: '16px',
                 }}
             >
@@ -64,7 +64,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                     height={'100%'}
                 >
                     <Typography
-                        variant="h1"
+                        variant="h2"
                         textAlign="center"
                         noWrap={true}
                         padding={0}
@@ -73,7 +73,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                             height: 'fit-content',
                         }}
                     >
-                        {course?.name}
+                        {course?.name + (course?.year === null ? "" : " " + course?.year)}
                     </Typography>
                 </Box>
                 {user?.role !== 3 ? (
