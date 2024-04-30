@@ -13,7 +13,7 @@ class Course(models.Model):
     banner = models.FileField(upload_to='course_banners/', blank=True, null=False,
                               default='course_banners/ugent_banner.png')
     archived = models.BooleanField(default=False)
-    year = models.IntegerField(blank=True, null=True)
+    year = models.IntegerField(default=2024)
 
     objects = models.Manager()
 
