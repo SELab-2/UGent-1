@@ -7,8 +7,14 @@ from backend.pigeonhole.apps.groups.models import Group
 
 
 def get_upload_to(self, filename):
-    return 'submissions/' + str(self.group_id.group_id) + '/' + str(self.submission_nr) + '/input' + \
-        os.path.splitext(filename)[1]
+    return (
+        "submissions/"
+        + str(self.group_id.group_id)
+        + "/"
+        + str(self.submission_nr)
+        + "/input"
+        + os.path.splitext(filename)[1]
+    )
 
 
 def get_upload_to_test(self, filename):
@@ -29,10 +35,15 @@ class Submissions(models.Model):
 
     # submission_nr is automatically assigned and unique per group, and
     # increments
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
         if not self.submission_nr:
-            self.submission_nr = Submissions.objects.filter(group_id=self.group_id).count() + 1
+            self.submission_nr = (
+                Submissions.objects.filter(group_id=self.group_id).count() + 1
+            )
         super(Submissions, self).save(force_insert, force_update, using, update_fields)
+
 
 class SubmissionsSerializer(serializers.ModelSerializer):
     submission_nr = serializers.IntegerField(read_only=True)
@@ -40,4 +51,11 @@ class SubmissionsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Submissions
-        fields = ['submission_id', 'file_urls', 'timestamp', 'submission_nr', 'group_id', 'draft']
+        fields = [
+            "submission_id",
+            "file_urls",
+            "timestamp",
+            "submission_nr",
+            "group_id",
+            "draft",
+        ]
