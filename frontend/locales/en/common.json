@@ -182,5 +182,7 @@
   "view_archive": "View Archive",
   "view_co_teachers": "View co-teachers",
   "view_students": "View students",
-  "visibility": "Visibility"
+  "visibility": "Visibility",
+  "select": "Select",
+  "search_for_project": "Search for project"
 }

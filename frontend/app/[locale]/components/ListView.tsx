@@ -1,6 +1,28 @@
 'use client'
 import React, {useEffect, useState} from 'react';
-import {Box, Button, Checkbox, Container, CssBaseline, IconButton, TextField} from '@mui/material';
+import {
+    Box,
+    Button,
+    Checkbox,
+    Container,
+    CssBaseline,
+    Typography,
+    IconButton,
+    TextField,
+    tableCellClasses,
+    TableSortLabel,
+    TablePagination,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+} from '@mui/material';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import CropSquareIcon from '@mui/icons-material/CropSquare';
 import {styled} from '@mui/system';
 import {NextPage} from 'next';
 import checkMarkImage from './check-mark.png';
@@ -21,6 +43,8 @@ import {
     getUsers,
     postData
 } from '@lib/api';
+import baseTheme from "../../../styles/theme";
+import {useTranslation} from "react-i18next";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -59,29 +83,23 @@ const RootContainer = styled(Container)(({theme}: Theme) => ({
     maxWidth: '100%',
 }));
 
-const Table = styled('table')(({theme}: Theme) => ({
-    marginTop: theme.spacing(2),
-    width: '100%',
-    borderCollapse: 'collapse',
-    '& th, td': {
-        border: '1px solid #ddd',
-        padding: theme.spacing(1),
-        textAlign: 'left',
-        height: '24px',
+const StyledTableCell = styled(TableCell)(() => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: baseTheme.palette.primary.main,
+        color: baseTheme.palette.primary.contrastText,
     },
-    '& th': {
-        backgroundColor: theme.palette.primary.dark,
-        color: theme.palette.primary.contrastText,
-        fontSize: '14px',
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
     },
 }));
 
-const TableRow = styled('tr')(({theme}: Theme) => ({
-    '&:nth-child(even)': {
-        backgroundColor: theme.palette.background.default,
+const StyledTableRow = styled(TableRow)(() => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: baseTheme.palette.secondary.main,
     },
-    '&:nth-child(odd)': {
-        backgroundColor: theme.palette.secondary.main,
+    // hide last border
+    '&:last-child td, &:last-child th': {
+        border: 0,
     },
 }));
 
@@ -118,12 +136,6 @@ const WhiteTriangleDownIcon = () => (
         <path d="M6 0L12 12L0 12L6 0Z" fill="white"/>
     </svg>
 );
-
-
-const SearchBar = styled(TextField)({
-    marginBottom: '16px',
-    width: '50%', // Adjust the width to cover only 50% of the container
-});
 
 const RemoveButton = styled(Button)({
     marginBottom: '16px',
@@ -188,6 +200,7 @@ const ListView: NextPage<ListViewProps> = ({
     const [currentPage, setCurrentPage] = useState(1);
     const [previousPage, setPreviousPage] = useState(0);
     const [nextPage, setNextPage] = useState(0);
+    const {t} = useTranslation();
 
     // ids of selected row items
     const [selected, setSelected] = useState<number[]>([]);
@@ -324,23 +337,22 @@ const ListView: NextPage<ListViewProps> = ({
 
 
         return (
-            <GreenCheckbox checked={checked} onChange={handleCheckboxChange}>
-                <CustomCheckmarkWrapper>
-                    {checked && <img src={checkMarkImage} alt="Checkmark"
-                                     style={{width: '100%', height: '100%', objectFit: 'contain'}}/>}
-                </CustomCheckmarkWrapper>
-            </GreenCheckbox>
+            <Checkbox checked={checked} onChange={handleCheckboxChange} sx={{color:"black"}}/>
         );
     };
 
     return (
-        <RootContainer component="main">
+        <Box
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
+            justifyContent={'center'}
+        >
             <CssBaseline/>
             {search &&
-                <SearchBar
+                <TextField
                     label={search_text}
                     variant="outlined"
-                    fullWidth
                     value={searchTerm}
                     onChange={(e: { target: { value: any; }; }) => {
                         setCurrentPage(1);
@@ -350,6 +362,14 @@ const ListView: NextPage<ListViewProps> = ({
                         checkboxes.forEach((checkbox) => {
                             (checkbox as HTMLInputElement).checked = false;
                         });
+                    }}
+                    InputLabelProps={{
+                        style: {color: 'gray'}
+                    }}
+                    sx={{
+                        width: '30%',
+                        height: 'fit-content',
+                        marginBottom: '16px',
                     }}
                 />
             }
@@ -432,119 +452,168 @@ const ListView: NextPage<ListViewProps> = ({
                     Download selected submissions
                 </RemoveButton>
             )}
-
-            <Table>
-                <thead>
-                <tr>
-                    {(get !== 'groups' && get !== 'projects' && !(get === 'submissions' && !action_name)) &&
-                        <th>Select</th>}
-                    {headers.map((header, index) =>
-                        <th key={index}>
-                            {sortable[index] &&
-                                <IconButton size="small" onClick={() => handleSort(headers_backend[index])}>
-                                    {sortConfig.key === headers_backend[index] ? (sortConfig.direction === 'asc' ?
-                                        <WhiteTriangleUpIcon/> : <WhiteTriangleDownIcon/>) : <WhiteSquareIcon/>}
-                                </IconButton>
-                            }
-                            {header}
-                        </th>
-                    )}
-                </tr>
-                </thead>
-                <tbody>
-                {rows.map((row, index) => (
-                    <TableRow key={index}>
-                        {((get !== 'groups' && get !== 'projects' && !(get === 'submissions' && !action_name)) &&
-                            <td>
-                                {<CheckBoxWithCustomCheck checked={false}/>}
-                            </td>)}
-                        {get === 'groups' && row.slice(2).map((cell, cellIndex) => (
-                            <td key={cellIndex}>{typeof cell == "boolean" ? (cell ? <CheckIcon/> :
-                                <CancelIcon/>) : cell}</td>
-                        ))}
-                        {get !== 'groups' && row.slice(1).map((cell, cellIndex) => (
-                            <td key={cellIndex}>{typeof cell == "boolean" ? (cell ? <CheckIcon/> :
-                                <CancelIcon/>) : cell}</td>
-                        ))}
-                        {
-                            // course leave button
-                            get === 'courses' && user.course.includes(row[0]) && (
-                                <td>
-                                    <Button
-                                        onClick={() => postData('/courses/' + row[0] + '/leave_course/', {course_id: row[0]}).then(() => window.location.reload())
-                                        }>
-                                        Leave
-                                    </Button>
-                                </td>
-                            )
-                        }
-                        {
-                            // course join button
-                            get === 'courses' && (!user.course.includes(row[0])) && (
-                                <td>
-                                    <Button
-                                        onClick={() => postData('/courses/' + row[0] + '/join_course/', {course_id: row[0]}).then(() => window.location.href = '/course/' + row[0])
-                                        }
-                                        disabled={!row[3]}
-                                        style={{backgroundColor: row[3] ? '' : 'gray'}}
-                                    >
-                                        Join
-                                    </Button>
-                                </td>
-                            )
-                        }
-                        {
-                            // group join button
-                            get === 'groups' && (!row[1].includes(user.id)) && (
-                                <td>
-                                    {
-                                        // join button isn't shown when user is already in group
-                                        // or when group is full
-                                        // TODO i18n join button
-                                        (user.role == 3) && (!user_is_in_group) && (row[1].length < project.group_size) && (
+            <Paper
+                sx={{
+                    width: "100%",
+                }}
+            >
+                <TableContainer component={Paper}>
+                    <Table
+                        sx={{
+                            width: "100%",
+                            borderRadius: '16px'
+                        }}
+                    >
+                        <TableHead>
+                            <TableRow>
+                                {(get !== 'groups' && get !== 'projects' && !(get === 'submissions' && !action_name)) &&
+                                    <StyledTableCell>
+                                        <Typography
+                                            variant={"body1"}
+                                            sx={{
+                                                color: 'primary.contrastText',
+                                                display: 'inline-block',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            {t('select')}
+                                        </Typography>
+                                    </StyledTableCell>}
+                                {headers.map((header, index) =>
+                                    <StyledTableCell key={index}>
+                                        {sortable[index] &&
                                             <Button
-                                                onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]}).then(() => window.location.reload())
-                                                }>
-                                                Join
+                                                onClick={() => handleSort(headers_backend[index])}
+                                                endIcon={
+                                                    sortable[index] &&
+                                                    sortConfig.key === headers_backend[index] ? (sortConfig.direction === 'asc' ?
+                                                        <KeyboardArrowUpIcon sx={{color: "white"}}/> : <KeyboardArrowDownIcon sx={{color: "white"}}/>) : <KeyboardArrowUpIcon sx={{color: "primary.main"}}/>
+                                                }
+                                                sx={{
+                                                    width: 'fit-content',
+                                                    textAlign: 'left',
+                                                    alignContent: 'left',
+                                                    '&:hover': {
+                                                        '.MuiButton-endIcon': {
+                                                            '& svg': {
+                                                                color: 'DarkGray',
+                                                            },
+                                                        },
+                                                    },
+                                                }}
+                                            >
+                                                <Typography
+                                                    variant={"body1"}
+                                                    sx={{
+                                                        color: 'primary.contrastText',
+                                                        display: 'inline-block',
+                                                        whiteSpace: 'nowrap',
+                                                    }}
+                                                >
+                                                    {header}
+                                                </Typography>
                                             </Button>
-                                        )
-                                    }
-                                </td>)
-                        }
-                        {
-                            // group leave button
-                            get === 'groups' && (row[1].includes(user.id)) && (
-                                <td>
-                                    {
-                                        (user.role == 3) && (user_is_in_group) && (
+                                        }
+                                    </StyledTableCell>
+                                )}
+                            </TableRow>
+                        </TableHead>
+                        <tbody>
+                        {rows.map((row, index) => (
+                            <StyledTableRow key={index}>
+                                {((get !== 'groups' && get !== 'projects' && !(get === 'submissions' && !action_name)) &&
+                                    <StyledTableCell>
+                                        {<CheckBoxWithCustomCheck checked={false}/>}
+                                    </StyledTableCell>)}
+                                {get === 'groups' && row.slice(2).map((cell, cellIndex) => (
+                                    <StyledTableCell key={cellIndex}>{typeof cell == "boolean" ? (cell ? <CheckIcon/> :
+                                        <CancelIcon/>) : cell}</StyledTableCell>
+                                ))}
+                                {get !== 'groups' && row.slice(1).map((cell, cellIndex) => (
+                                    <StyledTableCell key={cellIndex}>{typeof cell == "boolean" ? (cell ? <CheckIcon/> :
+                                        <CancelIcon/>) : cell}</StyledTableCell>
+                                ))}
+                                {
+                                    // course leave button
+                                    get === 'courses' && user.course.includes(row[0]) && (
+                                        <StyledTableCell>
                                             <Button
-                                                onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]}).then(() => window.location.reload())
+                                                onClick={() => postData('/courses/' + row[0] + '/leave_course/', {course_id: row[0]}).then(() => window.location.reload())
                                                 }>
                                                 Leave
                                             </Button>
-                                        )}
-                                </td>)
-                        }
-                        {get == 'projects' && (
-                            <td>
-                                <Button onClick={() => window.location.href = '/project/' + row[0]}>
-                                    View
-                                </Button>
-                            </td>
+                                        </StyledTableCell>
+                                    )
+                                }
+                                {
+                                    // course join button
+                                    get === 'courses' && (!user.course.includes(row[0])) && (
+                                        <StyledTableCell>
+                                            <Button
+                                                onClick={() => postData('/courses/' + row[0] + '/join_course/', {course_id: row[0]}).then(() => window.location.href = '/course/' + row[0])
+                                                }
+                                                disabled={!row[3]}
+                                                style={{backgroundColor: row[3] ? '' : 'gray'}}
+                                            >
+                                                Join
+                                            </Button>
+                                        </StyledTableCell>
+                                    )
+                                }
+                                {
+                                    // group join button
+                                    get === 'groups' && (!row[1].includes(user.id)) && (
+                                        <StyledTableCell>
+                                            {
+                                                // join button isn't shown when user is already in group
+                                                // or when group is full
+                                                // TODO i18n join button
+                                                (user.role == 3) && (!user_is_in_group) && (row[1].length < project.group_size) && (
+                                                    <Button
+                                                        onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]}).then(() => window.location.reload())
+                                                        }>
+                                                        Join
+                                                    </Button>
+                                                )
+                                            }
+                                        </StyledTableCell>)
+                                }
+                                {
+                                    // group leave button
+                                    get === 'groups' && (row[1].includes(user.id)) && (
+                                        <StyledTableCell>
+                                            {
+                                                (user.role == 3) && (user_is_in_group) && (
+                                                    <Button
+                                                        onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]}).then(() => window.location.reload())
+                                                        }>
+                                                        Leave
+                                                    </Button>
+                                                )}
+                                        </StyledTableCell>)
+                                }
+                                {get == 'projects' && (
+                                    <StyledTableCell>
+                                        <Button onClick={() => window.location.href = '/project/' + row[0]}>
+                                            View
+                                        </Button>
+                                    </StyledTableCell>
 
-                        )}
-                        {get == 'submissions' && (
-                            <td>
-                                <Button onClick={() => window.location.href = '/submission/' + row[0]}>
-                                    View
-                                </Button>
-                            </td>
+                                )}
+                                {get == 'submissions' && (
+                                    <StyledTableCell>
+                                        <Button onClick={() => window.location.href = '/submission/' + row[0]}>
+                                            View
+                                        </Button>
+                                    </StyledTableCell>
 
-                        )}
-                    </TableRow>
-                ))}
-                </tbody>
-            </Table>
+                                )}
+                            </StyledTableRow>
+                        ))}
+                        </tbody>
+                    </Table>
+                </TableContainer>
+            </Paper>
             <Box style={{display: 'flex', gap: '8px'}}>
                 <Button
                     disabled={previousPage === 0}
@@ -559,7 +628,7 @@ const ListView: NextPage<ListViewProps> = ({
                     Next
                 </Button>
             </Box>
-        </RootContainer>
+        </Box>
     );
 }
 export default ListView;

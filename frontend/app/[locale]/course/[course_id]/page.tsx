@@ -45,7 +45,15 @@ export default async function Course({params: {locale, course_id}, searchParams:
                     justifyContent={'left'}
                     width={'100%'}
                 >
-                    <ProjectTable course_id={course_id}/>
+                    <ListView
+                        search_text={t('search_for_project')}
+                        admin={false}
+                        headers={headers}
+                        headers_backend={headers_backend}
+                        sortable={[true, true, false, true]}
+                        get={'projects'}
+                        get_id={course_id}
+                    />
 
                 </Box>
                 <StudentCoTeacherButtons course_id={course_id}/>
