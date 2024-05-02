@@ -112,7 +112,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["GET"])
     def get_selected_courses(self, request, *args, **kwargs):
         user = request.user
-        courses = Course.objects.filter(user=user)
+        courses = Course.objects.filter(user=user, archived=False)
         course_filter = CourseFilter(request.GET, queryset=courses)
         paginated_queryset = self.paginate_queryset(course_filter.qs)
         queryset = self.order_queryset(paginated_queryset)
