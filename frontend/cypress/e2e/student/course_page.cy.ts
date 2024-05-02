@@ -1,32 +1,36 @@
-import {username, password} from '../../fixtures/login.json';
+import {studentUsername, studentPassword} from '../../fixtures/login.json';
 
 describe('student course page', () => {
     beforeEach(() => {
-        cy.login(username, password);
+        cy.login(studentUsername, studentPassword);
     });
 
     it('go to course page ', () => {
         cy.contains('Artificiële intelligentie').click();
 
-        cy.url().should('eq', 'http://localhost:3000/en/course/5');
+        cy.url().should('eq', 'http://localhost:3000/en/course/1');
 
         cy.contains('Artificiële intelligentie');
 
         cy.contains('Description');
-        cy.contains('new test description');
+        cy.contains('Kennisgebaseerd redeneren, machinaal leren, heuristische zoekstrategieën,' +
+            ' neurale netwerken en deep learning, natuurlijke taalverwerking');
+
 
         cy.contains('Projects');
+        cy.contains('AI project')
+        cy.contains('12/12/2021 13:12')
         cy.contains('View students');
     });
 
     it('view students in course page ', () => {
         cy.contains('Artificiële intelligentie').click();
 
-        cy.url().should('eq', 'http://localhost:3000/en/course/5');
+        cy.url().should('eq', 'http://localhost:3000/en/course/1');
 
         cy.contains('View students').click();
 
-        cy.url().should('eq', 'http://localhost:3000/en/course/5/students');
+        cy.url().should('eq', 'http://localhost:3000/en/course/1/students');
     });
 
 

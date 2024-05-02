@@ -1,14 +1,12 @@
-import { username, password } from '../../fixtures/login.json';
+import { teacherUsername, teacherPassword } from '../../fixtures/login.json';
 
 // TODO change these correctly for teacher account
 describe('go to home page as teacher', () => {
     beforeEach(() => {
-        cy.login(username, password);
+        cy.login(teacherUsername, teacherPassword);
     });
 
     it('go to home page, check everything', () => {
-        cy.login(username, password);
-
         cy.contains('Pigeonhole');
 
         cy.contains('Filter Courses');

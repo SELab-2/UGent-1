@@ -1,13 +1,11 @@
-import {username, password} from '../../fixtures/login.json';
+import {studentUsername, studentPassword} from '../../fixtures/login.json';
 
 describe('go to home page as student', () => {
     beforeEach(() => {
-        cy.login(username, password);
+        cy.login(studentUsername, studentPassword);
     });
 
     it('go to home page, check everything', () => {
-        cy.login(username, password);
-
         cy.contains('Pigeonhole');
 
         cy.contains('Filter Courses');

@@ -1,8 +1,8 @@
-import {username, password} from '../../fixtures/login.json';
+import {studentUsername, studentPassword} from '../../fixtures/login.json';
 
 describe('join courses', () => {
     beforeEach(() => {
-        cy.login(username, password)
+        cy.login(studentUsername, studentPassword)
         cy.visit('http://localhost:3000/en/course/all', {timeout: 2000});
     });
 

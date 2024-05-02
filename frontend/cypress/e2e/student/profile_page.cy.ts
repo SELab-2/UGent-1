@@ -1,13 +1,13 @@
-import {username, password, email} from '../../fixtures/login.json';
+import {studentUsername, studentPassword, studentEmail} from '../../fixtures/login.json';
 
 describe('profile page', () => {
     beforeEach(() => {
-        cy.login(username, password);
-        cy.visit('http://localhost:3000/en/profile', {timeout: 2000});
+        cy.login(studentUsername, studentPassword);
+        cy.visit('http://localhost:3000/en/profile', {timeout: 3000});
     });
 
     it('check all fields', () => {
-        cy.contains(email);
+        cy.contains(studentEmail);
         cy.contains('Role: Student');
         cy.contains('Edit Account')
     });
@@ -15,7 +15,7 @@ describe('profile page', () => {
     it('edit account and cancel', () => {
         cy.contains('Edit Account').click();
 
-        cy.contains(email);
+        cy.contains(studentEmail);
         cy.contains('Role: Student');
         cy.contains('Save');
         cy.url().should('eq', 'http://localhost:3000/en/profile/edit');
