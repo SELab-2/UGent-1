@@ -241,6 +241,30 @@ def run():
     user_8.set_password('selab123')
     user_8.save()
 
+    user_9, _ = User.objects.get_or_create(
+        username='teacher',
+        email='teacher@sel2-1.ugent.be',
+        first_name='Teacher',
+        last_name='1',
+        role=2
+    )
+    user_9.course.set(
+        [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_8, course_9, course_10, course_11,
+         course_12, course_13, course_14, course_15, course_16, course_17]
+    )
+    user_9.set_password('selab123')
+    user_9.save()
+
+    user_10, _ = User.objects.get_or_create(
+        username='administrator',
+        email='administrator@sel2-1.ugent.be',
+        first_name='Administrator',
+        last_name='1',
+        role=1
+    )
+    user_10.set_password('selab123')
+    user_10.save()
+
     # Create projects
 
     project_1, _ = Project.objects.get_or_create(
