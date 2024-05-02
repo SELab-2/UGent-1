@@ -48,41 +48,6 @@ import {useTranslation} from "react-i18next";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
-interface Theme {
-    theme: {
-        spacing: (multiplier: number) => number;
-        shadows: string[];
-        palette: {
-            primary: {
-                dark: string;
-                contrastText: string;
-            };
-            secondary: {
-                main: string;
-            };
-            background: {
-                default: string;
-            };
-            success: {
-                main: string;
-            };
-        };
-    };
-}
-
-const RootContainer = styled(Container)(({theme}: Theme) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    padding: theme.spacing(1),
-    borderRadius: theme.spacing(1),
-    boxShadow: theme.shadows[1],
-    marginTop: '20px',
-    width: '75%',
-    maxWidth: '100%',
-}));
-
 const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: baseTheme.palette.primary.main,
@@ -102,40 +67,6 @@ const StyledTableRow = styled(TableRow)(() => ({
         border: 0,
     },
 }));
-
-const GreenCheckbox = styled(Checkbox)(({theme}: Theme) => ({
-    color: theme.palette.success.main,
-    '&.Mui-checked': {
-        color: theme.palette.success.main,
-    },
-}));
-
-const CustomCheckmarkWrapper = styled('div')({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '100%',
-    height: '100%',
-});
-
-const WhiteSquareIcon = () => (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="12" height="12" fill="white"/>
-    </svg>
-);
-
-const WhiteTriangleUpIcon = () => (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M6 12L12 0L0 0L6 12Z" fill="white"/>
-    </svg>
-);
-
-const WhiteTriangleDownIcon = () => (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M6 0L12 12L0 12L6 0Z" fill="white"/>
-    </svg>
-);
 
 const RemoveButton = styled(Button)({
     marginBottom: '16px',
@@ -415,7 +346,6 @@ const ListView: NextPage<ListViewProps> = ({
                         action_text
                     }
                 </RemoveButton>
-
             )}
 
             {admin && action_name && action_name === 'download_submission' && (
@@ -518,7 +448,7 @@ const ListView: NextPage<ListViewProps> = ({
                                 )}
                             </TableRow>
                         </TableHead>
-                        <tbody>
+                        <TableBody>
                         {rows.map((row, index) => (
                             <StyledTableRow key={index}>
                                 {((get !== 'groups' && get !== 'projects' && !(get === 'submissions' && !action_name)) &&
@@ -610,7 +540,7 @@ const ListView: NextPage<ListViewProps> = ({
                                 )}
                             </StyledTableRow>
                         ))}
-                        </tbody>
+                        </TableBody>
                     </Table>
                 </TableContainer>
             </Paper>
