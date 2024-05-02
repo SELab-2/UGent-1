@@ -13,6 +13,7 @@ import {APIError, getUserData, UserData} from "@lib/api";
 const CourseControls = ({selectedYear, onYearChange}) => {
     const currentYear = new Date().getFullYear();
     const academicYear = `${currentYear - 1}-${currentYear.toString().slice(-2)}`;
+
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<APIError | null>(null);
 
