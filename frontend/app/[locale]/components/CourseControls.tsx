@@ -30,7 +30,7 @@ const CourseControls = ({selectedYear, onYearChange}) => {
         };
 
         fetchUser();
-    });
+    }, []);
 
     const years = [
         `${currentYear - 2}-${(currentYear - 1).toString().slice(-2)}`,
