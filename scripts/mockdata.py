@@ -145,6 +145,8 @@ def run():
     user_1.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_8, course_9, course_10]
     )
+    user_1.set_password('selab123')
+    user_1.save()
 
     user_2, _ = User.objects.get_or_create(
         username='axellorreyne',
@@ -156,6 +158,8 @@ def run():
     user_2.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_8, course_9, course_10]
     )
+    user_2.set_password('selab123')
+    user_2.save()
 
     user_3, _ = User.objects.get_or_create(
         username='gillesarnout',
@@ -167,6 +171,8 @@ def run():
     user_3.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_8, course_9, course_10]
     )
+    user_3.set_password('selab123')
+    user_3.save()
 
     user_4, _ = User.objects.get_or_create(
         username='pieterjandesmijter',
@@ -178,6 +184,8 @@ def run():
     user_4.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_11, course_12, course_13]
     )
+    user_4.set_password('selab123')
+    user_4.save()
 
     user_5, _ = User.objects.get_or_create(
         username='reinharddepaepe',
@@ -189,6 +197,8 @@ def run():
     user_5.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_11, course_12, course_13]
     )
+    user_5.set_password('selab123')
+    user_5.save()
 
     user_6, _ = User.objects.get_or_create(
         username='robinparet',
@@ -200,6 +210,8 @@ def run():
     user_6.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_11, course_12, course_13]
     )
+    user_6.set_password('selab123')
+    user_6.save()
 
     user_7, _ = User.objects.get_or_create(
         username='runedyselinck',
@@ -212,6 +224,8 @@ def run():
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_14, course_15, course_16,
          course_17]
     )
+    user_7.set_password('selab123')
+    user_7.save()
 
     user_8, _ = User.objects.get_or_create(
         username='thibaudcollyn',
@@ -224,6 +238,8 @@ def run():
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_14, course_15, course_16,
          course_17]
     )
+    user_8.set_password('selab123')
+    user_8.save()
 
     # Create projects
 
