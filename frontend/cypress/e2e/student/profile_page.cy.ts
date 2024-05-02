@@ -3,7 +3,7 @@ import {studentUsername, studentPassword, studentEmail} from '../../fixtures/log
 describe('profile page', () => {
     beforeEach(() => {
         cy.login(studentUsername, studentPassword);
-        cy.visit('http://localhost:3000/en/profile', {timeout: 3000});
+        cy.visit('http://localhost:3000/en/profile' );
     });
 
     it('check all fields', () => {

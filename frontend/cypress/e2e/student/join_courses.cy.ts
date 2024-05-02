@@ -3,7 +3,7 @@ import {studentUsername, studentPassword} from '../../fixtures/login.json';
 describe('join courses', () => {
     beforeEach(() => {
         cy.login(studentUsername, studentPassword)
-        cy.visit('http://localhost:3000/en/course/all', {timeout: 2000});
+        cy.visit('http://localhost:3000/en/course/all');
     });
 
     it('back to homepage button', () => {

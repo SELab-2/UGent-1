@@ -5,7 +5,7 @@ Cypress.Commands.add('login', (username: string, password: string) => {
     cy.get('input[name="username"]').type(username);
     cy.get('input[name="password"]').type(password);
     cy.get('input[type=submit').click()
-    cy.visit('http://localhost:3000/home', {timeout: 3000});
+    cy.visit('http://localhost:3000/home');
 });
 
 

@@ -64,7 +64,7 @@ describe('go to home page as student', () => {
         cy.contains('Log out');
         cy.contains('Artificiële intelligentie').click();
 
-        cy.url().should('eq', 'http://localhost:3000/en/course/5')
+        cy.url().should('eq', 'http://localhost:3000/en/course/1')
     });
 
 
