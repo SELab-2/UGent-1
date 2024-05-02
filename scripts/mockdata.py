@@ -20,38 +20,45 @@ def run():
     course_1, _ = Course.objects.get_or_create(
         name='Artificiële intelligentie',
         description='Kennisgebaseerd redeneren, machinaal leren, heuristische zoekstrategieën, '
-                    'neurale netwerken en deep learning, natuurlijke taalverwerking'
+                    'neurale netwerken en deep learning, natuurlijke taalverwerking',
+        open_course=True
     )
 
     course_2, _ = Course.objects.get_or_create(
         name='Algoritmen en datastructuren 3',
-        description='Algoritme, datastructuur, efficiëntie'
+        description='Algoritme, datastructuur, efficiëntie',
+        open_course=True
     )
 
     course_3, _ = Course.objects.get_or_create(
         name='Besturingssystemen',
-        description='procesbeheer, geheugenbeheer, systeembeheer, beveiliging'
+        description='procesbeheer, geheugenbeheer, systeembeheer, beveiliging',
+        open_course=True
     )
 
     course_4, _ = Course.objects.get_or_create(
         name='Logisch programmeren',
-        description='Programmeertalen, logisch programmeren, unificatie, backtracking, metavertolkers, Prolog'
+        description='Programmeertalen, logisch programmeren, unificatie, backtracking, metavertolkers, Prolog',
+        open_course=True
     )
 
     course_5, _ = Course.objects.get_or_create(
         name='Software Engineering Lab 2',
-        description='Projectwerk, vakoverschrijdend, groepswerk, software-ontwikkelingspraktijk'
+        description='Projectwerk, vakoverschrijdend, groepswerk, software-ontwikkelingspraktijk',
+        open_course=True
     )
 
     course_6, _ = Course.objects.get_or_create(
         name='Computationele biologie',
         description='Rekenmethoden, moleculaire biologie, genoomstructuur, genpredictie, sequenties aligneren, '
-                    'fylogenie, vergelijkend genoomonderzoek, analyse van genexpressie'
+                    'fylogenie, vergelijkend genoomonderzoek, analyse van genexpressie',
+        open_course=False
     )
 
     course_7, _ = Course.objects.get_or_create(
         name='Automaten, berekenbaarheid en complexiteit',
-        description='Eindige automaten, formele talen, stapelautomaten, Turingmachines, berekenbaarheid, complexiteit'
+        description='Eindige automaten, formele talen, stapelautomaten, Turingmachines, berekenbaarheid, complexiteit',
+        open_course=False
     )
 
     course_8, _ = Course.objects.get_or_create(
@@ -61,59 +68,69 @@ def run():
                     'computersystemen met gedeeld geheugen, cachecoherentie, geheugenconsistentie, '
                     'multi-core processors, meerdradige uitvoering, datacenters, supercomputers, '
                     'fundamentele concepten betreffende prestatie, impact van technologie op computerarchitectuur, '
-                    'vermogen/energie, betrouwbaarheid'
+                    'vermogen/energie, betrouwbaarheid',
+        open_course=False
     )
 
     course_9, _ = Course.objects.get_or_create(
         name='Informatiebeveiliging',
-        description='beveiliging, encryptie'
+        description='beveiliging, encryptie',
+        open_course=False
     )
 
     course_10, _ = Course.objects.get_or_create(
         name='Modelleren en simuleren',
         description='Gewone en partiële differentiaalvergelijkingen, Fourier-analyse, '
-                    'toevalsgetallen, meervoudige integralen'
+                    'toevalsgetallen, meervoudige integralen',
+        open_course=True
     )
 
     course_11, _ = Course.objects.get_or_create(
         name='Inleiding tot de telecommunicatie',
-        description='Telecommunicatie, signalen, datacommunicatie, broncodering, kanaalcodering.'
+        description='Telecommunicatie, signalen, datacommunicatie, broncodering, kanaalcodering.',
+        open_course=False
     )
 
     course_12, _ = Course.objects.get_or_create(
         name='Inleiding tot de elektrotechniek',
         description='Analoge en digitale elektronica, elektrische netwerken, netwerkanalyse, circuitsynthese, '
                     'signaalvoorstelling, stelling van Shannon-Nyquist, elektrische interconnecties, '
-                    'computerarchitectuur, klokfrequentie, vermogenverbruik, schaalbaarheid.'
+                    'computerarchitectuur, klokfrequentie, vermogenverbruik, schaalbaarheid.',
+        open_course=True
     )
 
     course_13, _ = Course.objects.get_or_create(
         name='Wiskundige modellering in de ingenieurswetenschappen',
         description='Wiskundige basisconcepten, wiskundige modellen voor ingenieurstoepassingen, '
-                    'differentiaalvergelijkingen, integraaltransformaties, vectorcalculus'
+                    'differentiaalvergelijkingen, integraaltransformaties, vectorcalculus',
+        open_course=False
     )
 
     course_14, _ = Course.objects.get_or_create(
         name='Krachtige leeromgevingen',
         description='Didactiek, visies op leren en onderwijzen, onderwijskundig referentiekader, werkvormen, '
-                    'toetsing en evaluatie, individuele verschillen'
+                    'toetsing en evaluatie, individuele verschillen',
+        open_course=False
     )
 
     course_15, _ = Course.objects.get_or_create(
         name='Vakdidactiek wetenschappen',
         description='Krachtige leeromgeving, didactiek voor wetenschapsonderwijs, onderzoekend leren, STEM, '
-                    'computationeel denken, ethiek, misconcepten'
+                    'computationeel denken, ethiek, misconcepten',
+        open_course=False
     )
 
     course_16, _ = Course.objects.get_or_create(
         name='Oriëntatiestage wetenschappen',
-        description='Eindtermen, leerplannen, lesvoorbereiding, microteaching, stage, reflectie.'
+        description='Eindtermen, leerplannen, lesvoorbereiding, microteaching, stage, reflectie.',
+        open_course=False
     )
 
     course_17, _ = Course.objects.get_or_create(
         name='Vakkennis wiskunde',
         description='Vlakke Analytische Meetkunde; Ruimtemeetkunde; Driehoeksmeting; Matrices, '
-                    'Determinanten en Stelsels; combinatoriek, kansrekening'
+                    'Determinanten en Stelsels; combinatoriek, kansrekening',
+        open_course=False
     )
 
     # Create users
@@ -128,6 +145,8 @@ def run():
     user_1.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_8, course_9, course_10]
     )
+    user_1.set_password('selab123')
+    user_1.save()
 
     user_2, _ = User.objects.get_or_create(
         username='axellorreyne',
@@ -139,6 +158,8 @@ def run():
     user_2.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_8, course_9, course_10]
     )
+    user_2.set_password('selab123')
+    user_2.save()
 
     user_3, _ = User.objects.get_or_create(
         username='gillesarnout',
@@ -150,6 +171,8 @@ def run():
     user_3.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_8, course_9, course_10]
     )
+    user_3.set_password('selab123')
+    user_3.save()
 
     user_4, _ = User.objects.get_or_create(
         username='pieterjandesmijter',
@@ -161,6 +184,8 @@ def run():
     user_4.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_11, course_12, course_13]
     )
+    user_4.set_password('selab123')
+    user_4.save()
 
     user_5, _ = User.objects.get_or_create(
         username='reinharddepaepe',
@@ -172,6 +197,8 @@ def run():
     user_5.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_11, course_12, course_13]
     )
+    user_5.set_password('selab123')
+    user_5.save()
 
     user_6, _ = User.objects.get_or_create(
         username='robinparet',
@@ -183,6 +210,8 @@ def run():
     user_6.course.set(
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_11, course_12, course_13]
     )
+    user_6.set_password('selab123')
+    user_6.save()
 
     user_7, _ = User.objects.get_or_create(
         username='runedyselinck',
@@ -195,6 +224,8 @@ def run():
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_14, course_15, course_16,
          course_17]
     )
+    user_7.set_password('selab123')
+    user_7.save()
 
     user_8, _ = User.objects.get_or_create(
         username='thibaudcollyn',
@@ -207,6 +238,32 @@ def run():
         [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_14, course_15, course_16,
          course_17]
     )
+    user_8.set_password('selab123')
+    user_8.save()
+
+    user_9, _ = User.objects.get_or_create(
+        username='teacher',
+        email='teacher@sel2-1.ugent.be',
+        first_name='Teacher',
+        last_name='1',
+        role=2
+    )
+    user_9.course.set(
+        [course_1, course_2, course_3, course_4, course_5, course_6, course_7, course_8, course_9, course_10, course_11,
+         course_12, course_13, course_14, course_15, course_16, course_17]
+    )
+    user_9.set_password('selab123')
+    user_9.save()
+
+    user_10, _ = User.objects.get_or_create(
+        username='administrator',
+        email='administrator@sel2-1.ugent.be',
+        first_name='Administrator',
+        last_name='1',
+        role=1
+    )
+    user_10.set_password('selab123')
+    user_10.save()
 
     # Create projects
 
