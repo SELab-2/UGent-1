@@ -576,23 +576,41 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
 }
 
 export async function uploadSubmissionFile(event: any, project_id : string) : Promise<string>{
-    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
+    console.log(event.target.fileList.files);
     const formData = new FormData(event.target);
+    //filter files by key
+
+    for(let file of event.target.fileList.files){
+        let path = file.webkitRelativePath;
+        if(path)
+        if (path.includes("/")) {
+            path = path.substring((path.indexOf("/")??0)+1, path.length);
+        }
+        formData.append(path, file);
+    }
+    formData.delete("fileList");
     const formDataObject = Object.fromEntries(formData.entries());
+    console.log(formDataObject)
     try {
         let groupres = await axios.get(backend_url + "/projects/" + project_id + "/get_group/", {withCredentials: true});
         const group_id = groupres.data.group_id;
         formDataObject.group_id = group_id;
-        await axios.post(backend_url + "/submissions/", formDataObject, {withCredentials: true, headers: {'Content-Type': 'multipart/form-data'}});
+        await axios.post(backend_url + '/submissions/', formDataObject,
+         { withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+          });
         return "yes";
     } catch (error) {
-        const apierror: APIError = new APIError();
+        const apierror : APIError = new APIError();
         apierror.message = "error posting form";
         apierror.type = ErrorType.REQUEST_ERROR;
         apierror.trace = error;
-        console.error(error);
-        return "error"
+        console.error(apierror);
+        return "error";
     }
 }
