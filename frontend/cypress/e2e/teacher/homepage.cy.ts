@@ -1,6 +1,5 @@
 import { teacherUsername, teacherPassword } from '../../fixtures/login.json';
 
-// TODO change these correctly for teacher account
 describe('go to home page as teacher', () => {
     beforeEach(() => {
         cy.login(teacherUsername, teacherPassword);
@@ -16,9 +15,8 @@ describe('go to home page as teacher', () => {
 
     });
 
-    it('go to view all courses in home page', () => {
-        cy.contains('View All Courses').click();
-        cy.url().should('eq', 'http://localhost:3000/en/course/all');
+    it('create course page', () => {
+        cy.contains('Create Course').click();
+        cy.url().should('eq', 'http://localhost:3000/en/course/add');
     });
-
 });
