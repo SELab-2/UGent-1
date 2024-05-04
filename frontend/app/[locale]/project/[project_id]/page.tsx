@@ -2,7 +2,6 @@ import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
 import ProjectDetailsPage from "@app/[locale]/project/[project_id]/details/ProjectDetailsPage";
-import Footer from "@app/[locale]/components/Footer";
 
 const i18nNamespaces = ['common']
 
