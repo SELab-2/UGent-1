@@ -446,10 +446,8 @@ export async function getUserData(): Promise<UserData> {
     }
 
     if (userData) {
-        console.log("userdata cached")
         return userData;
     }else if(localStorage.getItem('user')){
-        console.log("getting from localstorage")
         const userobj = JSON.parse(localStorage.getItem('user') as string);
         const lastcache : string | undefined = userobj?.lastcache;
 
@@ -460,7 +458,6 @@ export async function getUserData(): Promise<UserData> {
             userData = user;
             return user;
         }else{
-            console.log("cache invalid")
             return fetchUserData();
         }
     }else {
@@ -471,7 +468,6 @@ export async function getUserData(): Promise<UserData> {
 async function fetchUserData() : Promise<UserData> {
     try{
         userData = await getRequest('/users/current');
-        console.log("userdata set")
         localStorage.setItem('user', JSON.stringify({data: userData, lastcache: Date.now().toString()}));
         return userData!;
     }catch(e){
