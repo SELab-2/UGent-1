@@ -33,6 +33,8 @@ export type Course = {
     open_course: boolean;
     invite_token: string;
     banner: string;
+    archived: boolean;
+    year: number;
 }
 
 export type Project = {
@@ -272,6 +274,24 @@ export async function getCourses(page = 1, pageSize = 5, keyword?: string, order
     return await getRequest(url);
 }
 
+export async function getArchivedCourses(page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Course[]> {
+    let url = `/courses/get_archived_courses?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
 export async function getCoursesForUser(): Promise<Course[]> {
     let page = 1;
     let results: Course[] = []
@@ -443,13 +463,8 @@ let userData: UserData | undefined = undefined;
 export async function getUserData(): Promise<UserData> {
     if (userData) {
         return userData;
-    }/*else if(localStorage.getItem('user')){
-        let user : UserData = JSON.parse(localStorage.getItem('user') as string);
-        userData = user;
-        return user;
-    }*/ else {
+    } else {
         let user: UserData = await getRequest('/users/current');
-        //localStorage.setItem('user', JSON.stringify(user));
         return user;
     }
 }
