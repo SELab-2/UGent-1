@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import {Box, Button, MenuItem, Select, SelectChangeEvent, Stack, Typography} from '@mui/material';
+import {Box, Button, MenuItem, Select, Stack, Typography} from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ViewListIcon from '@mui/icons-material/ViewList';
@@ -10,12 +10,13 @@ import {useTranslation} from "react-i18next";
 import Link from 'next/link';
 import {APIError, getUserData, UserData} from "@lib/api";
 
-const CourseControls = () => {
+const CourseControls = ({selectedYear, onYearChange}) => {
     const currentYear = new Date().getFullYear();
     const academicYear = `${currentYear - 1}-${currentYear.toString().slice(-2)}`;
-    const [selectedYear, setSelectedYear] = useState(academicYear);
+
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<APIError | null>(null);
+
     const {t} = useTranslation()
 
     useEffect(() => {
@@ -31,10 +32,6 @@ const CourseControls = () => {
 
         fetchUser();
     }, []);
-
-    const handleYearChange = (event: SelectChangeEvent) => {
-        setSelectedYear(event.target.value as string);
-    };
 
     const years = [
         `${currentYear - 2}-${(currentYear - 1).toString().slice(-2)}`,
@@ -58,19 +55,21 @@ const CourseControls = () => {
                                 {t("create_course")}
                             </Button>
                         </Link>
-                    ):null
+                    ) : null
                     }
                     <Link href="/course/all" passHref>
                         <Button variant="contained" color="secondary" startIcon={<ViewListIcon/>}>
                             {t("all_courses")}
                         </Button>
                     </Link>
-                    <Button variant="contained" color="secondary" startIcon={<ArchiveIcon/>}>
-                        {t("view_archive")}
-                    </Button>
+                    <Link href="/course/archived" passHref>
+                        <Button variant="contained" color="secondary" startIcon={<ArchiveIcon/>}>
+                            {t("view_archive")}
+                        </Button>
+                    </Link>
                     <Select
                         value={selectedYear}
-                        onChange={handleYearChange}
+                        onChange={onYearChange}
                         displayEmpty
                         color="secondary"
                         variant="outlined"
