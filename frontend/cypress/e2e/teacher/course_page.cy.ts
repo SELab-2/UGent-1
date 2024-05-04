@@ -1,6 +1,6 @@
 import {teacherUsername, teacherPassword, teacherEmail} from '../../fixtures/login.json';
 
-describe('student course page', () => {
+describe('teacher course page', () => {
     beforeEach(() => {
         cy.login(teacherUsername, teacherPassword);
         cy.contains('Artificiële intelligentie').click();
