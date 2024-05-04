@@ -29,6 +29,12 @@ export const baseTheme = createTheme({
             primary: '#001D36',
             secondary: '#FFFFFF'
         },
+        failure: {
+            main: '#E15E5E'
+        },
+        success: {
+            main: '#7DB47C'
+        },
     },
 });
 
@@ -45,12 +51,6 @@ const loginTheme = createTheme({
             main: '#D0E4FF',
             contrastText: '#001D36'
         },
-        failure: {
-            main: '#E15E5E'
-        },
-        success: {
-            main: '#7DB47C'
-        }
     },
     typography: {
         fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
