@@ -21,7 +21,7 @@ def run():
         name='Artificiële intelligentie',
         description='Kennisgebaseerd redeneren, machinaal leren, heuristische zoekstrategieën, '
                     'neurale netwerken en deep learning, natuurlijke taalverwerking',
-        open_course=True
+        open_course=True,
     )
 
     course_2, _ = Course.objects.get_or_create(
@@ -399,55 +399,55 @@ def run():
     Submissions.objects.get_or_create(
         group_id=group_1,
         submission_nr=1,
-        file=lorem_ipsum_file,
+        file_urls=lorem_ipsum_file,
         timestamp='2021-12-12 12:12:12'
     )
 
     Submissions.objects.get_or_create(
         group_id=group_1,
         submission_nr=2,
-        file=lorem_ipsum_file,
+        file_urls=lorem_ipsum_file,
         timestamp='2021-12-12 12:12:13'
     )
 
     Submissions.objects.get_or_create(
         group_id=group_1,
         submission_nr=3,
-        file=lorem_ipsum_file,
+        file_urls=lorem_ipsum_file,
         timestamp='2021-12-12 12:12:15'
     )
 
     Submissions.objects.get_or_create(
         group_id=group_1,
         submission_nr=4,
-        file=lorem_ipsum_file,
+        file_urls=lorem_ipsum_file,
         timestamp='2021-12-12 12:12:16'
     )
 
     Submissions.objects.get_or_create(
         group_id=group_2,
         submission_nr=1,
-        file=lorem_ipsum_file,
+        file_urls=lorem_ipsum_file,
         timestamp='2021-12-12 12:12:12'
     )
 
     Submissions.objects.get_or_create(
         group_id=group_3,
         submission_nr=1,
-        file=lorem_ipsum_file,
+        file_urls=lorem_ipsum_file,
         timestamp='2021-12-12 12:12:13'
     )
 
     Submissions.objects.get_or_create(
         group_id=group_4,
         submission_nr=1,
-        file=lorem_ipsum_file,
+        file_urls=lorem_ipsum_file,
         timestamp='2021-12-12 12:12:15'
     )
 
     Submissions.objects.get_or_create(
         group_id=group_5,
         submission_nr=1,
-        file=lorem_ipsum_file,
+        file_urls=lorem_ipsum_file,
         timestamp='2021-12-12 12:12:16'
     )
