@@ -78,8 +78,8 @@ class Submissions(models.Model):
         except ContainerError:
             self.eval_result = False
 
-        except APIError:
-            raise IOError('There was an error evaluation the submission')
+        except APIError as e:
+            raise IOError(f'There was an error evaluation the submission: {e}')
 
         client.close()
 
