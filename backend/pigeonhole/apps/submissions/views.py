@@ -116,7 +116,57 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 {"message": "Error uploading files"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        message = []
+
+        project = Project.objects.get(project_id=group.project_id.project_id)
+        parsed_submission_files = []
+        for file_path in request.FILES.keys():
+            if "/" in file_path:
+                index = file_path.index("/")
+                parsed_submission_files.append(file_path[index + 1:])
+            else:
+                if file_path != "fileList":
+                    parsed_submission_files.append(file_path)
+
+        # example parsed_submission_files = "+extra/verslag.pdf", "-src/*.jar"
+
+        for condition in project.file_structure.split(","):
+            stripped_condition = condition.strip()  # condition without whitespace
+            if stripped_condition[0] == "+":  # check if starts with "+" (file has to be included)
+                if "*" in stripped_condition:  # check if there is a wildcard
+                    index = stripped_condition.index("*")
+                    wildcard_submission = stripped_condition[index + 1:]  # "*.py/results"
+                    wildcard_directory = stripped_condition[1:index]  # "/project/"
+                    for file_to_check in parsed_submission_files:  # "/project/main.py/results"
+                        if wildcard_directory in file_to_check:
+                            cwd = file_to_check[len(wildcard_directory):]
+                            file_extension = cwd[cwd.index("."):]
+                            if file_extension != wildcard_submission:
+                                message.append(f"File {file_to_check} is not allowed")
+                else:
+                    if stripped_condition[1:] not in parsed_submission_files:
+                        message.append(f"File {stripped_condition[1:]} not found")
+            else:
+                if "*" in stripped_condition:  # check if there is a wildcard
+                    index = stripped_condition.index("*")
+                    wildcard_submission = stripped_condition[index + 1:]  # "*.py/results"
+                    wildcard_directory = stripped_condition[1:index]  # "/project/"
+                    for file_to_check in parsed_submission_files:  # "/project/main.py/results"
+                        if wildcard_directory in file_to_check:
+                            cwd = file_to_check[len(wildcard_directory):]
+                            file_extension = cwd[cwd.index("."):]
+                            if file_extension == wildcard_submission:
+                                message.append(f"File {file_to_check} is not allowed")
+                else:
+                    if stripped_condition[1:] not in parsed_submission_files:
+                        message.append(f"File {stripped_condition[1:]} not found")
+
+        if len(message) < 1:
+            complete_message = {"message": "Submission successful"}
+        else:
+            complete_message = {"message": "The following errors occurred:" + ", ".join(message)}
+
+        return Response(complete_message, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
