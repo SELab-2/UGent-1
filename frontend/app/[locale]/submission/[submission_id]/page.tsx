@@ -18,6 +18,7 @@ const SubmissionPage = async ({params: {locale, submission_id}}: {
         >
             <NavBar/>
             <SubmissionDetailsPage
+                locale={locale}
                 submission_id={submission_id}
             />
         </TranslationsProvider>

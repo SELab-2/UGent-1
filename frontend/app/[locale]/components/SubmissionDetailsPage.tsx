@@ -11,10 +11,11 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import DownloadIcon from "@mui/icons-material/CloudDownload";
 
 interface ProjectDetailsPageProps {
+    locale: any,
     submission_id: number;
 }
 
-const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ submission_id }) => {
+const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submission_id }) => {
     const { t } = useTranslation();
 
     const [submission, setSubmission] = useState<Submission>();
@@ -52,6 +53,25 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ submission_id }
         return `${date.getDate()}/${date.getMonth() + 1} ${date.getHours()}:${date.getMinutes()}`;
     };
 
+    function formatDate(isoString: string): string {
+        const options: Intl.DateTimeFormatOptions = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        };
+        const date = new Date(isoString);
+        return date.toLocaleString(locale, options);
+    }
+
+    function checkDeadline(deadline) {
+        const now = new Date();
+        const deadlineDate = new Date(deadline);
+        return now < deadlineDate ? 'success' : 'failure';
+    }
+
     return (
         <ThemeProvider theme={baseTheme}>
             <Grid container alignItems="flex-start" justifyContent="flex-start" style={{ minHeight: '100vh', padding: 0 }}>
@@ -81,7 +101,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ submission_id }
                                                 {submission?.output_test !== "" ? t("accepted") : t("denied")}
                                             </Typography>
                                             <Typography variant="caption">
-                                                {`(${t("timestamp")}: ${formatTimestamp(submission?.timestamp)})`}
+                                                {`(${t("timestamp")}: ${formatDate(submission?.timestamp)})`}
                                             </Typography>
                                         </div>
                                     </div>
