@@ -167,7 +167,6 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                 <Box>
                     <Button variant={"contained"} color={"secondary"} size={'small'}
                             startIcon={<UploadFileIcon sx={{color: 'secondary.contrastText'}}/>}
-                            disableElevation
                             component="label"
                             role={undefined}
                             tabIndex={-1}
@@ -240,6 +239,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                             backgroundColor: 'primary.main',
                             color: 'primary.contrastText'
                         }}
+                        href={'/course/' + courseId + "/"}
                     >
                         {t("save changes")}
                     </Button>
