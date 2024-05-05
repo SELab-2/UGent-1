@@ -69,7 +69,11 @@ class Submissions(models.Model):
                 }
             )
 
-            print(container.status)
+            # For now, an error thrown by eval() is interpreted as a failed submission and
+            # exit code 0 as a successful submission
+            # The container object returns the container logs and can be analyzed further
+
+            container.remove(force=True)
 
         except ContainerError:
             self.eval_result = False
@@ -78,10 +82,6 @@ class Submissions(models.Model):
             raise IOError('There was an error evaluation the submission')
 
         client.close()
-
-        # For now, an error thrown by eval() is interpreted as a failed submission and
-        # exit code 0 as a successful submission
-        # The container object returns the container logs and can be analyzed further
 
 
 class SubmissionsSerializer(serializers.ModelSerializer):
