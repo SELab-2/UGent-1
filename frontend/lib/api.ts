@@ -461,12 +461,41 @@ export async function getGroupSubmissions(id: number, page = 1, pageSize = 5, ke
 let userData: UserData | undefined = undefined;
 
 export async function getUserData(): Promise<UserData> {
+    if(!userData && !localStorage.getItem('user') && window.location.pathname !== "/"){
+        window.location.href = "/";
+    }
+
     if (userData) {
         return userData;
-    } else {
-        let user: UserData = await getRequest('/users/current');
-        return user;
+    }else if(localStorage.getItem('user')){
+        const userobj = JSON.parse(localStorage.getItem('user') as string);
+        const lastcache : string | undefined = userobj?.lastcache;
+
+        
+        if(lastcache && Date.now() - parseInt(lastcache) < 2 * 60 * 1000){
+            console.log(Date.now() - parseInt(lastcache));
+            let user : UserData = userobj.data;
+            userData = user;
+            return user;
+        }else{
+            return fetchUserData();
+        }
+    }else {
+        return fetchUserData();
     }
+}
+
+async function fetchUserData() : Promise<UserData> {
+    try{
+        userData = await getRequest('/users/current');
+        localStorage.setItem('user', JSON.stringify({data: userData, lastcache: Date.now().toString()}));
+        return userData!;
+    }catch(e){
+        console.error(e);
+        window.location.href = "/";
+        return userData!;
+    }
+    
 }
 
 export async function logOut() {
