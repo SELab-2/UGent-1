@@ -58,9 +58,12 @@ class Submissions(models.Model):
                 image='busybox:latest',
                 name=f'pigeonhole-submission-{self.submission_id}-evaluation',
                 detach=False,
+                environment={
+                    'SUBMISSION_ID': self.submission_id,
+                },
                 volumes={
                     'submissions': {
-                        'bind': f'/usr/src/submissions/{self.submission_id}',
+                        'bind': '/usr/src/submissions/',
                         'mode': 'ro'
                     }
                 }
