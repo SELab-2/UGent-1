@@ -29,7 +29,7 @@ import checkMarkImage from './check-mark.png';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from "@mui/icons-material/Cancel";
 import {
-    deleteData,
+    deleteData, getArchivedCourses,
     getCourses,
     getGroups_by_project,
     getGroupSubmissions,
@@ -179,7 +179,8 @@ const ListView: NextPage<ListViewProps> = ({
                         return [data.group_id, data.user, data.group_nr, l.join(', ')];
                     },
                     'submissions': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_test !== undefined],
-                    'submissions_group': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_test !== undefined]
+                    'submissions_group': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_test !== undefined],
+                    'archived_courses': (data) => [data.course_id, data.name, data.description, data.open_course],
                 };
 
                 const hashmap_get_to_function: { [key: string]: (project_id?: number) => Promise<any> } = {
@@ -206,6 +207,9 @@ const ListView: NextPage<ListViewProps> = ({
                     },
                     'submissions_group': async () => {
                         return parse_pages(await getGroupSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                    },
+                    'archived_courses': async () => {
+                        return parse_pages(await getArchivedCourses(currentPage, page_size, searchTerm));
                     }
                 };
 
@@ -231,7 +235,7 @@ const ListView: NextPage<ListViewProps> = ({
         };
         fetchData();
         // the values below will be constantly updated
-    }, [currentPage, searchTerm, currentPage, sortConfig]);
+    }, [searchTerm, currentPage, sortConfig, get, get_id, page_size]);
 
 
     const handleChangePage = (direction: 'next' | 'prev') => {
@@ -528,9 +532,8 @@ const ListView: NextPage<ListViewProps> = ({
                                             View
                                         </Button>
                                     </StyledTableCell>
-
                                 )}
-                                {get == 'submissions' && (
+                                {(get == 'submissions' || get == 'submissions_group') && (
                                     <StyledTableCell>
                                         <Button onClick={() => window.location.href = '/submission/' + row[0]}>
                                             View

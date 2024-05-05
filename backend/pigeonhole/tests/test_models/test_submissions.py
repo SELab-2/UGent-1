@@ -16,7 +16,7 @@ class SubmissionTestCase(TestCase):
             email="teacher@gmail.com",
             first_name="Kermit",
             last_name="The Frog",
-            role=2
+            role=2,
         )
         # Create student user
         student = User.objects.create(
@@ -24,7 +24,7 @@ class SubmissionTestCase(TestCase):
             email="student@gmail.com",
             first_name="Miss",
             last_name="Piggy",
-            role=3
+            role=3,
         )
 
         # Create course
@@ -43,6 +43,7 @@ class SubmissionTestCase(TestCase):
         # Create group
         group = Group.objects.create(
             project_id=project,
+            group_id=1,
         )
 
         # Add student to the group
@@ -50,71 +51,45 @@ class SubmissionTestCase(TestCase):
 
         # Create submission
         Submissions.objects.create(
-            group_id=group,
+            submission_id=1, group_id=group, file_urls="file_urls"
         )
 
     def test_submission_student_relation(self):
-        submission = Submissions.objects.get(submission_nr=1)
+        submission = Submissions.objects.get(submission_id=1)
         student = submission.group_id.user.first()
         self.assertEqual(submission.group_id.user.count(), 1)
         self.assertEqual(submission.group_id.user.first(), student)
         self.assertEqual(submission.group_id.user.first().id, student.id)
 
     def test_submission_project_relation(self):
-        submission = Submissions.objects.get(submission_nr=1)
+        submission = Submissions.objects.get(submission_id=1)
         project = submission.group_id.project_id
         self.assertEqual(submission.group_id.project_id, project)
 
-    def test_submission_file_upload_and_retrieval(self):
-        submission = Submissions.objects.get(submission_nr=1)
+    def test_submission_course_relation(self):
+        submission = Submissions.objects.get(submission_id=1)
+        course = submission.group_id.project_id.course_id
+        self.assertEqual(submission.group_id.project_id.course_id, course)
 
-        # Create a simple text file for testing
-        file_content = b'This is a test file content.'
-        uploaded_file = SimpleUploadedFile("test.txt", file_content, content_type="text/plain")
+    def test_make_submission(self):
+        group = Group.objects.get(group_id=1)
+        submission = Submissions.objects.create(
+            submission_id=2,
+            group_id=group,
+            file_urls="file_urls",
+        )
+        self.assertEqual(submission.group_id, group)
+        self.assertEqual(submission.file_urls, "file_urls")
+        self.assertEqual(submission.submission_nr, 2)
 
-        # Set the file field in the submission with the created file
-        submission.file = uploaded_file
-        submission.save()
-
-        # Retrieve the submission from the database
-        updated_submission = Submissions.objects.get(submission_nr=1)
-
-        # Check that the file content matches
-        self.assertEqual(updated_submission.file.read(), file_content)
-
-        # Clean up: Delete the file after testing
-        if updated_submission.file:
-            # Check if the file exists before attempting to delete it
-            if updated_submission.file.storage.exists(updated_submission.file.name):
-                # Delete the file
-                updated_submission.file.storage.delete(updated_submission.file.name)
-
-        # Verify that the file is deleted or doesn't exist
-        self.assertFalse(updated_submission.file.storage.exists(updated_submission.file.name))
-
-    def test_submission_output_test_upload_and_retrieval(self):
-        submission = Submissions.objects.get(submission_nr=1)
-
-        # Create a simple text file for testing
-        file_content = b'This is a test file content.'
-        uploaded_file = SimpleUploadedFile("text_output.txt", file_content, content_type="text/plain")
-
-        # Set the file field in the submission with the created file
-        submission.file = uploaded_file
-        submission.save()
-
-        # Retrieve the submission from the database
-        updated_submission = Submissions.objects.get(submission_nr=1)
-
-        # Check that the file content matches
-        self.assertEqual(updated_submission.file.read(), file_content)
-
-        # Clean up: Delete the file after testing
-        if updated_submission.file:
-            # Check if the file exists before attempting to delete it
-            if updated_submission.file.storage.exists(updated_submission.file.name):
-                # Delete the file
-                updated_submission.file.storage.delete(updated_submission.file.name)
-
-        # Verify that the file is deleted or doesn't exist
-        self.assertFalse(updated_submission.file.storage.exists(updated_submission.file.name))
+    def test_make_submission_with_file(self):
+        group = Group.objects.get(group_id=1)
+        file = SimpleUploadedFile("file.txt", b"file_content")
+        submission = Submissions.objects.create(
+            submission_id=2,
+            group_id=group,
+            file_urls=file,
+        )
+        self.assertEqual(submission.group_id, group)
+        self.assertEqual(submission.file_urls, file)
+        self.assertEqual(submission.submission_nr, 2)
