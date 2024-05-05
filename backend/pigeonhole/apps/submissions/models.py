@@ -58,6 +58,7 @@ class Submissions(models.Model):
                 image='busybox:latest',
                 name=f'pigeonhole-submission-{self.submission_id}-evaluation',
                 detach=False,
+                remove=True,
                 environment={
                     'SUBMISSION_ID': self.submission_id,
                 },
