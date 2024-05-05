@@ -14,6 +14,9 @@ superuser:
 mockdata:
 	docker exec -it pigeonhole-backend python manage.py runscript mockdata
 
+evaltest:
+    docker exec -it pigeonhole-backend python manage.py runscript eval_test
+
 reset:
 	docker image prune -af
 	docker system prune
