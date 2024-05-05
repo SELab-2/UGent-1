@@ -184,5 +184,7 @@
   "view_archive": "Bekijk Archief",
   "view_co_teachers": "Bekijk mede-docenten",
   "view_students": "Bekijk studenten",
-  "visibility": "Zichtbaarheid"
+  "visibility": "Zichtbaarheid",
+  "show_more": "Toon meer",
+  "show_less": "Toon minder"
 }
