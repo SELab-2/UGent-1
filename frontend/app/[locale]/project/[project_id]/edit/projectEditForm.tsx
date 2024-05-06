@@ -2,9 +2,7 @@
 import React, {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import JSZip, {JSZipObject} from "jszip";
-import {any} from "prop-types";
-import {deleteProject, getProject, getTestFiles, getUserData, Project, updateProject} from "@lib/api";
-import initTranslations from "@app/i18n";
+import {addProject, deleteProject, getProject, getTestFiles, getUserData, Project, updateProject} from "@lib/api";
 import Box from "@mui/material/Box";
 import Title from "@app/[locale]/components/project_components/title";
 import Assignment from "@app/[locale]/components/project_components/assignment";
@@ -20,18 +18,17 @@ import RemoveDialog from "@app/[locale]/components/project_components/removedial
 const i18nNamespaces = ['common']
 
 interface ProjectEditFormProps {
-    project_id: number;
-    locale: string;
-
+    project_id: number|null;
+    add_course_id: number;
 }
 
-const ProjectEditForm: React.FC<ProjectEditFormProps> =  ({project_id, locale}) => {
+function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
     const [files, setFiles] = useState<string[]>([]);
-    const [title, setTitle] = useState('Project 1');
-    const [description, setDescription] = useState('Lorem\nIpsum\n');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
     const [groupAmount, setGroupAmount] = useState(1);
     const [groupSize, setGroupSize] = useState(1);
-    const [conditions, setConditions] = useState(['']);
+    const [conditions, setConditions] = useState<string[]>([]);
     const [testfilesName, setTestfilesName] = useState<string[]>([]);
     const [visible, setVisible] = useState(true);
     const [deadline, setDeadline] = React.useState(dayjs());
@@ -40,12 +37,11 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> =  ({project_id, locale}) 
     const [loadingProject, setLoadingProject] = useState(true);
     const [confirmRemove, setConfirmRemove] = useState(false);
     const [testfilesData, setTestfilesData] = useState<JSZipObject[]>([]);
-    const [translations, setTranslations] = useState({t: any, resources: null, locale: "en", i18nNamespaces: [""]})
     const [isStudent, setIsStudent] = useState(false);
     const [isTeacher, setIsTeacher] = useState(false);
     const [loadingUser, setLoadingUser] = useState(true);
     const [hasDeadline, setHasDeadline] = useState(false);
-    const [course_id, setCourseId] = useState(0);
+    const [course_id, setCourseId] = useState<number>(0);
 
     const isTitleEmpty = !title
     const isAssignmentEmpty = !description
@@ -53,30 +49,39 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> =  ({project_id, locale}) 
     const isGroupAmountEmpty = !groupAmount
     const isGroupSizeEmpty = !groupSize
 
+    console.log(add_course_id);
+
+
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const project: Project = await getProject(project_id);
-                if (project.deadline !== null) setDeadline(dayjs(project["deadline"]));
-                setDescription(project.description)
-                if (project.file_structure !== null) {
-                    const file_structure = project.file_structure.split(",").map((item: string) => item.trim().replace(/"/g, ''));
-                    file_structure.push("");
-                    setFiles(file_structure);
+                if (project_id !== null){
+                    const project: Project = await getProject(project_id);
+                    if (project.deadline !== null) setDeadline(dayjs(project["deadline"]));
+                    setDescription(project.description)
+                    if (project.file_structure !== null) {
+                        const file_structure = project.file_structure.split(",").map((item: string) => item.trim().replace(/"/g, ''));
+                        setFiles(file_structure);
+                        console.log(files);
+                    }
+                    setGroupSize(project["group_size"])
+                    setTitle(project["name"])
+                    setGroupAmount(project["number_of_groups"])
+                    setVisible(project["visible"])
+                    if (project.project_id !== null) {
+                        setCourseId(project.course_id);
+                    }
+                    if (project.test_files !== null) await setTestFiles(project);
+                    setScore(+project["max_score"]);
+                    if (project["conditions"] != null) {
+                        let conditions_parsed:string[] = [];
+                        if (project["conditions"] !== "") {
+                            conditions_parsed = project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, ''));
+                        }
+                        setConditions(conditions_parsed);
+                    }
+                    if (project.deadline !== null) setHasDeadline(true);
                 }
-                setGroupSize(project["group_size"])
-                setTitle(project["name"])
-                setGroupAmount(project["number_of_groups"])
-                setVisible(project["visible"])
-                setCourseId(project.course_id);
-                if (project.test_files !== null) await setTestFiles(project);
-                setScore(+project["max_score"]);
-                if (project["conditions"] != null) {
-                    const conditions_parsed = project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, ''));
-                    conditions_parsed.push("");
-                    setConditions(conditions_parsed);
-                }
-                if (project.deadline !== null) setHasDeadline(true);
                 await getUserData().then((response) => {
                     if (response.role === 3) {
                         setIsStudent(true);
@@ -91,14 +96,13 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> =  ({project_id, locale}) 
             }
         };
 
-        const fetchTranslations = async () => {
-            const {t, resources} = await initTranslations(locale, i18nNamespaces)
-            setTranslations({t, resources, locale, i18nNamespaces})
+        if (project_id !== null) {
+            fetchProject().then(() => setLoadingProject(false));
+        } else {
+            setLoadingProject(false);
         }
+    }, [project_id, loadingTranslations, isStudent, loadingProject, isTeacher]);
 
-        fetchTranslations().then(() => setLoadingTranslations(false));
-        fetchProject().then(() => setLoadingProject(false));
-    }, [project_id, locale, loadingTranslations, isStudent, loadingProject, isTeacher]);
 
     async function setTestFiles(project: Project) {
         const zip = new JSZip();
@@ -116,6 +120,7 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> =  ({project_id, locale}) 
     }
 
     const handleSave = async () => {
+        console.log(files);
         let message = "The following fields are required:\n";
 
         if (isTitleEmpty) message += "- Title\n";
@@ -138,8 +143,6 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> =  ({project_id, locale}) 
             const zipFileBlob = await zip.generateAsync({type: "blob"});
             const formData = new FormData();
             const zipFile = new File([zipFileBlob], "test_files.zip");
-            files.pop();
-            conditions.pop();
             formData.append("test_files", zipFile);
             formData.append("name", title);
             formData.append("description", description);
@@ -149,25 +152,36 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> =  ({project_id, locale}) 
             formData.append("file_structure", files.join(","));
             formData.append("conditions", conditions.join(","));
             formData.append("visible", visible.toString());
-            formData.append("course_id", course_id.toString());
+            if (add_course_id < 0) {
+                formData.append("course_id", course_id.toString());
+            } else {
+                formData.append("course_id", add_course_id.toString());
+            }
             if (hasDeadline) {
                 formData.append("deadline", deadline.format());
             } else {
                 formData.append("deadline", "");
             }
 
-            await updateProject(project_id, formData).then((response) => console.log(response));
-            location.reload();
+            if (project_id !== null) {
+                await updateProject(project_id, formData);
+                location.href = "/project/" + project_id + "/";
+            } else {
+                const new_project_id = await addProject(formData);
+                location.href = "/project/" + new_project_id + "/"
+            }
         }
     }
 
     const handle_remove = async () => {
-        await deleteProject(project_id).then((response) => console.log(response));
+        if (project_id !== null){
+            await deleteProject(project_id).then((response) => console.log(response));
+        }
         window.location.href = "/course/" + course_id + "/"
     }
 
     return (
-         (loadingTranslations && loadingProject && loadingUser) ? (
+         (loadingTranslations && loadingProject && loadingUser && course_id !==null) ? (
                 <div>Loading...</div>
             ) : (
                 (!isStudent) ? (
@@ -178,20 +192,61 @@ const ProjectEditForm: React.FC<ProjectEditFormProps> =  ({project_id, locale}) 
                             height="fit-content"
                         >
                             <Box className={"pageBoxLeft"} height={'fit-content'}>
-                                {Title({isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations})}
-                                {Assignment({isAssignmentEmpty, setDescription, description, translations})}
-                                {RequiredFiles({files, setFiles, translations})}
-                                {Conditions({conditions, setConditions, translations})}
-                                {Groups({groupAmount, isGroupAmountEmpty, groupSize, isGroupSizeEmpty, setGroupAmount, setGroupSize, translations})}
-                                {TestFiles({testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations})}
-                                {UploadTestFile({testfilesName, setTestfilesName, testfilesData, setTestfilesData, translations})}
+                                <Title
+                                    isTitleEmpty={isTitleEmpty}
+                                    isScoreEmpty={isTitleEmpty}
+                                    setTitle={setTitle}
+                                    title={title}
+                                    score={score}
+                                    setScore={setScore}/>
+                                <Assignment
+                                    isAssignmentEmpty={isAssignmentEmpty}
+                                    setDescription={setDescription}
+                                    description={description} />
+                                <RequiredFiles
+                                    files={files}
+                                    setFiles={setFiles}/>
+                                <Conditions
+                                    conditions={conditions}
+                                    setConditions={setConditions}/>
+                                <Groups
+                                    groupAmount={groupAmount}
+                                    isGroupAmountEmpty={isGroupAmountEmpty}
+                                    groupSize={groupSize}
+                                    isGroupSizeEmpty={isGroupSizeEmpty}
+                                    setGroupAmount={setGroupAmount}
+                                    setGroupSize={setGroupSize}/>
+                                <TestFiles
+                                    testfilesName={testfilesName}
+                                    setTestfilesName={setTestfilesName}
+                                    testfilesData={testfilesData}
+                                    setTestfilesData={setTestfilesData}/>
+                                <UploadTestFile
+                                    testfilesName={testfilesName}
+                                    setTestfilesName={setTestfilesName}
+                                    testfilesData={testfilesData}
+                                    setTestfilesData={setTestfilesData}/>
                             </Box>
                             <Box className={"pageBoxRight"}>
-                                {FinishButtons({visible, setVisible, handleSave, setConfirmRemove, translations, course_id, setHasDeadline, hasDeadline})}
-                                {Deadline({deadline, setDeadline, hasDeadline})}
+                                <FinishButtons 
+                                    visible={visible} 
+                                    setVisible={setVisible} 
+                                    handleSave={handleSave} 
+                                    setConfirmRemove={setConfirmRemove} 
+                                    course_id={course_id} 
+                                    setHasDeadline={setHasDeadline} 
+                                    hasDeadline={hasDeadline}
+                                    createProject={(project_id===null)}/>
+                                <Deadline 
+                                    deadline={deadline} 
+                                    setDeadline={setDeadline} 
+                                    hasDeadline={hasDeadline}/>
                             </Box>
                         </Box>
-                        {RemoveDialog({confirmRemove, handle_remove, setConfirmRemove, translations})}
+                        <RemoveDialog
+                            confirmRemove={confirmRemove}
+                            handle_remove={handle_remove}
+                            setConfirmRemove={setConfirmRemove}/>
                     </div>
                 ) : (
                     <div>Students cannot edit project</div>
