@@ -99,8 +99,10 @@
   "view_co_teachers": "View co-teachers",
   "view_students": "View students",
   "visibility": "Visibility",
+  "download_file": "Download",
+  "denied": "Denied",
   "show_more": "Show more",
-  "show_less": "Show less"
+  "show_less": "Show less",
   "select": "Select",
   "search_for_project": "Search for project",
   "has_deadline": "Has deadline",

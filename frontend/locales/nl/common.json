@@ -99,8 +99,10 @@
   "view_co_teachers": "Bekijk mede-docenten",
   "view_students": "Bekijk studenten",
   "visibility": "Zichtbaarheid",
+  "download_file": "Download",
+  "denied": "Gewijgerd",
   "show_more": "Toon meer",
-  "show_less": "Toon minder"
+  "show_less": "Toon minder",
   "select": "Selecteer",
   "search_for_project": "Zoek naar project",
   "has_deadline": "Heeft deadline",

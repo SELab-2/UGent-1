@@ -38,51 +38,6 @@ export const baseTheme = createTheme({
     },
 });
 
-const loginTheme = createTheme({
-    palette: {
-        background: {
-            default: '#f4f5fd'
-        },
-        primary: {
-            main: '#1E64C8',
-            contrastText: '#FFFFFF',
-        },
-        secondary: {
-            main: '#D0E4FF',
-            contrastText: '#001D36'
-        },
-    },
-    typography: {
-        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-        h4: {
-            fontWeight: 700,
-        },
-        h1: {
-            fontWeight: 400,
-        },
-    },
-    components: {
-        MuiTextField: {
-            defaultProps: {
-                InputLabelProps: {
-                    shrink: true,
-                },
-                margin: 'normal',
-                required: true,
-                fullWidth: true,
-            },
-        },
-        MuiButton: {
-            defaultProps: {
-                variant: 'contained',
-                color: 'primary',
-                fullWidth: true,
-                style: {margin: '10px 0'},
-            },
-        },
-    },
-});
-
 export const theme = createTheme({
     palette: {
         primary: {
