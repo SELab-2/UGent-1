@@ -101,6 +101,8 @@
   "visibility": "Visibility",
   "show_more": "Show more",
   "show_less": "Show less"
+  "select": "Select",
+  "search_for_project": "Search for project",
   "has_deadline": "Has deadline",
   "no_test_files_selected": "No test files selected",
   "create": "Create",
