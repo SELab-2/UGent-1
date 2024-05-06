@@ -1,5 +1,6 @@
 import axios, {AxiosError} from 'axios';
 import dayjs from "dayjs";
+import {JSZipObject} from "jszip";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -346,20 +347,8 @@ export async function getProjects(): Promise<Project[]> {
     return (await getListRequest('/projects'));
 }
 
-export async function addProject(course_id: number): Promise<number> {
-    return (await postData('/projects/', {
-        name: "New Project",
-        course_id: course_id,
-        description: "Description",
-        deadline: dayjs(),
-        visible: true,
-        max_score: 100,
-        number_of_groups: 1,
-        group_size: 1,
-        file_structure: "extra/verslag.pdf",
-        test_files: null,
-        conditions: "Project must compile and run without errors."
-    })).project_id;
+export async function addProject(data: any): Promise<number> {
+    return (await postData(`/projects/`, data)).project_id;
 }
 
 export async function getProjectsFromCourse(id: number): Promise<Project[]> {
@@ -465,12 +454,41 @@ export async function getGroupSubmissions(id: number, page = 1, pageSize = 5, ke
 let userData: UserData | undefined = undefined;
 
 export async function getUserData(): Promise<UserData> {
+    if(!userData && !localStorage.getItem('user') && window.location.pathname !== "/"){
+        window.location.href = "/";
+    }
+
     if (userData) {
         return userData;
-    } else {
-        let user: UserData = await getRequest('/users/current');
-        return user;
+    }else if(localStorage.getItem('user')){
+        const userobj = JSON.parse(localStorage.getItem('user') as string);
+        const lastcache : string | undefined = userobj?.lastcache;
+
+        
+        if(lastcache && Date.now() - parseInt(lastcache) < 2 * 60 * 1000){
+            console.log(Date.now() - parseInt(lastcache));
+            let user : UserData = userobj.data;
+            userData = user;
+            return user;
+        }else{
+            return fetchUserData();
+        }
+    }else {
+        return fetchUserData();
     }
+}
+
+async function fetchUserData() : Promise<UserData> {
+    try{
+        userData = await getRequest('/users/current');
+        localStorage.setItem('user', JSON.stringify({data: userData, lastcache: Date.now().toString()}));
+        return userData!;
+    }catch(e){
+        console.error(e);
+        window.location.href = "/";
+        return userData!;
+    }
+    
 }
 
 export async function logOut() {
@@ -594,7 +612,7 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any, project_id : string) : Promise<string>{
+export async function uploadSubmissionFile(event: any, project_id: string) : Promise<string>{
     axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();

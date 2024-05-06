@@ -21,7 +21,7 @@ def run():
         name='Artificiële intelligentie',
         description='Kennisgebaseerd redeneren, machinaal leren, heuristische zoekstrategieën, '
                     'neurale netwerken en deep learning, natuurlijke taalverwerking',
-        open_course=True
+        open_course=True,
     )
 
     course_2, _ = Course.objects.get_or_create(

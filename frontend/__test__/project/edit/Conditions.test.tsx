@@ -1,6 +1,6 @@
 import {render, screen} from "@testing-library/react";
 import React from "react";
-import Condtions from "@app/[locale]/components/project_components/conditions";
+import Conditions from "@app/[locale]/components/project_components/conditions";
 import getTranslations from "../../translations";
 
 jest.mock('react-i18next', () => ({
@@ -12,7 +12,7 @@ describe('Conditions', () => {
         const translations = await getTranslations();
 
         const {getByText: getByText_en, getByDisplayValue, queryAllByRole} = render(
-            <Condtions
+            <Conditions
                 conditions={['First', 'Second']}
                 setConditions={jest.fn()}
                 translations={translations.en}
