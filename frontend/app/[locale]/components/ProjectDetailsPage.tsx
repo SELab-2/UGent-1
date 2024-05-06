@@ -106,7 +106,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                                 {t("return_course")}
                             </Button>
                             <Grid container alignItems="center" spacing={2} sx={{marginBottom: 1, marginTop: 2}}>
-                                <Grid item sx={{marginRight: 4}}>
+                                <Grid item sx={{marginRight: 2}}>
                                     <Typography variant={"h2"}>
                                         {project?.name}
                                     </Typography>
