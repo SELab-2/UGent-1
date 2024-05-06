@@ -1,6 +1,7 @@
 import {Grid, TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import React from "react";
+import {useTranslation} from "react-i18next";
 
 interface TitleProps {
     isTitleEmpty: boolean,
@@ -9,10 +10,11 @@ interface TitleProps {
     score: number,
     isScoreEmpty: boolean,
     setScore: (value: (((prevState: number) => number) | number)) => void,
-    translations: { t: any, resources: any, locale: any, i18nNamespaces: any },
 }
 
-function Title({isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, translations}: TitleProps) {
+function Title({isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore}: TitleProps) {
+    const {t} = useTranslation();
+
     const handleScoreChange = (event: any) => {
         if (event.target.value === '') {
             setScore(event.target.value);
@@ -28,12 +30,12 @@ function Title({isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, tr
     return <Grid container spacing={1}>
         <Grid item xs={6} className={"titleGrids"}>
             <Typography variant="h5" className={"typographyStyle"}>
-                {translations.t("title")}
+                {t("title")}
             </Typography>
         </Grid>
         <Grid item xs={6}>
             <Typography variant="h5" className={"typographyStyle"}>
-                {translations.t("max_score")}
+                {t("max_score")}
             </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -43,8 +45,10 @@ function Title({isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, tr
                 onChange={(event) => setTitle(event.target.value)}
                 value={title}
                 className={"titleGrids"}
-                helperText={isTitleEmpty ? translations.t("title_required") : ""}
+                helperText={isTitleEmpty ? t("title_required") : ""}
                 size="small"
+                placeholder={t("title")}
+                label={t("title")}
             />
         </Grid>
         <Grid item xs={6}>
@@ -57,7 +61,7 @@ function Title({isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore, tr
                 className={"titleGrids"}
                 size="small"
                 error={isScoreEmpty}
-                helperText={isScoreEmpty ? translations.t("score_required") : ""}
+                helperText={isScoreEmpty ? t("score_required") : ""}
             />
         </Grid>
     </Grid>
