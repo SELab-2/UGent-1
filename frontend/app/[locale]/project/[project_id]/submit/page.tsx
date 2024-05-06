@@ -3,7 +3,7 @@ import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
 import Footer from "@app/[locale]/components/Footer";
-import SubmitPage from './SubmitPage';
+import SubmitDetailsPage from './SubmitDetailsPage';
 const i18nNamespaces = ['common']
 
 export default async function Course({params: {locale, project_id}, searchParams: {token}}:
@@ -21,9 +21,9 @@ export default async function Course({params: {locale, project_id}, searchParams
         >
             <NavBar/>
 
-            <SubmitPage project_id={project_id}>
+            <SubmitDetailsPage project_id={project_id}>
 
-            </SubmitPage>
+            </SubmitDetailsPage>
 
         </TranslationsProvider>
     )

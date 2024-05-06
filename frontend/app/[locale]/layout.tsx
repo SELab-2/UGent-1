@@ -18,7 +18,7 @@ export default function RootLayout(props: React.PropsWithChildren<{}>) {
         <body style={{margin: 0}}>
         <AppRouterCacheProvider>
             <ThemeProvider theme={loginTheme}>
-                <div style={{marginTop: "40px", height: "fit-content", minHeight: '100vh'}}>
+                <div style={{marginTop: "64px", height: "fit-content", minHeight: '100vh'}}>
                     {children}
                 </div>
                 <div id='extrapadding' style={{height: "20px"}}></div>
