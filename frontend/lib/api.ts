@@ -33,6 +33,8 @@ export type Course = {
     open_course: boolean;
     invite_token: string;
     banner: string;
+    archived: boolean;
+    year: number;
 }
 
 export type Project = {
@@ -272,6 +274,24 @@ export async function getCourses(page = 1, pageSize = 5, keyword?: string, order
     return await getRequest(url);
 }
 
+export async function getArchivedCourses(page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Course[]> {
+    let url = `/courses/get_archived_courses?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
 export async function getCoursesForUser(): Promise<Course[]> {
     let page = 1;
     let results: Course[] = []
@@ -441,17 +461,41 @@ export async function getGroupSubmissions(id: number, page = 1, pageSize = 5, ke
 let userData: UserData | undefined = undefined;
 
 export async function getUserData(): Promise<UserData> {
+    if(!userData && !localStorage.getItem('user') && window.location.pathname !== "/"){
+        window.location.href = "/";
+    }
+
     if (userData) {
         return userData;
-    }/*else if(localStorage.getItem('user')){
-        let user : UserData = JSON.parse(localStorage.getItem('user') as string);
-        userData = user;
-        return user;
-    }*/ else {
-        let user: UserData = await getRequest('/users/current');
-        //localStorage.setItem('user', JSON.stringify(user));
-        return user;
+    }else if(localStorage.getItem('user')){
+        const userobj = JSON.parse(localStorage.getItem('user') as string);
+        const lastcache : string | undefined = userobj?.lastcache;
+
+        
+        if(lastcache && Date.now() - parseInt(lastcache) < 2 * 60 * 1000){
+            console.log(Date.now() - parseInt(lastcache));
+            let user : UserData = userobj.data;
+            userData = user;
+            return user;
+        }else{
+            return fetchUserData();
+        }
+    }else {
+        return fetchUserData();
     }
+}
+
+async function fetchUserData() : Promise<UserData> {
+    try{
+        userData = await getRequest('/users/current');
+        localStorage.setItem('user', JSON.stringify({data: userData, lastcache: Date.now().toString()}));
+        return userData!;
+    }catch(e){
+        console.error(e);
+        window.location.href = "/";
+        return userData!;
+    }
+    
 }
 
 export async function logOut() {

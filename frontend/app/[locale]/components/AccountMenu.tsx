@@ -80,7 +80,7 @@ export default function AccountMenu() {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
-                        <Typography variant="body1" sx={{ whiteSpace: 'nowrap'}}>{user?.first_name + " " + user?.last_name}</Typography>
+                        <Typography variant="body1" sx={{ whiteSpace: 'nowrap'}}>{(user?.first_name ?? "------") + " " + (user?.last_name ?? "------")}</Typography>
                     </Button>
                 </Tooltip>
             </Box>
