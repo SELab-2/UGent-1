@@ -7,7 +7,7 @@ import CourseDetails from "@app/[locale]/components/CourseDetails";
 import StudentCoTeacherButtons from "@app/[locale]/components/StudentCoTeacherButtons";
 import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
 import ListView from '@app/[locale]/components/ListView';
-import AddProjectButton from "@app/[locale]/components/AddProjectButton";
+import ProjectTable from "@app/[locale]/components/ProjectTable";
 
 const i18nNamespaces = ['common']
 
@@ -46,6 +46,7 @@ export default async function Course({params: {locale, course_id}, searchParams:
                     width={'100%'}
                 >
                     <ListView
+                        search_text={t('search_for_project')}
                         admin={false}
                         headers={headers}
                         headers_backend={headers_backend}
