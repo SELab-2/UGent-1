@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from backend.pigeonhole.apps.courses.models import Course
+from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.users.models import User
 
@@ -46,6 +47,24 @@ class ProjectTestStudent(TestCase):
         )
 
         self.client.force_authenticate(self.teacher)
+
+        self.student1 = User.objects.create(
+            username="student_username1",
+            email="test1@gmail.com",
+            first_name="Kermit",
+            last_name="The Frog",
+            role=3
+        )
+        self.student1.course.set([self.course])
+
+        self.student2 = User.objects.create(
+            username="student_username2",
+            email="test2@gmail.com",
+            first_name="Kermit",
+            last_name="The Frog",
+            role=3
+        )
+        self.student2.course.set([self.course])
 
     def test_create_project(self):
         response = self.client.post(
@@ -165,3 +184,27 @@ class ProjectTestStudent(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         content_json = json.loads(response.content.decode("utf-8"))
         self.assertEqual(content_json["count"], 0)
+
+    def test_create_individual_project(self):
+        response = self.client.post(
+            API_ENDPOINT,
+            {
+                "name": "Test Individual Project",
+                "description": "Test Project 2 Description",
+                "course_id": self.course.course_id,
+                "deadline": "2021-12-12 12:12:12",
+                "group_size": 1
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        project = Project.objects.get(name="Test Individual Project")
+        groups = Group.objects.filter(project_id=project)
+        students = User.objects.filter(course=self.course, role=3)
+        self.assertEqual(len(groups), len(students))
+        for group in groups:
+            self.assertEqual(group.user.count(), 1)
+        self.assertTrue(groups[0].user.first() in students)
+        self.assertTrue(groups[1].user.first() in students)
+        self.assertFalse(groups[0].user.first() == groups[1].user.first())

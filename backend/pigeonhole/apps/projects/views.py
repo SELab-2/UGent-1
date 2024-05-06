@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from backend.pigeonhole.apps.groups.models import Group
+from backend.pigeonhole.apps.users.models import User
 from backend.pigeonhole.apps.groups.models import GroupSerializer
 from backend.pigeonhole.apps.submissions.models import (
     Submissions,
@@ -47,19 +48,34 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
         number_of_groups = serializer.validated_data.get("number_of_groups", 0)
         project = serializer.save()
-
+        group_size = serializer.validated_data.get("group_size", 0)
         groups = []
-        for i in range(number_of_groups):
-            group_data = {
-                "project_id": project.project_id,
-                "user": [],  # You may add users here if needed
-                "feedback": None,
-                "final_score": None,
-                "visible": False,  # Adjust visibility as needed
-            }
-            group_serializer = GroupSerializer(data=group_data)
-            group_serializer.is_valid(raise_exception=True)
-            groups.append(group_serializer.save())
+
+        if group_size == 1:
+            for user in User.objects.filter(course=serializer.validated_data.get("course_id"), role=3):
+                group_data = {
+                    "project_id": project.project_id,
+                    "user": [user.id],
+                    "feedback": None,
+                    "final_score": None,
+                    "visible": False,
+                }
+                group_serializer = GroupSerializer(data=group_data)
+                group_serializer.is_valid(raise_exception=True)
+                groups.append(group_serializer.save())
+
+        else:
+            for i in range(number_of_groups):
+                group_data = {
+                    "project_id": project.project_id,
+                    "user": [],  # You may add users here if needed
+                    "feedback": None,
+                    "final_score": None,
+                    "visible": False,  # Adjust visibility as needed
+                }
+                group_serializer = GroupSerializer(data=group_data)
+                group_serializer.is_valid(raise_exception=True)
+                groups.append(group_serializer.save())
 
         # You may return the newly created groups if needed
         groups_data = GroupSerializer(groups, many=True).data
