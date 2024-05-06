@@ -30,29 +30,8 @@
     margin-bottom: 10px !important;
 }
 
-.saveButton {
-    background-color: #D0E4FF !important;
-    padding: 5px 10px !important;
-    border-radius: 20px !important;
-    border: none !important;
-    cursor: pointer !important;
-    font-weight: bold !important;
-    font-size: 1.2em !important;
-}
-
 .buttonsGrid {
     padding: 10px !important;
-}
-
-.removeButton {
-    background-color: #E15E5E !important;
-    padding: 5px 20px !important;
-    border-radius: 20px !important;
-    border: none !important;
-    cursor: pointer !important;
-    font-weight: bold !important;
-    font-size: 1.2em !important;
-    color: white !important;
 }
 
 .titleGrids {
@@ -62,17 +41,6 @@
 
 .assignmentTextField {
     width: 100% !important;
-}
-
-.uploadButton {
-    background-color: #D0E4FF !important;
-    padding: 15px 30px !important;
-    margin-bottom: 30px !important;
-    border-radius: 20px !important;
-    border: none !important;
-    cursor: pointer !important;
-    font-weight: bold !important;
-    font-size: 1.2em !important;
 }
 
 .uploadInput {
