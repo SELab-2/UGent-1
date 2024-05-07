@@ -12,7 +12,7 @@ from backend.pigeonhole.apps.users.models import User
 API_ENDPOINT = '/projects/'
 
 
-class ProjectTestAdminTeacher(TestCase):
+class ProjectTestAdmin(TestCase):
     def setUp(self):
         self.client = APIClient()
 
@@ -35,6 +35,7 @@ class ProjectTestAdminTeacher(TestCase):
             name="Test Project",
             course_id=self.course,
             deadline="2021-12-12 12:12:12",
+            group_size=2,
         )
 
         self.client.force_authenticate(self.admin)

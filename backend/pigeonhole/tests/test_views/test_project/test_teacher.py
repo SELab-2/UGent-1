@@ -115,7 +115,6 @@ class ProjectTestTeacher(TestCase):
         groups = Group.objects.filter(project_id=self.project)
         self.assertEqual(len(groups), 10)
 
-
     def test_delete_project(self):
         response = self.client.delete(
             API_ENDPOINT + f'{self.project.project_id}/'
