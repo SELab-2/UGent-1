@@ -1,4 +1,5 @@
 import fnmatch
+import json as JSON
 import os
 import shutil
 import zipfile
@@ -68,10 +69,12 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         group_id = request.data["group_id"]
         group = get_object_or_404(Group, group_id=group_id)
         data = request.data.copy()  # Create a mutable copy
-        # backup = request.data["file_urls"]
-        # data["file_urls"] = JSON.dumps([key for key in request.FILES])
-        # if len(data["file_urls"]) == 0:
-        #     data["file_urls"] = backup
+        if len(request.FILES) != 0:
+            file_urls = []
+            for key in request.FILES:
+                file_urls.append(key)
+        else:
+            file_urls = request.data["file_urls"].split(",")
 
         serializer = SubmissionsSerializer(data=data)
         serializer.is_valid(raise_exception=True)
@@ -117,11 +120,11 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             )
 
         project = Project.objects.get(project_id=group.project_id.project_id)
-
+        # return Response(",".join(file_urls), status=status.HTTP_201_CREATED)
         if project.file_structure is None or project.file_structure == "":
             complete_message = {"message": "Submission successful"}
         else:
-            violations = check_restrictions(request.data["file_urls"].split(","), project.file_structure.split(","))
+            violations = check_restrictions(file_urls, project.file_structure.split(","))
 
             if not violations:
                 complete_message = {"message": "Submission successful"}
