@@ -12,7 +12,7 @@ from backend.pigeonhole.apps.users.models import User
 API_ENDPOINT = '/projects/'
 
 
-class ProjectTestStudent(TestCase):
+class ProjectTestTeacher(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.teacher = User.objects.create(
@@ -74,11 +74,15 @@ class ProjectTestStudent(TestCase):
                 "description": "Test Project 2 Description",
                 "course_id": self.course.course_id,
                 "deadline": "2021-12-12 12:12:12",
+                "group_size": 2,
+                "number_of_groups": 4,
             },
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Project.objects.count(), 3)
+        groups = Group.objects.filter(project_id=Project.objects.get(name="Test Project 2"))
+        self.assertEqual(len(groups), 4)
 
     def test_retrieve_project(self):
         response = self.client.get(
@@ -102,16 +106,23 @@ class ProjectTestStudent(TestCase):
                 "description": "Updated Test Project Description",
                 "course_id": self.course.course_id,
                 "deadline": "2021-12-12 12:12:12",
+                "number_of_groups": 10,
+                "group_size": 2
             },
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        groups = Group.objects.filter(project_id=self.project)
+        self.assertEqual(len(groups), 10)
+
 
     def test_delete_project(self):
         response = self.client.delete(
             API_ENDPOINT + f'{self.project.project_id}/'
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        groups = Group.objects.filter(project_id=self.project)
+        self.assertEqual(len(groups), 0)
 
     def test_retrieve_invisible_project(self):
         invisible_project = Project.objects.create(
@@ -177,7 +188,7 @@ class ProjectTestStudent(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def get_groups_of_project(self):
+    def test_get_groups_of_project(self):
         response = self.client.get(
             API_ENDPOINT + f'{self.project.project_id}/get_groups/'
         )

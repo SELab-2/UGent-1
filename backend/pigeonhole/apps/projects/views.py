@@ -92,41 +92,66 @@ class ProjectViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(project, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
-        group_size = int(request.data["group_size"])
-        number_of_groups = int(request.data["number_of_groups"])
+        if "group_size" in request.data :
+            group_size = int(request.data["group_size"])
 
-        if project.group_size != group_size:
-            Group.objects.filter(project_id=project).delete()
-
-            groups = []
-            if group_size == 1:
-                for user in User.objects.filter(course=project.course_id, role=3):
-                    group_data = {
-                        "project_id": project.project_id,
-                        "user": [user.id],
-                        "feedback": None,
-                        "final_score": None,
-                        "visible": False,
-                    }
-                    group_serializer = GroupSerializer(data=group_data)
-                    group_serializer.is_valid(raise_exception=True)
-                    groups.append(group_serializer.save())
-
+            if "number_of_groups" in request.data:
+                number_of_groups = int(request.data["number_of_groups"])
             else:
-                for i in range(number_of_groups):
-                    group_data = {
-                        "project_id": project.project_id,
-                        "user": [],
-                        "feedback": None,
-                        "final_score": None,
-                        "visible": False,
-                    }
-                    group_serializer = GroupSerializer(data=group_data)
-                    group_serializer.is_valid(raise_exception=True)
-                    groups.append(group_serializer.save())
+                number_of_groups = project.number_of_groups
+
+            if project.group_size != group_size:
+                Group.objects.filter(project_id=project).delete()
+
+                groups = []
+                if group_size == 1:
+                    for user in User.objects.filter(course=project.course_id, role=3):
+                        group_data = {
+                            "project_id": project.project_id,
+                            "user": [user.id],
+                            "feedback": None,
+                            "final_score": None,
+                            "visible": False,
+                        }
+                        group_serializer = GroupSerializer(data=group_data)
+                        group_serializer.is_valid(raise_exception=True)
+                        groups.append(group_serializer.save())
+
+                else:
+                    for i in range(number_of_groups):
+                        group_data = {
+                            "project_id": project.project_id,
+                            "user": [],
+                            "feedback": None,
+                            "final_score": None,
+                            "visible": False,
+                        }
+                        group_serializer = GroupSerializer(data=group_data)
+                        group_serializer.is_valid(raise_exception=True)
+                        groups.append(group_serializer.save())
 
 
-        elif project.number_of_groups != number_of_groups:
+            elif project.number_of_groups != number_of_groups:
+                old_groups = Group.objects.filter(project_id=project)
+                groups = []
+                if len(old_groups) < number_of_groups:
+                    for i in range(number_of_groups - len(old_groups)):
+                        group_data = {
+                            "project_id": project.project_id,
+                            "user": [],
+                            "feedback": None,
+                            "final_score": None,
+                            "visible": False,
+                        }
+                        group_serializer = GroupSerializer(data=group_data)
+                        group_serializer.is_valid(raise_exception=True)
+                        groups.append(group_serializer.save())
+                else:
+                    for i in range(len(old_groups) - number_of_groups):
+                        old_groups[len(old_groups) - 1 - i].delete()
+
+        elif "number_of_groups" in request.data:
+            number_of_groups = int(request.data["number_of_groups"])
             old_groups = Group.objects.filter(project_id=project)
             groups = []
             if len(old_groups) < number_of_groups:
