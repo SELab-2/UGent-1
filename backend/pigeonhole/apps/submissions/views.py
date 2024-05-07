@@ -1,5 +1,4 @@
 import fnmatch
-import json as JSON
 import os
 import shutil
 import zipfile
