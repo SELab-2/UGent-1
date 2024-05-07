@@ -116,8 +116,6 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 {"message": "Error uploading files"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        message = []
-
         project = Project.objects.get(project_id=group.project_id.project_id)
 
         if project.file_structure is None or project.file_structure == "":

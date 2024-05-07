@@ -122,7 +122,8 @@ class SubmissionTestStudent(TestCase):
 
     def test_can_create_submission_with_forbidden_wildcard(self):
         response = self.client.post(API_ENDPOINT, {"group_id": self.group_4.group_id, "file_urls": "src/main.py"})
-        self.assertEqual("Error: Forbidden file matching pattern 'src/*.py' found: src/main.py.", response.data['message'])
+        self.assertEqual("Error: Forbidden file matching pattern 'src/*.py' found: src/main.py.",
+                         response.data['message'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_cant_create_invalid_submission(self):
