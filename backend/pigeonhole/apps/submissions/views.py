@@ -1,17 +1,21 @@
-import zipfile
+import fnmatch
+import os
 import shutil
+import zipfile
 from datetime import datetime
 from os.path import realpath, basename
+from pathlib import Path
 
 import pytz
+from django.conf import settings
 from django.http import FileResponse
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
@@ -21,12 +25,6 @@ from backend.pigeonhole.apps.submissions.models import (
 )
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
 from backend.pigeonhole.filters import CustomPageNumberPagination
-
-from django.conf import settings
-from pathlib import Path
-import json as JSON
-
-import os
 
 
 class ZipUtilities:
@@ -69,9 +67,11 @@ class SubmissionsViewset(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         group_id = request.data["group_id"]
         group = get_object_or_404(Group, group_id=group_id)
-
         data = request.data.copy()  # Create a mutable copy
-        data["file_urls"] = JSON.dumps([key for key in request.FILES])
+        # backup = request.data["file_urls"]
+        # data["file_urls"] = JSON.dumps([key for key in request.FILES])
+        # if len(data["file_urls"]) == 0:
+        #     data["file_urls"] = backup
 
         serializer = SubmissionsSerializer(data=data)
         serializer.is_valid(raise_exception=True)
@@ -119,52 +119,16 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         message = []
 
         project = Project.objects.get(project_id=group.project_id.project_id)
-        parsed_submission_files = []
-        for file_path in request.FILES.keys():
-            if "/" in file_path:
-                index = file_path.index("/")
-                parsed_submission_files.append(file_path[index + 1:])
-            else:
-                if file_path != "fileList":
-                    parsed_submission_files.append(file_path)
 
-        # example parsed_submission_files = "+extra/verslag.pdf", "-src/*.jar"
-
-        for condition in project.file_structure.split(","):
-            stripped_condition = condition.strip()  # condition without whitespace
-            if stripped_condition[0] == "+":  # check if starts with "+" (file has to be included)
-                if "*" in stripped_condition:  # check if there is a wildcard
-                    index = stripped_condition.index("*")
-                    wildcard_submission = stripped_condition[index + 1:]  # "*.py/results"
-                    wildcard_directory = stripped_condition[1:index]  # "/project/"
-                    for file_to_check in parsed_submission_files:  # "/project/main.py/results"
-                        if wildcard_directory in file_to_check:
-                            cwd = file_to_check[len(wildcard_directory):]
-                            file_extension = cwd[cwd.index("."):]
-                            if file_extension != wildcard_submission:
-                                message.append(f"File {file_to_check} is not allowed")
-                else:
-                    if stripped_condition[1:] not in parsed_submission_files:
-                        message.append(f"File {stripped_condition[1:]} not found")
-            else:
-                if "*" in stripped_condition:  # check if there is a wildcard
-                    index = stripped_condition.index("*")
-                    wildcard_submission = stripped_condition[index + 1:]  # "*.py/results"
-                    wildcard_directory = stripped_condition[1:index]  # "/project/"
-                    for file_to_check in parsed_submission_files:  # "/project/main.py/results"
-                        if wildcard_directory in file_to_check:
-                            cwd = file_to_check[len(wildcard_directory):]
-                            file_extension = cwd[cwd.index("."):]
-                            if file_extension == wildcard_submission:
-                                message.append(f"File {file_to_check} is not allowed")
-                else:
-                    if stripped_condition[1:] not in parsed_submission_files:
-                        message.append(f"File {stripped_condition[1:]} not found")
-
-        if len(message) < 1:
+        if project.file_structure is None or project.file_structure == "":
             complete_message = {"message": "Submission successful"}
         else:
-            complete_message = {"message": "The following errors occurred:" + ", ".join(message)}
+            violations = check_restrictions(request.data["file_urls"].split(","), project.file_structure.split(","))
+
+            if not violations:
+                complete_message = {"message": "Submission successful"}
+            else:
+                complete_message = {"message": ", ".join(violations)}
 
         return Response(complete_message, status=status.HTTP_201_CREATED)
 
@@ -231,8 +195,8 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 submission_folders.append(
                     submission_folder_path(
                         submission.group_id.group_id, submission.submission_id
-                        )
                     )
+                )
 
             utilities = ZipUtilities()
             filename = path
@@ -245,3 +209,66 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         response["Content-Disposition"] = f"inline; filename={basename(path)}"
 
         return response
+
+
+def check_restrictions(filenames, restrictions):
+    violations = []
+    for restriction_ in restrictions:
+        restriction = restriction_.strip()
+        if restriction.startswith('+'):
+            pattern = restriction[1:]
+            matching_files = fnmatch.filter(filenames, pattern)
+            if not matching_files:
+                violations.append(f"Error: Required file matching pattern '{pattern}' not found.")
+        elif restriction.startswith('-'):
+            pattern = restriction[1:]
+            matching_files = fnmatch.filter(filenames, pattern)
+            if matching_files:
+                violations.append(
+                    f"Error: Forbidden file matching pattern '{pattern}' found: {', '.join(matching_files)}.")
+        else:
+            violations.append(f"Error: Invalid restriction '{restriction}'.")
+    return violations
+
+# parsed_submission_files = []
+# for file_path in request.FILES.keys():
+#     if "/" in file_path:
+#         index = file_path.rfind("/")
+#         parsed_submission_files.append(file_path[index + 1:])
+#     else:
+#         if file_path != "fileList":
+#             parsed_submission_files.append(file_path)
+#
+# # example parsed_submission_files = "+extra/verslag.pdf", "-src/*.jar"
+#
+# if project.file_structure != "" and project.file_structure is not None:
+#     for condition in project.file_structure.split(","):
+#         stripped_condition = condition.strip()  # condition without whitespace
+#         if stripped_condition[0] == "+":  # check if starts with "+" (file has to be included)
+#             if "*" in stripped_condition:  # check if there is a wildcard
+#                 index = stripped_condition.index("*")
+#                 wildcard_submission = stripped_condition[index + 1:]  # "*.py/results"
+#                 wildcard_directory = stripped_condition[1:index]  # "/project/"
+#                 for file_to_check in parsed_submission_files:  # "/project/main.py/results"
+#                     if wildcard_directory in file_to_check:
+#                         cwd = file_to_check[len(wildcard_directory):]
+#                         file_extension = cwd[cwd.index("."):]
+#                         if file_extension != wildcard_submission:
+#                             message.append(f"File {file_to_check} is not allowed")
+#             else:
+#                 if stripped_condition[1:] not in parsed_submission_files:
+#                     message.append(f"File {stripped_condition[1:]} not found")
+#         else:
+#             if "*" in stripped_condition:  # check if there is a wildcard
+#                 index = stripped_condition.index("*")
+#                 wildcard_submission = stripped_condition[index + 1:]  # "*.py/results"
+#                 wildcard_directory = stripped_condition[1:index]  # "/project/"
+#                 for file_to_check in parsed_submission_files:  # "/project/main.py/results"
+#                     if wildcard_directory in file_to_check:
+#                         cwd = file_to_check[len(wildcard_directory):]
+#                         file_extension = cwd[cwd.index("."):]
+#                         if file_extension == wildcard_submission:
+#                             message.append(f"File {file_to_check} is not allowed")
+#             else:
+#                 if stripped_condition[1:] not in parsed_submission_files:
+#                     message.append(f"File {stripped_condition[1:]} not found")
