@@ -112,5 +112,7 @@
   "no_required_files": "Geen verplichte bestanden",
   "add": "Toevoegen",
   "conditions_example": "Bv.: Het programma moet compileren",
-  "no_conditions": "Geen voorwaarden"
+  "no_conditions": "Geen voorwaarden",
+  "group_search": "Zoek groep",
+  "submission_search": "Zoek indiening"
 }
