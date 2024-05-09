@@ -84,7 +84,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
                     <ProjectReturnButton locale={locale} project_id={projectData?.project_id}/>
                 </Grid>
                 <Grid item xs={12} style={{display: 'flex', justifyContent: 'center', paddingTop: 20}}>
-                    <Card raised style={{width: 1000}}>
+                    <Card raised style={{width: 800}}>
                         <CardContent>
                             <Typography
                                 variant="h3"
@@ -92,7 +92,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
                                     fontWeight: 'medium'
                                 }}
                             >
-                                {t('submit_project')}: {projectData?.name}
+                                {projectData?.name}
                             </Typography>
                             <Divider style={{marginBottom: 10, marginTop: 10}}/>
                             <Typography>
