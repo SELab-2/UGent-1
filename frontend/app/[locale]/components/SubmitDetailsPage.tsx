@@ -78,12 +78,11 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
 
     return (
         <ThemeProvider theme={baseTheme}>
-            <Grid container alignItems="flex-start" justifyContent="flex-start"
-                  style={{minHeight: '100vh', padding: 0}}>
-                <Grid item xs={12} style={{position: 'absolute', top: 84, left: 20}}>
+            <Grid container alignItems="flex-start" style={{ padding: 0 }}>
+                <Grid item xs="auto" style={{ marginLeft: 10, marginTop: 10, marginRight: 'auto' }}>
                     <ProjectReturnButton locale={locale} project_id={projectData?.project_id}/>
                 </Grid>
-                <Grid item xs={12} style={{display: 'flex', justifyContent: 'center', paddingTop: 20}}>
+                <Grid item xs={12} style={{display: 'flex', justifyContent: 'center'}}>
                     <Card raised style={{width: 800}}>
                         <CardContent>
                             <Typography
