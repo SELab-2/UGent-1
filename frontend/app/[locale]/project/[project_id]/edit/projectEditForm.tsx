@@ -48,8 +48,6 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const isGroupAmountEmpty = !groupAmount
     const isGroupSizeEmpty = !groupSize
 
-    console.log(add_course_id);
-
 
     useEffect(() => {
         const fetchProject = async () => {
@@ -179,7 +177,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
         window.location.href = "/course/" + course_id + "/"
     }
 
-    if(loadingProject || loadingUser){
+    if(loadingProject){
         return <LinearProgress/>;
     }
 
