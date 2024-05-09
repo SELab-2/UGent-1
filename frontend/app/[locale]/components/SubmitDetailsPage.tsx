@@ -2,13 +2,27 @@
 
 import React, {useEffect, useState} from 'react';
 import {useTranslation} from "react-i18next";
-import {Grid, Button, Divider, Box, Input, Card, IconButton, CardContent, LinearProgress, ThemeProvider, Typography} from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Divider,
+    Grid,
+    IconButton,
+    Input,
+    LinearProgress,
+    ThemeProvider,
+    Typography
+} from "@mui/material";
 import {getProject, Project, uploadSubmissionFile} from '@lib/api';
 import baseTheme from "@styles/theme";
 import ProjectReturnButton from "@app/[locale]/components/ProjectReturnButton";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import PublishIcon from '@mui/icons-material/Publish';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import Tree from "@app/[locale]/components/Tree";
 
 interface SubmitDetailsPageProps {
@@ -91,39 +105,75 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
                                 <IconButton
                                     color="primary"
                                     onClick={toggleDescription}
-                                    sx={{ flex: '0 0 auto', padding: 0 }}
+                                    sx={{flex: '0 0 auto', padding: 0}}
                                 >
-                                    {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                    {isExpanded ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
                                 </IconButton>
                             )}
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    fontWeight: 'bold',
+                                    marginTop: 2
+                                }}
+                            >
+                                {t('files')}
+                            </Typography>
 
                             <Box component="form" onSubmit={handleSubmit} encType="multipart/form-data">
                                 <Input
                                     sx={{
-                                        width: 300,
-                                        height: 120,
-                                        backgroundColor: 'lightgrey',
-                                        border: '6px dotted black',
-                                        padding: 1
+                                        border: '2px dashed',
+                                        borderColor: baseTheme.palette.primary.main,
+                                        borderRadius: 2,
+                                        textAlign: 'center',
+                                        marginTop: 1,
+                                        p: 4,
+                                        cursor: 'pointer',
+                                        '&:hover': {
+                                            backgroundColor: baseTheme.palette.background.default,
+                                        },
                                     }}
                                     onChange={folderAdded}
                                     type="file"
                                     id="filepicker"
                                     name="fileList"
-                                    inputProps={{ webkitdirectory: 'true', multiple: true }}
+                                    inputProps={{webkitdirectory: 'true', multiple: true}}
                                 />
 
-                                <input type="hidden" name="project_id" value={project_id} />
+                                <Tree paths={paths}/>
 
-                                <Tree paths={paths} />
-
-                                {submitted === 'yes' && <Typography variant="h6">{t('submitted')}</Typography>}
-                                {submitted === 'error' && <Typography variant="h6">{t('submission_error')}</Typography>}
+                                {submitted === 'yes' && (
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        color: baseTheme.palette.success.main,
+                                        mb: 1
+                                    }}>
+                                        <CheckCircleIcon sx={{mr: 1}}/>
+                                        <Typography variant="h6" sx={{fontWeight: 'bold', fontSize: '0.875rem'}}>
+                                            {t('submitted')}
+                                        </Typography>
+                                    </Box>
+                                )}
+                                {submitted === 'error' && (
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        color: baseTheme.palette.failure.main,
+                                        mb: 1
+                                    }}>
+                                        <ErrorIcon sx={{mr: 1}}/>
+                                        <Typography variant="h6" sx={{fontWeight: 'bold', fontSize: '0.875rem'}}>
+                                            {t('submission_error')}
+                                        </Typography>
+                                    </Box>
+                                )}
                                 {submitted !== 'yes' && (
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        startIcon={<PublishIcon />}
+                                        startIcon={<PublishIcon/>}
                                         type="submit"
                                     >
                                         {t('submit')}
