@@ -14,6 +14,7 @@ import UploadTestFile from "@app/[locale]/components/project_components/uploadBu
 import FinishButtons from "@app/[locale]/components/project_components/finishbuttons";
 import Deadline from "@app/[locale]/components/project_components/deadline";
 import RemoveDialog from "@app/[locale]/components/project_components/removedialog";
+import {LinearProgress} from "@mui/material";
 
 interface ProjectEditFormProps {
     project_id: number | null;
@@ -176,6 +177,10 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
             await deleteProject(project_id).then((response) => console.log(response));
         }
         window.location.href = "/course/" + course_id + "/"
+    }
+
+    if(loadingProject || loadingUser){
+        return <LinearProgress/>;
     }
 
     return (
