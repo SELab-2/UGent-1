@@ -1,5 +1,5 @@
 import React from 'react';
-import { List } from '@mui/material';
+import {List} from '@mui/material';
 import TreeNode from '@app/[locale]/components/TreeNode';
 
 interface TreeNodeData {
@@ -52,14 +52,14 @@ interface TreeProps {
     paths: string[];
 }
 
-const Tree: React.FC<TreeProps> = ({ paths }) => {
+const Tree: React.FC<TreeProps> = ({paths}) => {
     const treeData = createTreeStructure(paths);
     const nodes = convertToNodes(treeData);
 
     return (
         <List>
             {nodes.map((node) => (
-                <TreeNode key={node.name} node={node} />
+                <TreeNode key={node.name} node={node}/>
             ))}
         </List>
     );
