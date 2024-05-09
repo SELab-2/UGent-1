@@ -3,7 +3,8 @@ import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
 import ListView from '@app/[locale]/components/ListView';
-import BackButton from '@app/[locale]/components/BackButton';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Button from "@mui/material/Button";
 
 
 const i18nNamespaces = ['common']
@@ -21,11 +22,15 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
             namespaces={i18nNamespaces}
         >
             <NavBar/>
-            <div style={{padding: 20}}>
-                <BackButton
-                    destination={'/home'}
-                    text={t('back_to') + ' ' + t('home') + ' ' + t('page')}
-                />
+            <div style={{marginTop:20, padding:20}}>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<ArrowBackIcon/>}
+                    href={`/${locale}/home`}
+                >
+                    {t('back_to') + ' ' + t('home') + ' ' + t('page')}
+                </Button>
                 <ListView
                     admin={true}
                     headers={headers}
@@ -34,6 +39,7 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
                     get={'courses'}
                     action_name={'join_course'}
                     action_text={t('join_course')}
+                    search_text={t("search_course")}
                 />
             </div>
         </TranslationsProvider>

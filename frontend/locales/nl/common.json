@@ -114,5 +114,6 @@
   "conditions_example": "Bv.: Het programma moet compileren",
   "no_conditions": "Geen voorwaarden",
   "group_search": "Zoek groep",
-  "submission_search": "Zoek indiening"
+  "submission_search": "Zoek indiening",
+  "search_course": "Zoek cursus"
 }

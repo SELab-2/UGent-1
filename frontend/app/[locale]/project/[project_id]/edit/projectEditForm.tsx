@@ -15,14 +15,12 @@ import FinishButtons from "@app/[locale]/components/project_components/finishbut
 import Deadline from "@app/[locale]/components/project_components/deadline";
 import RemoveDialog from "@app/[locale]/components/project_components/removedialog";
 
-const i18nNamespaces = ['common']
-
 interface ProjectEditFormProps {
-    project_id: number|null;
+    project_id: number | null;
     add_course_id: number;
 }
 
-function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
+function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [files, setFiles] = useState<string[]>([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -55,7 +53,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                if (project_id !== null){
+                if (project_id !== null) {
                     const project: Project = await getProject(project_id);
                     if (project.deadline !== null) setDeadline(dayjs(project["deadline"]));
                     setDescription(project.description)
@@ -74,7 +72,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
                     if (project.test_files !== null) await setTestFiles(project);
                     setScore(+project["max_score"]);
                     if (project["conditions"] != null) {
-                        let conditions_parsed:string[] = [];
+                        let conditions_parsed: string[] = [];
                         if (project["conditions"] !== "") {
                             conditions_parsed = project["conditions"].split(",").map((item: string) => item.trim().replace(/"/g, ''));
                         }
@@ -174,84 +172,80 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
     }
 
     const handle_remove = async () => {
-        if (project_id !== null){
+        if (project_id !== null) {
             await deleteProject(project_id).then((response) => console.log(response));
         }
         window.location.href = "/course/" + course_id + "/"
     }
 
     return (
-         (loadingTranslations && loadingProject && loadingUser && course_id !==null) ? (
-                <div>Loading...</div>
-            ) : (
-                (!isStudent) ? (
-                    <div>
-                        <Box
-                            display="grid"
-                            gridTemplateColumns="65% 35%"
-                            height="fit-content"
-                        >
-                            <Box className={"pageBoxLeft"} height={'fit-content'}>
-                                <Title
-                                    isTitleEmpty={isTitleEmpty}
-                                    isScoreEmpty={isTitleEmpty}
-                                    setTitle={setTitle}
-                                    title={title}
-                                    score={score}
-                                    setScore={setScore}/>
-                                <Assignment
-                                    isAssignmentEmpty={isAssignmentEmpty}
-                                    setDescription={setDescription}
-                                    description={description} />
-                                <RequiredFiles
-                                    files={files}
-                                    setFiles={setFiles}/>
-                                <Conditions
-                                    conditions={conditions}
-                                    setConditions={setConditions}/>
-                                <Groups
-                                    groupAmount={groupAmount}
-                                    isGroupAmountEmpty={isGroupAmountEmpty}
-                                    groupSize={groupSize}
-                                    isGroupSizeEmpty={isGroupSizeEmpty}
-                                    setGroupAmount={setGroupAmount}
-                                    setGroupSize={setGroupSize}/>
-                                <TestFiles
-                                    testfilesName={testfilesName}
-                                    setTestfilesName={setTestfilesName}
-                                    testfilesData={testfilesData}
-                                    setTestfilesData={setTestfilesData}/>
-                                <UploadTestFile
-                                    testfilesName={testfilesName}
-                                    setTestfilesName={setTestfilesName}
-                                    testfilesData={testfilesData}
-                                    setTestfilesData={setTestfilesData}/>
-                            </Box>
-                            <Box className={"pageBoxRight"}>
-                                <FinishButtons 
-                                    visible={visible} 
-                                    setVisible={setVisible} 
-                                    handleSave={handleSave} 
-                                    setConfirmRemove={setConfirmRemove} 
-                                    course_id={course_id} 
-                                    setHasDeadline={setHasDeadline} 
-                                    hasDeadline={hasDeadline}
-                                    createProject={(project_id===null)}/>
-                                <Deadline 
-                                    deadline={deadline} 
-                                    setDeadline={setDeadline} 
-                                    hasDeadline={hasDeadline}/>
-                            </Box>
-                        </Box>
-                        <RemoveDialog
-                            confirmRemove={confirmRemove}
-                            handle_remove={handle_remove}
-                            setConfirmRemove={setConfirmRemove}/>
-                    </div>
-                ) : (
-                    <div>Students cannot edit project</div>
-                )
-            )
+        (!isStudent) ? (
+            <div>
+                <Box
+                    display="grid"
+                    gridTemplateColumns="65% 35%"
+                    height="fit-content"
+                >
+                    <Box className={"pageBoxLeft"} height={'fit-content'}>
+                        <Title
+                            isTitleEmpty={isTitleEmpty}
+                            isScoreEmpty={isTitleEmpty}
+                            setTitle={setTitle}
+                            title={title}
+                            score={score}
+                            setScore={setScore}/>
+                        <Assignment
+                            isAssignmentEmpty={isAssignmentEmpty}
+                            setDescription={setDescription}
+                            description={description}/>
+                        <RequiredFiles
+                            files={files}
+                            setFiles={setFiles}/>
+                        <Conditions
+                            conditions={conditions}
+                            setConditions={setConditions}/>
+                        <Groups
+                            groupAmount={groupAmount}
+                            isGroupAmountEmpty={isGroupAmountEmpty}
+                            groupSize={groupSize}
+                            isGroupSizeEmpty={isGroupSizeEmpty}
+                            setGroupAmount={setGroupAmount}
+                            setGroupSize={setGroupSize}/>
+                        <TestFiles
+                            testfilesName={testfilesName}
+                            setTestfilesName={setTestfilesName}
+                            testfilesData={testfilesData}
+                            setTestfilesData={setTestfilesData}/>
+                        <UploadTestFile
+                            testfilesName={testfilesName}
+                            setTestfilesName={setTestfilesName}
+                            testfilesData={testfilesData}
+                            setTestfilesData={setTestfilesData}/>
+                    </Box>
+                    <Box className={"pageBoxRight"}>
+                        <FinishButtons
+                            visible={visible}
+                            setVisible={setVisible}
+                            handleSave={handleSave}
+                            setConfirmRemove={setConfirmRemove}
+                            project_id={project_id}
+                            setHasDeadline={setHasDeadline}
+                            hasDeadline={hasDeadline}
+                            createProject={(project_id === null)}/>
+                        <Deadline
+                            deadline={deadline}
+                            setDeadline={setDeadline}
+                            hasDeadline={hasDeadline}/>
+                    </Box>
+                </Box>
+                <RemoveDialog
+                    confirmRemove={confirmRemove}
+                    handle_remove={handle_remove}
+                    setConfirmRemove={setConfirmRemove}/>
+            </div>
+        ) : (
+            <div>Students cannot edit project</div>
+        )
     )
 }
 
