@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, screen, fireEvent, within} from '@testing-library/react';
 import '@testing-library/jest-dom';
-import ProjectTableTeacher from '@app/[locale]/components/ProjectTableTeacher'; // Adjust the import path as necessary
+import ProjectTableTeacher from '@app/[locale]/components/ProjectTable'; // Adjust the import path as necessary
 import * as api from '@lib/api';
 
 // Mocking the necessary modules

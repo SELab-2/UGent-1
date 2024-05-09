@@ -10,20 +10,6 @@ describe('AddProjectButton', () => {
     it('renders correctly', () => {
         render(<AddProjectButton course_id={1}/>);
 
-        expect(screen.getByRole('button')).toBeInTheDocument();
-    });
-
-    it('calls addProject when button is clicked', async () => {
-        const {getByText} = render(<AddProjectButton course_id={1}/>);
-        const button = getByText('add_project');
-
-        // Mock window.location.href
-        delete window.location;
-        window.location = { href: '' };
-
-        await fireEvent.click(button);
-
-        expect(addProject).toHaveBeenCalledWith(1);
-        expect(window.location.href).toBe('/project/1/edit');
+        expect(screen.getByRole('link', {name: 'add_project'})).toBeInTheDocument();
     });
 });
