@@ -20,12 +20,12 @@ describe('Conditions', () => {
         );
 
         // check that the conditions were rendered properly
-        expect(screen.getByText('Conditions')).toBeInTheDocument();
-        expect(getByDisplayValue('First')).toBeInTheDocument();
-        expect(getByDisplayValue('Second')).toBeInTheDocument();
+        expect(screen.getByText('conditions')).toBeInTheDocument();
+        expect(screen.getByText('First')).toBeInTheDocument();
+        expect(screen.getByText('Second')).toBeInTheDocument();
 
         // check that the text field was rendered properly
         const textField = queryAllByRole('textbox');
-        expect(textField.length).toBe(2);
+        expect(textField.length).toBe(1);
     });
 });

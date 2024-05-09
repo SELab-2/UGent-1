@@ -11,8 +11,8 @@ const i18nNamespaces = ['common'];
 export default async function Users({ params: { locale } }: { params: { locale: any } }) {
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
-    const headers = [t('email'), t('role')];
-    const headers_backend = ['email', 'role'];
+    const headers = [t('email'), t('role'), t('edit')];
+    const headers_backend = ['email', 'role', 'edit'];
 
     return (
         <TranslationsProvider
@@ -23,8 +23,8 @@ export default async function Users({ params: { locale } }: { params: { locale: 
             <NavBar />
             <div style={{marginTop:60, padding:20}}>
             <BackButton 
-                destination={'/admin'} 
-                text={t('back_to') + ' ' + t('admin') + ' ' +  t('page')}
+                destination={'/home'} 
+                text={t('back_to') + ' ' + t('home') + ' ' +  t('page')}
             />
             <ListView
                 admin={true}
@@ -37,10 +37,6 @@ export default async function Users({ params: { locale } }: { params: { locale: 
                 search_text={t('search')}
             />
             </div>
-            <BackButton 
-                destination={'/admin'} 
-                text={t('back_to') + ' ' + t('admin') + ' ' +  t('page')}
-            />
         </TranslationsProvider>
     );
 }
