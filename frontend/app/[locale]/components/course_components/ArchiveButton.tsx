@@ -2,7 +2,7 @@
 
 import {Button} from "@mui/material";
 import ArchiveIcon from '@mui/icons-material/Archive';
-import {APIError, archiveCourse, Course} from "@lib/api";
+import {APIError, archiveCourse} from "@lib/api";
 import {useTranslation} from "react-i18next";
 import {useState} from "react";
 
@@ -14,15 +14,15 @@ const ArchiveButton = ({course_id}: ArchiveButtonProps) => {
     const [error, setError] = useState<APIError | null>(null);
     const {t} = useTranslation()
 
-    const handleClick = async (course_id: number) => {
+    const handleClick = async () => {
         try {
             const id = await archiveCourse(course_id);
-            console.log("successfully archived course: " + id)
+            console.log("successfully archived course: " + id);
+            window.location.href = "/home";
         } catch (error) {
             if (error instanceof APIError) setError(error);
             console.error(error);
         }
-        window.location.href = "/home";
     }
 
     return (
@@ -39,10 +39,7 @@ const ArchiveButton = ({course_id}: ArchiveButtonProps) => {
                 marginX: 1,
                 paddingX: 3,
             }}
-            onClick={async () => {
-                await handleClick(course_id);
-                window.location.reload();
-            }}
+            onClick={handleClick}
         >
                 {t("archive course")}
         </Button>

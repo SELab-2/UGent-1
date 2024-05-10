@@ -578,7 +578,7 @@ export async function putData(path: string, data: any) {
 }
 
 export async function patchData(path: string, data: any) {
-    axios.defaults.headers.put['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.patch['X-CSRFToken'] = getCookieValue('csrftoken');
 
     try {
         const response = await axios.patch(backend_url + path, data, {withCredentials: true});
