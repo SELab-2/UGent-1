@@ -187,4 +187,19 @@
   "visibility": "Zichtbaarheid",
   "year": "Jaargang",
   "archive_course": "Cursus archiveren"
+  "visibility": "Zichtbaarheid",
+  "download_file": "Download",
+  "denied": "Gewijgerd",
+  "show_more": "Toon meer",
+  "show_less": "Toon minder",
+  "select": "Selecteer",
+  "search_for_project": "Zoek naar project",
+  "has_deadline": "Heeft deadline",
+  "no_test_files_selected": "Geen testbestanden geselecteerd",
+  "create": "Aanmaken",
+  "new_file_example": "Bv.: /extra/verslag.pdf",
+  "no_required_files": "Geen verplichte bestanden",
+  "add": "Toevoegen",
+  "conditions_example": "Bv.: Het programma moet compileren",
+  "no_conditions": "Geen voorwaarden"
 }

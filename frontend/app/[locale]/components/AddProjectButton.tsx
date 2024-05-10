@@ -18,10 +18,7 @@ const AddProjectButton = ({course_id}: EditCourseButtonProps) => {
                 width: 'fit-content',
                 height: 'fit-content',
             }}
-            onClick={async () => {
-                const project_id = await addProject(course_id);
-                window.location.href = `/project/${project_id}/edit`;
-            }}
+            href={`/course/${course_id}/add_project/`}
         >
             <Typography
                 variant="subtitle1"
@@ -29,9 +26,12 @@ const AddProjectButton = ({course_id}: EditCourseButtonProps) => {
                     color: 'secondary.contrastText',
                     display: 'inline-block',
                     whiteSpace: 'nowrap',
+                    width: 'fit-content',
                 }}
             >
-                {t("add_project")}
+                <Typography>
+                    {t("add_project")}
+                </Typography>
             </Typography>
         </Button>
     )

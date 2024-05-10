@@ -6,7 +6,7 @@ import CourseCard from '@app/[locale]/components/CourseCard';
 import {useTranslation} from "react-i18next";
 
 const CoursesGrid = ({selectedYear}) => {
-    const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
+    const [courses, setCourses] = useState<Course[]>([]);
     const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
     const [error, setError] = useState<APIError | null>(null);
 

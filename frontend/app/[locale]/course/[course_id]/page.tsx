@@ -57,6 +57,7 @@ export default async function Course({params: {locale, course_id}, searchParams:
                     width={'100%'}
                 >
                     <ListView
+                        search_text={t('search_for_project')}
                         admin={false}
                         headers={headers}
                         headers_backend={headers_backend}

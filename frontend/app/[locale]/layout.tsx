@@ -29,7 +29,7 @@ export default function RootLayout(props: React.PropsWithChildren<{}>) {
                 >
                     <Box
                         style={{
-                            marginTop: "40px",
+                            marginTop: "64px",
                             height: "fit-content",
                             minHeight: '100vh',
                             width: '100%',

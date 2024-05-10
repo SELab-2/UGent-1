@@ -1,5 +1,6 @@
 import axios, {AxiosError} from 'axios';
 import dayjs from "dayjs";
+import {JSZipObject} from "jszip";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -320,6 +321,10 @@ export async function updateUserData(id: number, data: any): Promise<UserData> {
     return (await putData(`/users/${id}/`, data));
 }
 
+export async function deleteUser(id: number): Promise<void> {
+    return (await deleteData(`/users/${id}`));
+}
+
 export async function deleteCourse(id: number): Promise<void> {
     return (await deleteData(`/courses/${id}`));
 }
@@ -348,20 +353,8 @@ export async function getProjects(): Promise<Project[]> {
     return (await getListRequest('/projects'));
 }
 
-export async function addProject(course_id: number): Promise<number> {
-    return (await postData('/projects/', {
-        name: "New Project",
-        course_id: course_id,
-        description: "Description",
-        deadline: dayjs(),
-        visible: true,
-        max_score: 100,
-        number_of_groups: 1,
-        group_size: 1,
-        file_structure: "extra/verslag.pdf",
-        test_files: null,
-        conditions: "Project must compile and run without errors."
-    })).project_id;
+export async function addProject(data: any): Promise<number> {
+    return (await postData(`/projects/`, data)).project_id;
 }
 
 export async function getProjectsFromCourse(id: number): Promise<Project[]> {
@@ -467,12 +460,41 @@ export async function getGroupSubmissions(id: number, page = 1, pageSize = 5, ke
 let userData: UserData | undefined = undefined;
 
 export async function getUserData(): Promise<UserData> {
+    if(!userData && !localStorage.getItem('user') && window.location.pathname !== "/"){
+        window.location.href = "/";
+    }
+
     if (userData) {
         return userData;
-    } else {
-        let user: UserData = await getRequest('/users/current');
-        return user;
+    }else if(localStorage.getItem('user')){
+        const userobj = JSON.parse(localStorage.getItem('user') as string);
+        const lastcache : string | undefined = userobj?.lastcache;
+
+        
+        if(lastcache && Date.now() - parseInt(lastcache) < 2 * 60 * 1000){
+            console.log(Date.now() - parseInt(lastcache));
+            let user : UserData = userobj.data;
+            userData = user;
+            return user;
+        }else{
+            return fetchUserData();
+        }
+    }else {
+        return fetchUserData();
     }
+}
+
+async function fetchUserData() : Promise<UserData> {
+    try{
+        userData = await getRequest('/users/current');
+        localStorage.setItem('user', JSON.stringify({data: userData, lastcache: Date.now().toString()}));
+        return userData!;
+    }catch(e){
+        console.error(e);
+        window.location.href = "/";
+        return userData!;
+    }
+    
 }
 
 export async function logOut() {
@@ -629,27 +651,42 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any, project_id: string): Promise<string> {
-    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+export async function uploadSubmissionFile(event: any, project_id: string) : Promise<string>{
     axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
+    console.log(event.target.fileList.files);
     const formData = new FormData(event.target);
+    //filter files by key
+
+    for(let file of event.target.fileList.files){
+        let path = file.webkitRelativePath;
+        if(path)
+        if (path.includes("/")) {
+            path = path.substring((path.indexOf("/")??0)+1, path.length);
+        }
+        formData.append(path, file);
+    }
+    formData.delete("fileList");
     const formDataObject = Object.fromEntries(formData.entries());
+    console.log(formDataObject)
     try {
         let groupres = await axios.get(backend_url + "/projects/" + project_id + "/get_group/", {withCredentials: true});
         const group_id = groupres.data.group_id;
         formDataObject.group_id = group_id;
-        await axios.post(backend_url + "/submissions/", formDataObject, {
-            withCredentials: true,
-            headers: {'Content-Type': 'multipart/form-data'}
-        });
+        await axios.post(backend_url + '/submissions/', formDataObject,
+         { withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+          });
         return "yes";
     } catch (error) {
-        const apierror: APIError = new APIError();
+        const apierror : APIError = new APIError();
         apierror.message = "error posting form";
         apierror.type = ErrorType.REQUEST_ERROR;
         apierror.trace = error;
-        console.error(error);
-        return "error"
+        console.error(apierror);
+        return "error";
     }
 }

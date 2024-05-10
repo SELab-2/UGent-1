@@ -185,4 +185,19 @@
   "visibility": "Visibility",
   "year": "Year",
   "archive_course": "Archive course"
+  "visibility": "Visibility",
+  "download_file": "Download",
+  "denied": "Denied",
+  "show_more": "Show more",
+  "show_less": "Show less",
+  "select": "Select",
+  "search_for_project": "Search for project",
+  "has_deadline": "Has deadline",
+  "no_test_files_selected": "No test files selected",
+  "create": "Create",
+  "new_file_example": "E.g.: /extra/report.pdf",
+  "no_required_files": "No required files",
+  "add": "Add",
+  "conditions_example": "E.g.: The program must to compile.",
+  "no_conditions": "No conditions"
 }

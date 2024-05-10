@@ -1,12 +1,13 @@
 import React from "react";
 import JSZip, {JSZipObject} from "jszip";
+import {useTranslation} from "react-i18next";
+import {Button, Box, Typography} from "@mui/material";
 
 interface UploadTestFileProps {
     testfilesName: string[],
     setTestfilesName: (value: (((prevState: string[]) => string[]) | string[])) => void,
     testfilesData: JSZipObject[],
     setTestfilesData: (value: (((prevState: JSZipObject[]) => JSZipObject[]) | JSZipObject[])) => void,
-    translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
 }
 
 function UploadTestFile(
@@ -15,9 +16,9 @@ function UploadTestFile(
         setTestfilesName,
         testfilesData,
         setTestfilesData,
-        translations
     }: UploadTestFileProps
 ) {
+    const {t} = useTranslation();
     const handleFileChange = async (event: any) => {
         let zip = new JSZip();
         for (let i = 0; i < event.target.files.length; i++) {
@@ -42,20 +43,31 @@ function UploadTestFile(
         setTestfilesData(testfiles_data);
     }
 
-    return <div>
-        <input
-            id="fileInput"
-            type="file"
-            className={"uploadInput"}
-            onChange={handleFileChange}
-        />
-        <button
-            onClick={() => document.getElementById("fileInput")?.click()}
-            className={"uploadButton"}
-        >
-            {translations.t("upload")}
-        </button>
-    </div>;
+    return(
+        <div>
+            {testfilesName.length === 0 && (
+                <Typography variant={"h6"} color={"text.disabled"}>{t("no_test_files_selected")}</Typography>
+                )}
+            <input
+                id="fileInput"
+                type="file"
+                className={"uploadInput"}
+                onChange={handleFileChange}
+            />
+            <Button
+                onClick={() => document.getElementById("fileInput")?.click()}
+                className={"uploadButton"}
+                variant={"contained"}
+                color={'secondary'}
+                sx={{
+                    width: 'fit-content',
+                    color: 'secondary.contrastText',
+                }}
+            >
+                {t("upload")}
+            </Button>
+        </div>
+    );
 }
 
 export default UploadTestFile;

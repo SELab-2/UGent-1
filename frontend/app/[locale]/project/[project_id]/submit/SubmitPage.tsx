@@ -16,6 +16,19 @@ export default function SubmitPage({project_id}: { project_id: string }){
     const [paths, setPaths] = useState<string[]>([]);
     const [submitted, setSubmitted] = useState<string>("no");
 
+    
+    function folderAdded(event : any){
+        let newpaths : string[] = []
+        for (const file of event.target.files) {
+            let text : string = file.webkitRelativePath;
+            if (text.includes("/")) {
+                text = text.substring((text.indexOf("/")??0)+1, text.length);
+            }
+            newpaths.push(text);
+        }
+        setPaths(newpaths);
+    }
+
     useEffect(() => {
         const fetchProject = async () => {
             try {
@@ -56,10 +69,9 @@ export default function SubmitPage({project_id}: { project_id: string }){
 
                 <form onSubmit={async (e)=>{setSubmitted(await uploadSubmissionFile(e, project_id));}} encType="multipart/form-data">
 
-                    <input style={{width: "300px", height: "120px", backgroundColor: "lightgrey", border: "6px dotted black"}} type="file" id="filepicker" name="file"/>
+                    <input style={{width: "300px", height: "120px", backgroundColor: "lightgrey", border: "6px dotted black"}}  onChange={folderAdded} type="file" id="filepicker" name="fileList" webkitdirectory="true" multiple />
                     
                     <input type="hidden" name="project_id" value={project_id}/>
-                    <input type="hidden" name="mode" value="submitform"/>
                     
                     <ul id="listing"></ul>
 

@@ -5,6 +5,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ArchiveIcon from '@mui/icons-material/Archive';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {useTranslation} from "react-i18next";
 import Link from 'next/link';
@@ -13,6 +14,7 @@ import {APIError, getUserData, UserData} from "@lib/api";
 const CourseControls = ({selectedYear, onYearChange}) => {
     const currentYear = new Date().getFullYear();
     const academicYear = `${currentYear - 1}-${currentYear.toString().slice(-2)}`;
+
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<APIError | null>(null);
 
@@ -30,7 +32,7 @@ const CourseControls = ({selectedYear, onYearChange}) => {
         };
 
         fetchUser();
-    });
+    }, []);
 
     const years = [
         `${currentYear - 2}-${(currentYear - 1).toString().slice(-2)}`,
@@ -64,6 +66,11 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                     <Link href="/course/archived" passHref>
                         <Button variant="contained" color="secondary" startIcon={<ArchiveIcon/>}>
                             {t("view_archive")}
+                        </Button>
+                    </Link>
+                    <Link href="/admin/users" passHref>
+                        <Button variant="contained" color="secondary" startIcon={<SupervisorAccountIcon/>}>
+                            {t("site users")}
                         </Button>
                     </Link>
                     <Select
