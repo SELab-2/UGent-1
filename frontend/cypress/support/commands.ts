@@ -5,7 +5,21 @@ Cypress.Commands.add('login', (username: string, password: string) => {
     cy.get('input[name="username"]').type(username);
     cy.get('input[name="password"]').type(password);
     cy.get('input[type=submit').click()
-    cy.visit('http://localhost:3000/home');
+    cy.visit('http://localhost:3000/en/home');
+    cy.window().then((win) => {
+        win.localStorage.setItem('user', JSON.stringify({
+            "data": {
+                "id": 1,
+                "email": "alexander.vanoyen@sel2-1.ugent.be",
+                "first_name": "Alexander",
+                "last_name": "Van Oyen",
+                "course": [1,3,4,5,6,7,8,9,10,2],
+                "role": 3,
+                "picture": "http://localhost:8000/media/profile_pictures/default_picture.png"
+            },
+            "lastcache": "1715417897558"
+        }));
+    });
 });
 
 
