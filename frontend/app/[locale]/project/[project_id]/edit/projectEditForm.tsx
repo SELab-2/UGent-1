@@ -275,7 +275,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
                             confirmRemove={confirmRemove}
                             handle_remove={handle_remove}
                             setConfirmRemove={setConfirmRemove}/>
-                           <SubmitConfirmationDialog
+                        <SubmitConfirmationDialog
                             open={confirmSubmit}
                             handleClose={() => setConfirmSubmit(false)}
                             handleConfirm={handleSave}
