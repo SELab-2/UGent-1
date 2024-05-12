@@ -69,6 +69,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
             }
             newpaths.push(text);
         }
+        console.log(newpaths)
         setPaths(newpaths);
     }
 
@@ -81,7 +82,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
             <Grid container alignItems="flex-start" justifyContent="flex-start"
                   style={{minHeight: '100vh', padding: 0}}>
                 <Grid item xs={12} style={{position: 'absolute', top: 84, left: 20}}>
-                    <ProjectReturnButton locale={locale} project_id={projectData?.project_id}/>
+                    <ProjectReturnButton locale={locale} project_id={project_id}/>
                 </Grid>
                 <Grid item xs={12} style={{display: 'flex', justifyContent: 'center', paddingTop: 20}}>
                     <Card raised style={{width: 800}}>
@@ -160,7 +161,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
                                     <Box sx={{
                                         display: 'flex',
                                         alignItems: 'center',
-                                        color: baseTheme.palette.failure.main,
+                                        color: baseTheme.palette.failure?.main,
                                         mb: 1
                                     }}>
                                         <ErrorIcon sx={{mr: 1}}/>
