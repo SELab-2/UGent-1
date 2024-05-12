@@ -41,9 +41,9 @@ const CourseControls = ({selectedYear, onYearChange}) => {
     ];
 
     return (
-        <Box sx={{pt: 9, px: 2, display: 'flex', alignItems: 'center', gap: 2}}>
+        <Box sx={{py:1, px: 2, display: 'flex', alignItems: 'center', gap: 2}}>
             <Stack direction="column" spacing={2}>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h3" gutterBottom>
                     {t("courses")}
                 </Typography>
                 <Stack direction="row" spacing={2} alignItems="center">

@@ -18,7 +18,7 @@ const YearStateComponent = () => {
 
     return (
         <>
-            <Box sx={{height: 'fit-content', top: 0, zIndex: 10, backgroundColor: '#fff'}}>
+            <Box sx={{height: 'fit-content', top: 0, backgroundColor: '#fff'}}>
 
                 <CourseControls selectedYear={selectedYear} onYearChange={handleYearChange}/>
 

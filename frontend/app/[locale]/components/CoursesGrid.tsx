@@ -37,10 +37,10 @@ const CoursesGrid = ({selectedYear}) => {
     }, [selectedYear, courses]);
 
     return (
-        <Container sx={{pt: 2, pb: 4, maxHeight: 'calc(150vh - 260px)', overflowY: 'auto'}}>
-            <Grid container justifyContent="center" alignItems="flex-start" spacing={2}>
+        <Container sx={{pt: 2, pb: 4, height: 'fit-content'}}>
+            <Grid container justifyContent="center" alignItems="flex-start" spacing={8}>
                 {filteredCourses.map((course: Course, index) => (
-                    <Grid md={6} item={true} key={index}>
+                    <Grid md={6} item={true} key={index} spacing={6}>
                         <CourseCard params={{course: course}}/>
                     </Grid>
                 ))}
