@@ -14,6 +14,14 @@ import UploadTestFile from "@app/[locale]/components/project_components/uploadBu
 import FinishButtons from "@app/[locale]/components/project_components/finishbuttons";
 import Deadline from "@app/[locale]/components/project_components/deadline";
 import RemoveDialog from "@app/[locale]/components/project_components/removedialog";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle
+} from "@mui/material";
+
 
 const i18nNamespaces = ['common']
 
@@ -42,6 +50,8 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
     const [loadingUser, setLoadingUser] = useState(true);
     const [hasDeadline, setHasDeadline] = useState(false);
     const [course_id, setCourseId] = useState<number>(0);
+    const [confirmSubmit, setConfirmSubmit] = useState(false);
+
 
     const isTitleEmpty = !title
     const isAssignmentEmpty = !description
@@ -173,6 +183,24 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
         }
     }
 
+    const SubmitConfirmationDialog = ({ open, handleClose, handleConfirm }) => {
+        return (
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Confirm Submission</DialogTitle>
+                <DialogContent>
+                    Are you sure you want to submit this project?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleConfirm} color="primary" autoFocus>
+                        Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    };
+    
+
     const handle_remove = async () => {
         if (project_id !== null){
             await deleteProject(project_id).then((response) => console.log(response));
@@ -231,7 +259,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
                                 <FinishButtons 
                                     visible={visible} 
                                     setVisible={setVisible} 
-                                    handleSave={handleSave} 
+                                    handleSave={() => setConfirmSubmit(true)} 
                                     setConfirmRemove={setConfirmRemove} 
                                     course_id={course_id} 
                                     setHasDeadline={setHasDeadline} 
@@ -247,6 +275,11 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
                             confirmRemove={confirmRemove}
                             handle_remove={handle_remove}
                             setConfirmRemove={setConfirmRemove}/>
+                           <SubmitConfirmationDialog
+                            open={confirmSubmit}
+                            handleClose={() => setConfirmSubmit(false)}
+                            handleConfirm={handleSave}
+                        />
                     </div>
                 ) : (
                     <div>Students cannot edit project</div>
