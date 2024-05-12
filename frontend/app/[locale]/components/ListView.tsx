@@ -19,6 +19,9 @@ import {
     TableHead,
     TableRow,
     Paper,
+    Dialog,
+    DialogActions,
+    DialogTitle
 } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -276,6 +279,49 @@ const ListView: NextPage<ListViewProps> = ({
         );
     };
 
+    const [open, setOpen] = useState(false);
+    const [checklist, setchecklist] = useState([]);
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+
+    const deleteAction = () => {
+        const checkboxes = checklist;
+        checkboxes.forEach((checkbox, index) => {
+            if ((checkbox as HTMLInputElement).checked) {
+                const id = rows[index][0];
+                if (!isNaN(id)) {
+                    if (!isNaN(id)) {
+                        if (action_name === 'remove_from_course') {
+                            postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id})
+                                .then(() => {
+                                    window.location.reload();
+                                });
+                        } else if (action_name === 'remove') {
+                            deleteData('/users/' + id)
+                                .then(() => {
+                                    window.location.reload();
+                                });
+                        } else if (action_name === 'join_course') {
+                            postData('/courses/' + id + '/join_course/', {course_id: id})
+                                .then(() => {
+                                    window.location.href = '/course/' + id;
+                                });
+                        }
+                    }
+                } else {
+                    console.error("Invalid id", rows[index][0]);
+                }
+            }
+        });
+    };
+
     return (
         <Box
             display={'flex'}
@@ -310,40 +356,10 @@ const ListView: NextPage<ListViewProps> = ({
             }
             {admin && action_name && action_name !== 'download_submission' && (
                 <RemoveButton
-                    onClick={() => {
+                    onClick={()=>{
                         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-                        checkboxes.forEach((checkbox, index) => {
-                            if ((checkbox as HTMLInputElement).checked) {
-                                /**
-                                 *
-                                 *  EDIT
-                                 *
-                                 */
-                                const id = rows[index][0];
-                                if (!isNaN(id)) {
-                                    if (!isNaN(id)) {
-                                        if (action_name === 'remove_from_course') {
-                                            postData('/users/' + id + '/remove_course_from_user/', {course_id: get_id})
-                                                .then(() => {
-                                                    window.location.reload();
-                                                });
-                                        } else if (action_name === 'remove') {
-                                            deleteData('/users/' + id)
-                                                .then(() => {
-                                                    window.location.reload();
-                                                });
-                                        } else if (action_name === 'join_course') {
-                                            postData('/courses/' + id + '/join_course/', {course_id: id})
-                                                .then(() => {
-                                                    window.location.href = '/course/' + id;
-                                                });
-                                        }
-                                    }
-                                } else {
-                                    console.error("Invalid id", rows[index][0]);
-                                }
-                            }
-                        });
+                        setchecklist(checkboxes)
+                        handleOpen();
                     }}
                 >
                     {
@@ -351,6 +367,22 @@ const ListView: NextPage<ListViewProps> = ({
                     }
                 </RemoveButton>
             )}
+            <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{t("Are you sure you want to delete the selection?")}</DialogTitle>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            {t("cancel")}
+                        </Button>
+                        <Button onClick={deleteAction} color="error" autoFocus>
+                            {t("delete")}
+                        </Button>
+                    </DialogActions>
+            </Dialog>
 
             {admin && action_name && action_name === 'download_submission' && (
                 <RemoveButton
