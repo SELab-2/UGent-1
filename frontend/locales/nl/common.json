@@ -112,5 +112,10 @@
   "no_required_files": "Geen verplichte bestanden",
   "add": "Toevoegen",
   "conditions_example": "Bv.: Het programma moet compileren",
-  "no_conditions": "Geen voorwaarden"
+  "no_conditions": "Geen voorwaarden",
+  "Are you sure you want to delete this user?": "Ben je zeker dat je deze gebruiker wil verwijderen?",
+  "delete user": "Verwijder gebruiker",
+  "user first name": "Voornaam gebruiker",
+  "user last name": "Achternaam gebruiker",
+  "user email": "Gebruiker email"
 }

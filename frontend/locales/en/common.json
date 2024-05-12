@@ -112,5 +112,10 @@
   "no_required_files": "No required files",
   "add": "Add",
   "conditions_example": "E.g.: The program must to compile.",
-  "no_conditions": "No conditions"
+  "no_conditions": "No conditions",
+  "Are you sure you want to delete this user?": "Are you sure you want to delete this user?",
+  "delete user": "Delete user",
+  "user first name": "First name of user",
+  "user last name": "Last name of user",
+  "user email": "Email of user"
 }
