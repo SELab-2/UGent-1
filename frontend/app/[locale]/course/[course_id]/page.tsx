@@ -7,7 +7,8 @@ import CourseDetails from "@app/[locale]/components/CourseDetails";
 import StudentCoTeacherButtons from "@app/[locale]/components/StudentCoTeacherButtons";
 import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
 import ListView from '@app/[locale]/components/ListView';
-import ProjectTable from "@app/[locale]/components/ProjectTable";
+import AddProjectButton from "@app/[locale]/components/AddProjectButton";
+import React from "react";
 
 const i18nNamespaces = ['common']
 
@@ -27,20 +28,30 @@ export default async function Course({params: {locale, course_id}, searchParams:
             <NavBar/>
             <Box
                 sx={{
-                    padding: 5
+                    paddingTop: 5,
+                    width: '100%',
                 }}
             >
                 <CourseBanner course_id={course_id}/>
                 <CourseDetails course_id={course_id}/>
-                <Typography
-                    variant="h3"
-                    sx={{
-                        fontWeight: 'medium',
-                        marginTop: 2
-                    }}
+                <Box
+                    display={'flex'}
+                    justifyContent={'flex-start'}
+                    width={'fit-content'}
+                    alignItems={'center'}
+                    marginTop={2}
                 >
-                    {t('projects')}
-                </Typography>
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontWeight: 'medium',
+                            paddingRight: 2,
+                        }}
+                    >
+                        {t('projects')}
+                    </Typography>
+                    <AddProjectButton course_id={course_id}/>
+                </Box>
                 <Box
                     justifyContent={'left'}
                     width={'100%'}

@@ -1,7 +1,6 @@
 "use client";
 import {useTranslation} from "react-i18next";
 import {Button, Typography} from "@mui/material";
-import Link from "next/link";
 import {addProject} from "@lib/api";
 
 interface EditCourseButtonProps{
@@ -16,7 +15,8 @@ const AddProjectButton = ({course_id}: EditCourseButtonProps) => {
             variant="contained"
             color="secondary"
             sx={{
-                margin: '10px'
+                width: 'fit-content',
+                height: 'fit-content',
             }}
             href={`/course/${course_id}/add_project/`}
         >
