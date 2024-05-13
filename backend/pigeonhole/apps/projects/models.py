@@ -21,7 +21,9 @@ class Project(models.Model):
     group_size = models.IntegerField(default=1)
     file_structure = models.TextField(blank=True, null=True)
     conditions = models.TextField(blank=True, null=True)
+
     test_files = models.FileField(blank=True, null=True, upload_to=get_upload_to)
+    test_dockerfile = models.FileField(blank=True, null=True, upload_to=get_upload_to)
 
 
 class ProjectSerializer(serializers.ModelSerializer):

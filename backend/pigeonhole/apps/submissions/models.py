@@ -6,6 +6,7 @@ from docker.errors import ContainerError, APIError
 from rest_framework import serializers
 
 from backend.pigeonhole.apps.groups.models import Group
+from backend.pigeonhole.apps.projects.models import Project
 
 SUBMISSION_PATH = os.environ.get('SUBMISSION_PATH')
 
@@ -54,10 +55,20 @@ class Submissions(models.Model):
     def eval(self):
         client = DockerClient(base_url='unix://var/run/docker.sock')
 
+        group = Group.objects.get(group_id=self.group_id)
+        project = Project.objects.get(project_id=group.project_id)
+
         try:
+            image_id = 'busybox:latest'
+
+            if project.test_dockerfile:
+                image = client.images.build(
+                    path=project.test_dockerfile,
+                )
+                image_id = image.id
+
             container = client.containers.run(
-                # TODO: replace busybox placeholder image with valid evaluation image
-                image='busybox:latest',
+                image=image_id,
                 name=f'pigeonhole-submission-{self.submission_id}-evaluation',
                 detach=False,
                 remove=True,
