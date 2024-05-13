@@ -114,5 +114,10 @@
   "no_conditions": "No conditions",
   "year": "Year",
   "archive_course": "Archive course",
-  "files": "Upload files:"
+  "files": "Upload files:",
+  "ERROR_NOT_IN_GROUP": "You're not in a group",
+  "ERROR_GROUP_NOT_FOUND": "Group not found",
+  "ERROR_DEADLINE_EXPIRED": "Deadline expired",
+  "ERROR_FILE_UPLOAD": "Error when uploading file",
+  "ERROR_SUBMISSION_NOT_FOUND": "Submission not found"
 }
