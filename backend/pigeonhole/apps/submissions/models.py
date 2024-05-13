@@ -7,6 +7,8 @@ from rest_framework import serializers
 
 from backend.pigeonhole.apps.groups.models import Group
 
+SUBMISSION_PATH = os.environ.get('SUBMISSION_PATH')
+
 
 def get_upload_to(self, filename):
     return (
@@ -63,8 +65,8 @@ class Submissions(models.Model):
                     'SUBMISSION_ID': self.submission_id,
                 },
                 volumes={
-                    'submissions': {
-                        'bind': '/usr/src/submissions/',
+                    f'{SUBMISSION_PATH}/{self.submission_id}': {
+                        'bind': '/usr/src/submission/',
                         'mode': 'ro'
                     }
                 }
