@@ -315,6 +315,10 @@ export async function updateUserData(id: number, data: any): Promise<UserData> {
     return (await putData(`/users/${id}/`, data));
 }
 
+export async function deleteUser(id: number): Promise<void> {
+    return (await deleteData(`/users/${id}`));
+}
+
 export async function deleteCourse(id: number): Promise<void> {
     return (await deleteData(`/courses/${id}`));
 }

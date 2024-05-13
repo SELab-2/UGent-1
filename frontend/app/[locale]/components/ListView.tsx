@@ -400,7 +400,7 @@ const ListView: NextPage<ListViewProps> = ({
                     >
                         <TableHead>
                             <TableRow>
-                                {(get !== 'groups' && get !== 'projects' && !(get === 'submissions' && !action_name)) &&
+                                {(get !== 'groups' && get !== 'projects' && !(get === 'submissions' && !action_name)) && get !== 'users' &&
                                     <StyledTableCell>
                                         <Typography
                                             variant={"body1"}
@@ -447,7 +447,19 @@ const ListView: NextPage<ListViewProps> = ({
                                                     {header}
                                                 </Typography>
                                             </Button>
-                                        }
+                                         }
+                                         {!sortable[index] &&
+                                            <Typography
+                                                variant={"body1"}
+                                                sx={{
+                                                    color: 'primary.contrastText',
+                                                    display: 'inline-block',
+                                                    whiteSpace: 'nowrap',
+                                                }}
+                                            >
+                                                {header}
+                                            </Typography>
+                                            }
                                     </StyledTableCell>
                                 )}
                             </TableRow>
@@ -455,7 +467,7 @@ const ListView: NextPage<ListViewProps> = ({
                         <TableBody>
                         {rows.map((row, index) => (
                             <StyledTableRow key={index}>
-                                {((get !== 'groups' && get !== 'projects' && !(get === 'submissions' && !action_name)) &&
+                                {((get !== 'groups' && get !== 'projects' && !(get === 'submissions' && !action_name) && get != 'users') &&
                                     <StyledTableCell>
                                         {<CheckBoxWithCustomCheck checked={false}/>}
                                     </StyledTableCell>)}
@@ -537,6 +549,14 @@ const ListView: NextPage<ListViewProps> = ({
                                     <StyledTableCell>
                                         <Button onClick={() => window.location.href = '/submission/' + row[0]}>
                                             View
+                                        </Button>
+                                    </StyledTableCell>
+
+                                )}
+                                {get == 'users' && (
+                                    <StyledTableCell>
+                                        <Button onClick={() => window.location.href = '/admin/users/' + row[0] +'/edit'}>
+                                            Edit
                                         </Button>
                                     </StyledTableCell>
 
