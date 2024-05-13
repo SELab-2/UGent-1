@@ -22,7 +22,7 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
             namespaces={i18nNamespaces}
         >
             <NavBar />
-            <div style={{marginTop:20, padding:20}}>
+            <div style={{padding:20}}>
                 <Button
                     variant="outlined"
                     color="primary"

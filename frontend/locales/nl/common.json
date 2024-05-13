@@ -103,7 +103,7 @@
   "show_more": "Toon meer",
   "show_less": "Toon minder",
   "select": "Selecteer",
-  "search_for_project": "Zoek naar project",
+  "search_for_project": "Zoek project",
   "has_deadline": "Heeft deadline",
   "no_test_files_selected": "Geen testbestanden geselecteerd",
   "create": "Aanmaken",
@@ -115,6 +115,8 @@
   "group_search": "Zoek groep",
   "submission_search": "Zoek indiening",
   "search_course": "Zoek cursus",
+  "search_student": "Zoek student",
+  "search_teacher": "Zoek docent",
   "year": "Jaargang",
   "archive_course": "Cursus archiveren",
   "files": "Upload bestanden:"
