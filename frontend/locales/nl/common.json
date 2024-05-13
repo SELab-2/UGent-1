@@ -32,7 +32,6 @@
   "edit_project": "Aanpassen",
   "email": "E-mail",
   "evaluation": "Evaluatie",
-  "files": "Upload bestanden:",
   "filter_courses": "Filter Cursussen",
   "github": "GitHub",
   "group": "Groep",
@@ -115,5 +114,8 @@
   "no_conditions": "Geen voorwaarden",
   "group_search": "Zoek groep",
   "submission_search": "Zoek indiening",
-  "search_course": "Zoek cursus"
+  "search_course": "Zoek cursus",
+  "year": "Jaargang",
+  "archive_course": "Cursus archiveren",
+  "files": "Upload bestanden:"
 }

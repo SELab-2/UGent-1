@@ -293,6 +293,12 @@ export async function getArchivedCourses(page = 1, pageSize = 5, keyword?: strin
     return await getRequest(url);
 }
 
+export async function archiveCourse(id: number): Promise<number> {
+    return (await patchData(`/courses/${id}/`, {
+        archived: true
+    })).course_id;
+}
+
 export async function getCoursesForUser(): Promise<Course[]> {
     let page = 1;
     let results: Course[] = []
@@ -313,6 +319,10 @@ export async function updateCourse(id: number, data: any): Promise<Course> {
 
 export async function updateUserData(id: number, data: any): Promise<UserData> {
     return (await putData(`/users/${id}/`, data));
+}
+
+export async function deleteUser(id: number): Promise<void> {
+    return (await deleteData(`/users/${id}`));
 }
 
 export async function deleteCourse(id: number): Promise<void> {
@@ -561,6 +571,39 @@ export async function putData(path: string, data: any) {
 
     try {
         const response = await axios.put(backend_url + path, data, {withCredentials: true});
+
+        if (response.status === 200 && response?.data) {
+            return response.data;
+        } else if (response?.data?.detail) {
+            console.error("Unexpected response structure:", response.data);
+            const error: APIError = new APIError();
+            error.status = response.status;
+            error.message = response.data.detail;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        } else {
+            const error: APIError = new APIError();
+            error.status = response.status;
+            error.message = response.statusText;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        }
+    } catch (error) {
+        const apierror: APIError = new APIError();
+        apierror.message = "error on put request";
+        apierror.type = ErrorType.REQUEST_ERROR;
+        apierror.trace = error;
+        throw apierror;
+    }
+}
+
+export async function patchData(path: string, data: any) {
+    axios.defaults.headers.patch['X-CSRFToken'] = getCookieValue('csrftoken');
+
+    try {
+        const response = await axios.patch(backend_url + path, data, {withCredentials: true});
 
         if (response.status === 200 && response?.data) {
             return response.data;

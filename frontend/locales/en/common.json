@@ -32,7 +32,6 @@
   "edit_project": "Edit",
   "email": "Email",
   "evaluation": "Evaluation",
-  "files": "Upload files:",
   "filter_courses": "Filter Courses",
   "github": "GitHub",
   "group": "Group",
@@ -115,5 +114,8 @@
   "no_conditions": "No conditions",
   "group_search": "Search group",
   "submission_search": "Search submission",
-  "search_course": "Search course"
+  "search_course": "Search course",
+  "year": "Year",
+  "archive_course": "Archive course",
+  "files": "Upload files:"
 }

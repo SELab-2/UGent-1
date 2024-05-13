@@ -159,7 +159,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
                                     <Box sx={{
                                         display: 'flex',
                                         alignItems: 'center',
-                                        color: baseTheme.palette.failure.main,
+                                        color: baseTheme.palette.failure?.main,
                                         mb: 1
                                     }}>
                                         <ErrorIcon sx={{mr: 1}}/>
