@@ -36,7 +36,10 @@ class Submissions(models.Model):
     file_urls = models.TextField(null=True)
     timestamp = models.DateTimeField(auto_now_add=True, blank=True)
     draft = models.BooleanField(default=True)
+
     eval_result = models.BooleanField(default=False)
+    eval_output = models.TextField(null=True)
+
     objects = models.Manager()
 
     # submission_nr is automatically assigned and unique per group, and
@@ -87,6 +90,8 @@ class Submissions(models.Model):
             # exit code 0 as a successful submission
             # The container object returns the container logs and can be analyzed further
 
+            self.eval_output = container.logs()
+
             container.remove(force=True)
 
         except ContainerError:
@@ -94,6 +99,8 @@ class Submissions(models.Model):
 
         except APIError as e:
             raise IOError(f'There was an error evaluation the submission: {e}')
+
+        self.eval_result = True
 
         client.close()
 
