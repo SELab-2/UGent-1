@@ -4,7 +4,7 @@ import TranslationsProvider from "@app/[locale]/components/TranslationsProvider"
 import NavBar from "@app/[locale]/components/NavBar";
 import ListView from '@app/[locale]/components/ListView';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import Button from "@mui/material/Button";
+import {Box, Button} from "@mui/material";
 
 
 const i18nNamespaces = ['common']
@@ -22,7 +22,7 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
             namespaces={i18nNamespaces}
         >
             <NavBar/>
-            <div style={{padding:20}}>
+            <Box width={'100%'} style={{padding: 20}}>
                 <Button
                     variant="outlined"
                     color="primary"
@@ -41,7 +41,7 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
                     action_text={t('join_course')}
                     search_text={t("search_course")}
                 />
-            </div>
+            </Box>
         </TranslationsProvider>
     )
 }

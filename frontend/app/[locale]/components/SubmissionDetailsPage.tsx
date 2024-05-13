@@ -63,11 +63,11 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
 
     return (
         <ThemeProvider theme={baseTheme}>
-            <Grid container alignItems="flex-start" style={{ padding: 0 }}>
-                <Grid item xs="auto" style={{ marginLeft: 20, marginTop: 20, marginRight: 'auto' }}>
+            <Grid container justifyContent="center" alignItems="flex-start" style={{ width: 'fit-content', maxWidth: '100%' }}>
+                <Grid item style={{padding: 20}}>
                     <ProjectReturnButton locale={locale} project_id={project?.project_id} />
                 </Grid>
-                <Grid item xs={12} style={{display: 'flex', justifyContent: 'center'}}>
+                <Grid item style={{padding: 20, marginRight: "233px"}}>
                     <Card raised style={{ width: 800 }}>
                         <CardContent>
                             <Typography variant="h4" style={{ fontWeight: 'bold' }}>

@@ -2,7 +2,7 @@ import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
 import ListView from '@app/[locale]/components/ListView';
-import Button from "@mui/material/Button";
+import {Box, Button} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React from "react";
 
@@ -22,7 +22,7 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
             namespaces={i18nNamespaces}
         >
             <NavBar />
-            <div style={{marginTop:20, padding:20}}>
+            <Box width={'100%'} style={{padding:20}}>
                 <Button
                     variant="outlined"
                     color="primary"
@@ -42,7 +42,7 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
                     action_text={t('remove_user_from_course')}
                     search_text={t('search_student')}
                 />
-            </div>
+            </Box>
         </TranslationsProvider>
     );
 }

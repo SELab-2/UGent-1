@@ -13,10 +13,7 @@ import React from "react";
 const i18nNamespaces = ['common']
 
 export default async function Course({params: {locale, course_id}, searchParams: {token}}:
-                                         {
-                                             params: { locale: any, course_id: number },
-                                             searchParams: { token: string }
-                                         }) {
+                                         { params: { locale: any, course_id: number }, searchParams: { token: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
     const headers = [t('name'), t('deadline'), t('view')]
     const headers_backend = ['name', 'deadline', 'view']
@@ -27,71 +24,52 @@ export default async function Course({params: {locale, course_id}, searchParams:
             locale={locale}
             namespaces={i18nNamespaces}
         >
-            <div
-                id={'center_box'}
-                style={{
+            <JoinCourseWithToken token={token} course_id={course_id}></JoinCourseWithToken>
+            <NavBar/>
+            <Box
+                sx={{
+                    paddingTop: 5,
                     width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
                 }}
             >
+                <CourseBanner course_id={course_id}/>
+                <CourseDetails course_id={course_id}/>
                 <Box
-                    style={{
-                        height: "fit-content",
-                        minHeight: '100vh',
-                        width: '100%',
-                        maxWidth: '1500px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                    }}
+                    display={'flex'}
+                    justifyContent={'flex-start'}
+                    width={'fit-content'}
+                    alignItems={'center'}
+                    marginTop={2}
                 >
-                    <JoinCourseWithToken token={token} course_id={course_id}></JoinCourseWithToken>
-                    <NavBar/>
-                    <Box
+                    <Typography
+                        variant="h3"
                         sx={{
-                            paddingTop: 5,
-                            width: '100%',
+                            fontWeight: 'medium',
+                            paddingRight: 2,
                         }}
                     >
-                        <CourseBanner course_id={course_id}/>
-                        <CourseDetails course_id={course_id}/>
-                        <Box
-                            display={'flex'}
-                            justifyContent={'flex-start'}
-                            width={'fit-content'}
-                            alignItems={'center'}
-                            marginTop={2}
-                        >
-                            <Typography
-                                variant="h3"
-                                sx={{
-                                    fontWeight: 'medium',
-                                    paddingRight: 2,
-                                }}
-                            >
-                                {t('projects')}
-                            </Typography>
-                            <AddProjectButton course_id={course_id}/>
-                        </Box>
-                        <Box
-                            justifyContent={'left'}
-                            width={'100%'}
-                        >
-                            <ListView
-                                search_text={t('search_for_project')}
-                                admin={false}
-                                headers={headers}
-                                headers_backend={headers_backend}
-                                sortable={[true, true, false, true]}
-                                get={'projects'}
-                                get_id={course_id}
-                            />
-
-                        </Box>
-                        <StudentCoTeacherButtons course_id={course_id}/>
-                    </Box>
+                        {t('projects')}
+                    </Typography>
+                    <AddProjectButton course_id={course_id}/>
                 </Box>
-            </div>
+                <Box
+                    justifyContent={'left'}
+                    width={'100%'}
+                >
+                    <ListView
+                        search_text={t('search_for_project')}
+                        admin={false}
+                        headers={headers}
+                        headers_backend={headers_backend}
+                        sortable={[true, true, false, true]}
+                        get={'projects'}
+                        get_id={course_id}
+                    />
+
+                </Box>
+                <StudentCoTeacherButtons course_id={course_id}/>
+            </Box>
+
         </TranslationsProvider>
     )
 }
