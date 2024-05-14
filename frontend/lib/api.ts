@@ -318,6 +318,7 @@ export async function updateCourse(id: number, data: any): Promise<Course> {
 }
 
 export async function updateUserData(id: number, data: any): Promise<UserData> {
+    localStorage.setItem('user', JSON.stringify({data: userData, lastcache: "0"}));
     return (await putData(`/users/${id}/`, data));
 }
 
@@ -469,7 +470,6 @@ export async function getUserData(): Promise<UserData> {
     }else if(localStorage.getItem('user')){
         const userobj = JSON.parse(localStorage.getItem('user') as string);
         const lastcache : string | undefined = userobj?.lastcache;
-
         
         if(lastcache && Date.now() - parseInt(lastcache) < 2 * 60 * 1000){
             console.log(Date.now() - parseInt(lastcache));

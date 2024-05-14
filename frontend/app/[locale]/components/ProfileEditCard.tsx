@@ -70,7 +70,7 @@ const ProfileEditCard = () => {
                 formData.append('picture', new Blob([arrayBuffer], {type: 'image/png'}));
                 try {
                     await updateUserData(user.id, formData).then((response) => {
-                        window.location.href = '/profile/';
+                        //window.location.href = '/profile/';
                     });
                 } catch (error) {
                     if (error instanceof APIError) setError(error);

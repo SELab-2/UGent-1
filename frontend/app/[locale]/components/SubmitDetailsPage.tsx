@@ -141,7 +141,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
                                         type="file"
                                         id="filepicker"
                                         name="fileList"
-                                        inputProps={{webkitdirectory: 'true', multiple: 'true'}}
+                                        inputProps={{webkitdirectory: 'true', multiple: true}}
                                         style={{position: 'absolute'}}
                                     />
                                 </div>
