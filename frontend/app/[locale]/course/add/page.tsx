@@ -17,6 +17,7 @@ async function CourseCreatePage({params: {locale}}: { params: { locale: any } })
         >
             <NavBar/>
             <Box
+                width={'100%'}
                 sx={{
                     padding: 5,
                 }}
