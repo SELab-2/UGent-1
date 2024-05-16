@@ -1,7 +1,7 @@
 "use client";
 import React, {useEffect, useState} from 'react';
 import {APIError, Course, getCoursesForUser} from '@lib/api';
-import {Container, Grid} from '@mui/material';
+import { Grid } from '@mui/material';
 import CourseCard from '@app/[locale]/components/CourseCard';
 import {useTranslation} from "react-i18next";
 
@@ -37,15 +37,27 @@ const CoursesGrid = ({selectedYear}) => {
     }, [selectedYear, courses]);
 
     return (
-        <Container sx={{pt: 2, pb: 4, height: 'fit-content'}}>
-            <Grid container justifyContent="center" alignItems="flex-start" spacing={8}>
+            <Grid
+                container
+                justifyContent="center"
+                justifyItems={'center'}
+                spacing={2}
+                sx={{
+                    flexGrow: 1
+                }}
+            >
                 {filteredCourses.map((course: Course, index) => (
-                    <Grid md={6} item={true} key={index} spacing={6}>
+                    <Grid
+                        item={true}
+                        key={index}
+                        xs={10}
+                        sm={5}
+
+                    >
                         <CourseCard params={{course: course}}/>
                     </Grid>
                 ))}
             </Grid>
-        </Container>
     );
 };
 

@@ -1,7 +1,5 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import {ThemeProvider} from '@mui/material/styles';
-import {CourseCardTheme} from '@styles/theme';
 import {Card, CardContent, CardMedia, Typography, Box} from '@mui/material';
 import {Course, getLastSubmissionFromProject, getProjectsFromCourse, Project, Submission,} from "@lib/api";
 import {useTranslation} from "react-i18next";
@@ -51,13 +49,13 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
             <Card
                 sx={{
                     width: 600,
-                    height: 500,
+                    height: 450,
                     margin: '16px',
                     borderRadius: '8px',
                     border: hover? 1 : 'none', // Conditional border
                     transition: 'border 0.1s ease-in-out',
                     borderColor: 'secondary.main',
-                    boxShadow: hover? 4 : 1, // Conditional shadow
+                    boxShadow: hover? 6 : 2, // Conditional shadow
                 }}
             >
                 <CardMedia
@@ -89,7 +87,12 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
                         </Typography>
                     </Box>
                 </CardMedia>
-                <CardContent>
+                <CardContent
+                    sx={{
+                        height: 300,
+                        width: '100%',
+                    }}
+                >
                     <Typography
                         variant="h6"
                         component="div"
@@ -97,16 +100,39 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
                     >
                         {t('projects')}
                     </Typography>
-                    <ListView
-                        admin={false}
-                        headers={headers}
-                        headers_backend={headers_backend}
-                        sortable={[true, true, false]}
-                        get={'projects'}
-                        get_id={course.course_id}
-                        search={false}
-                        page_size={3}
-                    />
+                    {
+                        projects.length == 0 ? (
+                            <Box
+                                height={'100%'}
+                                width={'100%'}
+                                display={'flex'}
+                                justifyContent={'center'}
+                                alignItems={'center'}
+                            >
+                                <Typography
+                                    variant={'h4'}
+                                    alignContent={'center'}
+                                    alignItems={'center'}
+                                    sx= {{
+                                        color: 'text.disabled'
+                                    }}
+                                >
+                                    {t('no_projects')}
+                                </Typography>
+                            </Box>
+                        ) : (
+                            <ListView
+                                admin={false}
+                                headers={headers}
+                                headers_backend={headers_backend}
+                                sortable={[true, true, false]}
+                                get={'projects'}
+                                get_id={course.course_id}
+                                search={false}
+                                page_size={3}
+                            />
+                        )
+                    }
                 </CardContent>
             </Card>
     );

@@ -18,12 +18,18 @@ const YearStateComponent = () => {
 
     return (
         <>
-            <Box sx={{height: 'fit-content', top: 0, backgroundColor: '#fff'}}>
+            <Box
+                display={'flex'}
+                flexDirection={'column'}
+                height={'fit-content'}
+                width={'100%'}
+                justifyContent={'center'}
+            >
 
                 <CourseControls selectedYear={selectedYear} onYearChange={handleYearChange}/>
+                <CoursesGrid selectedYear={selectedYear}/>
 
             </Box>
-            <CoursesGrid selectedYear={selectedYear}/>
         </>
     );
 };
