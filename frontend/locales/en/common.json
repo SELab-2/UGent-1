@@ -32,7 +32,6 @@
   "edit_project": "Edit",
   "email": "Email",
   "evaluation": "Evaluation",
-  "files": "files",
   "filter_courses": "Filter Courses",
   "github": "GitHub",
   "group": "Group",
@@ -112,5 +111,8 @@
   "no_required_files": "No required files",
   "add": "Add",
   "conditions_example": "E.g.: The program must to compile.",
-  "no_conditions": "No conditions"
+  "no_conditions": "No conditions",
+  "year": "Year",
+  "archive_course": "Archive course",
+  "files": "Upload files:"
 }
