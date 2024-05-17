@@ -78,7 +78,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
         if not group:
             return Response(
-                {"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND
+                {"message": "Group not found", "errorcode": "ERROR_GROUP_NOT_FOUND"}, status=status.HTTP_404_NOT_FOUND
             )
 
         project = Project.objects.get(project_id=group.project_id.project_id)
@@ -95,6 +95,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             return Response(
                 {"message": "Deadline expired"},
                 status=status.HTTP_400_BAD_REQUEST
+
             )
 
         serializer.save()
@@ -132,7 +133,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         submission = self.get_object()
         if submission is None:
             return Response(
-                {"message": f"Submission with id {id} not found"},
+                {"message": f"Submission with id {id} not found", "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -164,7 +165,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             submission = Submissions.objects.get(submission_id=ids[0])
             if submission is None:
                 return Response(
-                    {"message": f"Submission with id {ids[0]} not found"},
+                    {"message": f"Submission with id {ids[0]} not found", "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
@@ -178,7 +179,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 submission = Submissions.objects.get(submission_id=sid)
                 if submission is None:
                     return Response(
-                        {"message": f"Submission with id {id} not found"},
+                        {"message": f"Submission with id {id} not found", "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
                         status=status.HTTP_404_NOT_FOUND
                     )
                 submission_folders.append(

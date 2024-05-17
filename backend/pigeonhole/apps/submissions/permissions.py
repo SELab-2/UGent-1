@@ -1,4 +1,5 @@
 from rest_framework import permissions, status
+from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 
 from backend.pigeonhole.apps.courses.models import Course
@@ -27,7 +28,7 @@ class CanAccessSubmission(permissions.BasePermission):
                 if group.user.filter(id=user.id).exists():
                     return True
                 else:
-                    return False
+                    raise NotInGroupError()
             elif user.is_admin or user.is_superuser:
                 return True
             else:
@@ -58,3 +59,7 @@ class CanAccessSubmission(permissions.BasePermission):
             return False
 
 
+class NotInGroupError(APIException):
+    status_code = status.HTTP_403_FORBIDDEN
+    default_detail = "you are not in a group for this project, please join one."
+    default_code = 'ERROR_NOT_IN_GROUP'
