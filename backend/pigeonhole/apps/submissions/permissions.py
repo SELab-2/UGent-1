@@ -56,3 +56,5 @@ class CanAccessSubmission(permissions.BasePermission):
                 if group.user.filter(id=user.id).exists():
                     return view.action in ['retrieve', 'create', 'download', 'get_project']
             return False
+
+
