@@ -51,11 +51,6 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
         return <LinearProgress />;
     }
 
-    const formatTimestamp = (timestamp) => {
-        const date = new Date(timestamp);
-        return `${date.getDate()}/${date.getMonth() + 1} ${date.getHours()}:${date.getMinutes()}`;
-    };
-
     function formatDate(isoString: string): string {
         const options: Intl.DateTimeFormatOptions = {
             year: 'numeric',
@@ -69,19 +64,13 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
         return date.toLocaleString(locale, options);
     }
 
-    function checkDeadline(deadline) {
-        const now = new Date();
-        const deadlineDate = new Date(deadline);
-        return now < deadlineDate ? 'success' : 'failure';
-    }
-
     return (
         <ThemeProvider theme={baseTheme}>
-            <Grid container alignItems="flex-start" justifyContent="flex-start" style={{ minHeight: '100vh', padding: 0 }}>
-                <Grid item xs={12} style={{ position: 'absolute', top: 84, left: 20 }}>
+            <Grid container justifyContent="center" alignItems="flex-start" style={{ width: 'fit-content', maxWidth: '100%' }}>
+                <Grid item style={{padding: 20}}>
                     <ProjectReturnButton locale={locale} project_id={project?.project_id} />
                 </Grid>
-                <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center', paddingTop: 20 }}>
+                <Grid item style={{padding: 20, marginRight: "233px"}}>
                     <Card raised style={{ width: 800 }}>
                         <CardContent>
                             <Typography variant="h4" style={{ fontWeight: 'bold' }}>

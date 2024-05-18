@@ -1,9 +1,10 @@
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
-import Footer from "@app/[locale]/components/Footer";
 import ListView from '@app/[locale]/components/ListView';
-import BackButton from "@app/[locale]/components/BackButton";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Button, Box } from "@mui/material";
+import React from "react";
 
 const i18nNamespaces = ['common']
 
@@ -21,11 +22,15 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
             namespaces={i18nNamespaces}
         >
             <NavBar />
-            <div style={{marginTop:60, padding:20}}>
-            <BackButton 
-            destination={`/project/${projectId}`} 
-            text={t('back_to') + ' ' + t('project') + ' ' +  t('page')}
-            />
+            <Box width={'100%'} style={{padding:20}}>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<ArrowBackIcon/>}
+                    href={`/${locale}/project/${projectId}`}
+                >
+                    {t("return_project")}
+                </Button>
                 <ListView
                     admin={true}
                     headers={headers}
@@ -33,8 +38,9 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
                     sortable={[true, false, false]}
                     get_id={projectId}
                     get={'groups'}
+                    search_text={t("group_search")}
                 />
-            </div>
+            </Box>
         </TranslationsProvider>
     );
 }

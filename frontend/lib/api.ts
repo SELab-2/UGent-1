@@ -293,6 +293,24 @@ export async function getArchivedCourses(page = 1, pageSize = 5, keyword?: strin
     return await getRequest(url);
 }
 
+export async function getOpenCourses(page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Course[]> {
+    let url = `/courses/get_open_courses?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
 export async function archiveCourse(id: number): Promise<number> {
     return (await patchData(`/courses/${id}/`, {
         archived: true
@@ -347,7 +365,7 @@ export async function updateProject(id: number, data: any): Promise<Project> {
 }
 
 export async function deleteProject(id: number): Promise<void> {
-    return (await deleteData(`/projects/${id}/`));
+    return (await deleteData(`/projects/${id}`));
 }
 
 export async function getProjects(): Promise<Project[]> {
