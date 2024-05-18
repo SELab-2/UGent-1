@@ -275,5 +275,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
             group = Group.objects.get(
                 project_id=project.project_id, user=request.user)
         except Group.DoesNotExist:
-            return Response({"message": "Group not found", "errorcode": "ERROR_NOT_IN_GROUP"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Group not found", "errorcode": "ERROR_NOT_IN_GROUP"},
+                            status=status.HTTP_404_NOT_FOUND)
         return Response({"group_id": group.group_id}, status=status.HTTP_200_OK)
