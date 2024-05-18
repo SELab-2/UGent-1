@@ -114,5 +114,11 @@
   "no_conditions": "Geen voorwaarden",
   "year": "Jaargang",
   "archive_course": "Cursus archiveren",
-  "files": "Upload bestanden:"
+  "files": "Upload bestanden:",
+  "ERROR_NOT_IN_GROUP": "Je zit niet in een groep",
+  "ERROR_GROUP_NOT_FOUND": "Groep niet gevonden",
+  "ERROR_DEADLINE_EXPIRED": "Deadline is verstreken",
+  "ERROR_FILE_UPLOAD": "Fout bij uploaden bestand",
+  "ERROR_SUBMISSION_NOT_FOUND": "Inlevering niet gevonden"
+
 }

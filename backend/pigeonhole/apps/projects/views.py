@@ -271,8 +271,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["GET"])
     def get_group(self, request, *args, **kwargs):
         project = self.get_object()
-        group = Group.objects.get(
-            project_id=project.project_id, user=request.user)
-        if not group:
-            return Response({"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            group = Group.objects.get(
+                project_id=project.project_id, user=request.user)
+        except Group.DoesNotExist:
+            return Response({"message": "Group not found", "errorcode": "ERROR_NOT_IN_GROUP"}, status=status.HTTP_404_NOT_FOUND)
         return Response({"group_id": group.group_id}, status=status.HTTP_200_OK)

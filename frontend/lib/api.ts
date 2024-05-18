@@ -336,6 +336,7 @@ export async function updateCourse(id: number, data: any): Promise<Course> {
 }
 
 export async function updateUserData(id: number, data: any): Promise<UserData> {
+    localStorage.setItem('user', JSON.stringify({data: userData, lastcache: "0"}));
     return (await putData(`/users/${id}/`, data));
 }
 
@@ -487,7 +488,6 @@ export async function getUserData(): Promise<UserData> {
     }else if(localStorage.getItem('user')){
         const userobj = JSON.parse(localStorage.getItem('user') as string);
         const lastcache : string | undefined = userobj?.lastcache;
-
         
         if(lastcache && Date.now() - parseInt(lastcache) < 2 * 60 * 1000){
             console.log(Date.now() - parseInt(lastcache));
@@ -669,7 +669,12 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any, project_id: string) : Promise<string>{
+type uploadResult = {
+    result: string;
+    errorcode: string | undefined;
+}
+
+export async function uploadSubmissionFile(event: any, project_id: string) : Promise<uploadResult>{
     axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
@@ -698,13 +703,13 @@ export async function uploadSubmissionFile(event: any, project_id: string) : Pro
                 'Content-Type': 'multipart/form-data'
             }
           });
-        return "yes";
+        return {result: "ok", errorcode: undefined};
     } catch (error) {
         const apierror : APIError = new APIError();
         apierror.message = "error posting form";
         apierror.type = ErrorType.REQUEST_ERROR;
         apierror.trace = error;
         console.error(apierror);
-        return "error";
+        return {result: "error", errorcode: error.response?.data?.errorcode};
     }
 }

@@ -122,29 +122,34 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
                             </Typography>
 
                             <Box component="form" onSubmit={handleSubmit} encType="multipart/form-data">
-                                <Input
-                                    sx={{
-                                        border: '2px dashed',
-                                        borderColor: baseTheme.palette.primary.main,
-                                        borderRadius: 2,
-                                        textAlign: 'center',
-                                        marginTop: 1,
-                                        p: 4,
-                                        cursor: 'pointer',
-                                        '&:hover': {
-                                            backgroundColor: baseTheme.palette.background.default,
-                                        },
-                                    }}
-                                    onChange={folderAdded}
-                                    type="file"
-                                    id="filepicker"
-                                    name="fileList"
-                                    inputProps={{webkitdirectory: 'true', multiple: true}}
-                                />
+                                <div style={{height: '4em'}}>
+                                    <Input
+                                        sx={{
+                                            border: '2px dashed',
+                                            borderColor: baseTheme.palette.primary.main,
+                                            borderRadius: 2,
+                                            textAlign: 'center',
+                                            marginTop: 1,
+                                            p: 4,
+                                            height: '2em',
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                                backgroundColor: baseTheme.palette.background.default,
+                                            },
+                                        }}
+                                        onChange={folderAdded}
+                                        type="file"
+                                        id="filepicker"
+                                        name="fileList"
+                                        inputProps={{webkitdirectory: 'true', multiple: true}}
+                                        style={{position: 'absolute'}}
+                                    />
+                                </div>
+                                
 
                                 <Tree paths={paths}/>
 
-                                {submitted === 'yes' && (
+                                {submitted['result'] === 'ok' && (
                                     <Box sx={{
                                         display: 'flex',
                                         alignItems: 'center',
@@ -157,7 +162,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
                                         </Typography>
                                     </Box>
                                 )}
-                                {submitted === 'error' && (
+                                {submitted['result'] === 'error' && (
                                     <Box sx={{
                                         display: 'flex',
                                         alignItems: 'center',
@@ -166,11 +171,11 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
                                     }}>
                                         <ErrorIcon sx={{mr: 1}}/>
                                         <Typography variant="h6" sx={{fontWeight: 'bold', fontSize: '0.875rem'}}>
-                                            {t('submission_error')}
+                                            {t('submission_error')}: {t(submitted['errorcode'])}
                                         </Typography>
                                     </Box>
                                 )}
-                                {submitted !== 'yes' && (
+                                {submitted['result'] !== 'ok' && (
                                     <Button
                                         variant="contained"
                                         color="primary"
