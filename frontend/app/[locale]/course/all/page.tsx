@@ -15,9 +15,9 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
     const headers = [t('name'), 
-    <React.Fragment><NotesIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('description')}</React.Fragment>,
+    <React.Fragment key="description"><NotesIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('description')}</React.Fragment>,
     , t('open'), 
-    <React.Fragment><MeetingRoomIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('join_leave')}</React.Fragment>];
+    <React.Fragment key="joinleave"><MeetingRoomIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('join_leave')}</React.Fragment>];
     const headers_backend = ['name', 'description', 'open', 'join/leave']
 
     return (

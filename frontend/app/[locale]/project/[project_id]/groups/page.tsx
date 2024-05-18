@@ -15,9 +15,9 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
     const headers = [
-        <React.Fragment><GroupsIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('group_nr')}</React.Fragment>
+        <React.Fragment key="group_nr"><GroupsIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('group_nr')}</React.Fragment>
         , t('members'), 
-        <React.Fragment><MeetingRoomIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('join_leave')}</React.Fragment>];
+        <React.Fragment key="joinleave"><MeetingRoomIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('join_leave')}</React.Fragment>];
     const headers_backend = ['group_nr', 'members', 'join/leave'];
     
     return (

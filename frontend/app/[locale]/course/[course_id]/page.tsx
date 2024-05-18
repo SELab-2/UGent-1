@@ -19,8 +19,8 @@ export default async function Course({params: {locale, course_id}, searchParams:
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
 
     const headers = [
-        <React.Fragment><Person style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('name')}</React.Fragment>, 
-       <React.Fragment><AccesAlarm style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " +t('deadline')}</React.Fragment>, 
+        <React.Fragment key="name"><Person style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('name')}</React.Fragment>, 
+       <React.Fragment key="deadline"><AccesAlarm style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " +t('deadline')}</React.Fragment>, 
        '']
     const headers_backend = ['name', 'deadline', '']
 

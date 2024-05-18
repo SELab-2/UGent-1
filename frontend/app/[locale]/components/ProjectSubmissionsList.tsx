@@ -15,11 +15,11 @@ const ProjectSubmissionsList = ({project_id, page_size = 5, search}: {
 }) => {
     const {t} = useTranslation()
     const headers = [
-        <React.Fragment><GroupsIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('group_number')}</React.Fragment>
+        <React.Fragment key="group_nr"><GroupsIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('group_number')}</React.Fragment>
         ,
-        <React.Fragment><CalendarMonthIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('submission_date')}</React.Fragment> 
+        <React.Fragment key="submission_date"><CalendarMonthIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('submission_date')}</React.Fragment> 
         ,
-        <React.Fragment><CheckCircleOutlineIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('Status')}</React.Fragment> 
+        <React.Fragment key="status"><CheckCircleOutlineIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('Status')}</React.Fragment> 
         , ""]
     const headers_backend = ["group_nr", "submission_date", "status", ""]
     const sortable = [true, true, false]

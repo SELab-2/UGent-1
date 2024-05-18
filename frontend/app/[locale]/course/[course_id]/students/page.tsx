@@ -14,7 +14,7 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
     const headers = [
-        <React.Fragment><EmailIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('email')}</React.Fragment>];
+        <React.Fragment key="email"><EmailIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('email')}</React.Fragment>];
     const headers_backend = ['email'];
     
     return (
