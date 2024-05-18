@@ -1,6 +1,6 @@
 from rest_framework import permissions, status
-from rest_framework.response import Response
 from rest_framework.exceptions import APIException
+from rest_framework.response import Response
 
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.groups.models import Group
@@ -57,6 +57,7 @@ class CanAccessSubmission(permissions.BasePermission):
                 if group.user.filter(id=user.id).exists():
                     return view.action in ['retrieve', 'create', 'download', 'get_project']
             return False
+
 
 class NotInGroupError(APIException):
     status_code = status.HTTP_403_FORBIDDEN

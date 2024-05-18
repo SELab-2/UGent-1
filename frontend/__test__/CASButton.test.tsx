@@ -28,7 +28,7 @@ describe('CASButton', () => {
         fireEvent.click(button);
 
         // undefined, because i havent mocked the process.env stuff
-        // expect(window.location.href).toBe('undefined/microsoft/to-auth-redirect?next=undefined/home');
+        expect(window.location.href).toBe('undefined/microsoft/to-auth-redirect?next=undefined/home');
 
         // restore the original window.location
         window.location = originalLocation;
