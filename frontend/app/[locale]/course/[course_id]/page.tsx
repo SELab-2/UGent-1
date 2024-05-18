@@ -48,10 +48,10 @@ export default async function Course({params: {locale, course_id}, searchParams:
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm="auto">
-                        <Box display="flex" justifyContent={{ xs: 'center', sm: 'flex-start' }}>
-                            <AddProjectButton course_id={course_id} />
-                        </Box>
-                    </Grid>
+                    <Box display="flex" justifyContent={{ xs: 'center', sm: 'flex-start' }} padding={2}>
+                        <AddProjectButton course_id={course_id} />
+                    </Box>
+                </Grid>
                 </Grid>
                 <Box
                     justifyContent="left"
