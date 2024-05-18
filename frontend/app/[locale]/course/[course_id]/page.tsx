@@ -9,13 +9,19 @@ import JoinCourseWithToken from "@app/[locale]/components/JoinCourseWithToken";
 import ListView from '@app/[locale]/components/ListView';
 import AddProjectButton from "@app/[locale]/components/AddProjectButton";
 import React from "react";
+import AccesAlarm from '@mui/icons-material/AccessAlarm';
+import Person from '@mui/icons-material/Person';
 
 const i18nNamespaces = ['common']
 
 export default async function Course({params: {locale, course_id}, searchParams: {token}}:
                                          { params: { locale: any, course_id: number }, searchParams: { token: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
-    const headers = [t('name'), t('deadline'), '']
+
+    const headers = [
+        <React.Fragment key="name"><Person style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('name')}</React.Fragment>, 
+       <React.Fragment key="deadline"><AccesAlarm style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " +t('deadline')}</React.Fragment>, 
+       '']
     const headers_backend = ['name', 'deadline', '']
 
     return (
