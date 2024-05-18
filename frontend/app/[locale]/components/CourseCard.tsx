@@ -41,8 +41,8 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
         fetchProjects();
     }, [course.course_id]);
 
-    const headers = [t('name'), t('deadline'), t('view')]
-    const headers_backend = ['name', 'deadline', 'view']
+    const headers = [t('name'), t('deadline'), '']
+    const headers_backend = ['name', 'deadline', '']
 
 
     return (
