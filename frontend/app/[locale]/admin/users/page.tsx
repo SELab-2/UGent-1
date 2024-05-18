@@ -14,9 +14,9 @@ export default async function Users({ params: { locale } }: { params: { locale: 
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
     const headers = [
-        <React.Fragment><EmailIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('email')}</React.Fragment>,
+        <React.Fragment key="email"><EmailIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('email')}</React.Fragment>,
         , 
-        <React.Fragment><WorkIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('role')}</React.Fragment>
+        <React.Fragment key="role"><WorkIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('role')}</React.Fragment>
         , ''];
     const headers_backend = ['email', 'role', ''];
 
