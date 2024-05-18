@@ -10,8 +10,7 @@ class Course(models.Model):
     description = models.TextField()
     open_course = models.BooleanField(default=False)
     invite_token = models.CharField(max_length=20, blank=True, null=True)
-    banner = models.FileField(upload_to='course_banners/', blank=True, null=False,
-                              default='course_banners/ugent_banner.png')
+    banner = models.FileField(upload_to='course_banners/', blank=True, null=True)
     archived = models.BooleanField(default=False)
     year = models.IntegerField(default=2024)
 
