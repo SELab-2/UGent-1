@@ -22,7 +22,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
     const { t } = useTranslation();
 
     const [submission, setSubmission] = useState<Submission>();
-    const [project, setProject] = useState<Project>();
+    const [projectId, setProjectId] = useState<number>();
     const [loadingSubmission, setLoadingSubmission] = useState<boolean>(true);
 
     useEffect(() => {
@@ -36,7 +36,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
 
         const fetchProject = async () => {
             try {
-                setProject(await getProjectFromSubmission(submission_id));
+                setProjectId(await getProjectFromSubmission(submission_id));
             } catch (error) {
                 console.error("There was an error fetching the project data:", error);
             }
@@ -68,7 +68,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
         <ThemeProvider theme={baseTheme}>
             <Grid container justifyContent="center" alignItems="flex-start" style={{ width: 'fit-content', maxWidth: '100%' }}>
                 <Grid item style={{padding: 20}}>
-                    <ProjectReturnButton locale={locale} project_id={project?.project_id} />
+                    <ProjectReturnButton locale={locale} project_id={projectId} />
                 </Grid>
                 <Grid item style={{padding: 20, marginRight: "233px"}}>
                     <Card raised style={{ width: 800 }}>

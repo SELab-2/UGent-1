@@ -380,8 +380,8 @@ export async function getProjectsFromCourse(id: number): Promise<Project[]> {
     return (await getListRequest('/courses/' + id + '/get_projects'))
 }
 
-export async function getProjectFromSubmission(id: number): Promise<Project> {
-    return (await getRequest(`/submissions/${id}/get_project`))
+export async function getProjectFromSubmission(id: number): Promise<number> {
+    return (await getRequest(`/submissions/${id}/get_project`)).project;
 }
 
 export async function getTeachersFromCourse(id: number): Promise<User[]> {
