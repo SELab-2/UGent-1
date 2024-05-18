@@ -112,6 +112,9 @@
   "add": "Toevoegen",
   "conditions_example": "Bv.: Het programma moet compileren",
   "no_conditions": "Geen voorwaarden",
+  "Prev" : "Vorige",
+  "Next": "Volgende",
+  "View": "Bekijk",
   "group_search": "Zoek groep",
   "submission_search": "Zoek indiening",
   "search_course": "Zoek cursus",
@@ -131,5 +134,4 @@
   "ERROR_DEADLINE_EXPIRED": "Deadline is verstreken",
   "ERROR_FILE_UPLOAD": "Fout bij uploaden bestand",
   "ERROR_SUBMISSION_NOT_FOUND": "Inlevering niet gevonden"
-
 }
