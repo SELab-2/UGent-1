@@ -329,6 +329,7 @@ const ListView: NextPage<ListViewProps> = ({
             flexDirection={'column'}
             alignItems={'center'}
             justifyContent={'center'}
+            label='list-view'
         >
             <CssBaseline/>
             {search &&
@@ -519,7 +520,7 @@ const ListView: NextPage<ListViewProps> = ({
                                             <Button
                                                 onClick={() => postData('/courses/' + row[0] + '/leave_course/', {course_id: row[0]}).then(() => window.location.reload())
                                                 }>
-                                                Leave
+                                                {t('Leave')}
                                             </Button>
                                         </StyledTableCell>
                                     )
@@ -534,7 +535,7 @@ const ListView: NextPage<ListViewProps> = ({
                                                 disabled={!row[3]}
                                                 style={{backgroundColor: row[3] ? '' : 'gray'}}
                                             >
-                                                Join
+                                                {t('Join')}
                                             </Button>
                                         </StyledTableCell>
                                     )
@@ -551,7 +552,7 @@ const ListView: NextPage<ListViewProps> = ({
                                                     <Button
                                                         onClick={() => postData('/groups/' + row[0] + '/join/', {group_id: row[0]}).then(() => window.location.reload())
                                                         }>
-                                                        Join
+                                                        {t('Join')}
                                                     </Button>
                                                 )
                                             }
@@ -566,7 +567,7 @@ const ListView: NextPage<ListViewProps> = ({
                                                     <Button
                                                         onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]}).then(() => window.location.reload())
                                                         }>
-                                                        Leave
+                                                        {t('Leave')}
                                                     </Button>
                                                 )}
                                         </StyledTableCell>)
@@ -574,14 +575,14 @@ const ListView: NextPage<ListViewProps> = ({
                                 {get == 'projects' && (
                                     <StyledTableCell>
                                         <Button onClick={() => window.location.href = '/project/' + row[0]}>
-                                            View
+                                            {t('View')}
                                         </Button>
                                     </StyledTableCell>
                                 )}
                                 {(get == 'submissions' || get == 'submissions_group') && (
                                     <StyledTableCell>
                                         <Button onClick={() => window.location.href = '/submission/' + row[0]}>
-                                            View
+                                            {t('View')}
                                         </Button>
                                     </StyledTableCell>
 
@@ -589,7 +590,7 @@ const ListView: NextPage<ListViewProps> = ({
                                 {get == 'users' && (
                                     <StyledTableCell>
                                         <Button onClick={() => window.location.href = '/admin/users/' + row[0] +'/edit'}>
-                                            Edit
+                                            {t('Edit')}
                                         </Button>
                                     </StyledTableCell>
 
@@ -605,13 +606,13 @@ const ListView: NextPage<ListViewProps> = ({
                     disabled={previousPage === 0}
                     onClick={() => handleChangePage('prev')}
                 >
-                    Prev
+                    {t('Prev')}
                 </Button>
                 <Button
                     disabled={nextPage === 0}
                     onClick={() => handleChangePage('next')}
                 >
-                    Next
+                    {t('Next')}
                 </Button>
             </Box>
         </Box>

@@ -11,7 +11,7 @@ describe('Finishbuttons', () => {
 
     it('renders correctly', async () => {
         const translations = await getTranslations();
-        const {getByText:  getByTestId} = render(
+        const {getByText: getByTestId} = render(
             <FinishButtons
                 visible={true}
                 setVisible={jest.fn()}
@@ -35,10 +35,10 @@ describe('Finishbuttons', () => {
 
     it('Cancels', async () => {
         const translations = await getTranslations();
-        const courseId = 1;
+        const projectId = 1;
 
         delete window.location;
-        window.location = { href: '' } as any;
+        window.location = {href: ''} as any;
 
         const {getByText} = render(
             <FinishButtons
@@ -47,7 +47,7 @@ describe('Finishbuttons', () => {
                 handleSave={jest.fn()}
                 setConfirmRemove={jest.fn()}
                 translations={translations.en}
-                course_id={courseId}
+                project_id={projectId}
                 setHasDeadline={jest.fn()}
                 hasDeadline={true}
             />
@@ -56,7 +56,7 @@ describe('Finishbuttons', () => {
         const button = screen.getByText('cancel');
         fireEvent.click(button);
 
-        expect(window.location.href).toBe("/course/" + courseId + "/");
+        expect(window.location.href).toBe("/project/" + projectId + "/");
     });
 
     it('Saves', async () => {
