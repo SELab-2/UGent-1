@@ -119,6 +119,6 @@
   "ERROR_GROUP_NOT_FOUND": "Groep niet gevonden",
   "ERROR_DEADLINE_EXPIRED": "Deadline is verstreken",
   "ERROR_FILE_UPLOAD": "Fout bij uploaden bestand",
-  "ERROR_SUBMISSION_NOT_FOUND": "Inlevering niet gevonden"
-
+  "ERROR_SUBMISSION_NOT_FOUND": "Inlevering niet gevonden",
+  "upload_folders": "Upload een map:"
 }

@@ -35,10 +35,13 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
 
     const [projectData, setProjectData] = useState<Project>()
     const [paths, setPaths] = useState<string[]>([]);
+    const [filepaths, setFilePaths] = useState<string[]>([]);
+    const [folderpaths, setFolderPaths] = useState<string[]>([]);
     const [submitted, setSubmitted] = useState<string>("no");
     const [loadingProject, setLoadingProject] = useState<boolean>(true);
     const [isExpanded, setIsExpanded] = useState(false);
     const previewLength = 300;
+
 
     const toggleDescription = () => {
         setIsExpanded(!isExpanded);
@@ -61,16 +64,28 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
     }, [project_id]);
 
     function folderAdded(event: any) {
+        console.log(event.target.id)
         let newpaths: string[] = []
-        for (const file of event.target.files) {
-            let text: string = file.webkitRelativePath;
-            if (text.includes("/")) {
-                text = text.substring((text.indexOf("/") ?? 0) + 1, text.length);
+        let result: string[] = []
+        if(event.target.id === "filepicker2"){
+            for(const file of event.target.files){
+                newpaths.push(file.name)
             }
-            newpaths.push(text);
+            setFilePaths(newpaths);
+            result = [...folderpaths, ...newpaths]
+        }else{
+            for (const file of event.target.files) {
+                let text: string = file.webkitRelativePath;
+                if (text.includes("/")) {
+                    text = text.substring((text.indexOf("/") ?? 0) + 1, text.length);
+                }
+                newpaths.push(text);
+            }
+            setFolderPaths(newpaths);
+            result = [...filepaths, ...newpaths]
         }
-        console.log(newpaths)
-        setPaths(newpaths);
+        console.log(result)
+        setPaths(result)
     }
 
     if (loadingProject) {
@@ -118,7 +133,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
                                     marginTop: 2
                                 }}
                             >
-                                {t('files')}
+                                {t('upload_folders')}
                             </Typography>
 
                             <Box component="form" onSubmit={handleSubmit} encType="multipart/form-data">
@@ -142,6 +157,40 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({locale, project_id
                                         id="filepicker"
                                         name="fileList"
                                         inputProps={{webkitdirectory: 'true', multiple: true}}
+                                        style={{position: 'absolute'}}
+                                    />
+                                </div>
+
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        marginTop: 2
+                                    }}
+                                >
+                                    {t('files')}
+                                </Typography>
+
+                                <div style={{height: '4em'}}>
+                                    <Input
+                                        sx={{
+                                            border: '2px dashed',
+                                            borderColor: baseTheme.palette.primary.main,
+                                            borderRadius: 2,
+                                            textAlign: 'center',
+                                            marginTop: 1,
+                                            p: 4,
+                                            height: '2em',
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                                backgroundColor: baseTheme.palette.background.default,
+                                            },
+                                        }}
+                                        onChange={folderAdded}
+                                        type="file"
+                                        id="filepicker2"
+                                        name="fileList2"
+                                        inputProps={{multiple: true}}
                                         style={{position: 'absolute'}}
                                     />
                                 </div>
