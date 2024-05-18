@@ -17,9 +17,10 @@ describe('CourseBanner', () => {
             name: 'Test Course',
             course_id: 1,
             description: "Test Description",
-            banner: "?",
+            banner: new Blob([], { type: 'image/png' }),
             open_course: true,
-            invite_token: "token"
+            invite_token: "token",
+            year: 2024
         });
         (api.getUserData as jest.Mock).mockResolvedValueOnce({
             role: 1,
@@ -33,7 +34,7 @@ describe('CourseBanner', () => {
         const {getByText} = render(<CourseBanner course_id={1}/>);
 
         await waitFor(() => {
-            expect(getByText('Test Course')).toBeInTheDocument();
+            expect(getByText('Test Course 2024')).toBeInTheDocument();
         });
     });
 

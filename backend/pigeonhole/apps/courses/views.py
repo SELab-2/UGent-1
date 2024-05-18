@@ -172,3 +172,11 @@ class CourseViewSet(viewsets.ModelViewSet):
         queryset = self.order_queryset(paginated_queryset)
         serializer = CourseSerializer(queryset, many=True)
         return self.get_paginated_response(serializer.data)
+
+    @action(detail=False, methods=["GET"])
+    def get_open_courses(self, request, *args, **kwargs):
+        courses = Course.objects.filter(open_course=True)
+        course_filter = CourseFilter(request.GET, queryset=courses)
+        queryset = self.order_queryset(course_filter.qs)
+        serializer = CourseSerializer(self.paginate_queryset(queryset), many=True)
+        return self.get_paginated_response(serializer.data)

@@ -1,8 +1,6 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import {ThemeProvider} from '@mui/material/styles';
-import {CourseCardTheme} from '@styles/theme';
-import {Card, CardContent, Typography,} from '@mui/material';
+import {Card, CardContent, CardMedia, Typography, Box} from '@mui/material';
 import {Course, getLastSubmissionFromProject, getProjectsFromCourse, Project, Submission,} from "@lib/api";
 import {useTranslation} from "react-i18next";
 import ListView from '@app/[locale]/components/ListView';
@@ -18,6 +16,7 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
             timestamp: '',
             output_test: '',
         });
+    const [hover, setHover] = useState(false);
 
     const {t} = useTranslation()
 
@@ -47,27 +46,95 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
 
 
     return (
-        <ThemeProvider theme={CourseCardTheme}>
-            <Card>
-                <CardContent>
-                    <Typography variant="h6" component="div" gutterBottom>
-                        <a href={`/course/${course.course_id}`} style={{color: 'black'}}>
+            <Card
+                sx={{
+                    width: 600,
+                    height: 450,
+                    margin: '16px',
+                    borderRadius: '8px',
+                    border: hover? 1 : 'none', // Conditional border
+                    transition: 'border 0.1s ease-in-out',
+                    borderColor: 'secondary.main',
+                    boxShadow: hover? 6 : 2, // Conditional shadow
+                }}
+            >
+                <CardMedia
+                    sx={{
+                        height: 75,
+                        backgroundColor: 'secondary.main',
+                    }}
+                    onMouseEnter={() => setHover(true)}
+                    onMouseLeave={() => setHover(false)}
+                >
+                    <Box
+                        display={'flex'}
+                        justifyContent="flex-start"
+                        alignItems="center"
+                        height={'100%'}
+                        width={'100%'}
+                        onClick={() => window.location.href = `/course/${course.course_id}`}
+                        sx={{
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            justifyContent={'center'}
+                            margin={2}
+                        >
                             {course.name}
-                        </a>
+                        </Typography>
+                    </Box>
+                </CardMedia>
+                <CardContent
+                    sx={{
+                        height: 300,
+                        width: '100%',
+                    }}
+                >
+                    <Typography
+                        variant="h6"
+                        component="div"
+                        justifyContent={'center'}
+                    >
+                        {t('projects')}
                     </Typography>
-                    <ListView
-                        admin={false}
-                        headers={headers}
-                        headers_backend={headers_backend}
-                        sortable={[true, true, false]}
-                        get={'projects'}
-                        get_id={course.course_id}
-                        search={false}
-                        page_size={3}
-                    />
+                    {
+                        projects.length == 0 ? (
+                            <Box
+                                height={'100%'}
+                                width={'100%'}
+                                display={'flex'}
+                                justifyContent={'center'}
+                                alignItems={'center'}
+                            >
+                                <Typography
+                                    variant={'h4'}
+                                    alignContent={'center'}
+                                    alignItems={'center'}
+                                    sx= {{
+                                        color: 'text.disabled'
+                                    }}
+                                >
+                                    {t('no_projects')}
+                                </Typography>
+                            </Box>
+                        ) : (
+                            <ListView
+                                admin={false}
+                                headers={headers}
+                                headers_backend={headers_backend}
+                                sortable={[true, true, false]}
+                                get={'projects'}
+                                get_id={course.course_id}
+                                search={false}
+                                page_size={3}
+                            />
+                        )
+                    }
                 </CardContent>
             </Card>
-        </ThemeProvider>
     );
 };
 

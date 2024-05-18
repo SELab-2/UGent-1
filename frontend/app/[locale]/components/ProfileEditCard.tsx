@@ -70,7 +70,7 @@ const ProfileEditCard = () => {
                 formData.append('picture', new Blob([arrayBuffer], {type: 'image/png'}));
                 try {
                     await updateUserData(user.id, formData).then((response) => {
-                        window.location.href = '/profile/';
+                        //window.location.href = '/profile/';
                     });
                 } catch (error) {
                     if (error instanceof APIError) setError(error);
@@ -144,7 +144,7 @@ const ProfileEditCard = () => {
                             </Typography>
                         </Box>
                         <Box sx={{display: 'flex', gap: 2, width: '100%', justifyContent: 'center'}}>
-                            <Button variant="contained" color="primary" onClick={handleSaveChanges}>
+                            <Button variant="contained" color="primary" data-testid="save-changes" onClick={handleSaveChanges}>
                                 {t('save_changes')}
                             </Button>
                             <Link href="/profile" passHref>
