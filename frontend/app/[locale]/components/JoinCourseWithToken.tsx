@@ -33,7 +33,7 @@ const JoinCourseWithToken = ({token, course_id}: { token: any, course_id: any })
             }
         };
         join();
-    }, []);
+    }, [course_id, token]);
 
     if (joined) {
         // redirect to the course page (without the token parameter in the url)

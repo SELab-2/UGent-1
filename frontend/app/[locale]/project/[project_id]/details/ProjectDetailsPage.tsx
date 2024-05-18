@@ -65,7 +65,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
     return (
         (!loadingProject && (
             <div className={"mainContainer"} style={{height: 'fit-content'}}>
-                <Box sx={{marginTop: 4, marginBottom: 4}}>
+                <Box sx={{marginTop: 4, marginBottom: 4, width: 1/2}}>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item xs={12}>
                             <CourseReturnButton
@@ -159,7 +159,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                     </Grid>
                 </Box>
                 {user?.role === 3 ? (
-                    <Box sx={{marginTop: 4, marginBottom: 4}}>
+                    <Box sx={{marginTop: 4, marginBottom: 4, width: 1/2}}>
                         <div style={{display: "flex"}}>
                             <Typography variant={"h4"}>
                                 {t("my_submissions")}
