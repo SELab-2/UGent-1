@@ -32,6 +32,7 @@ export default async function TeachersPage({params}: { params: { locale: any, co
                 >
                     {t('back_to') + ' ' + t('course') + ' ' + t('page')}
                 </Button>
+                <Box marginTop={{ xs: 2, md: 4 }}>
                 <ListView
                     admin={true}
                     headers={headers}
@@ -41,6 +42,7 @@ export default async function TeachersPage({params}: { params: { locale: any, co
                     get={'course_teachers'}
                     search_text={t('search_teacher')}
                 />
+                </Box>
             </Box>
         </TranslationsProvider>
     );
