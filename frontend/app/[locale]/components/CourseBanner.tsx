@@ -4,6 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {Box, Typography, Skeleton} from "@mui/material";
 import EditCourseButton from "@app/[locale]/components/EditCourseButton";
 import {APIError, Course, getCourse, UserData, getUserData} from "@lib/api";
+import defaultBanner from "../../../public/ugent_banner.png";
 
 interface CourseBannerProps {
     course_id: number;
@@ -14,12 +15,14 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
     const [course, setCourse] = useState<Course | null>(null);
     const [error, setError] = useState<APIError | null>(null);
     const [loading, setLoading] = useState(true);
+    const [courseBanner, setCourseBanner] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         const fetchCourse = async () => {
             try {
                 setCourse(await getCourse(course_id));
                 setUser(await getUserData());
+                setCourseBanner(course?.banner);
             } catch (error) {
                 if (error instanceof APIError) setError(error);
                 console.log(error);
@@ -47,7 +50,10 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
         ) : (
             <Box
                 sx={{
-                    backgroundColor: 'primary.main',
+                    backgroundImage: `url(${defaultBanner.src})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
                     color: 'whiteS',
                     display: 'flex',
                     justifyContent: 'center',
