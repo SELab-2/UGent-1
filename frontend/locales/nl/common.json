@@ -32,7 +32,6 @@
   "edit_project": "Aanpassen",
   "email": "E-mail",
   "evaluation": "Evaluatie",
-  "files": "Bestanden",
   "filter_courses": "Filter Cursussen",
   "github": "GitHub",
   "group": "Groep",
@@ -115,5 +114,13 @@
   "no_conditions": "Geen voorwaarden",
   "Prev" : "Vorige",
   "Next": "Volgende",
-  "View": "Bekijk"
+  "View": "Bekijk",
+  "year": "Jaargang",
+  "archive_course": "Cursus archiveren",
+  "files": "Upload bestanden:",
+  "ERROR_NOT_IN_GROUP": "Je zit niet in een groep",
+  "ERROR_GROUP_NOT_FOUND": "Groep niet gevonden",
+  "ERROR_DEADLINE_EXPIRED": "Deadline is verstreken",
+  "ERROR_FILE_UPLOAD": "Fout bij uploaden bestand",
+  "ERROR_SUBMISSION_NOT_FOUND": "Inlevering niet gevonden"
 }
