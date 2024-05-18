@@ -13,6 +13,13 @@ class CanAccessSubmission(permissions.BasePermission):
     # to the submission data.
     def has_permission(self, request, view):
         user = request.user
+
+        if not user.is_authenticated:
+            return False
+
+        if view.action == "get_project":
+            return True
+
         if view.action in ["list"]:
             return False
         elif view.action in ["download_selection"]:

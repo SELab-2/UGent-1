@@ -21,7 +21,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
     const { t } = useTranslation();
 
     const [submission, setSubmission] = useState<Submission>();
-    const [project, setProject] = useState<Project>();
+    const [projectId, setProjectId] = useState<number>();
     const [loadingSubmission, setLoadingSubmission] = useState<boolean>(true);
 
     useEffect(() => {
@@ -35,7 +35,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
 
         const fetchProject = async () => {
             try {
-                setProject(await getProjectFromSubmission(submission_id));
+                setProjectId(await getProjectFromSubmission(submission_id));
             } catch (error) {
                 console.error("There was an error fetching the project data:", error);
             }

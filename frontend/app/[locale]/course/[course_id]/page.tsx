@@ -15,8 +15,8 @@ const i18nNamespaces = ['common']
 export default async function Course({params: {locale, course_id}, searchParams: {token}}:
                                          { params: { locale: any, course_id: number }, searchParams: { token: string } }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
-    const headers = [t('name'), t('deadline'), t('view')]
-    const headers_backend = ['name', 'deadline', 'view']
+    const headers = [t('name'), t('deadline'), '']
+    const headers_backend = ['name', 'deadline', '']
 
     return (
         <TranslationsProvider
