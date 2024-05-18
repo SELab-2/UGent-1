@@ -49,6 +49,7 @@ import {
 } from '@lib/api';
 import baseTheme from "../../../styles/theme";
 import {useTranslation} from "react-i18next";
+import StudentCoTeacherButtons from './StudentCoTeacherButtons';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -356,7 +357,7 @@ const ListView: NextPage<ListViewProps> = ({
                     }}
                 />
             }
-            {admin && action_name && action_name !== 'download_submission' && (
+            {admin && action_name && action_name !== 'download_submission' && !(action_name && user?.role === 3) && (
                 <RemoveButton
                     onClick={()=>{
                         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -435,7 +436,7 @@ const ListView: NextPage<ListViewProps> = ({
                         <TableHead>
                             <TableRow>
                                 {(get !== 'groups' && get !== 'projects'  && get !== 'courses' && !(get === 'submissions' && !action_name)) && 
-                                get !== 'course_teachers' && get !== 'users' &&
+                                get !== 'course_teachers' && get !== 'users' && !(action_name && user?.role === 3) &&
                                     <StyledTableCell>
                                         <Typography
                                             variant={"body1"}
@@ -503,7 +504,7 @@ const ListView: NextPage<ListViewProps> = ({
                         {rows.map((row, index) => (
                             <StyledTableRow key={index}>
                                 {((get !== 'groups' && get !== 'projects' && get !== 'courses' && !(get === 'submissions' && !action_name) && get != 'users') &&
-                                  get !== 'course_teachers' &&
+                                  get !== 'course_teachers' && !(action_name && user?.role === 3) &&
                                     <StyledTableCell>
                                         {<CheckBoxWithCustomCheck checked={false}/>}
                                     </StyledTableCell>)}

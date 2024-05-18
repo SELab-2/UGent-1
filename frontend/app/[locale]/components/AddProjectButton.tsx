@@ -1,7 +1,7 @@
 "use client";
 import {useTranslation} from "react-i18next";
 import {Button, Typography} from "@mui/material";
-import {addProject, getUserData} from "@lib/api";
+import {addProject, getUserData, UserData} from "@lib/api";
 import {useState, useEffect} from "react";
 
 interface EditCourseButtonProps{
