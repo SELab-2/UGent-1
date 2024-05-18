@@ -17,11 +17,12 @@ class CourseUserPermissions(permissions.BasePermission):
             "get_teachers",
             "get_students",
             "get_archived_courses",
+            "get_open_courses"
         ]:
             return True
 
         if request.user.is_teacher:
-            if view.action in ["create", "list", "retrieve", "get_open_courses"]:
+            if view.action in ["create", "list", "retrieve"]:
                 return True
             elif (
                 view.action in ["update", "partial_update", "destroy", "get_projects"]
