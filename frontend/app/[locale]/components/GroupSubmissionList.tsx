@@ -3,9 +3,10 @@
 import ListView from "@app/[locale]/components/ListView";
 import React from "react";
 
-const GroupSubmissionList = ({project_id, page_size = 5}: {
+const GroupSubmissionList = ({project_id, page_size = 5, search}: {
     project_id: number,
-    page_size: number
+    page_size: number,
+    search: string
 }) => {
     const headers = ["Group number", "Submission date", "Status", "View"]
     const headers_backend = ["group_nr", "submission_date", "status", "View"]
@@ -21,6 +22,7 @@ const GroupSubmissionList = ({project_id, page_size = 5}: {
             action_name={'download_submission'}
             page_size={page_size}
             headers_backend={headers_backend}
+            search_text={search}
         />
 
     )

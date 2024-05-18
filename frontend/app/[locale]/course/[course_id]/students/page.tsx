@@ -2,7 +2,9 @@ import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
 import ListView from '@app/[locale]/components/ListView';
-import BackButton from "@app/[locale]/components/BackButton";
+import {Box, Button} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import React from "react";
 
 const i18nNamespaces = ['common']
 
@@ -20,11 +22,15 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
             namespaces={i18nNamespaces}
         >
             <NavBar />
-            <div style={{marginTop:60, padding:20}}>
-                <BackButton
-                    destination={`/course/${course_id}`}
-                    text={t('back_to') + ' ' + t('course')}
-                />
+            <Box width={'100%'} style={{padding:20}}>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<ArrowBackIcon/>}
+                    href={`/course/${course_id}`}
+                >
+                    {t('back_to') + ' ' + t('course') + ' ' + t('page')}
+                </Button>
                 <ListView
                     admin={true}
                     headers={headers}
@@ -34,9 +40,9 @@ export default async function StudentsPage({ params }: { params: { locale: any, 
                     get={'course_students'}
                     action_name={'remove_from_course'}
                     action_text={t('remove_user_from_course')}
-                    search_text={t('search')}
+                    search_text={t('search_student')}
                 />
-            </div>
+            </Box>
         </TranslationsProvider>
     );
 }
