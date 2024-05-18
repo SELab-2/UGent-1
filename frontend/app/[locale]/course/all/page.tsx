@@ -37,8 +37,6 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
                     headers_backend={headers_backend}
                     sortable={[true, false, false, false]}
                     get={'courses'}
-                    action_name={'join_course'}
-                    action_text={t('join_course')}
                     search_text={t("search_course")}
                 />
             </Box>
