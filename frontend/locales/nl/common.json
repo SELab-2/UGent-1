@@ -134,5 +134,9 @@
   "ERROR_DEADLINE_EXPIRED": "Deadline is verstreken",
   "ERROR_FILE_UPLOAD": "Fout bij uploaden bestand",
   "ERROR_SUBMISSION_NOT_FOUND": "Inlevering niet gevonden",
-  "upload_folders": "Upload een map:"
+  "upload_folders": "Upload een map:",
+  "group_number": "Groep nummer",
+  "submission_date": "Inleverdatum",
+  "status": "Status",
+  "join/leave": "Toetreden/Verlaten"
 }

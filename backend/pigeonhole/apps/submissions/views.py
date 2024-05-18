@@ -219,6 +219,13 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
         return response
 
+    @action(detail=True, methods=["get"])
+    def get_project(self, request, *args, **kwargs):
+        return Response(
+            {"project": self.get_object().group_id.project_id.project_id},
+            status=status.HTTP_200_OK
+        )
+
 
 def check_restrictions(filenames, restrictions):
     violations = []

@@ -49,6 +49,7 @@ import {
 } from '@lib/api';
 import baseTheme from "../../../styles/theme";
 import {useTranslation} from "react-i18next";
+import StudentCoTeacherButtons from './StudentCoTeacherButtons';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -131,6 +132,7 @@ const ListView: NextPage<ListViewProps> = ({
     const [user, setUser] = useState<any>();
     const [user_is_in_group, setUserIsInGroup] = useState(false);
     const [project, setProject] = useState<any>();
+    const [group_size, setGroupSize] = useState(0);
     // multiple pages
     const [currentPage, setCurrentPage] = useState(1);
     const [previousPage, setPreviousPage] = useState(0);
@@ -180,6 +182,7 @@ const ListView: NextPage<ListViewProps> = ({
                             }
                             l.push(i.email);
                         }
+                        setGroupSize((await getProject(data.project_id)).group_size);
                         return [data.group_id, data.user, data.group_nr, l.join(', ')];
                     },
                     'submissions': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_test !== undefined],
@@ -356,7 +359,7 @@ const ListView: NextPage<ListViewProps> = ({
                     }}
                 />
             }
-            {admin && action_name && action_name !== 'download_submission' && (
+            {admin && action_name && action_name !== 'download_submission' && !(action_name && user?.role === 3) && (
                 <RemoveButton
                     onClick={()=>{
                         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -434,7 +437,8 @@ const ListView: NextPage<ListViewProps> = ({
                     >
                         <TableHead>
                             <TableRow>
-                                {(get !== 'groups' && get !== 'projects'  && get !== 'courses' && !(get === 'submissions' && !action_name)) && get !== 'users' &&
+                                {(get !== 'groups' && get !== 'projects'  && get !== 'courses' && !(get === 'submissions' && !action_name)) && 
+                                get !== 'course_teachers' && get !== 'users' && !(action_name && user?.role === 3) && get !== 'archived_courses' &&
                                     <StyledTableCell>
                                         <Typography
                                             variant={"body1"}
@@ -502,6 +506,7 @@ const ListView: NextPage<ListViewProps> = ({
                         {rows.map((row, index) => (
                             <StyledTableRow key={index}>
                                 {((get !== 'groups' && get !== 'projects' && get !== 'courses' && !(get === 'submissions' && !action_name) && get != 'users') &&
+                                  get !== 'course_teachers' && !(action_name && user?.role === 3 && get !== 'archived_courses') &&
                                     <StyledTableCell>
                                         {<CheckBoxWithCustomCheck checked={false}/>}
                                     </StyledTableCell>)}
@@ -563,7 +568,7 @@ const ListView: NextPage<ListViewProps> = ({
                                     get === 'groups' && (row[1].includes(user.id)) && (
                                         <StyledTableCell>
                                             {
-                                                (user.role == 3) && (user_is_in_group) && (
+                                                (user.role == 3) && (user_is_in_group) && (group_size > 1) && (
                                                     <Button
                                                         onClick={() => postData('/groups/' + row[0] + '/leave/', {group_id: row[0]}).then(() => window.location.reload())
                                                         }>

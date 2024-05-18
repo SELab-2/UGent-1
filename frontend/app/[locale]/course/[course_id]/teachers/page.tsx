@@ -5,6 +5,7 @@ import ListView from '@app/[locale]/components/ListView';
 import {Box, Button} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React from "react";
+import EmailIcon from '@mui/icons-material/Email';
 
 const i18nNamespaces = ['common']
 
@@ -12,7 +13,7 @@ export default async function TeachersPage({params}: { params: { locale: any, co
     const {locale, course_id} = params;
     const {t, resources} = await initTranslations(locale, i18nNamespaces);
 
-    const headers = [t('email')];
+    const headers = [<React.Fragment key="email"><EmailIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('email')}</React.Fragment>];
     const headers_backend = ['email'];
 
     return (
