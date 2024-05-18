@@ -115,7 +115,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                                     <Grid item>
                                         <Button
                                             variant="contained"
-                                            color="primary"
+                                            color="secondary"
                                             startIcon={<EditIcon/>}
                                             href={`/${locale}/project/${project_id}/edit`}
                                             sx={{
@@ -130,7 +130,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                                 <Grid item>
                                     <Button
                                         variant="contained"
-                                        color="primary"
+                                        color="secondary"
                                         startIcon={<GroupIcon/>}
                                         href={`/${locale}/project/${project_id}/groups`}
                                         sx={{
@@ -189,7 +189,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                                 <div>
                                     <Button
                                         variant="contained"
-                                        color="primary"
+                                        color="secondary"
                                         href={`${backend_url}/projects/${project_id}/download_testfiles`}
                                         startIcon={<DownloadIcon />}
                                     >
@@ -228,6 +228,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                         <GroupSubmissionList
                             project_id={project_id}
                             page_size={8}
+                            search={t("submission_search")}
                         />
                     </Box>
                 ) : (
@@ -250,6 +251,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({locale, project_
                         <ProjectSubmissionsList
                             project_id={project_id}
                             page_size={8}
+                            search={t("submission_search")}
                         />
                     </Box>
                 )}
