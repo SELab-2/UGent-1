@@ -5,13 +5,19 @@ import NavBar from "@app/[locale]/components/NavBar";
 import Footer from "@app/[locale]/components/Footer";
 import ListView from '@app/[locale]/components/ListView';
 import BackButton from '@app/[locale]/components/BackButton';
+import EmailIcon from '@mui/icons-material/Email';
+import WorkIcon from '@mui/icons-material/Work';
 
 const i18nNamespaces = ['common'];
 
 export default async function Users({ params: { locale } }: { params: { locale: any } }) {
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
-    const headers = [t('email'), t('role'), ''];
+    const headers = [
+        <React.Fragment><EmailIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('email')}</React.Fragment>,
+        , 
+        <React.Fragment><WorkIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('role')}</React.Fragment>
+        , ''];
     const headers_backend = ['email', 'role', ''];
 
     return (

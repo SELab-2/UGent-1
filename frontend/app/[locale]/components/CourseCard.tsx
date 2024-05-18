@@ -4,6 +4,8 @@ import {Card, CardContent, CardMedia, Typography, Box} from '@mui/material';
 import {Course, getLastSubmissionFromProject, getProjectsFromCourse, Project, Submission,} from "@lib/api";
 import {useTranslation} from "react-i18next";
 import ListView from '@app/[locale]/components/ListView';
+import AccesAlarm from '@mui/icons-material/AccessAlarm';
+import Person from '@mui/icons-material/Person';
 
 const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -40,8 +42,11 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
 
         fetchProjects();
     }, [course.course_id]);
-
-    const headers = [t('name'), t('deadline'), '']
+    
+    const headers = [
+     <React.Fragment><Person style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('name')}</React.Fragment>, 
+    <React.Fragment><AccesAlarm style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " +t('deadline')}</React.Fragment>, 
+    '']
     const headers_backend = ['name', 'deadline', '']
 
 

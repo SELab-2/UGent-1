@@ -5,6 +5,8 @@ import ListView from '@app/[locale]/components/ListView';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Button, Box } from "@mui/material";
 import React from "react";
+import GroupsIcon from '@mui/icons-material/Groups';
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 
 const i18nNamespaces = ['common']
 
@@ -12,7 +14,10 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
     const { locale, project_id: projectId } = params; 
     const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
-    const headers = [t('group_nr'), t('members'), t('join/leave')];
+    const headers = [
+        <React.Fragment><GroupsIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('group_nr')}</React.Fragment>
+        , t('members'), 
+        <React.Fragment><MeetingRoomIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('join_leave')}</React.Fragment>];
     const headers_backend = ['group_nr', 'members', 'join/leave'];
     
     return (
