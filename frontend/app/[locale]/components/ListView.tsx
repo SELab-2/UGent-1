@@ -41,7 +41,8 @@ import {
     getUser,
     getUserData,
     getUsers,
-    postData
+    postData,
+    getOpenCourses
 } from '@lib/api';
 import baseTheme from "../../../styles/theme";
 import {useTranslation} from "react-i18next";
@@ -194,7 +195,7 @@ const ListView: NextPage<ListViewProps> = ({
                         return parse_pages(await getTeachers_by_course(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'courses': async () => {
-                        return parse_pages(await getCourses(currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
+                        return parse_pages(await getOpenCourses(currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'projects': async () => {
                         return parse_pages(await getProjects_by_course(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));

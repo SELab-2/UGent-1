@@ -78,14 +78,15 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
         if not group:
             return Response(
-                {"message": "Group not found", "errorcode": "ERROR_GROUP_NOT_FOUND"}, status=status.HTTP_404_NOT_FOUND
+                {"message": "Group not found", "errorcode":
+                    "ERROR_GROUP_NOT_FOUND"}, status=status.HTTP_404_NOT_FOUND
             )
 
         project = Project.objects.get(project_id=group.project_id.project_id)
         if not project:
             return Response(
-                {"message": "Project not found"},
-                status=status.HTTP_404_NOT_FOUND
+                {"message": "Project not found", "errorcode":
+                    "ERROR_PROJECT_NOT_FOUND"}, status=status.HTTP_404_NOT_FOUND
             )
 
         now_naive = datetime.now().replace(
@@ -93,9 +94,9 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         )  # Making it timezone-aware in UTC
         if project.deadline and now_naive > project.deadline:
             return Response(
-                {"message": "Deadline expired"},
+                {"message": "Deadline expired",
+                 "errorcode": "ERROR_DEADLINE_EXPIRED"},
                 status=status.HTTP_400_BAD_REQUEST
-
             )
 
         serializer.save()
@@ -116,8 +117,8 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         except IOError as e:
             print(e)
             return Response(
-                {"message": "Error uploading files"},
-                status=status.HTTP_400_BAD_REQUEST
+                {"message": "Error uploading files", "errorcode":
+                    "ERROR_FILE_UPLOAD"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -133,13 +134,15 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         submission = self.get_object()
         if submission is None:
             return Response(
-                {"message": f"Submission with id {id} not found", "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
+                {"message": f"Submission with id {id} not found", "errorcode":
+                    "ERROR_SUBMISSION_NOT_FOUND"},
                 status=status.HTTP_404_NOT_FOUND
             )
 
         archivename = "submission_" + str(submission.submission_id)
         downloadspath = 'backend/downloads/'
-        submission_path = submission_folder_path(submission.group_id.group_id, submission.submission_id)
+        submission_path = submission_folder_path(submission.group_id.group_id,
+                                                 submission.submission_id)
 
         shutil.make_archive(downloadspath + archivename, 'zip', submission_path)
 
@@ -165,7 +168,8 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             submission = Submissions.objects.get(submission_id=ids[0])
             if submission is None:
                 return Response(
-                    {"message": f"Submission with id {ids[0]} not found", "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
+                    {"message": f"Submission with id {ids[0]} not found",
+                     "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
@@ -179,7 +183,8 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 submission = Submissions.objects.get(submission_id=sid)
                 if submission is None:
                     return Response(
-                        {"message": f"Submission with id {id} not found", "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
+                        {"message": f"Submission with id {id} not found",
+                         "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
                         status=status.HTTP_404_NOT_FOUND
                     )
                 submission_folders.append(
