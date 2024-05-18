@@ -12,7 +12,6 @@ import DownloadIcon from "@mui/icons-material/CloudDownload";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
-
 interface ProjectDetailsPageProps {
     locale: any,
     submission_id: number;
@@ -66,23 +65,23 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
 
     return (
         <ThemeProvider theme={baseTheme}>
-            <Grid container justifyContent="center" alignItems="flex-start" style={{ width: 'fit-content', maxWidth: '100%' }}>
-                <Grid item style={{padding: 20}}>
+            <Grid container justifyContent="center" alignItems="flex-start" style={{ width: '100%', padding: '20px' }}>
+                <Grid item xs={12} style={{paddingBottom: '20px'}}>
                     <ProjectReturnButton locale={locale} project_id={project?.project_id} />
                 </Grid>
-                <Grid item style={{padding: 20, marginRight: "233px"}}>
-                    <Card raised style={{ width: 800 }}>
+                <Grid item xs={12}>
+                    <Card raised style={{ width: '100%' }}>
                         <CardContent>
-                            <Typography variant="h4" style={{ fontWeight: 'bold' }}>
+                            <Typography variant="h4" style={{ fontWeight: 'bold', marginBottom: '20px' }}>
                                 {`${t("submission")} #${submission?.submission_nr}`}
                             </Typography>
-                            <Divider style={{ marginBottom: 64 }}/>
-                            <Grid container spacing={3}>
-                                <Grid item xs={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                                    <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: 2 }}>
+                            <Divider style={{ marginBottom: '20px' }}/>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                    <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
                                         {`${t("evaluation")} status`}
                                     </Typography>
-                                    <div style={{ display: "flex", alignItems: "flex-end", columnGap: "10px" }}>
+                                    <div style={{ display: "flex", alignItems: "center", columnGap: "10px" }}>
                                         {submission?.output_test !== "" ? (
                                             <CheckIcon color="success" style={{ fontSize: 40 }}/>
                                         ) : (
@@ -98,8 +97,8 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
                                         </div>
                                     </div>
                                 </Grid>
-                                <Grid item xs={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                                    <Typography variant="h6" gutterBottom style={{ fontWeight: 'bold', color: 'primary.main', marginBottom: 2 }}>
+                                <Grid item xs={12} sm={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                    <Typography variant="h6" gutterBottom style={{ fontWeight: 'bold', color: 'primary.main', marginBottom: '10px' }}>
                                         {t("uploaded_files")}
                                     </Typography>
                                     <Button
@@ -108,6 +107,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
                                         startIcon={<DownloadIcon />}
                                         href={`${backend_url}/submissions/${submission_id}/download`}
                                         download
+                                        size="small" // Adjust button size
                                     >
                                         {t("download_file")}
                                     </Button>
