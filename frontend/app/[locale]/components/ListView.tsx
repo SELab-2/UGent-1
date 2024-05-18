@@ -434,7 +434,8 @@ const ListView: NextPage<ListViewProps> = ({
                     >
                         <TableHead>
                             <TableRow>
-                                {(get !== 'groups' && get !== 'projects'  && get !== 'courses' && !(get === 'submissions' && !action_name)) && get !== 'users' &&
+                                {(get !== 'groups' && get !== 'projects'  && get !== 'courses' && !(get === 'submissions' && !action_name)) && 
+                                get !== 'course_teachers' && get !== 'users' &&
                                     <StyledTableCell>
                                         <Typography
                                             variant={"body1"}
@@ -502,6 +503,7 @@ const ListView: NextPage<ListViewProps> = ({
                         {rows.map((row, index) => (
                             <StyledTableRow key={index}>
                                 {((get !== 'groups' && get !== 'projects' && get !== 'courses' && !(get === 'submissions' && !action_name) && get != 'users') &&
+                                  get !== 'course_teachers' &&
                                     <StyledTableCell>
                                         {<CheckBoxWithCustomCheck checked={false}/>}
                                     </StyledTableCell>)}
