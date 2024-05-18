@@ -63,12 +63,12 @@ const CreateCourseForm = () => {
     };
 
     useEffect(() => {
-        if (selectedImage === null) {
+        if (selectedImageURL === "") {
             fetch(banner.src)
                 .then(response => response.blob())
                 .then(blob => {
                     const file = new File([blob], "filename", {type: "image/png"});
-                    setSelectedImage(file);
+                    // setSelectedImage(file);
                     setSelectedImageURL(banner.src)
                 })
         }
