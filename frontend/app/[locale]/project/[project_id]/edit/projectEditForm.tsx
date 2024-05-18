@@ -259,7 +259,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
                                 <FinishButtons 
                                     visible={visible} 
                                     setVisible={setVisible} 
-                                    handleSave={() => setConfirmSubmit(true)} 
+                                    handleSave={async () => setConfirmSubmit(true)}
                                     setConfirmRemove={setConfirmRemove} 
                                     course_id={course_id} 
                                     setHasDeadline={setHasDeadline} 
@@ -273,8 +273,8 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps){
                         </Box>
                         <RemoveDialog
                             confirmRemove={confirmRemove}
-                            handle_remove={handle_remove}
-                            setConfirmRemove={setConfirmRemove}/>
+                            setConfirmRemove={setConfirmRemove}
+                            handleRemove={handle_remove}/>
                         <SubmitConfirmationDialog
                             open={confirmSubmit}
                             handleClose={() => setConfirmSubmit(false)}

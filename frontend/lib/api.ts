@@ -346,7 +346,7 @@ export async function updateProject(id: number, data: any): Promise<Project> {
 }
 
 export async function deleteProject(id: number): Promise<void> {
-    return (await deleteData(`/projects/${id}/`));
+    return (await deleteData(`/projects/${id}`));
 }
 
 export async function getProjects(): Promise<Project[]> {
