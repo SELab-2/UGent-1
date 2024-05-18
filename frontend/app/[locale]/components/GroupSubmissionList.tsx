@@ -2,14 +2,16 @@
 
 import ListView from "@app/[locale]/components/ListView";
 import React from "react";
+import {useTranslation} from "react-i18next";
 
 const GroupSubmissionList = ({project_id, page_size = 5, search}: {
     project_id: number,
     page_size: number,
     search: string
 }) => {
-    const headers = ["Group number", "Submission date", "Status", "View"]
-    const headers_backend = ["group_nr", "submission_date", "status", "View"]
+    const {t} = useTranslation()
+    const headers = [t("group_number"), t("submission_date"), t("Status"), ""]
+    const headers_backend = ["group_nr", "submission_date", "status", ""]
     const sortable = [true, true, false]
 
     return (
