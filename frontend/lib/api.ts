@@ -684,12 +684,16 @@ export async function uploadSubmissionFile(event: any, project_id: string) : Pro
 
     for(let file of event.target.fileList.files){
         let path = file.webkitRelativePath;
-        if(path)
         if (path.includes("/")) {
             path = path.substring((path.indexOf("/")??0)+1, path.length);
         }
         formData.append(path, file);
     }
+
+    for(let file of event.target.fileList2.files){
+        formData.append(file.name, file);
+    }
+
     formData.delete("fileList");
     const formDataObject = Object.fromEntries(formData.entries());
     console.log(formDataObject)

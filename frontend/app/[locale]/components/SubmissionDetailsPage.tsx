@@ -10,6 +10,9 @@ import CheckIcon from "@mui/icons-material/Check";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DownloadIcon from "@mui/icons-material/CloudDownload";
 
+const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
+
+
 interface ProjectDetailsPageProps {
     locale: any,
     submission_id: number;
@@ -103,7 +106,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
                                         variant="contained"
                                         color="primary"
                                         startIcon={<DownloadIcon />}
-                                        href={`/submissions/${submission_id}/download`}
+                                        href={`${backend_url}/submissions/${submission_id}/download`}
                                         download
                                     >
                                         {t("download_file")}
