@@ -11,6 +11,7 @@ describe('go to home page as student', () => {
         cy.contains('Filter Courses');
         cy.contains('View Archive');
         cy.contains('View All Courses');
+        cy.contains('Site Users');
         cy.contains('en');
 
     });
