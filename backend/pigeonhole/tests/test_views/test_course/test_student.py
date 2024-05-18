@@ -33,7 +33,8 @@ class CourseTestStudent(TestCase):
         self.course = Course.objects.create(**self.course_data)
 
         self.course_individual_project = Course.objects.create(name="Not of Student",
-                                                                description="This is not of the student",
+                                                                description="This is not "
+                                                                            "of the student",
                                                                 open_course=True)
         self.individual_project = Project.objects.create(name="Individual Project",
                                                          deadline="2021-12-12 12:12:12",
