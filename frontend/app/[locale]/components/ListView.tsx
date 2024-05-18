@@ -438,7 +438,7 @@ const ListView: NextPage<ListViewProps> = ({
                         <TableHead>
                             <TableRow>
                                 {(get !== 'groups' && get !== 'projects'  && get !== 'courses' && !(get === 'submissions' && !action_name)) && 
-                                get !== 'course_teachers' && get !== 'users' && !(action_name && user?.role === 3) &&
+                                get !== 'course_teachers' && get !== 'users' && !(action_name && user?.role === 3) && get !== 'archived_courses' &&
                                     <StyledTableCell>
                                         <Typography
                                             variant={"body1"}
@@ -506,7 +506,7 @@ const ListView: NextPage<ListViewProps> = ({
                         {rows.map((row, index) => (
                             <StyledTableRow key={index}>
                                 {((get !== 'groups' && get !== 'projects' && get !== 'courses' && !(get === 'submissions' && !action_name) && get != 'users') &&
-                                  get !== 'course_teachers' && !(action_name && user?.role === 3) &&
+                                  get !== 'course_teachers' && !(action_name && user?.role === 3 && get !== 'archived_courses') &&
                                     <StyledTableCell>
                                         {<CheckBoxWithCustomCheck checked={false}/>}
                                     </StyledTableCell>)}
