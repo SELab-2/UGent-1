@@ -6,7 +6,8 @@ import {useTranslation} from "react-i18next";
 import React, {useEffect, useState} from 'react';
 import banner from '../../../public/ugent_banner.png'
 import Typography from "@mui/material/Typography";
-import {Button, Input, MenuItem, Select, TextField} from "@mui/material";
+import {Button, Input, MenuItem, Select, TextField, 
+    Dialog, DialogActions, DialogTitle} from "@mui/material";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -15,12 +16,13 @@ import {visuallyHidden} from "@mui/utils";
 import dayjs from "dayjs";
 
 const CreateCourseForm = () => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [selectedImageURL, setSelectedImageURL] = useState<string>("");
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [open, setOpen] = useState(false);
+    const [openConfirmation, setOpenConfirmation] = useState(false); // State for confirmation dialog
     const [year, setYear] = useState(0);
 
     const handleImageUpload = (event: any) => {
@@ -33,6 +35,15 @@ const CreateCourseForm = () => {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
+        setOpenConfirmation(true); // Open confirmation dialog
+    };
+
+    const handleConfirmationClose = () => {
+        setOpenConfirmation(false);
+    };
+
+    const handleConfirmationYes = async () => {
+        setOpenConfirmation(false);
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
@@ -42,14 +53,14 @@ const CreateCourseForm = () => {
         fileReader.onload = async function () {
             const arrayBuffer = this.result;
             if (arrayBuffer !== null) {
-                formData.append('banner', new Blob([arrayBuffer], {type: 'image/png'}));
+                formData.append('banner', new Blob([arrayBuffer], { type: 'image/png' }));
                 await postData("/courses/", formData).then((response) => {
                     window.location.href = `/course/${response.course_id}`;
                 });
             }
         }
         if (selectedImage) fileReader.readAsArrayBuffer(selectedImage);
-    }
+    };
 
     useEffect(() => {
         if (selectedImage === null) {
@@ -232,6 +243,22 @@ const CreateCourseForm = () => {
                     {t("cancel")}
                 </Button>
             </Box>
+            <Dialog
+                open={openConfirmation}
+                onClose={handleConfirmationClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{t("Are you sure you want to submit this course?")}</DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleConfirmationClose} color="primary">
+                        {t("cancel")}
+                    </Button>
+                    <Button onClick={handleConfirmationYes} color="primary" autoFocus>
+                        {t("create_course")}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }
