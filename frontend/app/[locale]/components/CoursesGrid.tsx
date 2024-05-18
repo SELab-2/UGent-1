@@ -44,9 +44,11 @@ const CoursesGrid = ({selectedYear}) => {
             <Grid
                 container
                 justifyContent="center"
-                justifyItems={'center'}
                 spacing={2}
+
                 sx={{
+                    paddingRight: 2,
+                    paddingBottom: 2,
                     flexGrow: 1
                 }}
             >
@@ -55,8 +57,10 @@ const CoursesGrid = ({selectedYear}) => {
                         <Grid
                             item={true}
                             key={index}
-                            xs={10}
-                            sm={5}
+                            xs={12}
+                            sm={12}
+                            md={12}
+                            lg={6}
                         >
                             <Skeleton
                                 variant="rounded"
@@ -75,10 +79,15 @@ const CoursesGrid = ({selectedYear}) => {
                 ) : (
                     filteredCourses.map((course: Course, index) => (
                         <Grid
-                            item={true}
+                            display={'flex'}
+                            item
                             key={index}
-                            xs={10}
-                            sm={5}
+                            xs={12}
+                            sm={12}
+                            md={12}
+                            lg={6}
+                            width={'100%'}
+                            justifyContent={'center'}
                         >
                             <CourseCard params={{course: course}}/>
                         </Grid>
