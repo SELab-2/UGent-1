@@ -1,7 +1,8 @@
 "use client";
 import {useTranslation} from "react-i18next";
 import {Button, Typography} from "@mui/material";
-import {addProject} from "@lib/api";
+import {addProject, getUserData} from "@lib/api";
+import {useState, useEffect} from "react";
 
 interface EditCourseButtonProps{
     course_id:number
@@ -9,8 +10,24 @@ interface EditCourseButtonProps{
 
 const AddProjectButton = ({course_id}: EditCourseButtonProps) => {
     const {t} = useTranslation();
+    const [user, setUser] = useState<UserData | null>(null);
+
+    
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                setUser(await getUserData());
+            } catch (error) {
+                console.error("There was an error fetching the user data:", error);
+            }
+        }
+
+        fetchUser();
+    }, [])
 
     return (
+        <>
+        {user?.role !== 3 && (
         <Button
             variant="contained"
             color="secondary"
@@ -34,6 +51,8 @@ const AddProjectButton = ({course_id}: EditCourseButtonProps) => {
                 </Typography>
             </Typography>
         </Button>
+    )}
+    </>
     )
 }
 export default AddProjectButton
