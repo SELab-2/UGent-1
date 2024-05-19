@@ -115,17 +115,17 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
                 <Typography variant="h4">{project?.name}</Typography>
               </Grid>
               <Grid item xs={12} sm={6} justifyContent="flex-end">
-                <div style={{float: 'right', display: 'flex'}}>
-                    {user?.role !== 3 && (
+                <Box sx={{ float: 'right', display: 'flex' }}>
+                  {user?.role !== 3 && (
                     <Grid item xs={6} sm={6}>
                       <Button
                         variant="contained"
                         color="secondary"
                         startIcon={<EditIcon />}
                         href={`/${locale}/project/${project_id}/edit`}
-                        sx={{ fontSize: "0.75rem", py: 1, marginRight: "2rem"}}
+                        sx={{ fontSize: '0.75rem', py: 1, marginRight: '2rem' }}
                       >
-                        {t("edit_project")}
+                        {t('edit_project')}
                       </Button>
                     </Grid>
                   )}
@@ -135,12 +135,12 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
                       color="secondary"
                       startIcon={<GroupIcon />}
                       href={`/${locale}/project/${project_id}/groups`}
-                      sx={{ fontSize: "0.75rem", py: 1 }}
+                      sx={{ fontSize: '0.75rem', py: 1 }}
                     >
-                      {t("groups")}
+                      {t('groups')}
                     </Button>
                   </Grid>
-                </div>
+                </Box>
               </Grid>
             </Grid>
             <Divider style={{ marginBottom: "1rem" }} />
