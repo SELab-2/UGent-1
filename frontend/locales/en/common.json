@@ -126,13 +126,14 @@
   "user last name": "Last name of user",
   "user email": "Email of user",
   "Are you sure you want to submit this course?": "Are you sure you want to submit this course?",
-  "files": "Upload files:",
-  "year": "Year",
-  "archive_course": "Archive course",
-  "files": "Upload files:",
   "ERROR_NOT_IN_GROUP": "You're not in a group",
   "ERROR_GROUP_NOT_FOUND": "Group not found",
   "ERROR_DEADLINE_EXPIRED": "Deadline expired",
   "ERROR_FILE_UPLOAD": "Error when uploading file",
-  "ERROR_SUBMISSION_NOT_FOUND": "Submission not found"
+  "ERROR_SUBMISSION_NOT_FOUND": "Submission not found",
+  "upload_folders": "Upload folders:",
+  "group_number": "Group number",
+  "submission_date": "Submission date",
+  "status": "Status",
+  "join/leave": "Join/Leave"
 }

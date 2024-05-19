@@ -1,6 +1,6 @@
 "use client"
 
-import {MenuItem, Select, SelectChangeEvent} from '@mui/material';
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ const LanguageSelect = () => {
     const router = useRouter();
     let currentPathname = usePathname();
 
-    const handleChange = (e:SelectChangeEvent<String>) => {
+    const handleChange = (e: SelectChangeEvent<String>) => {
         const newLocale = e.target.value;
 
         // set cookie for next-i18n-router
@@ -40,7 +40,7 @@ const LanguageSelect = () => {
         router.refresh();
     };
 
-    return(
+    return (
         <div>
             <Select
                 autoWidth
@@ -77,8 +77,12 @@ const LanguageSelect = () => {
                     }
                 }}
             >
-                <MenuItem value='en'>en</MenuItem>
-                <MenuItem value='nl'>nl</MenuItem>
+                <MenuItem value='en'>
+                    English
+                </MenuItem>
+                <MenuItem value='nl'>
+                    Nederlands
+                </MenuItem>
             </Select>
         </div>
     );

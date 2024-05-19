@@ -29,10 +29,15 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                 console.error(error);
             }
 
+
         };
+
 
         fetchUser();
     }, []);
+
+
+
 
     const years = [
         `${currentYear - 2}-${(currentYear - 1).toString().slice(-2)}`,
@@ -92,6 +97,9 @@ const CourseControls = ({selectedYear, onYearChange}) => {
             </Stack>
         </Box>
     );
+
+
+
 };
 
 export default CourseControls;
