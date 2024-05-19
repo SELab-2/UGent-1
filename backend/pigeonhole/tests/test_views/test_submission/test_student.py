@@ -11,7 +11,7 @@ from backend.pigeonhole.apps.users.models import User
 API_ENDPOINT = "/submissions/"
 
 
-class SubmissionTestTeacher(TestCase):
+class SubmissionTestStudent(TestCase):
     def setUp(self):
         self.client = APIClient()
 
@@ -30,22 +30,50 @@ class SubmissionTestTeacher(TestCase):
 
         self.student.course.set([self.course])
 
-        self.project = Project.objects.create(
+        self.project_1 = Project.objects.create(
             name="Test Project",
             course_id=self.course,
             deadline="2025-12-12 12:12:12",
+            file_structure="+extra/verslag.pdf"
         )
 
-        self.group = Group.objects.create(group_nr=1, project_id=self.project)
+        self.project_2 = Project.objects.create(
+            name="Test Project",
+            course_id=self.course,
+            deadline="2025-12-12 12:12:12",
+            file_structure="-extra/verslag.pdf"
+        )
+
+        self.project_3 = Project.objects.create(
+            name="Test Project",
+            course_id=self.course,
+            deadline="2025-12-12 12:12:12",
+            file_structure="+src/*.py"
+        )
+
+        self.project_4 = Project.objects.create(
+            name="Test Project",
+            course_id=self.course,
+            deadline="2025-12-12 12:12:12",
+            file_structure="-src/*.py"
+        )
+
+        self.group_1 = Group.objects.create(group_nr=1, project_id=self.project_1)
+        self.group_2 = Group.objects.create(group_nr=1, project_id=self.project_2)
+        self.group_3 = Group.objects.create(group_nr=1, project_id=self.project_3)
+        self.group_4 = Group.objects.create(group_nr=1, project_id=self.project_4)
 
         self.group_not_of_student = Group.objects.create(
-            group_nr=2, project_id=self.project
+            group_nr=2, project_id=self.project_1
         )
 
-        self.group.user.set([self.student])
+        self.group_1.user.set([self.student])
+        self.group_2.user.set([self.student])
+        self.group_3.user.set([self.student])
+        self.group_4.user.set([self.student])
 
         self.submission = Submissions.objects.create(
-            group_id=self.group, file_urls="file_urls"
+            group_id=self.group_1, file_urls="file_urls"
         )
 
         self.submission_not_of_student = Submissions.objects.create(
@@ -54,8 +82,48 @@ class SubmissionTestTeacher(TestCase):
 
         self.client.force_authenticate(self.student)
 
-    def test_can_create_submission(self):
-        response = self.client.post(API_ENDPOINT, {"group_id": self.group.group_id})
+    def test_can_create_submission_without(self):
+        response = self.client.post(API_ENDPOINT, {"group_id": self.group_1.group_id, "file_urls": ""})
+        self.assertIn("\'extra/verslag.pdf\' not found.", response.data['message'])
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_can_create_submission_withfile(self):
+        response = self.client.post(API_ENDPOINT, {"group_id": self.group_1.group_id, "file_urls": "extra/verslag.pdf"})
+        self.assertEqual("Submission successful", response.data['message'])
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_can_create_submission_without_forbidden(self):
+        response = self.client.post(API_ENDPOINT, {"group_id": self.group_2.group_id, "file_urls": ""})
+        self.assertIn("Submission successful", response.data['message'])
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_can_create_submission_with_forbidden(self):
+        response = self.client.post(API_ENDPOINT, {"group_id": self.group_2.group_id, "file_urls": "extra/verslag.pdf"})
+        self.assertEqual("Error: Forbidden file matching pattern 'extra/verslag.pdf' found: extra/verslag.pdf.",
+                         response.data['message'])
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_can_create_submission_without_wildcard(self):
+        response = self.client.post(API_ENDPOINT, {"group_id": self.group_3.group_id,
+                                                   "file_urls": "src/main.jar, src/test.dockerfile"})
+        self.assertIn("\'src/*.py\' not found.", response.data['message'])
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_can_create_submission_with_wildcard(self):
+        response = self.client.post(API_ENDPOINT, {"group_id": self.group_3.group_id, "file_urls": "src/main.py"})
+        self.assertEqual("Submission successful", response.data['message'])
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_can_create_submission_without_forbidden_wildcard(self):
+        response = self.client.post(API_ENDPOINT, {"group_id": self.group_4.group_id,
+                                                   "file_urls": "src/main.jar, src/test.dockerfile"})
+        self.assertIn("Submission successful", response.data['message'])
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_can_create_submission_with_forbidden_wildcard(self):
+        response = self.client.post(API_ENDPOINT, {"group_id": self.group_4.group_id, "file_urls": "src/main.py"})
+        self.assertEqual("Error: Forbidden file matching pattern 'src/*.py' found: src/main.py.",
+                         response.data['message'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_cant_create_invalid_submission(self):
@@ -87,7 +155,7 @@ class SubmissionTestTeacher(TestCase):
         response = self.client.put(
             API_ENDPOINT + str(self.submission.submission_id) + "/",
             {
-                "group_id": self.group.group_id,
+                "group_id": self.group_1.group_id,
                 "file_urls": "file_urls",
             },
         )
@@ -96,7 +164,7 @@ class SubmissionTestTeacher(TestCase):
         response = self.client.patch(
             API_ENDPOINT + str(self.submission.submission_id) + "/",
             {
-                "group_id": self.group.group_id,
+                "group_id": self.group_1.group_id,
                 "file_urls": "file_urls",
             },
         )
@@ -126,7 +194,7 @@ class SubmissionTestTeacher(TestCase):
             self.client.put(
                 API_ENDPOINT + "4561313516/",
                 {
-                    "group_id": self.group.group_id,
+                    "group_id": self.group_1.group_id,
                     "file_urls": "file_urls",
                 },
             )
@@ -134,7 +202,7 @@ class SubmissionTestTeacher(TestCase):
             self.client.patch(
                 API_ENDPOINT + "4563153/",
                 {
-                    "group_id": self.group.group_id,
+                    "group_id": self.group_1.group_id,
                     "file_urls": "file_urls",
                 },
             )

@@ -9,7 +9,6 @@ jest.mock('react-i18next', () => ({
 
 describe('Title', () => {
     it('renders correctly', async () => {
-        const translations = await getTranslations();
 
         const {getByText: getByRole} = render(
             <Title
@@ -19,13 +18,12 @@ describe('Title', () => {
                 score={50}
                 isScoreEmpty={false}
                 setScore={jest.fn()}
-                translations={translations.en}
             />
         );
 
         // check that the title and score were rendered properly
-        expect(screen.getByText('Title')).toBeInTheDocument();
-        expect(screen.getByText('Maximal score')).toBeInTheDocument();
+        expect(screen.getByLabelText('title')).toBeInTheDocument();
+        expect(screen.getByText('max_score')).toBeInTheDocument();
 
     });
 });

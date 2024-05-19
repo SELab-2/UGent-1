@@ -9,13 +9,14 @@ lint:
 	docker exec pigeonhole-frontend npm run lint
 
 superuser:
-	docker exec -it pigeonhole-backend python manage.py createsuperuser
+
+
 
 mockdata:
 	docker exec -it pigeonhole-backend python manage.py runscript mockdata
 
 evaltest:
-    docker exec -it pigeonhole-backend python manage.py runscript eval_test
+	docker exec -it pigeonhole-backend python manage.py runscript eval_test
 
 reset:
 	docker image prune -af

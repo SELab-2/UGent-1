@@ -2,17 +2,20 @@ import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
 import ListView from '@app/[locale]/components/ListView';
-import BackButton from "@app/[locale]/components/BackButton";
+import {Box, Button} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import React from "react";
+import EmailIcon from '@mui/icons-material/Email';
 
 const i18nNamespaces = ['common']
 
-export default async function TeachersPage({ params }: { params: { locale: any, course_id: number } }) {
-    const { locale, course_id } = params;
-    const { t, resources } = await initTranslations(locale, i18nNamespaces);
+export default async function TeachersPage({params}: { params: { locale: any, course_id: number } }) {
+    const {locale, course_id} = params;
+    const {t, resources} = await initTranslations(locale, i18nNamespaces);
 
-    const headers = [t('email')];
+    const headers = [<React.Fragment key="email"><EmailIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('email')}</React.Fragment>];
     const headers_backend = ['email'];
-    
+
     return (
         <TranslationsProvider
             resources={resources}
@@ -20,23 +23,27 @@ export default async function TeachersPage({ params }: { params: { locale: any, 
             namespaces={i18nNamespaces}
         >
             <NavBar/>
-            <div style={{marginTop: 60, padding: 20}}>
-                <BackButton
-                    destination={`/course/${course_id}`}
-                    text={t('back_to') + ' ' + t('course')}
+            <Box width={'100%'} style={{padding: 20}}>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<ArrowBackIcon/>}
+                    href={`/course/${course_id}`}
+                >
+                    {t('back_to') + ' ' + t('course') + ' ' + t('page')}
+                </Button>
+                <Box marginTop={{ xs: 2, md: 4 }}>
+                <ListView
+                    admin={true}
+                    headers={headers}
+                    headers_backend={headers_backend}
+                    sortable={[true]}
+                    get_id={course_id}
+                    get={'course_teachers'}
+                    search_text={t('search_teacher')}
                 />
-                <div style={{marginBottom: '100px'}}>
-                    <ListView
-                        admin={true}
-                        headers={headers}
-                        headers_backend={headers_backend}
-                        sortable={[true]}
-                        get_id={course_id}
-                        get={'course_teachers'}
-                        search_text={t('search')}
-                    />
-                </div>
-            </div>
+                </Box>
+            </Box>
         </TranslationsProvider>
-);
+    );
 }

@@ -14,17 +14,17 @@ describe('Removedialog', () => {
         const {getByText: getByText_en, getByTestId} = render(
             <RemoveDialog
                 confirmRemove={true}
-                handle_remove={jest.fn()}
+                handleRemove={jest.fn()}
                 setConfirmRemove={jest.fn()}
                 translations={translations.en}
             />
         );
 
         // check that the text was rendered properly
-        expect(screen.getByText('Remove project?')).toBeInTheDocument();
-        expect(screen.getByText('This action cannot be undone.')).toBeInTheDocument();
-        expect(screen.getByText('Remove')).toBeInTheDocument();
-        expect(screen.getByText('Cancel')).toBeInTheDocument();
+        expect(screen.getByText('remove_dialog')).toBeInTheDocument();
+        expect(screen.getByText('action_dialog')).toBeInTheDocument();
+        expect(screen.getByText('remove_confirm')).toBeInTheDocument();
+        expect(screen.getByText('remove_cancel')).toBeInTheDocument();
 
     });
 
@@ -35,13 +35,13 @@ describe('Removedialog', () => {
         const {getByText} = render(
             <RemoveDialog
                 confirmRemove={true}
-                handle_remove={handle_remove}
+                handleRemove={handle_remove}
                 setConfirmRemove={setConfirmRemove}
                 translations={translations.en}
             />
         );
 
-        const button = screen.getByText('Cancel');
+        const button = screen.getByText('remove_cancel');
         fireEvent.click(button);
 
         expect(setConfirmRemove).toHaveBeenCalled();
@@ -55,13 +55,13 @@ describe('Removedialog', () => {
         const {getByText} = render(
             <RemoveDialog
                 confirmRemove={true}
-                handle_remove={handle_remove}
+                handleRemove={handle_remove}
                 setConfirmRemove={setConfirmRemove}
                 translations={translations.en}
             />
         );
 
-        const button = screen.getByText('Remove');
+        const button = screen.getByText('remove_confirm');
         fireEvent.click(button);
 
         // @ts-ignore
