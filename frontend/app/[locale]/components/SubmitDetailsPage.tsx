@@ -169,7 +169,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
 
                 <Tree paths={paths} />
 
-                {submitted === 'ok' && (
+                {submitted['result'] === 'ok' && (
                   <Box sx={{ display: 'flex', alignItems: 'center', color: baseTheme.palette.success.main, mb: 1 }}>
                     <CheckCircleIcon sx={{ mr: 1 }} />
                    
@@ -178,7 +178,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
                     </Typography>
                   </Box>
                 )}
-                {submitted === 'error' && (
+                {submitted['result'] === 'error' && (
                   <Box sx={{ display: 'flex', alignItems: 'center', color: baseTheme.palette.error.main, mb: 1 }}>
                     <ErrorIcon sx={{ mr: 1 }} />
                     <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: '0.875rem' }}>
@@ -186,7 +186,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
                     </Typography>
                   </Box>
                 )}
-                {submitted !== 'ok' && (
+                {submitted['result'] !== 'ok' && (
                   <Button variant="contained" color="primary" startIcon={<PublishIcon />} type="submit">
                     {t('submit')}
                   </Button>
