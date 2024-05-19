@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { getProject, getUserData, Project, UserData } from "@lib/api";
+import {checkGroup, getGroup, getProject, getUserData, Project, UserData} from "@lib/api";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -36,6 +36,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
   const [loadingProject, setLoadingProject] = useState<boolean>(true);
   const [user, setUser] = useState<UserData | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isInGroup, setIsInGroup] = useState(false);
   const previewLength = 300;
   const deadlineColorType = project?.deadline
     ? checkDeadline(project.deadline)
@@ -66,6 +67,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
     };
 
     fetchProject().then(() => setLoadingProject(false));
+    checkGroup(project_id).then((response) => setIsInGroup(response));
   }, [project_id]);
 
   if (loadingProject) {
@@ -197,15 +199,21 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
               </Typography>
             </div>
             {user?.role === 3 ? (
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<AddIcon />}
-                href={`/${locale}/project/${project_id}/submit`}
-                sx={{ my: 1 }}
-              >
-                {t("add_submission")}
-              </Button>
+              isInGroup ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddIcon />}
+                    href={`/${locale}/project/${project_id}/submit`}
+                    sx={{ my: 1 }}
+                  >
+                    {t("add_submission")}
+                  </Button>
+              ) : (
+                    <Typography variant="body1" style={{ color: "red", marginTop: "5px" }}>
+                        {t("not_in_group")}
+                    </Typography>
+              )
             ) : null}
           </Grid>
           <Grid item xs={12}>

@@ -137,5 +137,6 @@
   "status": "Status",
   "join/leave": "Join/Leave",
   "group_nr": "Group nr",
-  "join_leave": "Join/Leave"
+  "join_leave": "Join/Leave",
+  "not_in_group": "Join a group to submit"
 }

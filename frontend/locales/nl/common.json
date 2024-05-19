@@ -140,5 +140,6 @@
   "status": "Status",
   "join/leave": "Toetreden/Verlaten",
   "group_nr": "Groep nr",
-  "join_leave": "Toetreden/Verlaten"
+  "join_leave": "Toetreden/Verlaten",
+  "not_in_group": "Je kan niet indienen zonder in een groep te zitten"
 }
