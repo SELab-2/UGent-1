@@ -34,7 +34,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
         loading ? (
             <Skeleton
                 variant="rounded"
-                height={"200px"}
+                height={"150px"}
                 sx={{
                     display: 'flex',
                     justifyContent: 'center',

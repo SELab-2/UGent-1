@@ -261,6 +261,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                             setVisible={setVisible}
                             handleSave={handleSave}
                             setConfirmRemove={setConfirmRemove}
+                            course_id={add_course_id}
                             project_id={project_id}
                             setHasDeadline={setHasDeadline}
                             hasDeadline={hasDeadline}
