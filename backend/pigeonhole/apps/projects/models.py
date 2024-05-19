@@ -22,6 +22,8 @@ class Project(models.Model):
     file_structure = models.TextField(blank=True, null=True)
     conditions = models.TextField(blank=True, null=True)
 
+    test_files = models.FileField(blank=True, null=True, upload_to=get_upload_to)
+
     test_entrypoint = models.FileField(blank=True, null=True, upload_to=get_upload_to)
     test_dockerfile = models.FileField(blank=True, null=True, upload_to=get_upload_to)
 
