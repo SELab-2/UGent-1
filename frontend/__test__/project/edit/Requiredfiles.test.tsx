@@ -15,7 +15,7 @@ describe('Requiredfiles', () => {
                 files={["First", "Second"]}
                 setFiles={jest.fn()}
                 translations={translations.en}
-            />
+             file_status={["+", "-"]} setFileStatus={jest.fn()}/>
         );
 
         // check that the required files were rendered properly
