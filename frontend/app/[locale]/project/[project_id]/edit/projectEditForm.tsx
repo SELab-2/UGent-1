@@ -118,7 +118,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
 
     async function setTestFiles(project: Project) {
         const zip = new JSZip();
-        console.log(project.test_files)
+
         const test_files_zip = await getTestFiles(project.test_files);
         const zipData = await zip.loadAsync(test_files_zip);
         const testfiles_name: string[] = [];

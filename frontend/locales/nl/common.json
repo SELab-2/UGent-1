@@ -138,5 +138,7 @@
   "group_number": "Groep nummer",
   "submission_date": "Inleverdatum",
   "status": "Status",
-  "join/leave": "Toetreden/Verlaten"
+  "join/leave": "Toetreden/Verlaten",
+  "group_nr": "Groep nr",
+  "join_leave": "Toetreden/Verlaten"
 }
