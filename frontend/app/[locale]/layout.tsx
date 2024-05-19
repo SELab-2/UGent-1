@@ -1,16 +1,12 @@
 import {AppRouterCacheProvider} from '@mui/material-nextjs/v13-appRouter';
 import {ThemeProvider} from '@mui/material/styles';
+import baseTheme from '@styles/theme';
 import {Box} from '@mui/material';
 import baseTheme from '../../styles/theme';
 import React from "react";
 
 import '../i18n'
 import Footer from "@app/[locale]/components/Footer";
-
-export const metadata = {
-    title: 'Pigeonhole',
-    description: 'Groep 1'
-}
 
 export default function RootLayout(props: React.PropsWithChildren<{}>) {
     const {children} = props;

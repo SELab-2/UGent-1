@@ -1,5 +1,11 @@
 {
-  "email": "azernic@test.com",
-  "password": "azernic",
-  "username": "azernic"
+  "studentEmail": "alexander.vanoyen@sel2-1.ugent.be",
+  "studentPassword": "selab123",
+  "studentUsername": "alexandervanoyen",
+  "teacherEmail": "teacher@sel2-1.ugent.be",
+  "teacherPassword": "selab123",
+  "teacherUsername": "teacher",
+  "adminEmail": "administrator@sel2-1.ugent.be",
+  "adminPassword": "selab123",
+  "adminUsername": "administrator"
 }
