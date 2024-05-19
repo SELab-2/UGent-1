@@ -31,5 +31,8 @@ frontshell:
 componenttest:
 	docker exec -it pigeonhole-frontend npx jest
 
+coveragecomponenttest:
+	docker exec -it pigeonhole-frontend npx jest --coverage --silent
+
 silentcomponenttest:
 	docker exec -it pigeonhole-frontend npx jest --silent
