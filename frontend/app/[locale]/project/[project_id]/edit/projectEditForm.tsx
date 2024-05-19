@@ -273,7 +273,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                 </Box>
                 <RemoveDialog
                     confirmRemove={confirmRemove}
-                    handle_remove={handle_remove}
+                    handleRemove={handle_remove}
                     setConfirmRemove={setConfirmRemove}/>
             </div>
         ) : (

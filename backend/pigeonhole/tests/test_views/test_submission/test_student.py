@@ -121,6 +121,7 @@ class SubmissionTestStudent(TestCase):
                                                    "file_urls": "src/main.jar, src/test.dockerfile"})
         self.assertEqual(0, response.data['success'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
     #
     def test_can_create_submission_with_forbidden_wildcard(self):
         response = self.client.post(API_ENDPOINT, {"group_id": self.group_4.group_id, "file_urls": "src/main.py"})
