@@ -1,109 +1,75 @@
-/* Existing styles */
-.typographyStyle,
-.MuiTypography-h5.typographyStyle {
-    font-weight: bold!important;
-    margin: 5px 0 0 0!important;
+.typographyStyle, .MuiTypography-h5.typographyStyle {
+    font-weight: bold !important;
+    margin: 5px 0 0 0 !important;
 }
 
-.pageBoxLeft,
+.pageBoxLeft {
+    margin-top: 20px !important;
+    padding: 50px 50px 50px 100px !important;
+}
+
 .pageBoxRight {
-    margin-top: 20px!important;
-    padding: 50px 50px 50px 100px!important;
+    margin-top: 64px !important;
+    padding: 50px 50px 50px 100px !important;
 }
 
-@media (max-width: 768px) {
-    .container {
-         display: flex;
-         flex-direction: column;
-     }
- 
-    .pageBoxLeft,
-    .pageBoxRight {
-         width: 100%; /* Ensure full width on mobile */
-         margin-top: 0; /* Remove unnecessary top margin */
-     }
- }
-
-.conditionsText.MuiTypography-body1.ConditionsText {}
+.conditionsText .MuiTypography-body1.ConditionsText {}
 
 .conditionsHelp {
-    font-size: large!important;
-    margin-left: 5px!important;
+    font-size: large !important;
+    margin-left: 5px !important;
 }
 
 .conditionsBox {
-    display: flex!important;
-    flex-direction: column!important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 .conditionsSummation {
-    width: 100%!important;
-    margin-bottom: 10px!important;
+    width: 100% !important;
+    margin-bottom: 10px !important;
 }
 
 .buttonsGrid {
-    padding: 10px!important;
+    padding: 10px !important;
 }
 
 .titleGrids {
-    margin: 0!important;
-    width: 100%!important;
+    margin: 0 !important;
+    width: 100% !important;
 }
 
 .assignmentTextField {
-    width: 100%!important;
+    width: 100% !important;
 }
 
 .uploadInput {
-    display: none!important;
+    display: none !important;
 }
 
 .dialogPadding {
-    padding: 10px!important;
+    padding: 10px !important;
 }
 
 .dialogRemove {
-    background-color: #D0E4FF!important;
-    padding: 15px 30px!important;
-    margin-left: 15px!important;
-    border-radius: 20px!important;
-    border: none!important;
-    cursor: pointer!important;
-    font-weight: bold!important;
-    font-size: 1.2em!important;
+    background-color: #D0E4FF !important;
+    padding: 15px 30px !important;
+    margin-left: 15px !important;
+    border-radius: 20px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    font-size: 1.2em !important;
 }
 
 .dialogCancel {
-    background-color: #D0E4FF!important;
-    padding: 15px 30px!important;
-    margin-left: 30px!important;
-    margin-right: 15px!important;
-    border-radius: 20px!important;
-    border: none!important;
-    cursor: pointer!important;
-    font-weight: bold!important;
-    font-size: 1.2em!important;
-}
-
-/* Mobile-friendly adjustments */
-@media (max-width: 768px) {
-    .pageBoxLeft,
-    .pageBoxRight {
-        padding: 20px!important; /* Adjust padding for smaller screens */
-        margin-top: 10px!important; /* Reduce top margin */
-    }
-
-    .conditionsBox {
-        flex-direction: column!important; /* Stack elements vertically */
-    }
-    
-    .conditionsHelp {
-        margin: 5px 0!important; /* Adjust margin */
-    }
-
-    .dialogRemove,
-    .dialogCancel {
-        margin-left: 0!important;
-        margin-right: 0!important;
-    }
+    background-color: #D0E4FF !important;
+    padding: 15px 30px !important;
+    margin-left: 30px !important;
+    margin-right: 15px !important;
+    border-radius: 20px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    font-size: 1.2em !important;
 }
