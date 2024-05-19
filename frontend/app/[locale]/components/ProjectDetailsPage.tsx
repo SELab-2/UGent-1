@@ -4,7 +4,7 @@ import { getProject, getUserData, Project, UserData } from "@lib/api";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Grid, IconButton, LinearProgress, ThemeProvider } from "@mui/material";
+import { Grid, IconButton, LinearProgress, ThemeProvider, Skeleton } from "@mui/material";
 import ProjectSubmissionsList from "@app/[locale]/components/ProjectSubmissionsList";
 import GroupSubmissionList from "@app/[locale]/components/GroupSubmissionList";
 import baseTheme from "@styles/theme";
@@ -36,6 +36,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
   const [loadingProject, setLoadingProject] = useState<boolean>(true);
   const [user, setUser] = useState<UserData | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(true);
   const previewLength = 300;
   const deadlineColorType = project?.deadline
     ? checkDeadline(project.deadline)
@@ -53,7 +54,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
       }
     };
 
-    fetchUser();
+    fetchUser().then(() => setLoadingUser(false));
   }, []);
 
   useEffect(() => {
@@ -108,35 +109,67 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
             >
               {t("return_course")}
             </Button>
-            <Grid container alignItems="center" spacing={2} sx={{ my: 1 }}>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h4">{project?.name}</Typography>
-              </Grid>
-              {user?.role !== 3 && (
-                <Grid item xs={6} sm={3}>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<EditIcon />}
-                    href={`/${locale}/project/${project_id}/edit`}
-                    sx={{ fontSize: "0.75rem", py: 1 }}
-                  >
-                    {t("edit_project")}
-                  </Button>
-                </Grid>
-              )}
-              <Grid item xs={6} sm={3}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<GroupIcon />}
-                  href={`/${locale}/project/${project_id}/groups`}
-                  sx={{ fontSize: "0.75rem", py: 1 }}
-                >
-                  {t("groups")}
-                </Button>
-              </Grid>
-            </Grid>
+            <Box
+              display='flex'
+              justifyContent='space-between'
+              alignItems='center'
+              width={'100%'}
+              marginY={2}
+            >
+              <Typography
+                  variant="h4"
+                  display={'inline-block'}
+                  whiteSpace={'nowrap'}
+                  marginRight={2}
+              >
+                {project?.name}
+              </Typography>
+              <Box
+                width={'fit-content'}
+              >
+                {loadingUser ? (
+                    [1, 2].map((i) => (
+                        <Skeleton
+                            key={i}
+                            variant="rectangular"
+                            width={150}
+                            height={45}
+                            sx={{
+                              borderRadius: "8px",
+                              marginX: 1,
+                            }}
+                        />
+                    ))) : (
+                  <>
+                    {user?.role !== 3 && (
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<EditIcon />}
+                            href={`/${locale}/project/${project_id}/edit`}
+                            sx={{
+                              fontSize: "0.75rem",
+                              py: 1,
+                              marginRight: 1,
+                              marginY: 1,
+                            }}
+                        >
+                          {t("edit_project")}
+                        </Button>
+                    )}
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<GroupIcon />}
+                        href={`/${locale}/project/${project_id}/groups`}
+                        sx={{ fontSize: "0.75rem", py: 1 }}
+                    >
+                      {t("groups")}
+                    </Button>
+                  </>
+                )}
+              </Box>
+            </Box>
             <Divider style={{ marginBottom: "1rem" }} />
             <Typography variant="h5">{t("assignment")}</Typography>
             <Typography>

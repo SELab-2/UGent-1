@@ -34,7 +34,6 @@ function ProjectAddPage({params: {locale, course_id}}: { params: { locale: any, 
     return (
         <TranslationsProvider locale={locale} namespaces={i18nNamespaces} resources={resources}>
             <NavBar/>
-            <NavBar/>
             {userLoading ? (
                 <Box padding={5} sx={{ display: 'flex' }}>
                     <CircularProgress />
