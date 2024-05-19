@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import dayjs from "dayjs";
 import JSZip, {JSZipObject} from "jszip";
 import {addProject, deleteProject, getProject, getTestFiles, getUserData, Project, updateProject} from "@lib/api";
@@ -15,6 +15,9 @@ import FinishButtons from "@app/[locale]/components/project_components/finishbut
 import Deadline from "@app/[locale]/components/project_components/deadline";
 import RemoveDialog from "@app/[locale]/components/project_components/removedialog";
 import {LinearProgress} from "@mui/material";
+import {useTranslation} from "react-i18next";
+import UploadIcon from '@mui/icons-material/Upload';
+
 import {
     Button,
     Dialog,
@@ -53,6 +56,9 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [course_id, setCourseId] = useState<number>(0);
     const [confirmSubmit, setConfirmSubmit] = useState(false);
 
+    const dockerfileref = useRef<HTMLInputElement>(null);
+
+    const {t} = useTranslation();
 
     const isTitleEmpty = !title
     const isAssignmentEmpty = !description
@@ -144,15 +150,8 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
             alert(message);
             return;
         } else {
-            const zip = new JSZip();
-            testfilesData.forEach((file) => {
-                zip.file(file.name, file.async("blob"));
-            });
-
-            const zipFileBlob = await zip.generateAsync({type: "blob"});
             const formData = new FormData();
-            const zipFile = new File([zipFileBlob], "test_files.zip");
-            formData.append("test_files", zipFile);
+            formData.append("test_dockerfile", dockerfileref?.current?.files?.[0] as File);
             formData.append("name", title);
             formData.append("description", description);
             formData.append("max_score", score.toString());
@@ -174,10 +173,10 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
 
             if (project_id !== null) {
                 await updateProject(project_id, formData);
-                location.href = "/project/" + project_id + "/";
+                //location.href = "/project/" + project_id + "/";
             } else {
                 const new_project_id = await addProject(formData);
-                location.href = "/project/" + new_project_id + "/"
+                //location.href = "/project/" + new_project_id + "/"
             }
         }
     }
@@ -244,16 +243,28 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                             isGroupSizeEmpty={isGroupSizeEmpty}
                             setGroupAmount={setGroupAmount}
                             setGroupSize={setGroupSize}/>
-                        <TestFiles
-                            testfilesName={testfilesName}
-                            setTestfilesName={setTestfilesName}
-                            testfilesData={testfilesData}
-                            setTestfilesData={setTestfilesData}/>
-                        <UploadTestFile
-                            testfilesName={testfilesName}
-                            setTestfilesName={setTestfilesName}
-                            testfilesData={testfilesData}
-                            setTestfilesData={setTestfilesData}/>
+                        
+                        <input
+                            id="fileInput"
+                            type="file"
+                            name="test_dockerfile"
+                            className={"uploadInput"}
+                            ref={dockerfileref}
+                        />
+                        <h3>{dockerfileref?.current?.files?.[0]?.name} o</h3>
+                        <Button
+                            onClick={() => document.getElementById("fileInput")?.click()}
+                            className={"uploadButton"}
+                            variant={"contained"}
+                            color={'secondary'}
+                            startIcon={<UploadIcon/>}
+                            sx={{
+                                width: 'fit-content',
+                                color: 'secondary.contrastText',
+                            }}
+                        >
+                            {t("upload")}
+                        </Button>
                     </Box>
                     <Box className={"pageBoxRight"}>
                         <FinishButtons

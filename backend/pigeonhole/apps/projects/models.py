@@ -2,11 +2,24 @@ from django.db import models
 from rest_framework import serializers
 
 from backend.pigeonhole.apps.courses.models import Course
+from django.conf import settings
 
 
+def dockerfile_path(self, _):
+    if not self.pk:
+        nextpk = Project.objects.order_by('-project_id').first().project_id + 1
+        self.id = self.pk = nextpk
+    return f'courses/id_{str(self.course_id.course_id)}/project/id_{str(self.project_id)}/DOCKERFILE'
+
+def testfile_path(self, filename):
+    if not self.pk:
+        nextpk = Project.objects.order_by('-project_id').first().project_id + 1
+        self.id = self.pk = nextpk
+    return f'courses/id_{str(self.course_id.course_id)}/project/id_{str(self.project_id)}/{filename}'
+
+#legacy code
 def get_upload_to(self, filename):
     return 'projects/' + str(self.project_id) + '/' + filename
-
 
 class Project(models.Model):
     objects = models.Manager()
@@ -22,15 +35,14 @@ class Project(models.Model):
     file_structure = models.TextField(blank=True, null=True)
     conditions = models.TextField(blank=True, null=True)
 
-    test_files = models.FileField(blank=True, null=True, upload_to=get_upload_to)
-    test_dockerfile = models.FileField(blank=True, null=True, upload_to=get_upload_to)
-
+    test_files = models.FileField(blank=True, null=True, upload_to=testfile_path)
+    test_dockerfile = models.FileField(blank=True, null=True, upload_to=dockerfile_path)
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ["project_id", "course_id", "name", "description", "deadline", "visible", "number_of_groups",
-                  "group_size", "max_score", "file_structure", "conditions", "test_files"]
+                  "group_size", "max_score", "file_structure", "conditions", "test_files", "test_dockerfile"]
 
 
 class Test(models.Model):

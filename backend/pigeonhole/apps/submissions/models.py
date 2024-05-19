@@ -53,7 +53,7 @@ class Submissions(models.Model):
             )
         super(Submissions, self).save(force_insert, force_update, using, update_fields)
 
-        self.eval()
+        #self.eval()
 
     def eval(self):
         client = DockerClient(base_url='unix://var/run/docker.sock')
