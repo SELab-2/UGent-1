@@ -1,8 +1,8 @@
 "use client";
 import {useTranslation} from "react-i18next";
 import {Button, Typography} from "@mui/material";
-import Link from "next/link";
-import {addProject} from "@lib/api";
+import {addProject, getUserData, UserData} from "@lib/api";
+import {useState, useEffect} from "react";
 
 interface EditCourseButtonProps{
     course_id:number
@@ -10,18 +10,32 @@ interface EditCourseButtonProps{
 
 const AddProjectButton = ({course_id}: EditCourseButtonProps) => {
     const {t} = useTranslation();
+    const [user, setUser] = useState<UserData | null>(null);
+
+    
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                setUser(await getUserData());
+            } catch (error) {
+                console.error("There was an error fetching the user data:", error);
+            }
+        }
+
+        fetchUser();
+    }, [])
 
     return (
+        <>
+        {user?.role !== 3 && (
         <Button
             variant="contained"
             color="secondary"
             sx={{
-                margin: '10px'
+                width: 'fit-content',
+                height: 'fit-content',
             }}
-            onClick={async () => {
-                const project_id = await addProject(course_id);
-                window.location.href = `/project/${project_id}/edit`;
-            }}
+            href={`/course/${course_id}/add_project/`}
         >
             <Typography
                 variant="subtitle1"
@@ -29,11 +43,16 @@ const AddProjectButton = ({course_id}: EditCourseButtonProps) => {
                     color: 'secondary.contrastText',
                     display: 'inline-block',
                     whiteSpace: 'nowrap',
+                    width: 'fit-content',
                 }}
             >
-                {t("add_project")}
+                <Typography>
+                    {t("add_project")}
+                </Typography>
             </Typography>
         </Button>
+    )}
+    </>
     )
 }
 export default AddProjectButton

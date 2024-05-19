@@ -21,6 +21,6 @@ describe('Uploadbutton', () => {
         );
 
         // check that the buttons were rendered properly
-        expect(getByText_en('Upload')).toBeInTheDocument();
+        expect(getByText_en('upload')).toBeInTheDocument();
     });
 });

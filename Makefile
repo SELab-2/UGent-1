@@ -9,7 +9,8 @@ lint:
 	docker exec pigeonhole-frontend npm run lint
 
 superuser:
-	docker exec -it pigeonhole-backend python manage.py createsuperuser
+
+
 
 mockdata:
 	docker exec -it pigeonhole-backend python manage.py runscript mockdata
