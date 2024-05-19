@@ -33,6 +33,7 @@ interface ProjectEditFormProps {
 
 function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [files, setFiles] = useState<string[]>([]);
+    const [status_files, setStatusFiles] = useState<string[]>([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [groupAmount, setGroupAmount] = useState(1);
@@ -70,8 +71,10 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                     setDescription(project.description)
                     if (project.file_structure !== null) {
                         const file_structure = project.file_structure.split(",").map((item: string) => item.trim().replace(/"/g, ''));
-                        setFiles(file_structure);
-                        console.log(files);
+                        const file_structure_status = file_structure.map((item: string) => item[0]);
+                        const file_structure_name = file_structure.map((item: string) => item.substring(1));
+                        setFiles(file_structure_name);
+                        setStatusFiles(file_structure_status);
                     }
                     setGroupSize(project["group_size"])
                     setTitle(project["name"])
@@ -152,13 +155,15 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
             const zipFileBlob = await zip.generateAsync({type: "blob"});
             const formData = new FormData();
             const zipFile = new File([zipFileBlob], "test_files.zip");
+
+            const required_files = files.map((item, index) => status_files[index] + item);
             formData.append("test_files", zipFile);
             formData.append("name", title);
             formData.append("description", description);
             formData.append("max_score", score.toString());
             formData.append("number_of_groups", groupAmount.toString());
             formData.append("group_size", groupSize.toString());
-            formData.append("file_structure", files.join(","));
+            formData.append("file_structure", required_files.join(","));
             formData.append("conditions", conditions.join(","));
             formData.append("visible", visible.toString());
             if (add_course_id < 0) {
@@ -233,7 +238,10 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                             description={description}/>
                         <RequiredFiles
                             files={files}
-                            setFiles={setFiles}/>
+                            setFiles={setFiles}
+                            file_status={status_files}
+                            setFileStatus={setStatusFiles}
+                        />
                         <Conditions
                             conditions={conditions}
                             setConditions={setConditions}/>
