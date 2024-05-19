@@ -84,46 +84,48 @@ class SubmissionTestStudent(TestCase):
 
     def test_can_create_submission_without(self):
         response = self.client.post(API_ENDPOINT, {"group_id": self.group_1.group_id, "file_urls": ""})
-        self.assertIn("\'extra/verslag.pdf\' not found.", response.data['message'])
+        self.assertEqual(1, response.data['success'])
+        self.assertEqual("extra/verslag.pdf", response.data[0][0])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_withfile(self):
         response = self.client.post(API_ENDPOINT, {"group_id": self.group_1.group_id, "file_urls": "extra/verslag.pdf"})
-        self.assertEqual("Submission successful", response.data['message'])
+        self.assertEqual(0, response.data['success'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_without_forbidden(self):
         response = self.client.post(API_ENDPOINT, {"group_id": self.group_2.group_id, "file_urls": ""})
-        self.assertIn("Submission successful", response.data['message'])
+        self.assertEqual(0, response.data['success'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_with_forbidden(self):
         response = self.client.post(API_ENDPOINT, {"group_id": self.group_2.group_id, "file_urls": "extra/verslag.pdf"})
-        self.assertEqual("Error: Forbidden file matching pattern 'extra/verslag.pdf' found: extra/verslag.pdf.",
-                         response.data['message'])
+        self.assertEqual(1, response.data['success'])
+        self.assertIn("extra/verslag.pdf", response.data[2])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_without_wildcard(self):
         response = self.client.post(API_ENDPOINT, {"group_id": self.group_3.group_id,
                                                    "file_urls": "src/main.jar, src/test.dockerfile"})
-        self.assertIn("\'src/*.py\' not found.", response.data['message'])
+        self.assertEqual(1, response.data['success'])
+        self.assertIn("src/*.py", response.data[0])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_with_wildcard(self):
         response = self.client.post(API_ENDPOINT, {"group_id": self.group_3.group_id, "file_urls": "src/main.py"})
-        self.assertEqual("Submission successful", response.data['message'])
+        self.assertEqual(0, response.data['success'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_without_forbidden_wildcard(self):
         response = self.client.post(API_ENDPOINT, {"group_id": self.group_4.group_id,
                                                    "file_urls": "src/main.jar, src/test.dockerfile"})
-        self.assertIn("Submission successful", response.data['message'])
+        self.assertEqual(0, response.data['success'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
+    #
     def test_can_create_submission_with_forbidden_wildcard(self):
         response = self.client.post(API_ENDPOINT, {"group_id": self.group_4.group_id, "file_urls": "src/main.py"})
-        self.assertEqual("Error: Forbidden file matching pattern 'src/*.py' found: src/main.py.",
-                         response.data['message'])
+        self.assertEqual(1, response.data['success'])
+        self.assertIn("src/*.py", response.data[2])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_cant_create_invalid_submission(self):
