@@ -138,5 +138,7 @@
   "group_number": "Groep nummer",
   "submission_date": "Inleverdatum",
   "status": "Status",
-  "join/leave": "Toetreden/Verlaten"
+  "join/leave": "Toetreden/Verlaten",
+  "evaluation_docker_image": "Docker image voor evaluatie",
+  "evaluation_docker_image_tooltip": "De docker image die gebruikt wordt voor evaluatie, geupload op de registry bij sel2-1.ugent.be:2002, voor meer info: zie de handleiding."
 }

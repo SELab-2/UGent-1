@@ -9,6 +9,7 @@ from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 
 SUBMISSION_PATH = os.environ.get('SUBMISSION_PATH')
+registry_name = os.environ.get('REGISTRY_NAME')
 
 
 def get_upload_to(self, filename):
@@ -62,13 +63,7 @@ class Submissions(models.Model):
         project = Project.objects.get(project_id=group.project_id)
 
         try:
-            image_id = 'busybox:latest'
-
-            if project.test_dockerfile:
-                image = client.images.build(
-                    path=project.test_dockerfile,
-                )
-                image_id = image.id
+            image_id = f"{registry_name}/{project.test_docker_image}"
 
             container = client.containers.run(
                 image=image_id,

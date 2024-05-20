@@ -9,14 +9,17 @@ import Assignment from "@app/[locale]/components/project_components/assignment";
 import RequiredFiles from "@app/[locale]/components/project_components/requiredFiles";
 import Conditions from "@app/[locale]/components/project_components/conditions";
 import Groups from "@app/[locale]/components/project_components/groups";
-import TestFiles from "@app/[locale]/components/project_components/testfiles";
-import UploadTestFile from "@app/[locale]/components/project_components/uploadButton";
 import FinishButtons from "@app/[locale]/components/project_components/finishbuttons";
 import Deadline from "@app/[locale]/components/project_components/deadline";
 import RemoveDialog from "@app/[locale]/components/project_components/removedialog";
 import {LinearProgress} from "@mui/material";
 import {useTranslation} from "react-i18next";
-import UploadIcon from '@mui/icons-material/Upload';
+import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import {Grid, TextField} from "@mui/material";
+
+
 
 import {
     Button,
@@ -37,6 +40,7 @@ interface ProjectEditFormProps {
 function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [files, setFiles] = useState<string[]>([]);
     const [title, setTitle] = useState('');
+    const [dockerImage, setDockerImage] = useState('');
     const [description, setDescription] = useState('');
     const [groupAmount, setGroupAmount] = useState(1);
     const [groupSize, setGroupSize] = useState(1);
@@ -151,7 +155,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
             return;
         } else {
             const formData = new FormData();
-            formData.append("test_dockerfile", dockerfileref?.current?.files?.[0] as File);
+            formData.append("test_docker_image", dockerImage);
             formData.append("name", title);
             formData.append("description", description);
             formData.append("max_score", score.toString());
@@ -173,10 +177,10 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
 
             if (project_id !== null) {
                 await updateProject(project_id, formData);
-                //location.href = "/project/" + project_id + "/";
+                location.href = "/project/" + project_id + "/";
             } else {
                 const new_project_id = await addProject(formData);
-                //location.href = "/project/" + new_project_id + "/"
+                location.href = "/project/" + new_project_id + "/"
             }
         }
     }
@@ -244,27 +248,25 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                             setGroupAmount={setGroupAmount}
                             setGroupSize={setGroupSize}/>
                         
-                        <input
-                            id="fileInput"
-                            type="file"
-                            name="test_dockerfile"
-                            className={"uploadInput"}
-                            ref={dockerfileref}
+                        <Typography variant="h5" className={"typographyStyle"}>
+                            {t("evaluation_docker_image")}
+                            <Tooltip title={
+                                <Typography variant="body1" className={"conditionsText"}>
+                                    {t("evaluation_docker_image_tooltip")}
+                                </Typography>
+                            } placement={"right"}>
+                                <HelpOutlineIcon className={"conditionsHelp"}/>
+                            </Tooltip>
+                        </Typography>
+                        <TextField
+                            variant="outlined"
+                            onChange={(event) => setDockerImage(event.target.value)}
+                            value={dockerImage}
+                            className={"titleGrids"}
+                            size="small"
+                            placeholder="test-helloworld:latest"
+                            label={t("evaluation_docker_image")}
                         />
-                        <h3>{dockerfileref?.current?.files?.[0]?.name} o</h3>
-                        <Button
-                            onClick={() => document.getElementById("fileInput")?.click()}
-                            className={"uploadButton"}
-                            variant={"contained"}
-                            color={'secondary'}
-                            startIcon={<UploadIcon/>}
-                            sx={{
-                                width: 'fit-content',
-                                color: 'secondary.contrastText',
-                            }}
-                        >
-                            {t("upload")}
-                        </Button>
                     </Box>
                     <Box className={"pageBoxRight"}>
                         <FinishButtons
