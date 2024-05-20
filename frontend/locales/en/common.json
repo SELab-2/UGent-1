@@ -138,5 +138,6 @@
   "join/leave": "Join/Leave",
   "group_nr": "Group nr",
   "join_leave": "Join/Leave",
-  "not_in_group": "Join a group to submit"
+  "not_in_group": "Join a group to submit",
+  "submission_all": "Submissions"
 }
