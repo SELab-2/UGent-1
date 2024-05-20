@@ -120,6 +120,7 @@ services:
       - "80:80"
       - "443:443"
       - "8080:8080"
+      - "2002:2002"
     volumes:
       - certificate_volume:/letsencrypt
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
