@@ -101,9 +101,24 @@ services:
       - certificate_volume:/letsencrypt
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
+  registry:
+    image: "registry:latest"
+    restart: always
+    ports:
+      - "2002:5000"
+    environment:
+        REGISTRY_AUTH: htpasswd
+        REGISTRY_AUTH_HTPASSWD_REALM: Registry-Realm
+        REGISTRY_AUTH_HTPASSWD_PATH: /auth/registry.passwd
+        REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+    volumes:
+      - registrydata:/data
+      - ${PASSWD_FOLDER_PATH}:/auth
+
 
 volumes:
   postgres_data:
   static_volume:
   media_volume:
   certificate_volume:
+  registrydata:
