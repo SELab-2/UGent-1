@@ -69,6 +69,16 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
     fetchProject().then(() => setLoadingProject(false));
   }, [project_id]);
 
+  useEffect(() => {
+    if (!loadingUser && !loadingProject && user) {
+      if (!user.course.includes(Number(project?.course_id))) {
+        window.location.href = `/403/`;
+      } else {
+        console.log("User is in course");
+      }
+    }
+  }, [loadingUser, user, loadingProject, project]);
+
   if (loadingProject) {
     return <LinearProgress />;
   }

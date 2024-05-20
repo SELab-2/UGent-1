@@ -55,6 +55,16 @@ export default function Course({params: {locale, course_id}, searchParams: {toke
 
     }, [course_id, user?.course]);
 
+    useEffect(() => {
+        if (!loading && user) {
+            if (!user.course.includes(Number(course_id))) {
+                window.location.href = `/403/`;
+            } else {
+                console.log("User is in course");
+            }
+        }
+    }, [loading, user, course_id]);
+
     const headers = [
         <React.Fragment key="name"><Person style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + translations.t('name')}</React.Fragment>,
        <React.Fragment key="deadline"><AccesAlarm style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + translations.t('deadline')}</React.Fragment>,
@@ -74,7 +84,6 @@ export default function Course({params: {locale, course_id}, searchParams: {toke
                     <CircularProgress />
                 </Box>
             ): (
-                user?.course.includes(Number(course_id)) ? (
                     <Box
                         sx={{
                             paddingTop: 5,
@@ -118,9 +127,7 @@ export default function Course({params: {locale, course_id}, searchParams: {toke
                         </Box>
                         <StudentCoTeacherButtons course_id={course_id} />
                     </Box>
-                ) : (
-                    window.location.href = `/403/`
-                ))
+                )
             }
         </TranslationsProvider>
     )

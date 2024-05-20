@@ -27,9 +27,13 @@ function CourseEditPage({params: {locale, course_id}}: { params: { locale: any, 
             }
         }
 
-        fetchUser();
-        setUserLoading(false);
-    }, [locale])
+        fetchUser().then(() => setUserLoading(false));
+        if (user?.course.includes(Number(course_id))) {
+            console.log("User is in course");
+        } else {
+            window.location.href = `/403/`;
+        }
+    }, [course_id, locale, user?.course])
 
     return (
         <TranslationsProvider

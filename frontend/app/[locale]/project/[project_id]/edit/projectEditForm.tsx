@@ -2,7 +2,16 @@
 import React, {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import JSZip, {JSZipObject} from "jszip";
-import {addProject, deleteProject, getProject, getTestFiles, getUserData, Project, updateProject} from "@lib/api";
+import {
+    addProject,
+    deleteProject,
+    getProject,
+    getTestFiles,
+    getUserData,
+    Project,
+    updateProject,
+    UserData
+} from "@lib/api";
 import Box from "@mui/material/Box";
 import Title from "@app/[locale]/components/project_components/title";
 import Assignment from "@app/[locale]/components/project_components/assignment";
@@ -49,6 +58,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [isStudent, setIsStudent] = useState(false);
     const [isTeacher, setIsTeacher] = useState(false);
     const [loadingUser, setLoadingUser] = useState(true);
+    const [user, setUser] = useState<UserData | null>(null);
     const [hasDeadline, setHasDeadline] = useState(false);
     const [course_id, setCourseId] = useState<number>(0);
     const [confirmSubmit, setConfirmSubmit] = useState(false);
@@ -111,6 +121,33 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
             setLoadingProject(false);
         }
     }, [project_id, loadingTranslations, isStudent, loadingProject, isTeacher]);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const user = await getUserData();
+                setUser(user)
+            } catch (error) {
+                console.error("There was an error fetching the user data:", error);
+            }
+        }
+
+        fetchUser().then(() => setLoadingUser(false));
+    }, []);
+
+    useEffect(() => {
+        if (!loadingUser && !loadingProject && user) {
+            if (project_id !== null) {
+                if (!user.course.includes(Number(course_id))) {
+                    window.location.href = `/403/`;
+                }
+            } else {
+                if (!user.course.includes(Number(add_course_id))) {
+                    window.location.href = `/403/`;
+                }
+            }
+        }
+    }, [add_course_id, course_id, loadingProject, loadingUser, project_id, user]);
 
 
     async function setTestFiles(project: Project) {

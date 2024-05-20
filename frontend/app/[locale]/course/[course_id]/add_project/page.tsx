@@ -31,6 +31,16 @@ function ProjectAddPage({params: {locale, course_id}}: { params: { locale: any, 
         setUserLoading(false);
     }, [locale])
 
+    useEffect(() => {
+        if (!userLoading && user) {
+            if (!user.course.includes(Number(course_id))) {
+                window.location.href = `/403/`;
+            } else {
+                console.log("User is in course");
+            }
+        }
+    }, [userLoading, user, course_id]);
+
     return (
         <TranslationsProvider locale={locale} namespaces={i18nNamespaces} resources={resources}>
             <NavBar/>
