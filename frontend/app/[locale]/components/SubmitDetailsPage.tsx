@@ -15,9 +15,9 @@ import {
   Typography,
 } from '@mui/material';
 import {
-  getProject,
+  getProject, getUserData,
   Project,
-  uploadSubmissionFile,
+  uploadSubmissionFile, UserData,
 } from '@lib/api';
 import baseTheme from '@styles/theme';
 import ProjectReturnButton from '@app/[locale]/components/ProjectReturnButton';
@@ -27,6 +27,7 @@ import PublishIcon from '@mui/icons-material/Publish';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import Tree from '@app/[locale]/components/Tree';
+import initTranslations from "@app/i18n";
 
 interface SubmitDetailsPageProps {
   locale: any;
@@ -46,6 +47,8 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
   const [submitted, setSubmitted] = useState<string>('no');
   const [loadingProject, setLoadingProject] = useState<boolean>(true);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [userLoading, setUserLoading] = useState(true);
   const previewLength = 300;
 
   const toggleDescription = () => {
@@ -67,6 +70,29 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
     };
     fetchProject().then(() => setLoadingProject(false));
   }, [project_id]);
+
+    useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          setUser(await getUserData());
+        } catch (error) {
+          console.error("There was an error fetching the user data:", error);
+        }
+      }
+
+      fetchUser();
+      setUserLoading(false);
+    }, [locale])
+
+    useEffect(() => {
+        if (!userLoading && !loadingProject && user) {
+        if (!user.course.includes(Number(projectData?.course_id))) {
+            window.location.href = `/403/`;
+        } else {
+            console.log("User is in course");
+        }
+        }
+    }, [userLoading, user, loadingProject, projectData]);
 
   function folderAdded(event: any) {
     let newpaths: string[] = [];

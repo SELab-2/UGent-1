@@ -22,7 +22,12 @@ const ArchivePage = async ({params: {locale}}) => {
             namespaces={i18nNamespaces}
         >
             <NavBar/>
-            <div style={{padding: 20}}>
+            <div
+                style={{
+                    padding: 20,
+                    width: '100%'
+            }}
+            >
                 <BackButton
                     destination={'/home'}
                     text={t('back_to') + ' ' + t('home') + ' ' + t('page')}

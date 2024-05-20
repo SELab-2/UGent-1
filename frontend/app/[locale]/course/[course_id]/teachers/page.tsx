@@ -1,24 +1,70 @@
+"use client"
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
 import ListView from '@app/[locale]/components/ListView';
 import {Box, Button} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import EmailIcon from '@mui/icons-material/Email';
+import {getUserData} from "@lib/api";
 
 const i18nNamespaces = ['common']
 
-export default async function TeachersPage({params}: { params: { locale: any, course_id: number } }) {
-    const {locale, course_id} = params;
-    const {t, resources} = await initTranslations(locale, i18nNamespaces);
+export default function TeachersPage({params: {locale, course_id}}: { params: { locale: any, course_id: number } }) {
+    const [user, setUser] = useState<any>();
+    const [translations, setTranslations] = useState({ t: (s) => '', resources: {} });
+    const [loading, setLoading] = useState(true);
 
-    const headers = [<React.Fragment key="email"><EmailIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('email')}</React.Fragment>];
+    useEffect(() => {
+        const fetchTranslations = async () => {
+            setLoading(true);
+            try {
+                const { t, resources } = await initTranslations(locale, i18nNamespaces);
+                setTranslations({ t, resources });
+            } catch (error) {
+                console.error('Failed to initialize translations:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTranslations();
+    }, [locale, i18nNamespaces]);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const user = await getUserData();
+                setUser(user);
+
+            } catch (error) {
+                console.error("There was an error fetching the user data:", error);
+            }
+        }
+
+        fetchUser().then(() => {
+            setLoading(false)
+        });
+
+    }, [course_id, user?.course]);
+
+    useEffect(() => {
+        if (!loading && user) {
+            if (!user.course.includes(Number(course_id))) {
+                window.location.href = `/403/`;
+            } else {
+                console.log("User is in course");
+            }
+        }
+    }, [loading, user, course_id]);
+
+    const headers = [<React.Fragment key="email"><EmailIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + translations.t('email')}</React.Fragment>];
     const headers_backend = ['email'];
 
     return (
         <TranslationsProvider
-            resources={resources}
+            resources={translations.resources}
             locale={locale}
             namespaces={i18nNamespaces}
         >
@@ -30,7 +76,7 @@ export default async function TeachersPage({params}: { params: { locale: any, co
                     startIcon={<ArrowBackIcon/>}
                     href={`/course/${course_id}`}
                 >
-                    {t('back_to') + ' ' + t('course') + ' ' + t('page')}
+                    {translations.t('back_to') + ' ' + translations.t('course') + ' ' + translations.t('page')}
                 </Button>
                 <Box marginTop={{ xs: 2, md: 4 }}>
                 <ListView
@@ -40,7 +86,7 @@ export default async function TeachersPage({params}: { params: { locale: any, co
                     sortable={[true]}
                     get_id={course_id}
                     get={'course_teachers'}
-                    search_text={t('search_teacher')}
+                    search_text={translations.t('search_teacher')}
                 />
                 </Box>
             </Box>

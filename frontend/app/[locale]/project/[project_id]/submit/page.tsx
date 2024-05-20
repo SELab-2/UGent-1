@@ -21,9 +21,7 @@ export default async function Course({params: {locale, project_id}, searchParams
         >
             <NavBar/>
 
-            <SubmitDetailsPage locale={locale} project_id={project_id}>
-
-            </SubmitDetailsPage>
+            <SubmitDetailsPage locale={locale} project_id={project_id} />
 
         </TranslationsProvider>
     )

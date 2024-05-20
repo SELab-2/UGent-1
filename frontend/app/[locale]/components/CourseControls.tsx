@@ -45,7 +45,14 @@ const CourseControls = ({selectedYear, onYearChange}) => {
 
     return (
         loading ?
-            <Box sx={{py:1, px: 2, display: 'flex', alignItems: 'center', gap: 2}}>
+            <Box
+                sx={{
+                    py:1,
+                    px: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2
+            }}>
                 <Stack direction="column" spacing={2}>
                     <Typography variant="h3" gutterBottom>
                         {t("courses")}
@@ -66,12 +73,34 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                 </Stack>
             </Box>
             :
-        <Box sx={{py:1, px: 2, display: 'flex', alignItems: 'center', gap: 2}}>
-            <Stack direction="column" spacing={2}>
+        <Box
+            width={'100%'}
+            sx={{
+                py:1,
+                px: 2,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                overflowX: 'auto'
+        }}
+        >
+            <Stack
+                marginX={{sm: 6, xs: 0}}
+                direction="column"
+                spacing={2}
+                width={'100%'}
+            >
                 <Typography variant="h3" gutterBottom>
                     {t("courses")}
                 </Typography>
-                <Stack direction="row" spacing={2} alignItems="center">
+                <Box
+                    display="flex"
+                    justifyContent={'space-between'}
+                    alignItems="center"
+                    width={'fit-content'}
+                    height={'fit-content'}
+                    gap={2}
+                >
                     <Button variant="contained" color="secondary" startIcon={<FilterListIcon/>}>
                         {t("filter_courses")}
                     </Button>
@@ -124,7 +153,7 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                             </MenuItem>
                         ))}
                     </Select>
-                </Stack>
+                </Box>
             </Stack>
         </Box>
     );

@@ -27,13 +27,15 @@ function CourseEditPage({params: {locale, course_id}}: { params: { locale: any, 
             }
         }
 
-        fetchUser().then(() => setUserLoading(false));
-        if (user?.course.includes(Number(course_id))) {
-            console.log("User is in course");
-        } else {
-            window.location.href = `/403/`;
-        }
     }, [course_id, locale, user?.course])
+
+    useEffect(() => {
+        if (!userLoading && user) {
+            if (!user.course.includes(Number(course_id))) {
+                window.location.href = `/403/`;
+            }
+        }
+    }, [user, course_id, userLoading]);
 
     return (
         <TranslationsProvider
