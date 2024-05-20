@@ -86,6 +86,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.otherport.address=:2002"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory" #for testing
       - "--certificatesresolvers.myresolver.acme.email=robin.paret@ugent.be"
@@ -114,6 +115,12 @@ services:
     volumes:
       - registrydata:/data
       - ${PASSWD_FOLDER_PATH}:/auth
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.registry.rule=Host(`sel2-1.ugent.be:2002`)"
+      - "traefik.http.routers.registry.entrypoints=otherport"
+      - "traefik.http.routers.registry.tls.certresolver=myresolver"
+    
 
 
 volumes:
