@@ -79,6 +79,7 @@ services:
   registry:
     image: "registry:latest"
     restart: always
+    container_name: registry
     expose:
       - 5000
     environment:
