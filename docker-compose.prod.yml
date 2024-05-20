@@ -92,7 +92,7 @@ services:
       - ${PASSWD_FOLDER_PATH}:/auth
     labels:
       - "traefik.enable=true"
-      - "traefik.address=`:2002`"
+      - "traefik.address=:2002"
       - "traefik.http.routers.registry.rule=Host(`sel2-1.ugent.be`)"
       - "traefik.http.routers.registry.entrypoints=otherport"
       - "traefik.http.routers.registry.tls.certresolver=myresolver"
