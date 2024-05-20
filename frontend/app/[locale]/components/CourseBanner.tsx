@@ -27,8 +27,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
             }
         };
 
-        fetchCourse();
-        setLoading(false);
+        fetchCourse().then(() => setLoading(false));
     }, [course_id]);
 
     return (

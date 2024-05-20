@@ -63,6 +63,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [hasDeadline, setHasDeadline] = useState(false);
     const [course_id, setCourseId] = useState<number>(0);
     const [confirmSubmit, setConfirmSubmit] = useState(false);
+    const [accessDenied, setAccessDenied] = useState(true);
 
 
     const isTitleEmpty = !title
@@ -130,27 +131,31 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
             try {
                 const user = await getUserData();
                 setUser(user)
+                if (!loadingUser && !loadingProject && user) {
+                    if (project_id !== null) {
+                        if (!user.course.includes(Number(course_id))) {
+                            window.location.href = `/403/`;
+                        } else {
+                            setAccessDenied(false);
+                        }
+                    } else {
+                        if (!user.course.includes(Number(add_course_id))) {
+                            window.location.href = `/403/`;
+                        } else {
+                            setAccessDenied(false);
+                        }
+                    }
+                }
             } catch (error) {
                 console.error("There was an error fetching the user data:", error);
+            } finally {
+                setLoadingUser(false);
             }
         }
 
         fetchUser().then(() => setLoadingUser(false));
-    }, []);
+    }, [add_course_id, course_id, loadingProject, loadingUser, project_id]);
 
-    useEffect(() => {
-        if (!loadingUser && !loadingProject && user) {
-            if (project_id !== null) {
-                if (!user.course.includes(Number(course_id))) {
-                    window.location.href = `/403/`;
-                }
-            } else {
-                if (!user.course.includes(Number(add_course_id))) {
-                    window.location.href = `/403/`;
-                }
-            }
-        }
-    }, [add_course_id, course_id, loadingProject, loadingUser, project_id, user]);
 
 
     async function setTestFiles(project: Project) {
@@ -255,6 +260,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
 
     return (
         (!isStudent) ? (
+            !accessDenied &&
             <div>
                 <Box
                     display="grid"

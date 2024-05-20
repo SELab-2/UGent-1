@@ -10,32 +10,36 @@ import ArchiveButton from "@app/[locale]/components/course_components/ArchiveBut
 import {UserData, getUserData} from "@lib/api";
 
 function CourseEditPage({params: {locale, course_id}}: { params: { locale: any, course_id: number } }) {
-    const [resources, setResources] = useState()
+    const [resources, setResources] = useState();
     const [user, setUser] = useState<UserData | null>(null);
     const [userLoading, setUserLoading] = useState(true);
+    const [accessDenied, setAccessDenied] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         initTranslations(locale, ["common"]).then((result) => {
-            setResources(result.resources)
-        })
+            setResources(result.resources);
+        });
 
         const fetchUser = async () => {
             try {
-                setUser(await getUserData());
+                const userData = await getUserData();
+                setUser(userData);
+                if (userData.role === 3 || !userData.course.includes(Number(course_id))) {
+                    window.location.href = `/403/`;
+                } else {
+                    setAccessDenied(false);
+                }
             } catch (error) {
                 console.error("There was an error fetching the user data:", error);
+            } finally {
+                setUserLoading(false);
+                setIsLoading(false);
             }
         }
 
-    }, [course_id, locale, user?.course])
-
-    useEffect(() => {
-        if (!userLoading && user) {
-            if (!user.course.includes(Number(course_id))) {
-                window.location.href = `/403/`;
-            }
-        }
-    }, [user, course_id, userLoading]);
+        fetchUser();
+    }, [locale]);
 
     return (
         <TranslationsProvider

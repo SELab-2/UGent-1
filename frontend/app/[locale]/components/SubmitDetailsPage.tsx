@@ -50,6 +50,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
   const [user, setUser] = useState<UserData | null>(null);
   const [userLoading, setUserLoading] = useState(true);
   const [disabled, setDisabled] = useState<boolean>(true);
+  const [accessDenied, setAccessDenied] = useState(true);
   const previewLength = 300;
 
   const toggleDescription = () => {
@@ -61,39 +62,28 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
   };
 
   useEffect(() => {
-    const fetchProject = async () => {
+    const fetchData = async () => {
       try {
-        const project: Project = await getProject(+project_id);
+        const project: Project = await getProject(project_id);
         setProjectData(project);
+        const userData = await getUserData();
+        setUser(userData);
+
+        if (!userData?.course.includes(Number(projectData?.course_id))) {
+          window.location.href = `/403/`;
+        } else {
+          setAccessDenied(false);
+          console.log("User is in course");
+        }
       } catch (e) {
         console.error(e);
+      } finally {
+        setLoadingProject(false);
+        setUserLoading(false);
       }
-    };
-    fetchProject().then(() => setLoadingProject(false));
-  }, [project_id]);
+    }
+  }, [projectData?.course_id, project_id]);
 
-    useEffect(() => {
-      const fetchUser = async () => {
-        try {
-          setUser(await getUserData());
-        } catch (error) {
-          console.error("There was an error fetching the user data:", error);
-        }
-      }
-
-      fetchUser();
-      setUserLoading(false);
-    }, [locale])
-
-    useEffect(() => {
-        if (!userLoading && !loadingProject && user) {
-        if (!user.course.includes(Number(projectData?.course_id))) {
-            window.location.href = `/403/`;
-        } else {
-            console.log("User is in course");
-        }
-        }
-    }, [userLoading, user, loadingProject, projectData]);
 
   function folderAdded(event: any) {
     let newpaths: string[] = [];
@@ -124,6 +114,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
   }
 
   return (
+      !accessDenied &&
     <ThemeProvider theme={baseTheme}>
       <Grid container justifyContent="center" alignItems="flex-start">
         <Grid item xs={12} style={{ padding: 20 }}>

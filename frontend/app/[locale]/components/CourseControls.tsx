@@ -53,7 +53,12 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                     alignItems: 'center',
                     gap: 2
             }}>
-                <Stack direction="column" spacing={2}>
+                <Stack
+                    marginX={{sm: 6, xs: 0}}
+                    direction="column"
+                    spacing={2}
+                    width={'100%'}
+                >
                     <Typography variant="h3" gutterBottom>
                         {t("courses")}
                     </Typography>
@@ -82,7 +87,7 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                 alignItems: 'center',
                 gap: 2,
                 overflowX: 'auto'
-        }}
+            }}
         >
             <Stack
                 marginX={{sm: 6, xs: 0}}

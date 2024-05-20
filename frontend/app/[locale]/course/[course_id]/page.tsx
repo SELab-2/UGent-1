@@ -12,58 +12,41 @@ import AddProjectButton from "@app/[locale]/components/AddProjectButton";
 import React, { useEffect, useState} from "react";
 import AccesAlarm from '@mui/icons-material/AccessAlarm';
 import Person from '@mui/icons-material/Person';
-import {getUserData} from "@lib/api";
+import {getUserData, UserData} from "@lib/api";
 
 const i18nNamespaces = ['common']
 
 export default function Course({params: {locale, course_id}, searchParams: {token}}:
                                          { params: { locale: any, course_id: number }, searchParams: { token: string } }) {
-    const [user, setUser] = useState<any>();
+    const [user, setUser] = useState<UserData|null>(null);
     const [translations, setTranslations] = useState({ t: (s) => '', resources: {} });
     const [loading, setLoading] = useState(true);
+    const [accessDenied, setAccessDenied] = useState(true);
 
     useEffect(() => {
-        const fetchTranslations = async () => {
-            setLoading(true);
-            try {
-                const { t, resources } = await initTranslations(locale, i18nNamespaces);
-                setTranslations({ t, resources });
-            } catch (error) {
-                console.error('Failed to initialize translations:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        initTranslations(locale, i18nNamespaces).then(({ t, resources }) => {
+            setTranslations({ t, resources });
+        });
 
-        fetchTranslations();
-    }, [locale, i18nNamespaces]);
-
-    useEffect(() => {
         const fetchUser = async () => {
             try {
-                const user = await getUserData();
-                setUser(user);
+                const userData = await getUserData();
+                setUser(userData);
+                if (!userData.course.includes(Number(course_id))) {
+                    window.location.href = `/403/`;
+                } else {
+                    setAccessDenied(false);
+                }
 
             } catch (error) {
                 console.error("There was an error fetching the user data:", error);
+            } finally {
+                setLoading(false);
             }
         }
 
-        fetchUser().then(() => {
-            setLoading(false)
-        });
-
-    }, [course_id, user?.course]);
-
-    useEffect(() => {
-        if (!loading && user) {
-            if (!user.course.includes(Number(course_id))) {
-                window.location.href = `/403/`;
-            } else {
-                console.log("User is in course");
-            }
-        }
-    }, [loading, user, course_id]);
+        fetchUser();
+    }, [locale, course_id]);
 
     const headers = [
         <React.Fragment key="name"><Person style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + translations.t('name')}</React.Fragment>,
@@ -84,6 +67,7 @@ export default function Course({params: {locale, course_id}, searchParams: {toke
                     <CircularProgress />
                 </Box>
             ): (
+                    !accessDenied &&
                     <Box
                         sx={{
                             paddingTop: 5,

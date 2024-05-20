@@ -312,7 +312,7 @@ const ListView: NextPage<ListViewProps> = ({
                                 .then(() => {
                                     window.location.reload();
                                 });
-                        } else if (action_name === 'join_course') {
+                        } else if (action_name === 'awel _course') {
                             postData('/courses/' + id + '/join_course/', {course_id: id})
                                 .then(() => {
                                     window.location.href = '/course/' + id;

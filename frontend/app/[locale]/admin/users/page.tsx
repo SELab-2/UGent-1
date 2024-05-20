@@ -18,24 +18,34 @@ export default function Users({ params: { locale } }: { params: { locale: any } 
     const [resources, setResources] = useState();
     const [user, setUser] = useState<UserData | null>(null);
     const [userLoading, setUserLoading] = useState(true);
+    const [accessDenied, setAccessDenied] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         initTranslations(locale, ["common"]).then((result) => {
             setResources(result.resources);
-        })
+        });
 
         const fetchUser = async () => {
             try {
-                setUser(await getUserData());
+                const userData = await getUserData();
+                setUser(userData);
+                if (userData.role !== 1) {
+                    window.location.href = `/403/`;
+                } else {
+                    setAccessDenied(false);
+                }
             } catch (error) {
                 console.error("There was an error fetching the user data:", error);
+            } finally {
+                setUserLoading(false);
+                setIsLoading(false);
             }
         }
 
-        fetchUser().then(() => setUserLoading(false));
-    }, [locale])
+        fetchUser();
+    }, [locale]);
 
-    console.log(user?.role);
     return (
         <TranslationsProvider
             resources={resources}
@@ -43,16 +53,13 @@ export default function Users({ params: { locale } }: { params: { locale: any } 
             namespaces={i18nNamespaces}
         >
             <NavBar />
-            {userLoading ? (
+            {isLoading ? (
                 <Box padding={5} sx={{ display: 'flex' }}>
                     <CircularProgress />
                 </Box>
             ) : (
-                user?.role !== 1 ? (
-                    window.location.href = `/403/`
-                ) : (
-                    <UserList />
-            ))}
+                !accessDenied && <UserList />
+            )}
         </TranslationsProvider>
     );
 }
