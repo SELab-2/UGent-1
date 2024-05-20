@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { getProject, getUserData, Project, UserData } from "@lib/api";
+import {checkGroup, getGroup, getProject, getUserData, Project, UserData} from "@lib/api";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -36,6 +36,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
   const [loadingProject, setLoadingProject] = useState<boolean>(true);
   const [user, setUser] = useState<UserData | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isInGroup, setIsInGroup] = useState(false);
   const previewLength = 300;
   const deadlineColorType = project?.deadline
     ? checkDeadline(project.deadline)
@@ -66,6 +67,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
     };
 
     fetchProject().then(() => setLoadingProject(false));
+    checkGroup(project_id).then((response) => setIsInGroup(response));
   }, [project_id]);
 
   if (loadingProject) {
@@ -98,7 +100,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
   return (
     <ThemeProvider theme={baseTheme}>
       <Box style={{ padding: "16px", maxWidth: "100%" }}>
-        <Grid container spacing={2} alignItems="center">
+        <Grid container spacing={2} alignItems="flex-end">
           <Grid item xs={12}>
             <Button
               variant="outlined"
@@ -108,33 +110,37 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
             >
               {t("return_course")}
             </Button>
-            <Grid container alignItems="center" spacing={2} sx={{ my: 1 }}>
+            <Grid container spacing={2} sx={{ my: 1 }}>
               <Grid item xs={12} sm={6}>
                 <Typography variant="h4">{project?.name}</Typography>
               </Grid>
-              {user?.role !== 3 && (
-                <Grid item xs={6} sm={3}>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<EditIcon />}
-                    href={`/${locale}/project/${project_id}/edit`}
-                    sx={{ fontSize: "0.75rem", py: 1 }}
-                  >
-                    {t("edit_project")}
-                  </Button>
-                </Grid>
-              )}
-              <Grid item xs={6} sm={3}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<GroupIcon />}
-                  href={`/${locale}/project/${project_id}/groups`}
-                  sx={{ fontSize: "0.75rem", py: 1 }}
-                >
-                  {t("groups")}
-                </Button>
+              <Grid item xs={12} sm={6} justifyContent="flex-end">
+                <Box sx={{ float: 'right', display: 'flex' }}>
+                  {user?.role !== 3 && (
+                    <Grid item xs={6} sm={6}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<EditIcon />}
+                        href={`/${locale}/project/${project_id}/edit`}
+                        sx={{ fontSize: '0.75rem', py: 1, marginRight: '2rem' }}
+                      >
+                        {t('edit_project')}
+                      </Button>
+                    </Grid>
+                  )}
+                  <Grid item xs={6} sm={6}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      startIcon={<GroupIcon />}
+                      href={`/${locale}/project/${project_id}/groups`}
+                      sx={{ fontSize: '0.75rem', py: 1 }}
+                    >
+                      {t('groups')}
+                    </Button>
+                  </Grid>
+                </Box>
               </Grid>
             </Grid>
             <Divider style={{ marginBottom: "1rem" }} />
@@ -197,15 +203,21 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
               </Typography>
             </div>
             {user?.role === 3 ? (
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<AddIcon />}
-                href={`/${locale}/project/${project_id}/submit`}
-                sx={{ my: 1 }}
-              >
-                {t("add_submission")}
-              </Button>
+              isInGroup ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddIcon />}
+                    href={`/${locale}/project/${project_id}/submit`}
+                    sx={{ my: 1 }}
+                  >
+                    {t("add_submission")}
+                  </Button>
+              ) : (
+                    <Typography variant="body1" style={{ color: "red", marginTop: "5px" }}>
+                        {t("not_in_group")}
+                    </Typography>
+              )
             ) : null}
           </Grid>
           <Grid item xs={12}>
