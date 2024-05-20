@@ -293,6 +293,24 @@ export async function getArchivedCourses(page = 1, pageSize = 5, keyword?: strin
     return await getRequest(url);
 }
 
+export async function getOpenCourses(page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Course[]> {
+    let url = `/courses/get_open_courses?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
 export async function archiveCourse(id: number): Promise<number> {
     return (await patchData(`/courses/${id}/`, {
         archived: true
@@ -318,6 +336,7 @@ export async function updateCourse(id: number, data: any): Promise<Course> {
 }
 
 export async function updateUserData(id: number, data: any): Promise<UserData> {
+    localStorage.setItem('user', JSON.stringify({data: userData, lastcache: "0"}));
     return (await putData(`/users/${id}/`, data));
 }
 
@@ -346,7 +365,7 @@ export async function updateProject(id: number, data: any): Promise<Project> {
 }
 
 export async function deleteProject(id: number): Promise<void> {
-    return (await deleteData(`/projects/${id}/`));
+    return (await deleteData(`/projects/${id}`));
 }
 
 export async function getProjects(): Promise<Project[]> {
@@ -361,8 +380,8 @@ export async function getProjectsFromCourse(id: number): Promise<Project[]> {
     return (await getListRequest('/courses/' + id + '/get_projects'))
 }
 
-export async function getProjectFromSubmission(id: number): Promise<Project> {
-    return (await getRequest(`/submissions/${id}/get_project`))
+export async function getProjectFromSubmission(id: number): Promise<number> {
+    return (await getRequest(`/submissions/${id}/get_project`)).project;
 }
 
 export async function getTeachersFromCourse(id: number): Promise<User[]> {
@@ -469,7 +488,6 @@ export async function getUserData(): Promise<UserData> {
     }else if(localStorage.getItem('user')){
         const userobj = JSON.parse(localStorage.getItem('user') as string);
         const lastcache : string | undefined = userobj?.lastcache;
-
         
         if(lastcache && Date.now() - parseInt(lastcache) < 2 * 60 * 1000){
             console.log(Date.now() - parseInt(lastcache));
@@ -651,7 +669,12 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any, project_id: string) : Promise<string>{
+type uploadResult = {
+    result: string;
+    errorcode: string | undefined;
+}
+
+export async function uploadSubmissionFile(event: any, project_id: string) : Promise<uploadResult>{
     axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
@@ -661,12 +684,16 @@ export async function uploadSubmissionFile(event: any, project_id: string) : Pro
 
     for(let file of event.target.fileList.files){
         let path = file.webkitRelativePath;
-        if(path)
         if (path.includes("/")) {
             path = path.substring((path.indexOf("/")??0)+1, path.length);
         }
         formData.append(path, file);
     }
+
+    for(let file of event.target.fileList2.files){
+        formData.append(file.name, file);
+    }
+
     formData.delete("fileList");
     const formDataObject = Object.fromEntries(formData.entries());
     console.log(formDataObject)
@@ -680,13 +707,13 @@ export async function uploadSubmissionFile(event: any, project_id: string) : Pro
                 'Content-Type': 'multipart/form-data'
             }
           });
-        return "yes";
+        return {result: "ok", errorcode: undefined};
     } catch (error) {
         const apierror : APIError = new APIError();
         apierror.message = "error posting form";
         apierror.type = ErrorType.REQUEST_ERROR;
         apierror.trace = error;
         console.error(apierror);
-        return "error";
+        return {result: "error", errorcode: error.response?.data?.errorcode};
     }
 }

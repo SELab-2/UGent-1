@@ -25,7 +25,6 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 if (error instanceof APIError) setError(error);
                 console.log(error);
             }
-
         };
 
         fetchCourse();
@@ -62,19 +61,21 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
             >
                 <Box
                     display="flex"
-                    justifyContent="flex-start"
+                    justifyContent={{ xs: 'center', sm: 'flex-start' }}
                     alignItems="center"
-                    width={"calc(100% - 200px)"}
-                    height={'100%'}
+                    width={{ xs: '100%', sm: "calc(100% - 200px)" }}
+                    height={{ xs: 'auto', sm: '100%' }}
+                    textAlign={{ xs: 'center', sm: 'left' }}
                 >
                     <Typography
-                        variant="h2"
-                        textAlign="center"
-                        noWrap={true}
-                        padding={0}
+                        variant="h4"
                         sx={{
                             color: 'white',
                             height: 'fit-content',
+                            fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
+                            whiteSpace: { xs: 'normal', sm: 'nowrap' },
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
                         }}
                     >
                         {course?.name + (course?.year === null ? "" : " " + course?.year)}
@@ -82,20 +83,18 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 </Box>
                 {user?.role !== 3 ? (
                     <Box
-                        height="100%"
                         display="flex"
-                        flexDirection="column"
-                        justifyContent="flex-start"
-                        alignItems="flex-start"
-                        textAlign="left"
-                        paddingY={2}
+                        justifyContent={{ xs: 'center', sm: 'flex-start' }}
+                        alignItems="center"
+                        paddingY={{ xs: 1, sm: 0 }}
+                        width={{ xs: '100%', sm: 'auto' }}
                     >
-                        <EditCourseButton course_id={course_id}/>
+                        <EditCourseButton course_id={course_id} />
                     </Box>
-                ): null}
+                ) : null}
             </Box>
         )
-    )
+    );
 }
 
-export default CourseBanner
+export default CourseBanner;

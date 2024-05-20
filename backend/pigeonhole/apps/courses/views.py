@@ -6,7 +6,7 @@ from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.pigeonhole.apps.courses.models import CourseSerializer
-from backend.pigeonhole.apps.groups.models import Group
+from backend.pigeonhole.apps.groups.models import Group, GroupSerializer
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.projects.models import ProjectSerializer
 from backend.pigeonhole.apps.users.models import User, UserSerializer
@@ -59,6 +59,21 @@ class CourseViewSet(viewsets.ModelViewSet):
         if request.user.is_student:
             if course.open_course:
                 user.course.add(course)
+
+                # Join all individual projects of the course
+                projects = Project.objects.filter(course_id=course, group_size=1)
+                for project in projects:
+                    group_data = {
+                        "project_id": project.project_id,
+                        "user": [user.id],
+                        "feedback": None,
+                        "final_score": None,
+                        "visible": False,
+                    }
+                    group_serializer = GroupSerializer(data=group_data)
+                    group_serializer.is_valid(raise_exception=True)
+                    group_serializer.save()
+
                 return Response(status=status.HTTP_200_OK)
             else:
                 return Response(
@@ -81,6 +96,22 @@ class CourseViewSet(viewsets.ModelViewSet):
 
         if invite_token == course.invite_token:
             user.course.add(course)
+
+            # Join all individual projects of the course
+            if request.user.is_student:
+                projects = Project.objects.filter(course_id=course, group_size=1)
+                for project in projects:
+                    group_data = {
+                        "project_id": project.project_id,
+                        "user": [user.id],
+                        "feedback": None,
+                        "final_score": None,
+                        "visible": False,
+                    }
+                    group_serializer = GroupSerializer(data=group_data)
+                    group_serializer.is_valid(raise_exception=True)
+                    group_serializer.save()
+
             return Response(
                 {"message": "Successfully joined the course with invite token."},
                 status=status.HTTP_200_OK,
@@ -171,4 +202,12 @@ class CourseViewSet(viewsets.ModelViewSet):
         paginated_queryset = self.paginate_queryset(course_filter.qs)
         queryset = self.order_queryset(paginated_queryset)
         serializer = CourseSerializer(queryset, many=True)
+        return self.get_paginated_response(serializer.data)
+
+    @action(detail=False, methods=["GET"])
+    def get_open_courses(self, request, *args, **kwargs):
+        courses = Course.objects.filter(open_course=True)
+        course_filter = CourseFilter(request.GET, queryset=courses)
+        queryset = self.order_queryset(course_filter.qs)
+        serializer = CourseSerializer(self.paginate_queryset(queryset), many=True)
         return self.get_paginated_response(serializer.data)
