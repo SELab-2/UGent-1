@@ -80,8 +80,8 @@ services:
     image: "registry:latest"
     restart: always
     container_name: registry
-    expose:
-      - 5000
+    ports:
+      - "5000:5000"
     environment:
         REGISTRY_AUTH: htpasswd
         REGISTRY_AUTH_HTPASSWD_REALM: Registry-Realm
@@ -92,10 +92,9 @@ services:
       - ${PASSWD_FOLDER_PATH}:/auth
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.registry.rule=Host(`sel2-1.ugent.be`) && PathPrefix(`/registry`)"
-      - "traefik.http.routers.registry.middlewares=backend-stripprefix"
-      - "traefik.http.middlewares.registry-stripprefix.stripprefix.prefixes=/registry"
-      - "traefik.http.routers.registry.entrypoints=websecure"
+      - "traefik.address=`:2002`"
+      - "traefik.http.routers.registry.rule=Host(`sel2-1.ugent.be:2002`)"
+      - "traefik.http.routers.registry.entrypoints=otherport"
       - "traefik.http.routers.registry.tls.certresolver=myresolver"
   
   traefik:
