@@ -7,6 +7,7 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import {useTranslation} from "react-i18next";
 import Link from 'next/link';
 import {APIError, getUserData, UserData} from "@lib/api";
@@ -61,6 +62,11 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                     <Link href="/course/all" passHref>
                         <Button variant="contained" color="secondary" startIcon={<ViewListIcon/>}>
                             {t("all_courses")}
+                        </Button>
+                    </Link>
+                    <Link href="/calendar" passHref>
+                        <Button variant="contained" color="secondary" startIcon={<CalendarMonthIcon/>}>
+                            {t("deadlines")}
                         </Button>
                     </Link>
                     <Link href="/course/archived" passHref>
