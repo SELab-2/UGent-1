@@ -96,7 +96,6 @@ services:
       - "traefik.http.routers.registry.rule=Host(`sel2-1.ugent.be`)"
       - "traefik.http.routers.registry.entrypoints=otherport"
       - "traefik.http.routers.registry.tls.certresolver=myresolver"
-      - "traefik.http.routers.registry.redirections.entryPoint.scheme=https"
   
   traefik:
     image: "traefik:v2.11"
