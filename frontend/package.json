@@ -35,7 +35,8 @@
     "react-i18next": "^14.1.0",
     "react-router-dom": "^5.3.4",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "react-calendar": "^5.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
