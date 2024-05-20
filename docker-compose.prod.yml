@@ -93,7 +93,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.address=`:2002`"
-      - "traefik.http.routers.registry.rule=Host(`sel2-1.ugent.be:2002`)"
+      - "traefik.http.routers.registry.rule=Host(`sel2-1.ugent.be`)"
       - "traefik.http.routers.registry.entrypoints=otherport"
       - "traefik.http.routers.registry.tls.certresolver=myresolver"
   
@@ -108,6 +108,7 @@ services:
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.otherport.address=:2002"
+      - "--entrypoints.otherport.http.tls=myresolver"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory" #for testing
       - "--certificatesresolvers.myresolver.acme.email=robin.paret@ugent.be"
