@@ -47,8 +47,8 @@ services:
       - static_volume:/usr/local/apache2/htdocs/
     depends_on:
       - backend
-    ports:
-      - 5000:80
+    expose:
+      - 5000
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.static.rule=Host(`sel2-1.ugent.be`) && PathPrefix(`/static`)"
