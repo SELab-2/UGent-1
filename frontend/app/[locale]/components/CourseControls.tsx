@@ -130,6 +130,7 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                     >
                         {t("view_archive")}
                     </Button>
+                    {user?.role !== 3 ? (
                     <Button
                         variant="contained"
                         color="secondary"
@@ -137,7 +138,7 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                         href={'/admin/users'}
                     >
                         {t("site users")}
-                    </Button>
+                    </Button>) : null}
                     <Select
                         value={selectedYear}
                         onChange={onYearChange}
