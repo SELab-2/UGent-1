@@ -46,6 +46,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
   const [submitted, setSubmitted] = useState<string>('no');
   const [loadingProject, setLoadingProject] = useState<boolean>(true);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [disabled, setDisabled] = useState<boolean>(true);
   const previewLength = 300;
 
   const toggleDescription = () => {
@@ -89,6 +90,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
       result = [...filepaths, ...newpaths];
     }
     setPaths(result);
+    setDisabled(newpaths.length === 0)
   }
 
   if (loadingProject) {
@@ -187,7 +189,13 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
                   </Box>
                 )}
                 {submitted !== 'ok' && (
-                  <Button variant="contained" color="primary" startIcon={<PublishIcon />} type="submit">
+                  <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<PublishIcon />}
+                      type="submit"
+                      disabled={disabled}
+                  >
                     {t('submit')}
                   </Button>
                 )}

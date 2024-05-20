@@ -73,11 +73,14 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                             {t("view_archive")}
                         </Button>
                     </Link>
-                    <Link href="/admin/users" passHref>
-                        <Button variant="contained" color="secondary" startIcon={<SupervisorAccountIcon/>}>
-                            {t("site users")}
-                        </Button>
-                    </Link>
+                    {user?.role === 1 ? (
+                        <Link href="/admin/users" passHref>
+                            <Button variant="contained" color="secondary" startIcon={<SupervisorAccountIcon/>}>
+                                {t("site users")}
+                            </Button>
+                        </Link>
+                    ) : null
+                    }
                     <Select
                         value={selectedYear}
                         onChange={onYearChange}

@@ -1,19 +1,30 @@
 "use client"
 
-import {IconButton, List, ListItem, ListItemText, TextField, Typography, Button} from "@mui/material";
+import {Button, IconButton, List, ListItem, ListItemText, TextField, Typography} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, {useState} from "react";
 import Box from "@mui/material/Box";
+import StatusButton from "@app/[locale]/components/StatusButton";
 
 interface ItemsListProps {
     items: string[],
     setItems: (value: (((prevState: any[]) => any[]) | any[])) => void,
     input_placeholder: string,
-    empty_list_placeholder:string,
-    button_text: string
+    empty_list_placeholder: string,
+    button_text: string,
+    items_status: string[],
+    setItemsStatus: (value: (((prevState: any[]) => any[]) | any[])) => void,
 }
 
-const ItemsList = ({items, setItems, input_placeholder, empty_list_placeholder, button_text}: ItemsListProps) => {
+const ItemsList = ({
+                       items,
+                       setItems,
+                       input_placeholder,
+                       empty_list_placeholder,
+                       button_text,
+                       items_status,
+                       setItemsStatus
+                   }: ItemsListProps) => {
     const [newItem, setNewItem] = useState('')
     const [noInput, setNoInput] = useState(false)
 
@@ -30,7 +41,6 @@ const ItemsList = ({items, setItems, input_placeholder, empty_list_placeholder, 
             setItems(newItems);
             setNewItem('');
             setNoInput(false);
-            console.log(items);
         } else {
             setNoInput(true);
         }
@@ -39,7 +49,8 @@ const ItemsList = ({items, setItems, input_placeholder, empty_list_placeholder, 
     return (
         <Box>
             {items.length === 0 ? (
-                <Typography variant={"body1"} color={"text.disabled"} sx={{padding: 1}}>{empty_list_placeholder}</Typography>
+                <Typography variant={"body1"} color={"text.disabled"}
+                            sx={{padding: 1}}>{empty_list_placeholder}</Typography>
             ) : (
                 <List
                     sx={{
@@ -54,13 +65,16 @@ const ItemsList = ({items, setItems, input_placeholder, empty_list_placeholder, 
                         <ListItem
                             key={index}
                             secondaryAction={
-                                <IconButton
-                                    edge="end"
-                                    aria-label="delete"
-                                    onClick={() => handleDelete(index)}
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
+                                <div>
+                                    <StatusButton files={items_status} setFiles={setItemsStatus} fileIndex={index}/>
+                                    <IconButton
+                                        edge="end"
+                                        aria-label="delete"
+                                        onClick={() => handleDelete(index)}
+                                    >
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </div>
                             }
                         >
                             <ListItemText
