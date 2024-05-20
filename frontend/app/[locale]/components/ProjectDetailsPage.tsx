@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { getProject, getUserData, Project, UserData } from "@lib/api";
+import {checkGroup, getGroup, getProject, getUserData, Project, UserData} from "@lib/api";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -37,6 +37,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
   const [user, setUser] = useState<UserData | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [isInGroup, setIsInGroup] = useState(false);
   const previewLength = 300;
   const deadlineColorType = project?.deadline
     ? checkDeadline(project.deadline)
@@ -67,6 +68,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
     };
 
     fetchProject().then(() => setLoadingProject(false));
+    checkGroup(project_id).then((response) => setIsInGroup(response));
   }, [project_id]);
 
   useEffect(() => {
@@ -195,7 +197,16 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
               </IconButton>
             )}
             <Typography variant="h6">{t("required_files")}</Typography>
-            <Typography>{project?.file_structure}</Typography>
+            <Typography variant={"body1"}>
+                <pre>
+                    {generateDirectoryTree(project?.file_structure).split('\n').map((line: string, index: number) => (
+                            <React.Fragment key={index}>
+                                {line}
+                                <br/>
+                            </React.Fragment>
+                    ))}
+                </pre>
+            </Typography>
             <Typography variant="h6">{t("conditions")}</Typography>
             <Typography>{project?.conditions}</Typography>
             <Typography>
@@ -231,15 +242,21 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
               </Typography>
             </div>
             {user?.role === 3 ? (
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<AddIcon />}
-                href={`/${locale}/project/${project_id}/submit`}
-                sx={{ my: 1 }}
-              >
-                {t("add_submission")}
-              </Button>
+              isInGroup ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddIcon />}
+                    href={`/${locale}/project/${project_id}/submit`}
+                    sx={{ my: 1 }}
+                  >
+                    {t("add_submission")}
+                  </Button>
+              ) : (
+                    <Typography variant="body1" style={{ color: "red", marginTop: "5px" }}>
+                        {t("not_in_group")}
+                    </Typography>
+              )
             ) : null}
           </Grid>
           <Grid item xs={12}>
@@ -262,5 +279,45 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
     </ThemeProvider>
   );
 };
+
+function buildTree(paths) {
+    const tree = {};
+    const paths_list = paths.split(',');
+    paths_list.forEach(path => {
+        const parts = path.split('/');
+        let current = tree;
+
+        parts.forEach((part, index) => {
+            if (!current[part]) {
+                if (index === parts.length - 1) {
+                    current[part] = {};
+                } else {
+                    current[part] = current[part] || {};
+                }
+            }
+            current = current[part];
+        });
+    });
+
+    return tree;
+}
+
+function buildTreeString(tree, indent = '') {
+    let treeString = '';
+
+    const keys = Object.keys(tree);
+    keys.forEach((key, index) => {
+        const isLast = index === keys.length - 1;
+        treeString += `${indent}${isLast ? '└── ' : '├── '}${key}\n`;
+        treeString += buildTreeString(tree[key], indent + (isLast ? '    ' : '│   '));
+    });
+
+    return treeString;
+}
+
+function generateDirectoryTree(filePaths) {
+    const tree = buildTree(filePaths);
+    return `.\n${buildTreeString(tree)}`;
+}
 
 export default ProjectDetailsPage;
