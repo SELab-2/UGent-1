@@ -1,40 +1,21 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { useRouter } from 'next/router';
-import {getCoursesForUser, getProjectsFromCourse} from "@lib/api";
+import { useProjects } from '../calendar/useProjects';
 
-interface Data {
-  id: number;
-  name: string;
-  deadline: string; // ISO date string
-}
-const ProjectCalendar = async () =>  {
-  const router = useRouter();
+const ProjectCalendar: React.FC = () => {
   const [value, setValue] = useState(new Date());
-    const [projects, setProjects] = useState<Data[]>([]);
+  const { projects, loading, error } = useProjects();
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const courses = await getCoursesForUser()
-      const temp_projects: Data[] = [];
-      for (const course of courses) {
-        const course_projects = await getProjectsFromCourse(course.course_id)
-        for (const project of course_projects) {
-          temp_projects.push({
-            id: project.project_id,
-            name: project.name,
-            deadline: project.deadline,
-          });
-        }
-      }
-      setProjects(temp_projects);
-    };
-    fetchProjects();
-  }, []);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   const isSameDay = (date1: Date, date2: Date): boolean => {
     return (
@@ -44,29 +25,45 @@ const ProjectCalendar = async () =>  {
     );
   };
 
+  const handleProjectClick = (projectId: string) => {
+    window.location.href = `/project/${projectId}`;
+  };
+
   const handleDateClick = (date: Date) => {
-    const project = projects.find(project =>
+    const projectsOnThisDay = projects.filter(project =>
       isSameDay(new Date(project.deadline), date)
     );
-    if (project) {
-      router.push(`/projects/${project.id}`);
+    if (projectsOnThisDay.length === 1) {
+      window.location.href = `/project/${projectsOnThisDay[0].id}`;
     }
+    // You may handle the case of multiple projects differently, such as showing a modal or a list of projects.
   };
 
   const tileContent = ({ date, view }: { date: Date; view: string }) => {
     if (view === 'month') {
-      const project = projects.find(project =>
+      const projectsOnThisDay = projects.filter(project =>
         isSameDay(new Date(project.deadline), date)
       );
-      return project ? (
-        <div className="highlight">{project.name}</div>
+      return projectsOnThisDay.length > 0 ? (
+        <div className="highlight">
+          {projectsOnThisDay.map((project, index) => (
+            <div
+              key={project.id}
+              onClick={() => handleProjectClick(project.id)}
+              className="project-link"
+            >
+              {project.name}
+              {index !== projectsOnThisDay.length - 1 && <hr />}
+            </div>
+          ))}
+        </div>
       ) : null;
     }
     return null;
   };
 
   return (
-    <div>
+    <div className="calendar-container">
       <Calendar
         onChange={setValue}
         value={value}
@@ -76,6 +73,28 @@ const ProjectCalendar = async () =>  {
       <style jsx>{`
         .highlight {
           background-color: yellow;
+        }
+        .calendar-container {
+          max-width: 1000px; /* Adjust the width as needed */
+          margin: 0 auto;
+        }
+        .react-calendar {
+          width: 100%;
+        }
+        .react-calendar__tile {
+          height: 100px; /* Increase the height of each tile */
+        }
+        .project-link {
+          cursor: pointer;
+          margin-bottom: 5px;
+        }
+        .project-link:hover {
+          text-decoration: underline;
+        }
+        hr {
+          border: none;
+          border-top: 1px solid #ccc;
+          margin: 5px 0;
         }
       `}</style>
     </div>
