@@ -15,9 +15,9 @@ import {
   Typography,
 } from '@mui/material';
 import {
-  getProject,
+  getProject, fetchUserData,
   Project,
-  uploadSubmissionFile,
+  uploadSubmissionFile, UserData,
 } from '@lib/api';
 import baseTheme from '@styles/theme';
 import ProjectReturnButton from '@app/[locale]/components/ProjectReturnButton';
@@ -46,7 +46,10 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
   const [submitted, setSubmitted] = useState<string>('no');
   const [loadingProject, setLoadingProject] = useState<boolean>(true);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [userLoading, setUserLoading] = useState(true);
   const [disabled, setDisabled] = useState<boolean>(true);
+  const [accessDenied, setAccessDenied] = useState(true);
   const previewLength = 300;
 
   const toggleDescription = () => {
@@ -58,16 +61,28 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
   };
 
   useEffect(() => {
-    const fetchProject = async () => {
+    const fetchData = async () => {
       try {
-        const project: Project = await getProject(+project_id);
+        const project: Project = await getProject(project_id);
         setProjectData(project);
+        const userData = await fetchUserData();
+        setUser(userData);
+
+        if (!userData?.course.includes(Number(projectData?.course_id))) {
+          window.location.href = `/403/`;
+        } else {
+          setAccessDenied(false);
+          console.log("User is in course");
+        }
       } catch (e) {
         console.error(e);
+      } finally {
+        setLoadingProject(false);
+        setUserLoading(false);
       }
-    };
-    fetchProject().then(() => setLoadingProject(false));
-  }, [project_id]);
+    }
+  }, [projectData?.course_id, project_id]);
+
 
   function folderAdded(event: any) {
     let newpaths: string[] = [];
@@ -98,6 +113,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
   }
 
   return (
+      !accessDenied &&
     <ThemeProvider theme={baseTheme}>
       <Grid container justifyContent="center" alignItems="flex-start">
         <Grid item xs={12} style={{ padding: 20 }}>

@@ -507,7 +507,7 @@ export async function getUserData(): Promise<UserData> {
     }
 }
 
-async function fetchUserData() : Promise<UserData> {
+export async function fetchUserData() : Promise<UserData> {
     try{
         userData = await getRequest('/users/current');
         localStorage.setItem('user', JSON.stringify({data: userData, lastcache: Date.now().toString()}));

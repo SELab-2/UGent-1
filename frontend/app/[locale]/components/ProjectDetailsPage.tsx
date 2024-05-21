@@ -1,10 +1,10 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import {checkGroup, getGroup, getProject, getUserData, Project, UserData} from "@lib/api";
+import {checkGroup, getGroup, getProject, fetchUserData, Project, UserData} from "@lib/api";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Grid, IconButton, LinearProgress, ThemeProvider } from "@mui/material";
+import { Grid, IconButton, LinearProgress, ThemeProvider, Skeleton } from "@mui/material";
 import ProjectSubmissionsList from "@app/[locale]/components/ProjectSubmissionsList";
 import GroupSubmissionList from "@app/[locale]/components/GroupSubmissionList";
 import baseTheme from "@styles/theme";
@@ -36,6 +36,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
   const [loadingProject, setLoadingProject] = useState<boolean>(true);
   const [user, setUser] = useState<UserData | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(true);
   const [isInGroup, setIsInGroup] = useState(false);
   const previewLength = 300;
   const deadlineColorType = project?.deadline
@@ -45,16 +46,17 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
     baseTheme.palette[deadlineColorType]?.main ||
     baseTheme.palette.text.secondary;
 
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        setUser(await getUserData());
+        setUser(await fetchUserData());
       } catch (error) {
         console.error("There was an error fetching the user data:", error);
       }
     };
 
-    fetchUser();
+    fetchUser().then(() => setLoadingUser(false));
   }, []);
 
   useEffect(() => {
@@ -69,6 +71,16 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
     fetchProject().then(() => setLoadingProject(false));
     checkGroup(project_id).then((response) => setIsInGroup(response));
   }, [project_id]);
+
+  useEffect(() => {
+    if (!loadingUser && !loadingProject && user) {
+      if (!user.course.includes(Number(project?.course_id))) {
+        window.location.href = `/403/`;
+      } else {
+        console.log("User is in course");
+      }
+    }
+  }, [loadingUser, user, loadingProject, project]);
 
   if (loadingProject) {
     return <LinearProgress />;
@@ -100,7 +112,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
   return (
     <ThemeProvider theme={baseTheme}>
       <Box style={{ padding: "16px", maxWidth: "100%" }}>
-        <Grid container spacing={2} alignItems="flex-end">
+        <Grid container spacing={2} alignItems="center">
           <Grid item xs={12}>
             <Button
               variant="outlined"
@@ -110,39 +122,67 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
             >
               {t("return_course")}
             </Button>
-            <Grid container spacing={2} sx={{ my: 1 }}>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h4">{project?.name}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6} justifyContent="flex-end">
-                <Box sx={{ float: 'right', display: 'flex' }}>
-                  {user?.role !== 3 && (
-                    <Grid item xs={6} sm={6}>
-                      <Button
+            <Box
+              display='flex'
+              justifyContent='space-between'
+              alignItems='center'
+              width={'100%'}
+              marginY={2}
+            >
+              <Typography
+                  variant="h4"
+                  display={'inline-block'}
+                  whiteSpace={'nowrap'}
+                  marginRight={2}
+              >
+                {project?.name}
+              </Typography>
+              <Box
+                width={'fit-content'}
+              >
+                {loadingUser ? (
+                    [1, 2].map((i) => (
+                        <Skeleton
+                            key={i}
+                            variant="rectangular"
+                            width={150}
+                            height={45}
+                            sx={{
+                              borderRadius: "8px",
+                              marginX: 1,
+                            }}
+                        />
+                    ))) : (
+                  <>
+                    {user?.role !== 3 && (
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<EditIcon />}
+                            href={`/${locale}/project/${project_id}/edit`}
+                            sx={{
+                              fontSize: "0.75rem",
+                              py: 1,
+                              marginRight: 1,
+                              marginY: 1,
+                            }}
+                        >
+                          {t("edit_project")}
+                        </Button>
+                    )}
+                    <Button
                         variant="contained"
                         color="secondary"
-                        startIcon={<EditIcon />}
-                        href={`/${locale}/project/${project_id}/edit`}
-                        sx={{ fontSize: '0.75rem', py: 1, marginRight: '2rem' }}
-                      >
-                        {t('edit_project')}
-                      </Button>
-                    </Grid>
-                  )}
-                  <Grid item xs={6} sm={6}>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      startIcon={<GroupIcon />}
-                      href={`/${locale}/project/${project_id}/groups`}
-                      sx={{ fontSize: '0.75rem', py: 1 }}
+                        startIcon={<GroupIcon />}
+                        href={`/${locale}/project/${project_id}/groups`}
+                        sx={{ fontSize: "0.75rem", py: 1 }}
                     >
-                      {t('groups')}
+                      {t("groups")}
                     </Button>
-                  </Grid>
-                </Box>
-              </Grid>
-            </Grid>
+                  </>
+                )}
+              </Box>
+            </Box>
             <Divider style={{ marginBottom: "1rem" }} />
             <Typography variant="h5">{t("assignment")}</Typography>
             <Typography>
