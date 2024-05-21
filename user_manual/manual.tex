@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 \usepackage{graphicx}
+\usepackage{float}
 
 \title{PigeonHole UGent Submission Platform User Manual}
 \author{SEL group 1 2024}
@@ -14,33 +15,40 @@
 \tableofcontents
 
 \section{Introduction}
-Welcome to the PigeonHole Ugent Submission Platform User Manual. This manual provides instructions for users, teachers, and administrators on how to effectively use the platform, step by step. The platform is designed to streamline the process of submitting, reviewing, and providing feedback on projects. It seeks to create a middle ground between being easy to use but also providing the necessary features for automatic feedback on big projects. As for now we only support UGent accounts to use the platform.
+Welcome to the PigeonHole UGent Submission Platform User Manual. This manual provides instructions for users, teachers, and administrators on how to effectively use the platform, step by step. The platform is designed to streamline the process of submitting, reviewing, and providing feedback on projects. It seeks to create a middle ground between being easy to use but also providing the necessary features for automatic feedback on big projects. As for now, we only support UGent accounts to use the platform.
 
 \section{Getting Started}
 \subsection{Creating an Account}
-Users can only login with their UGent account. If you do not have an account, please contact the administrator to create one for you.
+Users can only log in with their UGent account. If you do not have an account, please contact the administrator to create one for you.
 
 \subsection{Logging In}
-When acessing the platform, students will be prompted to log in with their UGent account. UGent uses OAuth2 for authentication, so you will be redirected to the UGent login page. After logging in, you will be redirected back to the platform.
+When accessing the platform, students will be prompted to log in with their UGent account. UGent uses OAuth2 for authentication, so you will be redirected to the UGent login page. After logging in, you will be redirected back to the platform.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/login.png}
+    \caption{Login Screen}
+    \label{fig:login}
+\end{figure}
 
 \subsection{Changing language}
 We support English and Dutch. You can change in the small dropdown menu in the top right corner of every page's topbar.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{user_manual//images/select_language.png}
+    \caption{Changing language}
+    \label{fig:change_language}
+\end{figure}
 
 \subsection{Changing your profile picture}
 By clicking on your name in the top right corner of the page, you can navigate to your profile page. Here you can change your profile picture by clicking on the image, selecting a new image, and clicking save.
 
 \section{Student Section}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/login.png}
-    \caption{Login Screen}
-    \label{fig:login}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/home_page.png}
+    \includegraphics[width=0.75\textwidth]{images/home_page.png}
     \caption{Home page}
     \label{fig:home_page}
 \end{figure}
@@ -52,6 +60,13 @@ You can view all courses you are enrolled in and the projects that are available
 \subsubsection{Archived courses}
 Courses of previous years are archived and can be viewed by clicking on the "Archived courses" button.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\linewidth]{user_manual//images/image.png}
+    \caption{Archived Courses}
+    \label{fig:archived_courses}
+\end{figure}
+
 \subsubsection{Filter courses}
 You can filter the courses by typing in the search bar. (TO BE DONE)
 
@@ -59,9 +74,23 @@ You can filter the courses by typing in the search bar. (TO BE DONE)
 There are two types of courses: public and private.
 In case the course is private, you need to be invited by the teacher to join the course.
 
-In case the course is public, you can eiter also be invited by the teacher or join the course yourself. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{user_manual//images/Access_private.png}
+    \caption{Access through Link}
+    \label{fig:access_private}
+\end{figure}
+
+In case the course is public, you can either also be invited by the teacher or join the course yourself. 
 To get a list of the public courses, click the "all open courses" button on the homepage.
 On the "all open courses" page, you can see all public courses. By clicking on the "Join" button, you can join the course.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{user_manual//images/join_public.png}
+    \caption{Join Public Course}
+    \label{fig:join_public_course}
+\end{figure}
 
 \subsection{Get an overview of the projects of a course}
 On the home page, you can click on the course title to navigate to the course page. Here you can see all the projects of the course. You can see the status of the project and the deadline.
@@ -75,7 +104,7 @@ If a project requires you to work in a group, you can view all groups by clickin
 If you want to hand in a submission, you can do this by clicking on the "Make a submission" button on the project page. On the submit page, you can upload your files and submit them by dragging them into the dropzone or by clicking on the dropzone and selecting the files.
 
 \subsection{Viewing feedback}
-The automatic feedback will be immediately available after uploading the submission, even before you actually submit, on the submit page. Its possible to submit something that doesn't pass the automatic feedback, a red status will be shown with your submission.
+The automatic feedback will be immediately available after uploading the submission, even before you actually submit, on the submit page. It's possible to submit something that doesn't pass the automatic feedback, a red status will be shown with your submission.
 
 \subsection{View your past submissions}
 All your past submissions can be viewed on the project page.
@@ -88,7 +117,7 @@ Teachers can create a new course by clicking the "Create a course" button on the
 \subsection{Creating a Project}
 Teachers can create a new project by clicking the "Create a project" button on the course page. They can set the project name, description, and deadline. After creating the project, students can submit their work.
 Teachers can also set the automatic feedback settings for the project. This ranges from directory structure to advanced test on students code. 
-Here the teacher can also set the necessary group size and amount of groups for the project.
+Here, the teacher can also set the necessary group size and amount of groups for the project.
 (TO BE DONE)
 
 \subsection{Viewing Submissions}
@@ -107,7 +136,7 @@ On the course page, teachers can see all students enrolled in the course. By cli
 You can use the course link to invite a co-teacher to the course. The co-teacher will have the same rights as the teacher.
 
 \subsection{Viewing co-teachers}
-Similarely to students, teachers can see all co-teachers on the course page. By clicking on the 'View co-teachers' button, they can navigate to the co-teachers' page.
+Similarly to students, teachers can see all co-teachers on the course page. By clicking on the 'View co-teachers' button, they can navigate to the co-teachers' page.
 
 \subsection{Editing a course or project}
 Teachers can edit a course or project by clicking on the 'Edit' button on the course or project page. Here they can change the course or project name, description, or deadline. The edit panel looks the same as the create panel, but with the fields filled in.
@@ -128,6 +157,6 @@ The square will become a triangle pointing up or down, indicating the direction 
 If you encounter any issues while using the platform, please contact our support team for assistance. You can reach us via email at 'axel.lorreyne@ugent.be'.
 
 \section{Conclusion}
-This user manual covers the basic functionality of the PigeonHole Project Submission Platform for students, teachers, and administrators. For technical information you can view our github repository at \url{https://github.com/SELab-2/UGent-1/}.
+This user manual covers the basic functionality of the PigeonHole Project Submission Platform for students, teachers, and administrators. For technical information, you can view our GitHub repository at \url{https://github.com/SELab-2/UGent-1/}.
 
 \end{document}
