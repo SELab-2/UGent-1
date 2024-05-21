@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import {checkGroup, getGroup, getProject, getUserData, Project, UserData} from "@lib/api";
+import {checkGroup, getGroup, getProject, fetchUserData, Project, UserData} from "@lib/api";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -18,7 +18,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import DownloadIcon from "@mui/icons-material/Download";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import initTranslations from "@app/i18n";
 
 const backend_url = process.env["NEXT_PUBLIC_BACKEND_URL"];
 
@@ -47,46 +46,11 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
     baseTheme.palette[deadlineColorType]?.main ||
     baseTheme.palette.text.secondary;
 
-    // useEffect(() => {
-    //     const fetchUser = async () => {
-    //         try {
-    //             const userData = await getUserData();
-    //             setUser(userData);
-    //             if (!userData.course.includes(Number(course_id))) {
-    //                 window.location.href = `/403/`;
-    //             } else {
-    //                 setAccessDenied(false);
-    //             }
-    //         } catch (error) {
-    //             console.error("There was an error fetching the user data:", error);
-    //         } finally {
-    //             setUserLoading(false);
-    //         }
-    //     }
-    //
-    //     const fetchProject = async () => {
-    //         try {
-    //             setProject(await getProject(project_id));
-    //         } catch (error) {
-    //             console.error("There was an error fetching the project:", error);
-    //         } finally {
-    //             setLoadingProject(false);
-    //         }
-    //     };
-    //
-    //     fetchProject();
-    //     checkGroup(project_id).then((response) => setIsInGroup(response));
-    //
-    //
-    //
-    //     fetchUser();
-    // }, [course_id, locale]);
-
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        setUser(await getUserData());
+        setUser(await fetchUserData());
       } catch (error) {
         console.error("There was an error fetching the user data:", error);
       }

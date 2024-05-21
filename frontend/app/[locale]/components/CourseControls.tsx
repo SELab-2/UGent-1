@@ -8,7 +8,7 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {useTranslation} from "react-i18next";
-import {APIError, getUserData, UserData} from "@lib/api";
+import {APIError, fetchUserData, UserData} from "@lib/api";
 
 const CourseControls = ({selectedYear, onYearChange}) => {
     const currentYear = new Date().getFullYear();
@@ -23,7 +23,7 @@ const CourseControls = ({selectedYear, onYearChange}) => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                setUser(await getUserData());
+                setUser(await fetchUserData());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
                 console.error(error);

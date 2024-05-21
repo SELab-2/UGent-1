@@ -5,7 +5,7 @@ import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import CreateCourseForm from "@app/[locale]/components/CreateCourseForm";
 import {useEffect, useState} from "react";
-import {getUserData, UserData} from "@lib/api";
+import {fetchUserData, UserData} from "@lib/api";
 
 const i18nNamespaces = ['common']
 
@@ -22,7 +22,7 @@ function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
 
         const fetchUser = async () => {
             try {
-                const userData = await getUserData();
+                const userData = await fetchUserData();
                 setUser(userData);
                 if (userData.role === 3) {
                     window.location.href = `/403/`;

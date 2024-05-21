@@ -12,7 +12,7 @@ import AddProjectButton from "@app/[locale]/components/AddProjectButton";
 import React, { useEffect, useState} from "react";
 import AccesAlarm from '@mui/icons-material/AccessAlarm';
 import Person from '@mui/icons-material/Person';
-import {getUserData, UserData} from "@lib/api";
+import {fetchUserData, UserData} from "@lib/api";
 
 const i18nNamespaces = ['common']
 
@@ -30,7 +30,7 @@ export default function Course({params: {locale, course_id}, searchParams: {toke
 
         const fetchUser = async () => {
             try {
-                const userData = await getUserData();
+                const userData = await fetchUserData();
                 setUser(userData);
                 if (!userData.course.includes(Number(course_id))) {
                     window.location.href = `/403/`;

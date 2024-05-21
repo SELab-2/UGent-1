@@ -4,7 +4,7 @@ import ProjectEditForm from "@app/[locale]/project/[project_id]/edit/projectEdit
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import initTranslations from "@app/i18n";
 import {useEffect, useState} from "react";
-import {getUserData, UserData} from "@lib/api";
+import {fetchUserData, UserData} from "@lib/api";
 import {Box, CircularProgress} from "@mui/material";
 
 const i18nNamespaces = ['common']
@@ -22,7 +22,7 @@ function ProjectAddPage({params: {locale, course_id}}: { params: { locale: any, 
 
         const fetchUser = async () => {
             try {
-                const userData = await getUserData();
+                const userData = await fetchUserData();
                 setUser(userData);
                 if (userData.role === 3 || !userData.course.includes(Number(course_id))) {
                     window.location.href = `/403/`;

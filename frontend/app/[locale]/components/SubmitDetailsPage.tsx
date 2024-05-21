@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import {
-  getProject, getUserData,
+  getProject, fetchUserData,
   Project,
   uploadSubmissionFile, UserData,
 } from '@lib/api';
@@ -27,7 +27,6 @@ import PublishIcon from '@mui/icons-material/Publish';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import Tree from '@app/[locale]/components/Tree';
-import initTranslations from "@app/i18n";
 
 interface SubmitDetailsPageProps {
   locale: any;
@@ -66,7 +65,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
       try {
         const project: Project = await getProject(project_id);
         setProjectData(project);
-        const userData = await getUserData();
+        const userData = await fetchUserData();
         setUser(userData);
 
         if (!userData?.course.includes(Number(projectData?.course_id))) {

@@ -3,12 +3,7 @@ import React, {useEffect, useState} from 'react';
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
-import Footer from "@app/[locale]/components/Footer";
-import ListView from '@app/[locale]/components/ListView';
-import BackButton from '@app/[locale]/components/BackButton';
-import EmailIcon from '@mui/icons-material/Email';
-import WorkIcon from '@mui/icons-material/Work';
-import {getUserData, UserData} from "@lib/api";
+import {fetchUserData, UserData} from "@lib/api";
 import UserList from "@app/[locale]/components/admin_components/UserList";
 import {Box, CircularProgress} from "@mui/material";
 
@@ -28,7 +23,7 @@ export default function Users({ params: { locale } }: { params: { locale: any } 
 
         const fetchUser = async () => {
             try {
-                const userData = await getUserData();
+                const userData = await fetchUserData();
                 setUser(userData);
                 if (userData.role !== 1) {
                     window.location.href = `/403/`;

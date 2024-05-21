@@ -7,7 +7,7 @@ import EditCourseForm from "@app/[locale]/components/EditCourseForm";
 import DeleteButton from "@app/[locale]/components/course_components/DeleteButton";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import ArchiveButton from "@app/[locale]/components/course_components/ArchiveButton";
-import {UserData, getUserData} from "@lib/api";
+import {UserData, fetchUserData} from "@lib/api";
 
 function CourseEditPage({params: {locale, course_id}}: { params: { locale: any, course_id: number } }) {
     const [resources, setResources] = useState();
@@ -23,7 +23,7 @@ function CourseEditPage({params: {locale, course_id}}: { params: { locale: any, 
 
         const fetchUser = async () => {
             try {
-                const userData = await getUserData();
+                const userData = await fetchUserData();
                 setUser(userData);
                 if (userData.role === 3 || !userData.course.includes(Number(course_id))) {
                     window.location.href = `/403/`;

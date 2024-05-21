@@ -7,7 +7,7 @@ import {
     deleteProject,
     getProject,
     getTestFiles,
-    getUserData,
+    fetchUserData,
     Project,
     updateProject,
     UserData
@@ -105,7 +105,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                     }
                     if (project.deadline !== null) setHasDeadline(true);
                 }
-                await getUserData().then((response) => {
+                await fetchUserData().then((response) => {
                     if (response.role === 3) {
                         setIsStudent(true);
                     } else {
@@ -129,7 +129,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const user = await getUserData();
+                const user = await fetchUserData();
                 setUser(user)
                 if (!loadingUser && !loadingProject && user) {
                     if (project_id !== null) {

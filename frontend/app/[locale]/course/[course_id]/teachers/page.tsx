@@ -7,12 +7,12 @@ import {Box, Button, CircularProgress} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React, {useEffect, useState} from "react";
 import EmailIcon from '@mui/icons-material/Email';
-import {getUserData} from "@lib/api";
+import {fetchUserData, UserData} from "@lib/api";
 
 const i18nNamespaces = ['common']
 
 export default function TeachersPage({params: {locale, course_id}}: { params: { locale: any, course_id: number } }) {
-    const [user, setUser] = useState<any>();
+    const [user, setUser] = useState<UserData|null>(null);
     const [translations, setTranslations] = useState({ t: (s) => '', resources: {} });
     const [userLoading, setUserLoading] = useState(true);
     const [accessDenied, setAccessDenied] = useState(true);
@@ -25,7 +25,7 @@ export default function TeachersPage({params: {locale, course_id}}: { params: { 
 
         const fetchUser = async () => {
             try {
-                const userData = await getUserData();
+                const userData = await fetchUserData();
                 setUser(userData);
                 if (!userData.course.includes(Number(course_id))) {
                     window.location.href = `/403/`;
