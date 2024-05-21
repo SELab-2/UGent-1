@@ -1,7 +1,7 @@
-import {ClearIcon } from '@mui/x-date-pickers/icons';
-import React, {useEffect, useState} from 'react';
+import {ClearIcon} from '@mui/x-date-pickers/icons';
+import React, {useState} from 'react';
 import CheckIcon from "@mui/icons-material/Check";
-import {Button, Typography} from "@mui/material";
+import {Button} from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 interface StatusButtonProps {
@@ -27,7 +27,6 @@ function StatusButton(
       const newFiles = [...files];
       newFiles[fileIndex] = status_valeus[newStatusIndex];
       setFiles(newFiles);
-      console.log(newFiles);
   };
 
   return (
