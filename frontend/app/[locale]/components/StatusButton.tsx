@@ -1,5 +1,5 @@
 import {ClearIcon } from '@mui/x-date-pickers/icons';
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import CheckIcon from "@mui/icons-material/Check";
 import {Button, Typography} from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -27,6 +27,7 @@ function StatusButton(
       const newFiles = [...files];
       newFiles[fileIndex] = status_valeus[newStatusIndex];
       setFiles(newFiles);
+      console.log(newFiles);
   };
 
   return (
@@ -44,14 +45,18 @@ function StatusButton(
   );
 }
 
-function getStart(file: string) {
-  if (file[0] === '+') {
-    return 0;
-  } else if (file[0] === '~') {
-    return 1;
-  } else {
-    return 2;
-  }
+function getStart(file: string | undefined) {
+    if (!file || file.length === 0) {
+        return 2;
+    }
+
+    if (file[0] === '+') {
+        return 0;
+    } else if (file[0] === '~') {
+        return 1;
+    } else {
+        return 2;
+    }
 }
 
 export default StatusButton;
