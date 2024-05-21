@@ -419,8 +419,12 @@ export async function getGroup(id: number): Promise<Group> {
 }
 
 export async function checkGroup(id: number) {
-    let response = await axios.get(backend_url + "/projects/" + id + "/get_group/", {withCredentials: true});
-    return response.status !== 404;
+    try {
+        await axios.get(backend_url + "/projects/" + id + "/get_group/", {withCredentials: true});
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
 export async function getGroups(): Promise<Group[]> {
@@ -507,7 +511,7 @@ export async function getUserData(): Promise<UserData> {
     }
 }
 
-async function fetchUserData() : Promise<UserData> {
+export async function fetchUserData() : Promise<UserData> {
     try{
         userData = await getRequest('/users/current');
         localStorage.setItem('user', JSON.stringify({data: userData, lastcache: Date.now().toString()}));

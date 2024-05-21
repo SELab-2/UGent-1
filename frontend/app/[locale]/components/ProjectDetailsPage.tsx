@@ -1,10 +1,10 @@
 'use client'
-import React, {useEffect, useState} from "react";
-import {checkGroup, getProject, getUserData, Project, UserData} from "@lib/api";
-import {useTranslation} from "react-i18next";
+import React, { useEffect, useState } from "react";
+import {checkGroup, getGroup, getProject, fetchUserData, Project, UserData} from "@lib/api";
+import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Grid, IconButton, LinearProgress, ThemeProvider} from "@mui/material";
+import { Grid, IconButton, LinearProgress, ThemeProvider, Skeleton } from "@mui/material";
 import ProjectSubmissionsList from "@app/[locale]/components/ProjectSubmissionsList";
 import GroupSubmissionList from "@app/[locale]/components/GroupSubmissionList";
 import baseTheme from "@styles/theme";
@@ -32,30 +32,32 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
                                                                }) => {
     const {t} = useTranslation();
 
-    const [project, setProject] = useState<Project>();
-    const [loadingProject, setLoadingProject] = useState<boolean>(true);
-    const [user, setUser] = useState<UserData | null>(null);
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [isInGroup, setIsInGroup] = useState(false);
-    const previewLength = 300;
-    const deadlineColorType = project?.deadline
-        ? checkDeadline(project.deadline)
-        : "textSecondary";
-    const deadlineColor =
-        baseTheme.palette[deadlineColorType]?.main ||
-        baseTheme.palette.text.secondary;
+  const [project, setProject] = useState<Project>();
+  const [loadingProject, setLoadingProject] = useState<boolean>(true);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [isInGroup, setIsInGroup] = useState(false);
+  const previewLength = 300;
+  const deadlineColorType = project?.deadline
+    ? checkDeadline(project.deadline)
+    : "textSecondary";
+  const deadlineColor =
+    baseTheme.palette[deadlineColorType]?.main ||
+    baseTheme.palette.text.secondary;
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                setUser(await getUserData());
-            } catch (error) {
-                console.error("There was an error fetching the user data:", error);
-            }
-        };
 
-        fetchUser();
-    }, []);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setUser(await fetchUserData());
+      } catch (error) {
+        console.error("There was an error fetching the user data:", error);
+      }
+    };
+
+    fetchUser().then(() => setLoadingUser(false));
+  }, []);
 
     useEffect(() => {
         const fetchProject = async () => {
@@ -65,10 +67,23 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
                 console.error("There was an error fetching the project:", error);
             }
         };
-
         fetchProject().then(() => setLoadingProject(false));
         checkGroup(project_id).then((response) => setIsInGroup(response));
     }, [project_id]);
+  
+  useEffect(() => {
+    if (!loadingUser && !loadingProject && user) {
+      if (!user.course.includes(Number(project?.course_id))) {
+        window.location.href = `/403/`;
+      } else {
+        console.log("User is in course");
+      }
+    }
+  }, [loadingUser, user, loadingProject, project]);
+
+  if (loadingProject) {
+    return <LinearProgress />;
+  }
 
     if (loadingProject) {
         return <LinearProgress/>;

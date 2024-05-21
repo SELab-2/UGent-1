@@ -2,7 +2,16 @@
 import React, {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import JSZip, {JSZipObject} from "jszip";
-import {addProject, deleteProject, getProject, getTestFiles, getUserData, Project, updateProject} from "@lib/api";
+import {
+    addProject,
+    deleteProject,
+    getProject,
+    getTestFiles,
+    fetchUserData,
+    Project,
+    updateProject,
+    UserData
+} from "@lib/api";
 import Box from "@mui/material/Box";
 import Title from "@app/[locale]/components/project_components/title";
 import Assignment from "@app/[locale]/components/project_components/assignment";
@@ -50,9 +59,11 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [isStudent, setIsStudent] = useState(false);
     const [isTeacher, setIsTeacher] = useState(false);
     const [loadingUser, setLoadingUser] = useState(true);
+    const [user, setUser] = useState<UserData | null>(null);
     const [hasDeadline, setHasDeadline] = useState(false);
     const [course_id, setCourseId] = useState<number>(0);
     const [confirmSubmit, setConfirmSubmit] = useState(false);
+    const [accessDenied, setAccessDenied] = useState(true);
 
 
     const isTitleEmpty = !title
@@ -94,7 +105,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                     }
                     if (project.deadline !== null) setHasDeadline(true);
                 }
-                await getUserData().then((response) => {
+                await fetchUserData().then((response) => {
                     if (response.role === 3) {
                         setIsStudent(true);
                     } else {
@@ -114,6 +125,37 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
             setLoadingProject(false);
         }
     }, [project_id, loadingTranslations, isStudent, loadingProject, isTeacher]);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const user = await fetchUserData();
+                setUser(user)
+                if (!loadingUser && !loadingProject && user) {
+                    if (project_id !== null) {
+                        if (!user.course.includes(Number(course_id))) {
+                            window.location.href = `/403/`;
+                        } else {
+                            setAccessDenied(false);
+                        }
+                    } else {
+                        if (!user.course.includes(Number(add_course_id))) {
+                            window.location.href = `/403/`;
+                        } else {
+                            setAccessDenied(false);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("There was an error fetching the user data:", error);
+            } finally {
+                setLoadingUser(false);
+            }
+        }
+
+        fetchUser().then(() => setLoadingUser(false));
+    }, [add_course_id, course_id, loadingProject, loadingUser, project_id]);
+
 
 
     async function setTestFiles(project: Project) {
@@ -218,6 +260,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
 
     return (
         (!isStudent) ? (
+            !accessDenied &&
             <div>
                 <Box
                     display="grid"
@@ -269,6 +312,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                             setVisible={setVisible}
                             handleSave={handleSave}
                             setConfirmRemove={setConfirmRemove}
+                            course_id={add_course_id}
                             project_id={project_id}
                             setHasDeadline={setHasDeadline}
                             hasDeadline={hasDeadline}
