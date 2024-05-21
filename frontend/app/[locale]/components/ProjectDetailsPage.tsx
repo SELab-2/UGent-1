@@ -198,16 +198,20 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
               </IconButton>
             )}
             <Typography variant="h6">{t("required_files")}</Typography>
-            <Typography variant={"body1"}>
-                <pre>
-                    {generateDirectoryTree(project?.file_structure).split('\n').map((line: string, index: number) => (
-                            <React.Fragment key={index}>
-                                {line}
-                                <br/>
-                            </React.Fragment>
-                    ))}
-                </pre>
-            </Typography>
+              {project?.file_structure && project?.file_structure.length > 0 ? (
+                  <Typography variant={"body1"}>
+                    <pre>
+                        {generateDirectoryTree(project?.file_structure).split('\n').map((line: string, index: number) => (
+                                <React.Fragment key={index}>
+                                    {line}
+                                    <br/>
+                                </React.Fragment>
+                        ))}
+                    </pre>
+                </Typography>
+              ) : (
+                  <Typography>{t("no_required_files")}</Typography>
+              )}
             <Typography variant="h6">{t("conditions")}</Typography>
             <Typography>{project?.conditions}</Typography>
             <Typography>
