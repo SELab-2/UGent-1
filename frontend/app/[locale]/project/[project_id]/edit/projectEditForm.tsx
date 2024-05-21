@@ -2,7 +2,16 @@
 import React, {useEffect, useState, useRef} from "react";
 import dayjs from "dayjs";
 import JSZip, {JSZipObject} from "jszip";
-import {addProject, deleteProject, getProject, getTestFiles, getUserData, Project, updateProject} from "@lib/api";
+import {
+    addProject,
+    deleteProject,
+    getProject,
+    getTestFiles,
+    fetchUserData,
+    Project,
+    updateProject,
+    UserData
+} from "@lib/api";
 import Box from "@mui/material/Box";
 import Title from "@app/[locale]/components/project_components/title";
 import Assignment from "@app/[locale]/components/project_components/assignment";
@@ -39,6 +48,7 @@ interface ProjectEditFormProps {
 
 function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [files, setFiles] = useState<string[]>([]);
+    const [status_files, setStatusFiles] = useState<string[]>([]);
     const [title, setTitle] = useState('');
     const [dockerImage, setDockerImage] = useState('');
     const [description, setDescription] = useState('');
@@ -56,9 +66,11 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [isStudent, setIsStudent] = useState(false);
     const [isTeacher, setIsTeacher] = useState(false);
     const [loadingUser, setLoadingUser] = useState(true);
+    const [user, setUser] = useState<UserData | null>(null);
     const [hasDeadline, setHasDeadline] = useState(false);
     const [course_id, setCourseId] = useState<number>(0);
     const [confirmSubmit, setConfirmSubmit] = useState(false);
+    const [accessDenied, setAccessDenied] = useState(true);
 
     const dockerfileref = useRef<HTMLInputElement>(null);
 
@@ -80,8 +92,10 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                     setDescription(project.description)
                     if (project.file_structure !== null) {
                         const file_structure = project.file_structure.split(",").map((item: string) => item.trim().replace(/"/g, ''));
-                        setFiles(file_structure);
-                        console.log(files);
+                        const file_structure_status = file_structure.map((item: string) => item[0]);
+                        const file_structure_name = file_structure.map((item: string) => item.substring(1));
+                        setFiles(file_structure_name);
+                        setStatusFiles(file_structure_status);
                     }
                     setGroupSize(project["group_size"])
                     setTitle(project["name"])
@@ -101,7 +115,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                     }
                     if (project.deadline !== null) setHasDeadline(true);
                 }
-                await getUserData().then((response) => {
+                await fetchUserData().then((response) => {
                     if (response.role === 3) {
                         setIsStudent(true);
                     } else {
@@ -122,10 +136,41 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
         }
     }, [project_id, loadingTranslations, isStudent, loadingProject, isTeacher]);
 
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const user = await fetchUserData();
+                setUser(user)
+                if (!loadingUser && !loadingProject && user) {
+                    if (project_id !== null) {
+                        if (!user.course.includes(Number(course_id))) {
+                            window.location.href = `/403/`;
+                        } else {
+                            setAccessDenied(false);
+                        }
+                    } else {
+                        if (!user.course.includes(Number(add_course_id))) {
+                            window.location.href = `/403/`;
+                        } else {
+                            setAccessDenied(false);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("There was an error fetching the user data:", error);
+            } finally {
+                setLoadingUser(false);
+            }
+        }
+
+        fetchUser().then(() => setLoadingUser(false));
+    }, [add_course_id, course_id, loadingProject, loadingUser, project_id]);
+
+
 
     async function setTestFiles(project: Project) {
         const zip = new JSZip();
-        console.log(project.test_files)
+
         const test_files_zip = await getTestFiles(project.test_files);
         const zipData = await zip.loadAsync(test_files_zip);
         const testfiles_name: string[] = [];
@@ -156,12 +201,16 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
         } else {
             const formData = new FormData();
             formData.append("test_docker_image", dockerImage);
+            const zipFile = new File([zipFileBlob], "test_files.zip");
+
+            const required_files = files.map((item, index) => status_files[index] + item);
+            formData.append("test_files", zipFile);
             formData.append("name", title);
             formData.append("description", description);
             formData.append("max_score", score.toString());
             formData.append("number_of_groups", groupAmount.toString());
             formData.append("group_size", groupSize.toString());
-            formData.append("file_structure", files.join(","));
+            formData.append("file_structure", required_files.join(","));
             formData.append("conditions", conditions.join(","));
             formData.append("visible", visible.toString());
             if (add_course_id < 0) {
@@ -216,6 +265,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
 
     return (
         (!isStudent) ? (
+            !accessDenied &&
             <div>
                 <Box
                     display="grid"
@@ -236,7 +286,10 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                             description={description}/>
                         <RequiredFiles
                             files={files}
-                            setFiles={setFiles}/>
+                            setFiles={setFiles}
+                            file_status={status_files}
+                            setFileStatus={setStatusFiles}
+                        />
                         <Conditions
                             conditions={conditions}
                             setConditions={setConditions}/>
@@ -274,6 +327,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                             setVisible={setVisible}
                             handleSave={handleSave}
                             setConfirmRemove={setConfirmRemove}
+                            course_id={add_course_id}
                             project_id={project_id}
                             setHasDeadline={setHasDeadline}
                             hasDeadline={hasDeadline}
@@ -286,7 +340,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                 </Box>
                 <RemoveDialog
                     confirmRemove={confirmRemove}
-                    handle_remove={handle_remove}
+                    handleRemove={handle_remove}
                     setConfirmRemove={setConfirmRemove}/>
             </div>
         ) : (

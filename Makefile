@@ -9,8 +9,7 @@ lint:
 	docker exec pigeonhole-frontend npm run lint
 
 superuser:
-
-
+	docker exec -it pigeonhole-backend python manage.py createsuperuser
 
 mockdata:
 	docker exec -it pigeonhole-backend python manage.py runscript mockdata
@@ -34,5 +33,12 @@ frontshell:
 componenttest:
 	docker exec -it pigeonhole-frontend npx jest
 
+coveragecomponenttest:
+	docker exec -it pigeonhole-frontend npx jest --coverage --silent
+
 silentcomponenttest:
 	docker exec -it pigeonhole-frontend npx jest --silent
+
+resetdb:
+	docker exec pigeonhole-backend python manage.py flush --noinput
+	docker exec -it pigeonhole-backend python manage.py runscript mockdata

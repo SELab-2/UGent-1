@@ -52,12 +52,12 @@ def run():
         name='Computationele biologie',
         description='Rekenmethoden, moleculaire biologie, genoomstructuur, genpredictie, sequenties aligneren, '
                     'fylogenie, vergelijkend genoomonderzoek, analyse van genexpressie',
-        open_course=False
+        open_course=True
     )
 
     course_7, _ = Course.objects.get_or_create(
         name='Automaten, berekenbaarheid en complexiteit',
-        description='Eindige automaten, formele talen, stapelautomaten, Turingmachines, berekenbaarheid, complexiteit',
+        description='Eindige automaten, fo.rmele talen, stapelautomaten, Turingmachines, berekenbaarheid, complexiteit',
         open_course=False
     )
 
@@ -288,13 +288,14 @@ def run():
     )
 
     project_3, _ = Project.objects.get_or_create(
-        name='Opdracht 1',
+        name='Opdracht met file structure',
         description=lorem_ipsum,
         course_id=course_6,
-        deadline='2021-12-12 12:12:14',
+        deadline='2025-12-12 12:12:14',
         visible=True,
         number_of_groups=10,
-        group_size=2
+        group_size=2,
+        file_structure='+extra/verslag.pdf,+src/*.py'
     )
 
     project_4, _ = Project.objects.get_or_create(
@@ -373,7 +374,7 @@ def run():
     )
 
     group_6.user.set(
-        [user_7, user_8]
+        [user_7]
     )
 
     group_7, _ = Group.objects.get_or_create(
