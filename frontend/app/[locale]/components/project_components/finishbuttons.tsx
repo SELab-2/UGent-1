@@ -11,7 +11,8 @@ interface FinishButtonsProps {
     setVisible: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     handleSave: () => Promise<void>,
     setConfirmRemove: (value: (((prevState: boolean) => boolean) | boolean)) => void,
-    course_id: number,
+    project_id: (number|null),
+    course_id: (number|null),
     setHasDeadline: (value: (((prevState: boolean) => boolean) | boolean)) => void,
     hasDeadline: boolean,
     createProject: boolean,
@@ -20,10 +21,13 @@ interface FinishButtonsProps {
 function FinishButtons(
     {
         visible, setVisible, handleSave, setConfirmRemove,
-        course_id, setHasDeadline, hasDeadline, createProject
+        project_id, setHasDeadline, hasDeadline, createProject, course_id
     }: FinishButtonsProps
 ) {
     const {t} = useTranslation();
+
+    const cancelLink = createProject ? `/course/${course_id}/` : `/project/${project_id}/`;
+
     return <div>
         <Grid container spacing={0} alignItems={"center"} justifyContent={"space-between"}>
             <Grid display={"flex"}>
@@ -78,7 +82,7 @@ function FinishButtons(
             </Grid>
             <Grid className={"buttonsGrid"}>
                 <Button
-                    onClick={() => window.location.href = "/course/" + course_id + "/"}
+                    onClick={() => window.location.href = cancelLink}
                     className={"saveButton"}
                     variant={'contained'}
                     color={'secondary'}

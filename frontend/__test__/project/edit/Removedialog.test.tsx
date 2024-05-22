@@ -14,7 +14,7 @@ describe('Removedialog', () => {
         const {getByText: getByText_en, getByTestId} = render(
             <RemoveDialog
                 confirmRemove={true}
-                handle_remove={jest.fn()}
+                handleRemove={jest.fn()}
                 setConfirmRemove={jest.fn()}
                 translations={translations.en}
             />
@@ -35,7 +35,7 @@ describe('Removedialog', () => {
         const {getByText} = render(
             <RemoveDialog
                 confirmRemove={true}
-                handle_remove={handle_remove}
+                handleRemove={handle_remove}
                 setConfirmRemove={setConfirmRemove}
                 translations={translations.en}
             />
@@ -55,7 +55,7 @@ describe('Removedialog', () => {
         const {getByText} = render(
             <RemoveDialog
                 confirmRemove={true}
-                handle_remove={handle_remove}
+                handleRemove={handle_remove}
                 setConfirmRemove={setConfirmRemove}
                 translations={translations.en}
             />

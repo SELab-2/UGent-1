@@ -1,7 +1,8 @@
 import React from "react";
 import JSZip, {JSZipObject} from "jszip";
 import {useTranslation} from "react-i18next";
-import {Button, Box, Typography} from "@mui/material";
+import {Button, Typography} from "@mui/material";
+import UploadIcon from '@mui/icons-material/Upload';
 
 interface UploadTestFileProps {
     testfilesName: string[],
@@ -59,6 +60,7 @@ function UploadTestFile(
                 className={"uploadButton"}
                 variant={"contained"}
                 color={'secondary'}
+                startIcon={<UploadIcon/>}
                 sx={{
                     width: 'fit-content',
                     color: 'secondary.contrastText',

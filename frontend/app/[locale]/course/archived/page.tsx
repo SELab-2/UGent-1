@@ -4,12 +4,15 @@ import ListView from '@app/[locale]/components/ListView';
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import BackButton from "@app/[locale]/components/BackButton";
+import NotesIcon from '@mui/icons-material/Notes';
 
 const i18nNamespaces = ['common'];
 
 const ArchivePage = async ({params: {locale}}) => {
     const {t, resources} = await initTranslations(locale, i18nNamespaces);
-    const headers = [t('name'), t('description'), t('open')];
+    const headers = [t('name'), 
+    <React.Fragment key="description"><NotesIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('description')}</React.Fragment>,
+    , t('open'), ''];
     const headers_backend = ['name', 'description', 'open'];
 
     return (
@@ -19,7 +22,12 @@ const ArchivePage = async ({params: {locale}}) => {
             namespaces={i18nNamespaces}
         >
             <NavBar/>
-            <div style={{padding: 20}}>
+            <div
+                style={{
+                    padding: 20,
+                    width: '100%'
+            }}
+            >
                 <BackButton
                     destination={'/home'}
                     text={t('back_to') + ' ' + t('home') + ' ' + t('page')}

@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import {Box, Button, MenuItem, Select, Stack, Typography} from '@mui/material';
+import {Box, Button, MenuItem, Select, Stack, Typography, Skeleton} from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ViewListIcon from '@mui/icons-material/ViewList';
@@ -9,14 +9,14 @@ import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import {useTranslation} from "react-i18next";
-import Link from 'next/link';
-import {APIError, getUserData, UserData} from "@lib/api";
+import {APIError, fetchUserData, UserData} from "@lib/api";
 
 const CourseControls = ({selectedYear, onYearChange}) => {
     const currentYear = new Date().getFullYear();
     const academicYear = `${currentYear - 1}-${currentYear.toString().slice(-2)}`;
 
     const [user, setUser] = useState<UserData | null>(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<APIError | null>(null);
 
     const {t} = useTranslation()
@@ -24,16 +24,19 @@ const CourseControls = ({selectedYear, onYearChange}) => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                setUser(await getUserData());
+                setUser(await fetchUserData());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
                 console.error(error);
             }
-
         };
 
         fetchUser();
+        setLoading(false);
     }, []);
+
+
+
 
     const years = [
         `${currentYear - 2}-${(currentYear - 1).toString().slice(-2)}`,
@@ -42,43 +45,111 @@ const CourseControls = ({selectedYear, onYearChange}) => {
     ];
 
     return (
-        <Box sx={{py:1, px: 2, display: 'flex', alignItems: 'center', gap: 2}}>
-            <Stack direction="column" spacing={2}>
+        loading ?
+            <Box
+                sx={{
+                    py:1,
+                    px: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2
+            }}>
+                <Stack
+                    marginX={{sm: 6, xs: 0}}
+                    direction="column"
+                    spacing={2}
+                    width={'100%'}
+                >
+                    <Typography variant="h3" gutterBottom>
+                        {t("courses")}
+                    </Typography>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                        {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                            <Skeleton
+                                key={i}
+                                variant="rectangular"
+                                width={150}
+                                height={45}
+                                sx={{
+                                    borderRadius: '8px'
+                                }}
+                            />
+                        ))}
+                    </Stack>
+                </Stack>
+            </Box>
+            :
+        <Box
+            width={'100%'}
+            sx={{
+                py:1,
+                px: 2,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                overflowX: 'auto'
+            }}
+        >
+            <Stack
+                marginX={{sm: 6, xs: 0}}
+                direction="column"
+                spacing={2}
+                width={'100%'}
+            >
                 <Typography variant="h3" gutterBottom>
                     {t("courses")}
                 </Typography>
-                <Stack direction="row" spacing={2} alignItems="center">
-                    <Button variant="contained" color="secondary" startIcon={<FilterListIcon/>}>
-                        {t("filter_courses")}
+                <Box
+                    display="flex"
+                    justifyContent={'space-between'}
+                    alignItems="center"
+                    width={'fit-content'}
+                    height={'fit-content'}
+                    gap={2}
+                >
+                    {user?.role !== 3 ? (
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<AddCircleIcon/>}
+                            href={'/course/add'}
+                        >
+                            {t("create_course")}
+                        </Button>
+                    ) : null}
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<ViewListIcon/>}
+                        href={'/course/all'}
+                    >
+                        {t("all_courses")}
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<CalendarMonthIcon/>}
+                        href={'/calendar'}
+                    >
+                        {t("deadlines")}
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<ArchiveIcon/>}
+                        href={'/course/archived'}
+                    >
+                        {t("view_archive")}
                     </Button>
                     {user?.role !== 3 ? (
-                        <Link href="/course/add" passHref>
-                            <Button variant="contained" color="secondary" startIcon={<AddCircleIcon/>}>
-                                {t("create_course")}
-                            </Button>
-                        </Link>
-                    ) : null
-                    }
-                    <Link href="/course/all" passHref>
-                        <Button variant="contained" color="secondary" startIcon={<ViewListIcon/>}>
-                            {t("all_courses")}
-                        </Button>
-                    </Link>
-                    <Link href="/calendar" passHref>
-                        <Button variant="contained" color="secondary" startIcon={<CalendarMonthIcon/>}>
-                            {t("deadlines")}
-                        </Button>
-                    </Link>
-                    <Link href="/course/archived" passHref>
-                        <Button variant="contained" color="secondary" startIcon={<ArchiveIcon/>}>
-                            {t("view_archive")}
-                        </Button>
-                    </Link>
-                    <Link href="/admin/users" passHref>
-                        <Button variant="contained" color="secondary" startIcon={<SupervisorAccountIcon/>}>
-                            {t("site users")}
-                        </Button>
-                    </Link>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<SupervisorAccountIcon/>}
+                        href={'/admin/users'}
+                    >
+                        {t("site users")}
+                    </Button>) : null}
                     <Select
                         value={selectedYear}
                         onChange={onYearChange}
@@ -94,10 +165,13 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                             </MenuItem>
                         ))}
                     </Select>
-                </Stack>
+                </Box>
             </Stack>
         </Box>
     );
+
+
+
 };
 
 export default CourseControls;
