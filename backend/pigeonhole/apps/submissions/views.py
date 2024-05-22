@@ -48,9 +48,6 @@ class ZipUtilities:
                 self.addFolderToZip(zip_file, full_path)
 
 
-
-
-
 class SubmissionsViewset(viewsets.ModelViewSet):
     queryset = Submissions.objects.all()
     serializer_class = SubmissionsSerializer
@@ -130,7 +127,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             else:
                 violations.update({'success': 1})
                 complete_message = violations
-        
+
         submission.eval()
 
         return Response(complete_message, status=status.HTTP_201_CREATED)

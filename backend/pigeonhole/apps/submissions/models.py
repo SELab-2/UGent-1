@@ -80,7 +80,7 @@ class Submissions(models.Model):
             print("running docker container")
             image_id = f"{registry_name}/{project.test_docker_image}"
 
-            container = client.containers.run(
+            client.containers.run(
                 image=image_id,
                 name=f'pigeonhole-submission-{self.submission_id}-evaluation',
                 detach=False,
@@ -89,7 +89,7 @@ class Submissions(models.Model):
                     'SUBMISSION_ID': self.submission_id,
                 },
                 volumes={
-                    f'{submission_folder_path_hostside(group_id=self.group_id.group_id, submission_id=self.submission_id)}': {
+                    f'{submission_folder_path_hostside(self.group_id.group_id, self.submission_id)}': {
                         'bind': '/usr/src/submission/',
                         'mode': 'ro'
                     }
@@ -120,8 +120,6 @@ class Submissions(models.Model):
         print("evaluation success!")
         self.eval_result = True
         super().save(update_fields=["eval_result"])
-
-
         client.close()
 
 
