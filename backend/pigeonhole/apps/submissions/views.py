@@ -110,6 +110,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                     for chunk in file.chunks():
                         dest.write(chunk)
                 # submission.file_urls = '[el path]'
+                print("Uploaded file: " + filepathstring)
         except IOError as e:
             print(e)
             return Response(

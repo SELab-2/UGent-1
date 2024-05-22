@@ -10,12 +10,14 @@ from backend.pigeonhole.apps.projects.models import Project
 from django.conf import settings
 
 
-SUBMISSION_PATH = os.environ.get('SUBMISSION_PATH')
+SUBMISSIONS_PATH = os.environ.get('SUBMISSIONS_PATH')
 registry_name = os.environ.get('REGISTRY_NAME')
 
 def submission_folder_path(group_id, submission_id):
     return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
 
+def submission_folder_path_hostside(group_id, submission_id):
+    return f"{SUBMISSIONS_PATH}/group_{group_id}/{submission_id}"
 
 # TODO test timestamp, file, output_test
 def submission_file_path(group_id, submission_id, relative_path):
@@ -81,12 +83,12 @@ class Submissions(models.Model):
                 image=image_id,
                 name=f'pigeonhole-submission-{self.submission_id}-evaluation',
                 detach=False,
-                remove=True,
+                remove=False, # TODO: set to true after testing
                 environment={
                     'SUBMISSION_ID': self.submission_id,
                 },
                 volumes={
-                    f'{submission_folder_path(group_id=self.group_id.group_id, submission_id=self.submission_id)}': {
+                    f'{submission_folder_path_hostside(group_id=self.group_id.group_id, submission_id=self.submission_id)}': {
                         'bind': '/usr/src/submission/',
                         'mode': 'ro'
                     }
@@ -97,15 +99,17 @@ class Submissions(models.Model):
             # exit code 0 as a successful submission
             # The container object returns the container logs and can be analyzed further
 
-            self.eval_output = container.logs()
-            print(self.eval_output)
+            #self.eval_output = container.logs()
+            #print(self.eval_output)
 
-            container.remove(force=True)
+            #container.remove(force=True)
 
         except ContainerError as ce:
             print(ce)
-            self.eval_result = False
             print("container failed")
+            self.eval_result = False
+            client.close()
+            return
 
         except APIError as e:
             raise IOError(f'There was an error evaluation the submission: {e}')
