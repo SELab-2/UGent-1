@@ -84,7 +84,7 @@ class Submissions(models.Model):
                 image=image_id,
                 name=f'pigeonhole-submission-{self.submission_id}-evaluation',
                 detach=False,
-                remove=False,  # TODO: set to true after testing
+                remove=True,
                 environment={
                     'SUBMISSION_ID': self.submission_id,
                 },
@@ -100,6 +100,7 @@ class Submissions(models.Model):
             # exit code 0 as a successful submission
             # The container object returns the container logs and can be analyzed further
 
+            # this gave an error when i ran it so i commented it out
             # self.eval_output = container.logs()
             # print(self.eval_output)
 
