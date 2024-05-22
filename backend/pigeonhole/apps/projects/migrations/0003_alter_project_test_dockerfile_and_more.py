@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('projects', '0002_project_test_dockerfile'),
     ]
@@ -14,11 +13,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='test_dockerfile',
-            field=models.FileField(blank=True, null=True, upload_to=backend.pigeonhole.apps.projects.models.dockerfile_path),
+            field=models.FileField(blank=True, null=True,
+                                   upload_to=backend.pigeonhole.apps.projects.models.dockerfile_path),
         ),
         migrations.AlterField(
             model_name='project',
             name='test_files',
-            field=models.FileField(blank=True, null=True, upload_to=backend.pigeonhole.apps.projects.models.testfile_path),
+            field=models.FileField(blank=True, null=True,
+                                   upload_to=backend.pigeonhole.apps.projects.models.testfile_path),
         ),
     ]
