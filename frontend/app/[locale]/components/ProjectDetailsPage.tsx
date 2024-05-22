@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import {checkGroup, getGroup, getProject, getUserData, Project, UserData} from "@lib/api";
+import {checkGroup, fetchUserData, getGroup, getProject, getUserData, Project, UserData} from "@lib/api";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
