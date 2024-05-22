@@ -33,7 +33,7 @@ describe('EditUserForm', () => {
         render(<EditUserForm userId={1} />);
 
         await waitFor(() => {
-            expect(screen.getByText('user email')).toBeInTheDocument();
+            expect(screen.getByText('email')).toBeInTheDocument();
             expect(screen.getByText('john.doe@example.com')).toBeInTheDocument();
             expect(screen.getByDisplayValue('John')).toBeInTheDocument();
             expect(screen.getByDisplayValue('Doe')).toBeInTheDocument();
