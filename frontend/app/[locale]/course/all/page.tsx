@@ -7,6 +7,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {Box, Button} from "@mui/material";
 import NotesIcon from '@mui/icons-material/Notes';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import Typography from "@mui/material/Typography";
 
 
 const i18nNamespaces = ['common']
@@ -36,6 +37,16 @@ export default async function AllCoursesPage({params: {locale}}: { params: { loc
                 >
                     {t('back_to') + ' ' + t('home') + ' ' + t('page')}
                 </Button>
+                <Typography
+                        variant="h3"
+                        sx={{
+                            fontWeight: 'medium',
+                            marginTop: 2,
+                            marginBottom: 2
+                        }}
+                    >
+                        {t('courses_all')}
+                    </Typography>
                 <ListView
                     admin={true}
                     headers={headers}

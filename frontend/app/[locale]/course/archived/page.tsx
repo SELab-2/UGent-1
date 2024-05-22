@@ -5,6 +5,7 @@ import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import BackButton from "@app/[locale]/components/BackButton";
 import NotesIcon from '@mui/icons-material/Notes';
+import Typography from "@mui/material/Typography";
 
 const i18nNamespaces = ['common'];
 
@@ -32,6 +33,16 @@ const ArchivePage = async ({params: {locale}}) => {
                     destination={'/home'}
                     text={t('back_to') + ' ' + t('home') + ' ' + t('page')}
                 />
+                <Typography
+                    variant="h3"
+                    sx={{
+                        fontWeight: 'medium',
+                        marginTop: 2,
+                        marginBottom: 2
+                    }}
+                >
+                    {t('courses_archive')}
+                </Typography>
                 <ListView
                     admin={true}
                     headers={headers}

@@ -143,5 +143,11 @@
   "not_in_group": "Join a group to submit",
   "edit_user_details": "Edit user details",
   "status_button_tooltip": "Required, optional or forbidden file",
-  "no_deadline": "No deadline"
+  "no_deadline": "No deadline",
+  "all_submissions": "All submissions",
+  "students": "Students",
+  "teachers": "Teachers",
+  "courses_archive": "Courses archive",
+  "courses_all": "All courses",
+  "open": "Open"
 }
