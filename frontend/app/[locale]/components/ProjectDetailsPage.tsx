@@ -1,10 +1,10 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { getProject, getUserData, Project, UserData } from "@lib/api";
+import {checkGroup, getGroup, getProject, fetchUserData, Project, UserData} from "@lib/api";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Grid, IconButton, LinearProgress, ThemeProvider } from "@mui/material";
+import { Grid, IconButton, LinearProgress, ThemeProvider, Skeleton } from "@mui/material";
 import ProjectSubmissionsList from "@app/[locale]/components/ProjectSubmissionsList";
 import GroupSubmissionList from "@app/[locale]/components/GroupSubmissionList";
 import baseTheme from "@styles/theme";
@@ -36,6 +36,8 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
   const [loadingProject, setLoadingProject] = useState<boolean>(true);
   const [user, setUser] = useState<UserData | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [isInGroup, setIsInGroup] = useState(false);
   const previewLength = 300;
   const deadlineColorType = project?.deadline
     ? checkDeadline(project.deadline)
@@ -44,16 +46,17 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
     baseTheme.palette[deadlineColorType]?.main ||
     baseTheme.palette.text.secondary;
 
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        setUser(await getUserData());
+        setUser(await fetchUserData());
       } catch (error) {
         console.error("There was an error fetching the user data:", error);
       }
     };
 
-    fetchUser();
+    fetchUser().then(() => setLoadingUser(false));
   }, []);
 
   useEffect(() => {
@@ -66,7 +69,18 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
     };
 
     fetchProject().then(() => setLoadingProject(false));
+    checkGroup(project_id).then((response) => setIsInGroup(response));
   }, [project_id]);
+
+  useEffect(() => {
+    if (!loadingUser && !loadingProject && user) {
+      if (!user.course.includes(Number(project?.course_id))) {
+        window.location.href = `/403/`;
+      } else {
+        console.log("User is in course");
+      }
+    }
+  }, [loadingUser, user, loadingProject, project]);
 
   if (loadingProject) {
     return <LinearProgress />;
@@ -108,35 +122,67 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
             >
               {t("return_course")}
             </Button>
-            <Grid container alignItems="center" spacing={2} sx={{ my: 1 }}>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h4">{project?.name}</Typography>
-              </Grid>
-              {user?.role !== 3 && (
-                <Grid item xs={6} sm={3}>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<EditIcon />}
-                    href={`/${locale}/project/${project_id}/edit`}
-                    sx={{ fontSize: "0.75rem", py: 1 }}
-                  >
-                    {t("edit_project")}
-                  </Button>
-                </Grid>
-              )}
-              <Grid item xs={6} sm={3}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<GroupIcon />}
-                  href={`/${locale}/project/${project_id}/groups`}
-                  sx={{ fontSize: "0.75rem", py: 1 }}
-                >
-                  {t("groups")}
-                </Button>
-              </Grid>
-            </Grid>
+            <Box
+              display='flex'
+              justifyContent='space-between'
+              alignItems='center'
+              width={'100%'}
+              marginY={2}
+            >
+              <Typography
+                  variant="h4"
+                  display={'inline-block'}
+                  whiteSpace={'nowrap'}
+                  marginRight={2}
+              >
+                {project?.name}
+              </Typography>
+              <Box
+                width={'fit-content'}
+              >
+                {loadingUser ? (
+                    [1, 2].map((i) => (
+                        <Skeleton
+                            key={i}
+                            variant="rectangular"
+                            width={150}
+                            height={45}
+                            sx={{
+                              borderRadius: "8px",
+                              marginX: 1,
+                            }}
+                        />
+                    ))) : (
+                  <>
+                    {user?.role !== 3 && (
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<EditIcon />}
+                            href={`/${locale}/project/${project_id}/edit`}
+                            sx={{
+                              fontSize: "0.75rem",
+                              py: 1,
+                              marginRight: 1,
+                              marginY: 1,
+                            }}
+                        >
+                          {t("edit_project")}
+                        </Button>
+                    )}
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<GroupIcon />}
+                        href={`/${locale}/project/${project_id}/groups`}
+                        sx={{ fontSize: "0.75rem", py: 1 }}
+                    >
+                      {t("groups")}
+                    </Button>
+                  </>
+                )}
+              </Box>
+            </Box>
             <Divider style={{ marginBottom: "1rem" }} />
             <Typography variant="h5">{t("assignment")}</Typography>
             <Typography>
@@ -152,7 +198,20 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
               </IconButton>
             )}
             <Typography variant="h6">{t("required_files")}</Typography>
-            <Typography>{project?.file_structure}</Typography>
+              {project?.file_structure && project?.file_structure.length > 0 ? (
+                  <Typography variant={"body1"}>
+                    <pre>
+                        {generateDirectoryTree(project?.file_structure).split('\n').map((line: string, index: number) => (
+                                <React.Fragment key={index}>
+                                    {line}
+                                    <br/>
+                                </React.Fragment>
+                        ))}
+                    </pre>
+                </Typography>
+              ) : (
+                  <Typography>{t("no_required_files")}</Typography>
+              )}
             <Typography variant="h6">{t("conditions")}</Typography>
             <Typography>{project?.conditions}</Typography>
             <Typography>
@@ -188,15 +247,21 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
               </Typography>
             </div>
             {user?.role === 3 ? (
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<AddIcon />}
-                href={`/${locale}/project/${project_id}/submit`}
-                sx={{ my: 1 }}
-              >
-                {t("add_submission")}
-              </Button>
+              isInGroup ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddIcon />}
+                    href={`/${locale}/project/${project_id}/submit`}
+                    sx={{ my: 1 }}
+                  >
+                    {t("add_submission")}
+                  </Button>
+              ) : (
+                    <Typography variant="body1" style={{ color: "red", marginTop: "5px" }}>
+                        {t("not_in_group")}
+                    </Typography>
+              )
             ) : null}
           </Grid>
           <Grid item xs={12}>
@@ -219,5 +284,45 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
     </ThemeProvider>
   );
 };
+
+function buildTree(paths) {
+    const tree = {};
+    const paths_list = paths.split(',');
+    paths_list.forEach(path => {
+        const parts = path.split('/');
+        let current = tree;
+
+        parts.forEach((part, index) => {
+            if (!current[part]) {
+                if (index === parts.length - 1) {
+                    current[part] = {};
+                } else {
+                    current[part] = current[part] || {};
+                }
+            }
+            current = current[part];
+        });
+    });
+
+    return tree;
+}
+
+function buildTreeString(tree, indent = '') {
+    let treeString = '';
+
+    const keys = Object.keys(tree);
+    keys.forEach((key, index) => {
+        const isLast = index === keys.length - 1;
+        treeString += `${indent}${isLast ? '└── ' : '├── '}${key}\n`;
+        treeString += buildTreeString(tree[key], indent + (isLast ? '    ' : '│   '));
+    });
+
+    return treeString;
+}
+
+function generateDirectoryTree(filePaths) {
+    const tree = buildTree(filePaths);
+    return `.\n${buildTreeString(tree)}`;
+}
 
 export default ProjectDetailsPage;

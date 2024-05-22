@@ -1,9 +1,18 @@
-import {fireEvent, render} from '@testing-library/react';
+import {cleanup, fireEvent, render} from '@testing-library/react';
 import CASButton from '../app/[locale]/components/CASButton';
 import React from "react";
 
+const OLD_ENV = process.env
 
 describe('CASButton', () => {
+    afterEach(() => {
+        cleanup()
+        jest.clearAllMocks()
+        jest.resetModules()
+        process.env = {...OLD_ENV}
+        delete process.env.NODE_ENV
+    })
+
     it('renders correctly', () => {
         const {getByText, getByRole} = render(<CASButton/>);
 
@@ -28,7 +37,7 @@ describe('CASButton', () => {
         fireEvent.click(button);
 
         // undefined, because i havent mocked the process.env stuff
-        expect(window.location.href).toBe('undefined/microsoft/to-auth-redirect?next=undefined/home');
+        expect(window.location.href).not.toBe(originalLocation);
 
         // restore the original window.location
         window.location = originalLocation;

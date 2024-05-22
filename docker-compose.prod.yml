@@ -30,6 +30,7 @@ services:
       - ${ENV_LOCATION}
     depends_on:
       - database
+      - registry
     restart: always
     labels:
       - "traefik.enable=true"

@@ -4,6 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {Box, Typography, Skeleton} from "@mui/material";
 import EditCourseButton from "@app/[locale]/components/EditCourseButton";
 import {APIError, Course, getCourse, UserData, getUserData} from "@lib/api";
+import defaultBanner from "../../../public/ugent_banner.png";
 
 interface CourseBannerProps {
     course_id: number;
@@ -26,15 +27,14 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
             }
         };
 
-        fetchCourse();
-        setLoading(false);
+        fetchCourse().then(() => setLoading(false));
     }, [course_id]);
 
     return (
         loading ? (
             <Skeleton
                 variant="rounded"
-                height={"200px"}
+                height={"150px"}
                 sx={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -46,16 +46,16 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
         ) : (
             <Box
                 sx={{
-                    backgroundColor: 'primary.main',
-                    color: 'white',
+                    backgroundImage: `url(${course?.banner || defaultBanner})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    color: 'whiteS',
                     display: 'flex',
-                    flexDirection: { xs: 'column', sm: 'row' },
-                    justifyContent: 'space-between',
+                    justifyContent: 'center',
                     alignItems: 'center',
-                    height: { xs: 'auto', sm: '150px' },
-                    padding: 2,
+                    height: '150px',
                     borderRadius: '16px',
-                    textAlign: 'center',
                 }}
             >
                 <Box
