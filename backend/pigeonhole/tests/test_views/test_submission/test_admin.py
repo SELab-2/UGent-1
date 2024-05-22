@@ -11,12 +11,6 @@ from backend.pigeonhole.apps.users.models import User
 
 API_ENDPOINT = "/submissions/"
 
-main_file = SimpleUploadedFile(
-    'main.sh',
-    "echo hello world.".encode('utf-8'),
-    content_type="text/plain"
-)
-
 
 class SubmissionTestAdmin(TestCase):
     def setUp(self):
@@ -42,7 +36,7 @@ class SubmissionTestAdmin(TestCase):
             course_id=self.course,
             deadline="2025-12-12 12:12:12",
             file_structure='*.sh',
-            test_docker_image="test-helloworld",
+            test_docker_image="test-always-succeed",
         )
 
         self.group = Group.objects.create(group_nr=1, project_id=self.project)
@@ -68,25 +62,21 @@ class SubmissionTestAdmin(TestCase):
         self.assertEqual(Submissions.objects.count(), 1)
 
     def test_submit_submission(self) -> object:
-        main_file.seek(0)
         response = self.client.post(
             API_ENDPOINT, {
                 "group_id": self.group.group_id,
-                "file_urls": "main.sh",
-                "main.sh": main_file
+                "file_urls": ""
             },
             format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_submit_submission_in_different_group(self):
-        main_file.seek(0)
         response = self.client.post(
             API_ENDPOINT,
             {
                 "group_id": self.group_not_of_admin.group_id,
-                "file_urls": "main.sh",
-                "main.sh": main_file
+                "file_urls": ""
             },
             format='multipart',
         )
@@ -105,26 +95,22 @@ class SubmissionTestAdmin(TestCase):
     # tests with an invalid submission
 
     def test_create_submission_invalid_group(self):
-        main_file.seek(0)
         response = self.client.post(
             API_ENDPOINT,
             {
                 "group_id": 95955351,
-                "file_urls": "main.sh",
-                "main.sh": main_file
+                "file_urls": ""
             },
             format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_not_possible(self):
-        main_file.seek(0)
         response = self.client.put(
             API_ENDPOINT + str(self.submission.submission_id) + "/",
             {
                 "group_id": self.group.group_id,
-                "file_urls": "main.sh",
-                "main.sh": main_file
+                "file_urls": ""
             },
             format='multipart',
         )
@@ -134,8 +120,7 @@ class SubmissionTestAdmin(TestCase):
             API_ENDPOINT + str(self.submission.submission_id) + "/",
             {
                 "group_id": self.group.group_id,
-                "file_urls": "main.sh",
-                "main.sh": main_file
+                "file_urls": ""
             },
             format='multipart',
         )
@@ -143,24 +128,20 @@ class SubmissionTestAdmin(TestCase):
 
     def test_update_not_possible_invalid(self):
         with self.assertRaises(Exception):
-            main_file.seek(0)
             self.client.put(
                 API_ENDPOINT + "4561313516/",
                 {
                     "group_id": self.group.group_id,
-                    "file_urls": "main.sh",
-                    "main.sh": main_file
+                    "file_urls": ""
                 },
                 format='multipart',
             )
 
-            main_file.seek(0)
             self.client.patch(
                 API_ENDPOINT + "4563153/",
                 {
                     "group_id": self.group.group_id,
-                    "file_urls": "main.sh",
-                    "main.sh": main_file
+                    "file_urls": ""
                 },
                 format='multipart',
             )

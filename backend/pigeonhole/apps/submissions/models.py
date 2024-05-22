@@ -77,7 +77,7 @@ class Submissions(models.Model):
         project = group.project_id
 
         try:
-            print("running docker container")
+            print(f"running evaluation container for submission {self.submission_id}")
             image_id = f"{registry_name}/{project.test_docker_image}"
 
             client.containers.run(
@@ -85,9 +85,6 @@ class Submissions(models.Model):
                 name=f'pigeonhole-submission-{self.submission_id}-evaluation',
                 detach=False,
                 remove=True,
-                environment={
-                    'SUBMISSION_ID': self.submission_id,
-                },
                 volumes={
                     f'{submission_folder_path_hostside(self.group_id.group_id, self.submission_id)}': {
                         'bind': '/usr/src/submission/',
@@ -108,7 +105,7 @@ class Submissions(models.Model):
 
         except ContainerError as ce:
             print(ce)
-            print("container failed")
+            print(f"evaluation container for submission {self.submission_id} FAILED")
             self.eval_result = False
             client.close()
             super().save(update_fields=["eval_result"])
@@ -117,7 +114,7 @@ class Submissions(models.Model):
         except APIError as e:
             raise IOError(f'There was an error evaluation the submission: {e}')
 
-        print("evaluation success!")
+        print(f"evaluation container for submission {self.submission_id} SUCCES")
         self.eval_result = True
         super().save(update_fields=["eval_result"])
         client.close()
