@@ -110,6 +110,7 @@ class Submissions(models.Model):
         except APIError as e:
             raise IOError(f'There was an error evaluation the submission: {e}')
 
+        print("evaluation success!")
         self.eval_result = True
 
         client.close()
