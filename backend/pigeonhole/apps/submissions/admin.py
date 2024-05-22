@@ -51,6 +51,14 @@ class SubmissionAdmin(admin.ModelAdmin):
                 )
             }
         ),
+        (
+            'file urls',
+            {
+                'fields': (
+                    'file_urls',
+                )
+            }
+        ),
     )
 
     raw_id_fields = (
