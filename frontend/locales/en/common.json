@@ -140,5 +140,6 @@
   "join_leave": "Join/Leave",
   "not_in_group": "Join a group to submit",
   "edit_user_details": "Edit user details",
-  "status_button_tooltip": "Required, optional or forbidden file"
+  "status_button_tooltip": "Required, optional or forbidden file",
+  "no_deadline": "No deadline"
 }

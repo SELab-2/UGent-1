@@ -143,5 +143,6 @@
   "join_leave": "Toetreden/Verlaten",
   "not_in_group": "Je kan niet indienen zonder in een groep te zitten",
   "edit_user_details": "Gebruiker bewerken",
-  "status_button_tooltip": "Verplicht, optioneel of verboden bestand"
+  "status_button_tooltip": "Verplicht, optioneel of verboden bestand",
+  "no_deadline": "Geen deadline"
 }
