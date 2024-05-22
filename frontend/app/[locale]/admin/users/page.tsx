@@ -13,33 +13,40 @@ export default function Users({ params: { locale } }: { params: { locale: any } 
     const [resources, setResources] = useState();
     const [user, setUser] = useState<UserData | null>(null);
     const [userLoading, setUserLoading] = useState(true);
-    const [accessDenied, setAccessDenied] = useState(true);
+    const [accessDenied, setAccessDenied] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        initTranslations(locale, ["common"]).then((result) => {
-            setResources(result.resources);
-        });
-
-        const fetchUser = async () => {
+        const initialize = async () => {
             try {
+                const result = await initTranslations(locale, ["common"]);
+                setResources(result.resources);
                 const userData = await fetchUserData();
                 setUser(userData);
                 if (userData.role !== 1) {
+                    setAccessDenied(true);
                     window.location.href = `/403/`;
                 } else {
                     setAccessDenied(false);
                 }
             } catch (error) {
-                console.error("There was an error fetching the user data:", error);
+                console.error("There was an error initializing the page:", error);
             } finally {
                 setUserLoading(false);
                 setIsLoading(false);
             }
-        }
+        };
 
-        fetchUser();
+        initialize();
     }, [locale]);
+
+    if (isLoading) {
+        return (
+            <Box padding={5} sx={{ display: 'flex' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <TranslationsProvider
@@ -48,13 +55,7 @@ export default function Users({ params: { locale } }: { params: { locale: any } 
             namespaces={i18nNamespaces}
         >
             <NavBar />
-            {isLoading ? (
-                <Box padding={5} sx={{ display: 'flex' }}>
-                    <CircularProgress />
-                </Box>
-            ) : (
-                !accessDenied && <UserList />
-            )}
+            {!accessDenied && <UserList />}
         </TranslationsProvider>
     );
 }

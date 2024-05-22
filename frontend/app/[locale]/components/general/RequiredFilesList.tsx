@@ -37,8 +37,11 @@ const ItemsList = ({
     const addNewFile = () => {
         if (newItem !== '') {
             const newItems = [...items];
-            newItems.push(newItem)
+            const newStatuses = [...items_status];
+            newItems.push(newItem);
+            newStatuses.push("+");
             setItems(newItems);
+            setItemsStatus(newStatuses);
             setNewItem('');
             setNoInput(false);
         } else {

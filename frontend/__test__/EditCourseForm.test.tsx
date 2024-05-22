@@ -52,7 +52,6 @@ describe('EditCourseForm', () => {
 
         // check if the description input was rendered properly
         expect(screen.getByText("description")).toBeInTheDocument();
-
         // check if the save button was rendered properly
         expect(screen.getByText('save changes')).toBeInTheDocument();
     });
