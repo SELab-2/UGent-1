@@ -97,7 +97,10 @@ interface ListViewProps {
     search: boolean;
 }
 
-const convertDate = (date_str: string) => {
+const convertDate = (t, date_str) => {
+    if (date_str === null) {
+        return t('no_deadline');
+    }
     let date = new Date(date_str);
     date = new Date(date.getTime());
     let date_local = date.toLocaleString('en-US', {
@@ -172,7 +175,7 @@ const ListView: NextPage<ListViewProps> = ({
                     'course_students': (data) => [data.id, data.email],
                     'course_teachers': (data) => [data.id, data.email],
                     'courses': (data) => [data.course_id, data.name, data.description, data.open_course],
-                    'projects': (data) => [data.project_id, data.name, convertDate(data.deadline)],
+                    'projects': (data) => [data.project_id, data.name, convertDate(t, data.deadline)],
                     'groups': async (data) => {
                         let l = [];
                         // Iterate over the values of the object
@@ -186,8 +189,8 @@ const ListView: NextPage<ListViewProps> = ({
                         setGroupSize((await getProject(data.project_id)).group_size);
                         return [data.group_id, data.user, data.group_nr, l.join(', ')];
                     },
-                    'submissions': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_simple_test],
-                    'submissions_group': (data) => [data.submission_id, data.group_id, convertDate(data.timestamp), data.output_simple_test],
+                    'submissions': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data.output_simple_test],
+                    'submissions_group': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data.output_simple_test],
                     'archived_courses': (data) => [data.course_id, data.name, data.description, data.open_course],
                 };
 
@@ -499,7 +502,7 @@ const ListView: NextPage<ListViewProps> = ({
                             {rows.map((row, index) => (
                                 <StyledTableRow key={index}>
                                     {((get !== 'groups' && get !== 'projects' && get !== 'courses' && !(get === 'submissions' && !action_name) && get != 'users') &&
-                                        get !== 'course_teachers' && !(action_name && user?.role === 3 && get !== 'archived_courses') &&
+                                        get !== 'course_teachers' && !(action_name && user?.role === 3) && get !== 'archived_courses' &&
                                         <StyledTableCell>
                                             {<CheckBoxWithCustomCheck checked={false}/>}
                                         </StyledTableCell>)}

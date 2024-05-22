@@ -12,12 +12,12 @@ import DownloadIcon from "@mui/icons-material/CloudDownload";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
-interface ProjectDetailsPageProps {
+interface SubmissionDetailsPageProps {
     locale: any,
     submission_id: number;
 }
 
-const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submission_id }) => {
+const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, submission_id }) => {
     const { t } = useTranslation();
 
     const [submission, setSubmission] = useState<Submission>();
@@ -27,9 +27,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
     useEffect(() => {
         const fetchSubmission = async () => {
             try {
-                const async_submission = await getSubmission(submission_id);
-                setSubmission(async_submission);
-                console.log(async_submission);
+                setSubmission(await getSubmission(submission_id));
             } catch (error) {
                 console.error("There was an error fetching the submission data:", error);
             }
@@ -109,7 +107,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
                                         startIcon={<DownloadIcon />}
                                         href={`${backend_url}/submissions/${submission_id}/download`}
                                         download
-                                        size="small" // Adjust button size
+                                        size="small"
                                     >
                                         {t("download_file")}
                                     </Button>
@@ -157,4 +155,4 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
     );
 };
 
-export default ProjectDetailsPage;
+export default SubmissionDetailsPage;

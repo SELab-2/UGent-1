@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import {checkGroup, getGroup, getProject, fetchUserData, Project, UserData} from "@lib/api";
+import {checkGroup, getGroup, getProject, getUserData, Project, UserData} from "@lib/api";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -154,22 +154,37 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
                         />
                     ))) : (
                   <>
-                    {user?.role !== 3 && (
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            startIcon={<EditIcon />}
-                            href={`/${locale}/project/${project_id}/edit`}
-                            sx={{
-                              fontSize: "0.75rem",
-                              py: 1,
-                              marginRight: 1,
-                              marginY: 1,
-                            }}
-                        >
-                          {t("edit_project")}
-                        </Button>
-                    )}
+                      {user?.role !== 3 && (
+                          <>
+                              <Button
+                                  variant="contained"
+                                  color="secondary"
+                                  href={`/${locale}/project/${project_id}/submissions`}
+                                  sx={{
+                                      fontSize: "0.75rem",
+                                      py: 1,
+                                      marginRight: 1,
+                                      marginY: 1,
+                                  }}
+                              >
+                                  {t("submissions")}
+                              </Button>
+                              <Button
+                                  variant="contained"
+                                  color="secondary"
+                                  startIcon={<EditIcon />}
+                                  href={`/${locale}/project/${project_id}/edit`}
+                                  sx={{
+                                      fontSize: "0.75rem",
+                                      py: 1,
+                                      marginRight: 1,
+                                      marginY: 1,
+                                  }}
+                              >
+                                  {t("edit_project")}
+                              </Button>
+                          </>
+                      )}
                     <Button
                         variant="contained"
                         color="secondary"
@@ -287,6 +302,10 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
 
 function buildTree(paths) {
     const tree = {};
+    if (!paths) {
+        return tree;
+    }
+
     const paths_list = paths.split(',');
     paths_list.forEach(path => {
         const parts = path.split('/');

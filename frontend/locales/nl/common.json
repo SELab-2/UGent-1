@@ -76,6 +76,7 @@
   "role": "Rol",
   "save changes": "Wijzigingen opslaan",
   "save course": "Cursus opslaan",
+  "edit course": "Cursus bewerken",
   "save": "Opslaan",
   "save_changes": "Wijzigingen Opslaan",
   "score_required": "Score is verplicht",
@@ -145,5 +146,12 @@
   "edit_user_details": "Gebruiker bewerken",
   "status_button_tooltip": "Verplicht, optioneel of verboden bestand",
   "feedback_simple_test_0": "Je hebt de volgende bestanden niet ingeleverd:",
-  "feedback_simple_test_2": "Je hebt de volgende bestanden ingeleverd die niet nodig zijn:"
+  "feedback_simple_test_2": "Je hebt de volgende bestanden ingeleverd die niet nodig zijn:",
+  "no_deadline": "Geen deadline",
+  "all_submissions": "Alle indieningen",
+  "students": "Studenten",
+  "teachers": "Docenten",
+  "courses_archive": "Gearchiveerde cursussen",
+  "courses_all": "Alle cursussen",
+  "open": "Open"
 }
