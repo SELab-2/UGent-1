@@ -1,5 +1,9 @@
 import os
+from io import BytesIO
+from zipfile import ZipFile, ZIP_DEFLATED
 
+from background_task import background
+from django.core.files.base import ContentFile
 from django.db import models
 from docker import DockerClient
 from docker.errors import ContainerError, APIError
@@ -9,6 +13,7 @@ from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 
 SUBMISSION_PATH = os.environ.get('SUBMISSION_PATH')
+ARTIFACT_PATH = os.environ.get('ARTIFACT_PATH')
 
 
 def get_upload_to(self, filename):
@@ -39,6 +44,7 @@ class Submissions(models.Model):
 
     eval_result = models.BooleanField(default=False)
     eval_output = models.TextField(null=True)
+    eval_artifacts = models.FileField(upload_to='artifacts/', null=True)
 
     objects = models.Manager()
 
@@ -53,9 +59,9 @@ class Submissions(models.Model):
             )
         super(Submissions, self).save(force_insert, force_update, using, update_fields)
 
-        #self.eval()
+        # self.eval()
 
-    def eval(self):
+    def eval(self, detached=True):
         client = DockerClient(base_url='unix://var/run/docker.sock')
 
         group = Group.objects.get(group_id=self.group_id)
@@ -73,14 +79,18 @@ class Submissions(models.Model):
             container = client.containers.run(
                 image=image_id,
                 name=f'pigeonhole-submission-{self.submission_id}-evaluation',
-                detach=False,
+                detach=detached,
                 remove=True,
                 environment={
                     'SUBMISSION_ID': self.submission_id,
                 },
                 volumes={
-                    f'{SUBMISSION_PATH}/{self.submission_id}': {
+                    f'{SUBMISSION_PATH}/{self.group_id}/{self.submission_nr}': {
                         'bind': '/usr/src/submission/',
+                        'mode': 'ro'
+                    },
+                    f'{ARTIFACT_PATH}/{self.group_id}/{self.submission_nr}': {
+                        'bind': '/usr/src/output/',
                         'mode': 'ro'
                     }
                 }
@@ -90,6 +100,11 @@ class Submissions(models.Model):
             # exit code 0 as a successful submission
             # The container object returns the container logs and can be analyzed further
 
+            if detached:
+                self.run_container(self, container, client)
+                return
+
+            self.collect_artifacts()
             self.eval_output = container.logs()
 
             container.remove(force=True)
@@ -98,11 +113,36 @@ class Submissions(models.Model):
             self.eval_result = False
 
         except APIError as e:
+            client.close()
             raise IOError(f'There was an error evaluation the submission: {e}')
 
         self.eval_result = True
 
         client.close()
+
+    @background()
+    def run_container(self, container, client):
+        container.wait()
+        self.eval_output = container.logs()
+        self.collect_artifacts()
+        container.remove(force=True)
+        client.close()
+
+    def collect_artifacts(self):
+        zip_buffer = BytesIO()
+
+        artifact_path = f'{ARTIFACT_PATH}/{self.group_id}/{self.submission_nr}'
+
+        with ZipFile(zip_buffer, 'w', ZIP_DEFLATED) as zip_file:
+            for root, _, files in os.walk(artifact_path):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    arcname = os.path.relpath(file_path, start=artifact_path)
+                    zip_file.write(file_path, arcname=arcname)
+
+        zip_buffer.seek(0)
+        zip_file_name = os.path.basename(os.path.normpath(artifact_path)) + '.zip'
+        self.eval_artifacts.save(zip_file_name, ContentFile(zip_buffer.read()), save=True)
 
 
 class SubmissionsSerializer(serializers.ModelSerializer):

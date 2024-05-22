@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'backend.pigeonhole.apps.projects',
     'backend.pigeonhole.apps.submissions',
     'backend.pigeonhole.apps.users',
+    'background_task',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
