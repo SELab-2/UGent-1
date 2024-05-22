@@ -502,7 +502,7 @@ const ListView: NextPage<ListViewProps> = ({
                             {rows.map((row, index) => (
                                 <StyledTableRow key={index}>
                                     {((get !== 'groups' && get !== 'projects' && get !== 'courses' && !(get === 'submissions' && !action_name) && get != 'users') &&
-                                        get !== 'course_teachers' && !(action_name && user?.role === 3 && get !== 'archived_courses') &&
+                                        get !== 'course_teachers' && !(action_name && user?.role === 3) && get !== 'archived_courses' &&
                                         <StyledTableCell>
                                             {<CheckBoxWithCustomCheck checked={false}/>}
                                         </StyledTableCell>)}
