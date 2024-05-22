@@ -57,7 +57,9 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
   };
 
   const handleSubmit = async (e) => {
-    setSubmitted(await uploadSubmissionFile(e, project_id));
+    const response = await uploadSubmissionFile(e, project_id);
+    setSubmitted(response);
+    window.location.href = `/submission/${response.submission_id}/`;
   };
 
   useEffect(() => {

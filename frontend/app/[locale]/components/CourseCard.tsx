@@ -16,7 +16,7 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
             submission_nr: 0,
             file: '',
             timestamp: '',
-            output_test: '',
+            output_simple_test: '',
         });
     const [hover, setHover] = useState(false);
 
