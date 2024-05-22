@@ -8,6 +8,7 @@ django_microsoft_auth==3.0.1
 djangorestframework-simplejwt~=5.2.2
 djangorestframework~=3.14.0
 docker==7.0.0
+requests==2.31.0
 drf-yasg==1.21.7
 flake8==7.0.0
 psycopg2-binary~=2.9.5

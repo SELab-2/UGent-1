@@ -2,6 +2,7 @@ import os
 from io import BytesIO
 from zipfile import ZipFile, ZIP_DEFLATED
 
+from django.conf import settings
 from background_task import background
 from django.core.files.base import ContentFile
 from django.db import models
@@ -10,12 +11,24 @@ from docker.errors import ContainerError, APIError
 from rest_framework import serializers
 
 from backend.pigeonhole.apps.groups.models import Group
-from backend.pigeonhole.apps.projects.models import Project
 
-SUBMISSION_PATH = os.environ.get('SUBMISSION_PATH')
+SUBMISSIONS_PATH = os.environ.get('SUBMISSIONS_PATH')
 ARTIFACT_PATH = os.environ.get('ARTIFACT_PATH')
 
 registry_name = os.environ.get('REGISTRY_NAME')
+
+
+def submission_folder_path(group_id, submission_id):
+    return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
+
+
+def submission_folder_path_hostside(group_id, submission_id):
+    return f"{SUBMISSIONS_PATH}/group_{group_id}/{submission_id}"
+
+
+# TODO test timestamp, file, output_test
+def submission_file_path(group_id, submission_id, relative_path):
+    return submission_folder_path(group_id, submission_id) + '/' + relative_path
 
 
 def get_upload_to(self, filename):
@@ -53,23 +66,25 @@ class Submissions(models.Model):
     # submission_nr is automatically assigned and unique per group, and
     # increments
     def save(
-            self, force_insert=False, force_update=False, using=None, update_fields=None
+            self, *args, **kwargs
     ):
         if not self.submission_nr:
             self.submission_nr = (
                     Submissions.objects.filter(group_id=self.group_id).count() + 1
             )
-        super(Submissions, self).save(force_insert, force_update, using, update_fields)
+
+        super().save(*args, **kwargs)
 
         # self.eval()
 
     def eval(self, detached=True):
         client = DockerClient(base_url='unix://var/run/docker.sock')
 
-        group = Group.objects.get(group_id=self.group_id)
-        project = Project.objects.get(project_id=group.project_id)
+        group = self.group_id
+        project = group.project_id
 
         try:
+            print("running docker container")
             image_id = f"{registry_name}/{project.test_docker_image}"
 
             container = client.containers.run(
@@ -81,7 +96,7 @@ class Submissions(models.Model):
                     'SUBMISSION_ID': self.submission_id,
                 },
                 volumes={
-                    f'{SUBMISSION_PATH}/{self.group_id}/{self.submission_nr}': {
+                    f'{submission_folder_path_hostside(group_id=self.group_id.group_id, submission_id=self.submission_id)}': {
                         'bind': '/usr/src/submission/',
                         'mode': 'ro'
                     },
@@ -104,14 +119,21 @@ class Submissions(models.Model):
             self.eval_result = True
             self.collect_artifacts()
 
-            container.remove(force=True)
+            # container.remove(force=True)
 
-        except ContainerError:
+        except ContainerError as ce:
+            print(ce)
+            print("container failed")
             self.eval_result = False
+            client.close()
+            return
 
         except APIError as e:
             client.close()
             raise IOError(f'There was an error evaluation the submission: {e}')
+
+        print("evaluation success!")
+        self.eval_result = True
 
         client.close()
 

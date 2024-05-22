@@ -1,7 +1,6 @@
 "use client"
 import React, {useEffect, useState, useRef} from "react";
 import dayjs from "dayjs";
-import JSZip, {JSZipObject} from "jszip";
 import {
     addProject,
     deleteProject,
@@ -62,7 +61,6 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [loadingTranslations, setLoadingTranslations] = useState(true);
     const [loadingProject, setLoadingProject] = useState(true);
     const [confirmRemove, setConfirmRemove] = useState(false);
-    const [testfilesData, setTestfilesData] = useState<JSZipObject[]>([]);
     const [isStudent, setIsStudent] = useState(false);
     const [isTeacher, setIsTeacher] = useState(false);
     const [loadingUser, setLoadingUser] = useState(true);
@@ -104,7 +102,6 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                     if (project.project_id !== null) {
                         setCourseId(project.course_id);
                     }
-                    if (project.test_files !== null) await setTestFiles(project);
                     setScore(+project["max_score"]);
                     if (project["conditions"] != null) {
                         let conditions_parsed: string[] = [];
@@ -166,23 +163,6 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
         fetchUser().then(() => setLoadingUser(false));
     }, [add_course_id, course_id, loadingProject, loadingUser, project_id]);
 
-
-
-    async function setTestFiles(project: Project) {
-        const zip = new JSZip();
-
-        const test_files_zip = await getTestFiles(project.test_files);
-        const zipData = await zip.loadAsync(test_files_zip);
-        const testfiles_name: string[] = [];
-        const testfiles_data: JSZipObject[] = [];
-        zipData.forEach((relativePath, file) => {
-            testfiles_data.push(file);
-            testfiles_name.push(relativePath);
-        });
-        setTestfilesName(testfiles_name);
-        setTestfilesData(testfiles_data);
-    }
-
     const handleSave = async () => {
         console.log(files);
         let message = "The following fields are required:\n";
@@ -201,10 +181,8 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
         } else {
             const formData = new FormData();
             formData.append("test_docker_image", dockerImage);
-            const zipFile = new File([zipFileBlob], "test_files.zip");
 
             const required_files = files.map((item, index) => status_files[index] + item);
-            formData.append("test_files", zipFile);
             formData.append("name", title);
             formData.append("description", description);
             formData.append("max_score", score.toString());

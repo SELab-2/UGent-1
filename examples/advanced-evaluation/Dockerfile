@@ -2,8 +2,8 @@
 FROM bash:latest
 
 # declareer de volumes waar straks de indieningsbestanden en output-artifacts komen
-VOLUME /submission
-VOLUME /artifacts
+VOLUME /usr/src/submission
+VOLUME /usr/out/artifacts
 
 # hier kan je nog extra dependencies installeren
 

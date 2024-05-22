@@ -1,5 +1,5 @@
 # voer de indiening uit en sla de output op in een bestand
-bash /submission/main.sh > output.txt
+bash /usr/src/submission/main.sh > output.txt
 
 # vergelijk de output met de verwachte output
 diff output.txt /expected-output/output.txt
