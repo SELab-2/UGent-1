@@ -1,3 +1,3 @@
 FROM busybox:latest
 
-ENTRYPOINT entrypoint.sh
+ENTRYPOINT exit 0
