@@ -100,8 +100,9 @@ class Submissions(models.Model):
                 self.run_container(self, container, client)
                 return
 
-            self.collect_artifacts()
             self.eval_output = container.logs()
+            self.eval_result = True
+            self.collect_artifacts()
 
             container.remove(force=True)
 
@@ -112,15 +113,16 @@ class Submissions(models.Model):
             client.close()
             raise IOError(f'There was an error evaluation the submission: {e}')
 
-        self.eval_result = True
-
         client.close()
 
     @background()
     def run_container(self, container, client):
         container.wait()
+
         self.eval_output = container.logs()
+        self.eval_result = True
         self.collect_artifacts()
+
         container.remove(force=True)
         client.close()
 
