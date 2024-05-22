@@ -23,7 +23,7 @@ services:
       - static_volume:/home/app/web/backend/static
       - media_volume:/home/app/web/uploads
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${SUBMISSIONS_PATH}:/home/app/web/static/submissions
+      - ${SUBMISSIONS_PATH}:/home/app/web/backend/static/submissions
     expose:
       - 8000
     env_file:
