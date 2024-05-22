@@ -4,7 +4,7 @@ import {Box, CircularProgress} from "@mui/material";
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import CreateCourseForm from "@app/[locale]/components/CreateCourseForm";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {fetchUserData, UserData} from "@lib/api";
 
 const i18nNamespaces = ['common']
@@ -15,31 +15,37 @@ function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
     const [userLoading, setUserLoading] = useState(true);
     const [accessDenied, setAccessDenied] = useState(true);
 
-    useEffect(() => {
-        initTranslations(locale, ["common"]).then((result) => {
-            setResources(result.resources)
-        })
 
-        const fetchUser = async () => {
+    useEffect(() => {
+        const initialize = async () => {
             try {
+                const result = await initTranslations(locale, ["common"]);
+                setResources(result.resources);
                 const userData = await fetchUserData();
                 setUser(userData);
                 if (userData.role === 3) {
+                    setAccessDenied(true);
                     window.location.href = `/403/`;
                 } else {
                     setAccessDenied(false);
                 }
-
             } catch (error) {
-                console.error("There was an error fetching the user data:", error);
+                console.error("There was an error initializing the page:", error);
             } finally {
                 setUserLoading(false);
             }
-        }
+        };
 
-        fetchUser();
-        setUserLoading(false);
-    }, [locale])
+        initialize();
+    }, [locale]);
+
+    if (userLoading) {
+        return (
+            <Box padding={5} sx={{ display: 'flex' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <TranslationsProvider
@@ -48,21 +54,16 @@ function CourseCreatePage({params: {locale}}: { params: { locale: any } }) {
             namespaces={i18nNamespaces}
         >
             <NavBar/>
-            {userLoading ? (
-                <Box padding={5} sx={{ display: 'flex' }}>
-                    <CircularProgress />
+            {!accessDenied &&
+                <Box
+                    width={'100%'}
+                    sx={{
+                        padding: 5,
+                    }}
+                >
+                    <CreateCourseForm/>
                 </Box>
-            ) : (
-                !accessDenied &&
-                    <Box
-                        width={'100%'}
-                        sx={{
-                            padding: 5,
-                        }}
-                    >
-                        <CreateCourseForm/>
-                    </Box>
-            )}
+            }
         </TranslationsProvider>
     )
 }
