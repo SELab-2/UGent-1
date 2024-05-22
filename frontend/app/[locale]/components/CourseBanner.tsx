@@ -27,15 +27,14 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
             }
         };
 
-        fetchCourse();
-        setLoading(false);
+        fetchCourse().then(() => setLoading(false));
     }, [course_id]);
 
     return (
         loading ? (
             <Skeleton
                 variant="rounded"
-                height={"200px"}
+                height={"150px"}
                 sx={{
                     display: 'flex',
                     justifyContent: 'center',

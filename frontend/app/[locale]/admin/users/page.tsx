@@ -1,24 +1,52 @@
-import React from 'react';
+"use client";
+import React, {useEffect, useState} from 'react';
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
-import Footer from "@app/[locale]/components/Footer";
-import ListView from '@app/[locale]/components/ListView';
-import BackButton from '@app/[locale]/components/BackButton';
-import EmailIcon from '@mui/icons-material/Email';
-import WorkIcon from '@mui/icons-material/Work';
+import {fetchUserData, UserData} from "@lib/api";
+import UserList from "@app/[locale]/components/admin_components/UserList";
+import {Box, CircularProgress} from "@mui/material";
 
 const i18nNamespaces = ['common'];
 
-export default async function Users({ params: { locale } }: { params: { locale: any } }) {
-    const { t, resources } = await initTranslations(locale, i18nNamespaces);
+export default function Users({ params: { locale } }: { params: { locale: any } }) {
+    const [resources, setResources] = useState();
+    const [user, setUser] = useState<UserData | null>(null);
+    const [userLoading, setUserLoading] = useState(true);
+    const [accessDenied, setAccessDenied] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const headers = [
-        <React.Fragment key="email"><EmailIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('email')}</React.Fragment>,
-        , 
-        <React.Fragment key="role"><WorkIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('role')}</React.Fragment>
-        , ''];
-    const headers_backend = ['email', 'role', ''];
+    useEffect(() => {
+        const initialize = async () => {
+            try {
+                const result = await initTranslations(locale, ["common"]);
+                setResources(result.resources);
+                const userData = await fetchUserData();
+                setUser(userData);
+                if (userData.role !== 1) {
+                    setAccessDenied(true);
+                    window.location.href = `/403/`;
+                } else {
+                    setAccessDenied(false);
+                }
+            } catch (error) {
+                console.error("There was an error initializing the page:", error);
+            } finally {
+                setUserLoading(false);
+                setIsLoading(false);
+            }
+        };
+
+        initialize();
+    }, [locale]);
+
+    if (isLoading) {
+        return (
+            <Box padding={5} sx={{ display: 'flex' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <TranslationsProvider
@@ -27,22 +55,7 @@ export default async function Users({ params: { locale } }: { params: { locale: 
             namespaces={i18nNamespaces}
         >
             <NavBar />
-            <div style={{marginTop:60, padding:20}}>
-            <BackButton 
-                destination={'/home'} 
-                text={t('back_to') + ' ' + t('home') + ' ' +  t('page')}
-            />
-            <ListView
-                admin={true}
-                headers={headers}
-                headers_backend={headers_backend}
-                sortable={[true, false]}
-                get={'users'}
-                action_name={'remove'}
-                action_text={t('remove_user')}
-                search_text={t('search')}
-            />
-            </div>
+            {!accessDenied && <UserList />}
         </TranslationsProvider>
     );
 }

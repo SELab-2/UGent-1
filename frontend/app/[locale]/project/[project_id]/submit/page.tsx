@@ -8,7 +8,7 @@ const i18nNamespaces = ['common']
 
 export default async function Course({params: {locale, project_id}, searchParams: {token}}:
                                          {
-                                             params: { locale: any, project_id: string },
+                                             params: { locale: any, project_id: number },
                                              searchParams: { token: string }
                                          }) {
     const {t, resources} = await initTranslations(locale, i18nNamespaces)
@@ -21,9 +21,7 @@ export default async function Course({params: {locale, project_id}, searchParams
         >
             <NavBar/>
 
-            <SubmitDetailsPage locale={locale} project_id={project_id}>
-
-            </SubmitDetailsPage>
+            <SubmitDetailsPage locale={locale} project_id={project_id} />
 
         </TranslationsProvider>
     )

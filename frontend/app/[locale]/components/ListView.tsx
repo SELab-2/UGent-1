@@ -45,7 +45,8 @@ import {
     getUserData,
     getUsers,
     postData,
-    getOpenCourses
+    getOpenCourses,
+    fetchUserData
 } from '@lib/api';
 import baseTheme from "../../../styles/theme";
 import {useTranslation} from "react-i18next";
@@ -221,7 +222,7 @@ const ListView: NextPage<ListViewProps> = ({
                 };
 
                 // Get user data
-                const user = await getUserData();
+                const user = await fetchUserData();
                 setUser(user);
 
                 if (get === 'groups') {
