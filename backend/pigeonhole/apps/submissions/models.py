@@ -2,8 +2,8 @@ import os
 from io import BytesIO
 from zipfile import ZipFile, ZIP_DEFLATED
 
-from django.conf import settings
 from background_task import background
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import models
 from docker import DockerClient
