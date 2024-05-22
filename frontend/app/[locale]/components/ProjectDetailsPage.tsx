@@ -255,6 +255,10 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
 
 function buildTree(paths) {
     const tree = {};
+    if (!paths) {
+        return tree;
+    }
+
     const paths_list = paths.split(',');
     paths_list.forEach(path => {
         const parts = path.split('/');

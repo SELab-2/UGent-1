@@ -44,14 +44,18 @@ function StatusButton(
   );
 }
 
-function getStart(file: string) {
-  if (file[0] === '+') {
-    return 0;
-  } else if (file[0] === '~') {
-    return 1;
-  } else {
-    return 2;
-  }
+function getStart(file: string | undefined) {
+    if (!file || file.length === 0) {
+        return 2;
+    }
+
+    if (file[0] === '+') {
+        return 0;
+    } else if (file[0] === '~') {
+        return 1;
+    } else {
+        return 2;
+    }
 }
 
 export default StatusButton;
