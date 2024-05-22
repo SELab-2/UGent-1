@@ -46,9 +46,6 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                     {t("courses")}
                 </Typography>
                 <Stack direction="row" spacing={2} alignItems="center">
-                    <Button variant="contained" color="secondary" startIcon={<FilterListIcon/>}>
-                        {t("filter_courses")}
-                    </Button>
                     {user?.role !== 3 ? (
                         <Link href="/course/add" passHref>
                             <Button variant="contained" color="secondary" startIcon={<AddCircleIcon/>}>
