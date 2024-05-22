@@ -2,7 +2,6 @@ import {act, render, screen, waitFor, fireEvent} from '@testing-library/react';
 import EditCourseForm from '../app/[locale]/components/EditCourseForm';
 import React from "react";
 import * as api from "@lib/api";
-import axios from "axios";
 
 // Mock useTranslation hook
 jest.mock('react-i18next', () => ({
