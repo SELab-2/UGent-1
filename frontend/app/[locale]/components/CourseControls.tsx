@@ -106,9 +106,6 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                     height={'fit-content'}
                     gap={2}
                 >
-                    <Button variant="contained" color="secondary" startIcon={<FilterListIcon/>}>
-                        {t("filter_courses")}
-                    </Button>
                     {user?.role !== 3 ? (
                         <Button
                             variant="contained"
