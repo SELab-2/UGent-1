@@ -26,6 +26,10 @@ def submission_folder_path_hostside(group_id, submission_id):
     return f"{SUBMISSIONS_PATH}/group_{group_id}/{submission_id}"
 
 
+def artifact_folder_path_hostside(group_id, submission_id):
+    return f"{ARTIFACT_PATH}/group_{group_id}/{submission_id}"
+
+
 # TODO test timestamp, file, output_test
 def submission_file_path(group_id, submission_id, relative_path):
     return submission_folder_path(group_id, submission_id) + '/' + relative_path
@@ -100,7 +104,7 @@ class Submissions(models.Model):
                         'bind': '/usr/src/submission/',
                         'mode': 'ro'
                     },
-                    f'{ARTIFACT_PATH}/{self.group_id}/{self.submission_nr}': {
+                    f'{artifact_folder_path_hostside(group_id=self.group_id.group_id, submission_id=self.submission_id)}': {
                         'bind': '/usr/src/output/',
                         'mode': 'ro'
                     }
