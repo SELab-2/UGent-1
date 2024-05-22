@@ -1,23 +1,24 @@
 import os
 
+from django.conf import settings
 from django.db import models
 from docker import DockerClient
 from docker.errors import ContainerError, APIError
 from rest_framework import serializers
 
 from backend.pigeonhole.apps.groups.models import Group
-from backend.pigeonhole.apps.projects.models import Project
-from django.conf import settings
-
 
 SUBMISSIONS_PATH = os.environ.get('SUBMISSIONS_PATH')
 registry_name = os.environ.get('REGISTRY_NAME')
 
+
 def submission_folder_path(group_id, submission_id):
     return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
 
+
 def submission_folder_path_hostside(group_id, submission_id):
     return f"{SUBMISSIONS_PATH}/group_{group_id}/{submission_id}"
+
 
 # TODO test timestamp, file, output_test
 def submission_file_path(group_id, submission_id, relative_path):
@@ -64,10 +65,10 @@ class Submissions(models.Model):
             self.submission_nr = (
                     Submissions.objects.filter(group_id=self.group_id).count() + 1
             )
-        
+
         super().save(*args, **kwargs)
 
-        #self.eval()
+        # self.eval()
 
     def eval(self):
         client = DockerClient(base_url='unix://var/run/docker.sock')
@@ -83,7 +84,7 @@ class Submissions(models.Model):
                 image=image_id,
                 name=f'pigeonhole-submission-{self.submission_id}-evaluation',
                 detach=False,
-                remove=False, # TODO: set to true after testing
+                remove=False,  # TODO: set to true after testing
                 environment={
                     'SUBMISSION_ID': self.submission_id,
                 },
@@ -99,10 +100,10 @@ class Submissions(models.Model):
             # exit code 0 as a successful submission
             # The container object returns the container logs and can be analyzed further
 
-            #self.eval_output = container.logs()
-            #print(self.eval_output)
+            # self.eval_output = container.logs()
+            # print(self.eval_output)
 
-            #container.remove(force=True)
+            # container.remove(force=True)
 
         except ContainerError as ce:
             print(ce)

@@ -24,8 +24,8 @@ from backend.pigeonhole.apps.submissions.models import (
 )
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
 from backend.pigeonhole.filters import CustomPageNumberPagination
-
 from .models import submission_folder_path, submission_file_path
+
 
 class ZipUtilities:
 
