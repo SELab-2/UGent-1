@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -9,6 +10,12 @@ from backend.pigeonhole.apps.submissions.models import Submissions
 from backend.pigeonhole.apps.users.models import User
 
 API_ENDPOINT = "/submissions/"
+
+main_file = SimpleUploadedFile(
+    'main.sh',
+    "echo hello world.".encode('utf-8'),
+    content_type="text/plain"
+)
 
 
 class SubmissionTestAdmin(TestCase):
@@ -34,6 +41,8 @@ class SubmissionTestAdmin(TestCase):
             name="Test Project",
             course_id=self.course,
             deadline="2025-12-12 12:12:12",
+            file_structure='*.sh',
+            test_docker_image="test-helloworld",
         )
 
         self.group = Group.objects.create(group_nr=1, project_id=self.project)
@@ -45,7 +54,8 @@ class SubmissionTestAdmin(TestCase):
         self.group.user.set([self.admin])
 
         self.submission = Submissions.objects.create(
-            group_id=self.group, file_urls="file_urls"
+            group_id=self.group,
+            file_urls="main.sh",
         )
 
         self.client.force_authenticate(self.admin)
@@ -57,16 +67,28 @@ class SubmissionTestAdmin(TestCase):
         self.assertEqual(Group.objects.count(), 1)
         self.assertEqual(Submissions.objects.count(), 1)
 
-    def test_submit_submission(self):
+    def test_submit_submission(self) -> object:
+        main_file.seek(0)
         response = self.client.post(
-            API_ENDPOINT, {"file_urls": "file_urls", "group_id": self.group.group_id}
+            API_ENDPOINT, {
+                "group_id": self.group.group_id,
+                "file_urls": "main.sh",
+                "main.sh": main_file
+            },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_submit_submission_in_different_group(self):
+        main_file.seek(0)
         response = self.client.post(
             API_ENDPOINT,
-            {"file_urls": "file_urls", "group_id": self.group_not_of_admin.group_id},
+            {
+                "group_id": self.group_not_of_admin.group_id,
+                "file_urls": "main.sh",
+                "main.sh": main_file
+            },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Submissions.objects.count(), 2)
@@ -83,23 +105,28 @@ class SubmissionTestAdmin(TestCase):
     # tests with an invalid submission
 
     def test_create_submission_invalid_group(self):
+        main_file.seek(0)
         response = self.client.post(
             API_ENDPOINT,
             {
                 "group_id": 95955351,
-                "file_urls": "file_urls",
+                "file_urls": "main.sh",
+                "main.sh": main_file
             },
-            format="json",
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_not_possible(self):
+        main_file.seek(0)
         response = self.client.put(
             API_ENDPOINT + str(self.submission.submission_id) + "/",
             {
                 "group_id": self.group.group_id,
-                "file_urls": "file_urls",
+                "file_urls": "main.sh",
+                "main.sh": main_file
             },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -107,27 +134,35 @@ class SubmissionTestAdmin(TestCase):
             API_ENDPOINT + str(self.submission.submission_id) + "/",
             {
                 "group_id": self.group.group_id,
-                "file_urls": "file_urls",
+                "file_urls": "main.sh",
+                "main.sh": main_file
             },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_update_not_possible_invalid(self):
         with self.assertRaises(Exception):
+            main_file.seek(0)
             self.client.put(
                 API_ENDPOINT + "4561313516/",
                 {
                     "group_id": self.group.group_id,
-                    "file_urls": "file_urls",
+                    "file_urls": "main.sh",
+                    "main.sh": main_file
                 },
+                format='multipart',
             )
 
+            main_file.seek(0)
             self.client.patch(
                 API_ENDPOINT + "4563153/",
                 {
                     "group_id": self.group.group_id,
-                    "file_urls": "file_urls",
+                    "file_urls": "main.sh",
+                    "main.sh": main_file
                 },
+                format='multipart',
             )
 
     def test_delete_submission_not_possible(self):
