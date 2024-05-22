@@ -122,8 +122,8 @@
   "search_teacher": "Zoek docent",
   "Are you sure you want to delete this user?": "Ben je zeker dat je deze gebruiker wil verwijderen?",
   "delete user": "Verwijder gebruiker",
-  "user first name": "Voornaam gebruiker",
-  "user last name": "Achternaam gebruiker",
+  "first name": "Voornaam",
+  "last name": "Achternaam",
   "user email": "Gebruiker email",
   "Are you sure you want to submit this course?": "Ben je zeker dat je deze cursus wil aanmaken?",
   "year": "Jaargang",
@@ -142,5 +142,8 @@
   "group_nr": "Groep nr",
   "join_leave": "Toetreden/Verlaten",
   "not_in_group": "Je kan niet indienen zonder in een groep te zitten",
-  "submission_all": "Indieningen"
+  "submission_all": "Indieningen",
+  "edit_user_details": "Gebruiker bewerken",
+  "status_button_tooltip": "Verplicht, optioneel of verboden bestand",
+  "no_deadline": "Geen deadline"
 }
