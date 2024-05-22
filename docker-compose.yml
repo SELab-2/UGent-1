@@ -41,7 +41,17 @@ services:
     env_file:
       - .env
 
+  registry:
+    image: "registry:latest"
+    restart: always
+    container_name: registry
+    ports:
+      - "5000:5000"
+    volumes:
+      - registrydata:/data
+
 volumes:
   postgres_data:
   submissions:
     external: true
+  registrydata:
