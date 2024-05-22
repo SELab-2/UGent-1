@@ -36,18 +36,18 @@ class SubmissionAdmin(admin.ModelAdmin):
             }
         ),
         (
-            'Files',
+            'eval output',
             {
                 'fields': (
-                    'file',
+                    'eval_output',
                 )
             }
         ),
         (
-            'Tests',
+            'eval result',
             {
                 'fields': (
-                    'output_test',
+                    'eval_result',
                 )
             }
         ),

@@ -111,6 +111,7 @@ class Submissions(models.Model):
             print("container failed")
             self.eval_result = False
             client.close()
+            super().save(update_fields=["eval_result"])
             return
 
         except APIError as e:
@@ -118,6 +119,8 @@ class Submissions(models.Model):
 
         print("evaluation success!")
         self.eval_result = True
+        super().save(update_fields=["eval_result"])
+
 
         client.close()
 
