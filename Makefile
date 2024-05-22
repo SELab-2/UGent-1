@@ -14,6 +14,11 @@ superuser:
 mockdata:
 	docker exec -it pigeonhole-backend python manage.py runscript mockdata
 
+pushregistry:
+	docker build examples/advanced-evaluation -t test-helloworld
+	docker tag test-helloworld localhost:5000/test-helloworld
+	docker push localhost:5000/test-helloworld
+
 evaltest:
 	docker exec -it pigeonhole-backend python manage.py runscript eval_test
 
