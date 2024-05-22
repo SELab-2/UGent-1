@@ -12,12 +12,12 @@ import DownloadIcon from "@mui/icons-material/CloudDownload";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
-interface ProjectDetailsPageProps {
+interface SubmissionDetailsPageProps {
     locale: any,
     submission_id: number;
 }
 
-const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submission_id }) => {
+const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, submission_id }) => {
     const { t } = useTranslation();
 
     const [submission, setSubmission] = useState<Submission>();
@@ -67,7 +67,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
         <ThemeProvider theme={baseTheme}>
             <Grid container justifyContent="center" alignItems="flex-start" style={{ width: '100%', padding: '20px' }}>
                 <Grid item xs={12} style={{paddingBottom: '20px'}}>
-                    <ProjectReturnButton locale={locale} project_id={project?.project_id} />
+                    <ProjectReturnButton locale={locale} project_id={projectId} />
                 </Grid>
                 <Grid item xs={12}>
                     <Card raised style={{ width: '100%' }}>
@@ -107,7 +107,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
                                         startIcon={<DownloadIcon />}
                                         href={`${backend_url}/submissions/${submission_id}/download`}
                                         download
-                                        size="small" // Adjust button size
+                                        size="small"
                                     >
                                         {t("download_file")}
                                     </Button>
@@ -121,4 +121,4 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({ locale, submiss
     );
 };
 
-export default ProjectDetailsPage;
+export default SubmissionDetailsPage;
