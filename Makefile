@@ -14,8 +14,11 @@ superuser:
 mockdata:
 	docker exec -it pigeonhole-backend python manage.py runscript mockdata
 
-pushregistry:
-	docker build examples/advanced-evaluation -t test-helloworld
+registry:
+	docker build examples/advanced-evaluation/always-succeed -t test-always-succeed
+	docker tag test-always-succeed localhost:5000/test-always-succeed
+	docker push localhost:5000/test-always-succeed
+	docker build examples/advanced-evaluation/helloworld -t test-helloworld
 	docker tag test-helloworld localhost:5000/test-helloworld
 	docker push localhost:5000/test-helloworld
 
