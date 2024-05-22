@@ -74,7 +74,7 @@ class Submissions(models.Model):
                     'SUBMISSION_ID': self.submission_id,
                 },
                 volumes={
-                    f'{SUBMISSION_PATH}/{self.submission_id}': {
+                    f'{SUBMISSION_PATH}/{self.group_id}/{self.submission_nr}': {
                         'bind': '/usr/src/submission/',
                         'mode': 'ro'
                     }
