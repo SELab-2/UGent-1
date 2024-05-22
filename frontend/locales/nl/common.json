@@ -142,5 +142,8 @@
   "join/leave": "Toetreden/Verlaten",
   "group_nr": "Groep nr",
   "join_leave": "Toetreden/Verlaten",
-  "not_in_group": "Je kan niet indienen zonder in een groep te zitten"
+  "not_in_group": "Je kan niet indienen zonder in een groep te zitten",
+  "projects_on_selected_date": "Projecten op geselecteerde datum",
+  "no_projects_on_selected_date": "Geen projecten op geselecteerde datum",
+  "project_calendar": "Project kalender"
 }

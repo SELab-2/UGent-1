@@ -3,7 +3,7 @@ import ProjectCalendar from '../components/ProjectCalendar';
 import initTranslations from "@app/i18n";
 import NavBar from '@app/[locale]/components/NavBar';
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
-import {Box} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 
 
 
@@ -20,7 +20,13 @@ const CalendarPage: React.FC = async ({params: {locale}}: { params: { locale: an
           <Box
             padding={15}
           >
-          <ProjectCalendar/>
+              <Typography
+                    variant={"h3"}
+                    align={"center"}
+              >
+                  {t("project_calendar")}
+              </Typography>
+              <ProjectCalendar/>
           </Box>
       </TranslationsProvider>
 );

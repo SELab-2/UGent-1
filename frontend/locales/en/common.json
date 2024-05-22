@@ -139,5 +139,8 @@
   "join/leave": "Join/Leave",
   "group_nr": "Group nr",
   "join_leave": "Join/Leave",
-  "not_in_group": "Join a group to submit"
+  "not_in_group": "Join a group to submit",
+  "projects_on_selected_date": "Projects on selected date",
+  "no_projects_on_selected_date": "No projects on selected date",
+  "project_calendar": "Project calendar"
 }

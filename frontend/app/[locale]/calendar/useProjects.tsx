@@ -27,6 +27,7 @@ export const useProjects = () => {
             });
           }
         }
+        console.log(temp_projects);
         setProjects(temp_projects);
       } catch (err) {
         setError(err as Error);
