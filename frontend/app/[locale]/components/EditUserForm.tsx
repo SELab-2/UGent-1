@@ -57,22 +57,27 @@ const EditUserForm = ({userId}: EditUserFormProps) => {
                     width: '100%',
                 }}
             >
+                <Typography
+                    variant={'h3'}
+                    paddingBottom={2}
+                >
+                    {t("edit_user_details")}
+                </Typography>
                 <Box
                     height={'fit-content'}
                     mb={3}
                 >
                     <Typography
-                        variant="h3"
+                        variant="h4"
                     >
-                        {t("user email")}
+                        {t("email")}
                     </Typography>
                     <Typography
-                        variant="body1"
+                        variant={'body1'}
                         style={{
-                            fontSize: '20px',
-                            fontFamily: 'Quicksand, sans-serif',
+
                             borderRadius: '6px',
-                            height: '30px',
+                            height: 'fit-content',
                             width: '400px',
                             padding: '6px', // Add padding for better appearance
                             backgroundColor: '#f0f0f0', // Add background color for better contrast
@@ -86,16 +91,21 @@ const EditUserForm = ({userId}: EditUserFormProps) => {
                     mb={3}
                 >
                     <Typography
-                        variant="h3"
+                        variant="h4"
                     >
-                        {t("user first name")}
+                        {t("first name")}
                     </Typography>
-                    <TextField type="text" id="name" name="name" defaultValue={firstname}
-                        onChange={(event: any) => setFirstName(event.target.value)} required style={{
+                    <TextField
+                        type="text"
+                        id="name"
+                        name="name"
+                        defaultValue={firstname}
+                        onChange={(event: any) => setFirstName(event.target.value)}
+                        required
+                        style={{
                             fontSize: '20px',
-                            fontFamily: 'Quicksand, sans-serif',
                             borderRadius: '6px',
-                            height: '30px',
+                            height: 'fit-content',
                             width: '400px'
                         }} />
                 </Box>
@@ -104,16 +114,21 @@ const EditUserForm = ({userId}: EditUserFormProps) => {
                     mb={3}
                 >
                     <Typography
-                        variant="h3"
+                        variant="h4"
                     >
-                        {t("user last name")}
+                        {t("last name")}
                     </Typography>
-                    <TextField type="text" id="name" name="name" defaultValue={lastname}
-                        onChange={(event: any) => setLastName(event.target.value)} required style={{
+                    <TextField
+                        type="text"
+                        id="name"
+                        name="name"
+                        defaultValue={lastname}
+                        onChange={(event: any) => setLastName(event.target.value)}
+                        required
+                        style={{
                             fontSize: '20px',
-                            fontFamily: 'Quicksand, sans-serif',
                             borderRadius: '6px',
-                            height: '30px',
+                            height: 'fit-content',
                             width: '400px'
                         }} />
                 </Box>
@@ -122,7 +137,7 @@ const EditUserForm = ({userId}: EditUserFormProps) => {
                     mb={3}
                 >
                     <Typography
-                        variant="h3"
+                        variant="h4"
                     >
                         {t("role")}
                     </Typography>
@@ -131,9 +146,8 @@ const EditUserForm = ({userId}: EditUserFormProps) => {
                         onChange={(event: any) => setRole(event.target.value)}
                         style={{
                             fontSize: '20px',
-                            fontFamily: 'Quicksand, sans-serif',
                             borderRadius: '6px',
-                            height: '30px',
+                            height: 'fit-content',
                             width: '400px'
                         }}
                     >
@@ -147,22 +161,23 @@ const EditUserForm = ({userId}: EditUserFormProps) => {
                     sx={{ marginTop: '16px', gap: 2 }}
                 >
                     <Button
+                        variant="contained"
                         type="submit"
                         color={'primary'}
                         sx={{
                             width: 'fit-content',
-                            backgroundColor: 'primary.main',
                             color: 'primary.contrastText'
                         }}
                     >
                         {t("save changes")}
                     </Button>
                     <Button
+                        variant={'contained'}
                         href={'/admin/users'}
+                        color='secondary'
                         sx={{
                             width: 'fit-content',
-                            backgroundColor: 'secondary.main',
-                            color: 'secondary.contrastText'
+                            color: 'secondary.contrastText',
                         }}
                     >
                         {t("cancel")}

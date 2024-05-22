@@ -132,7 +132,7 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                     >
                         {t("view_archive")}
                     </Button>
-                    {user?.role !== 3 ? (
+                    {user?.role === 1 ? (
                     <Button
                         variant="contained"
                         color="secondary"
