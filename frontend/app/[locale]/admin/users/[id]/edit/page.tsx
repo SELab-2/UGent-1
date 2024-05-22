@@ -47,6 +47,7 @@ function UserEditPage({params: {locale, id}}: { params: { locale: any, id: numbe
                 ) : (
                     <Box
                         padding={5}
+                        width={"fit-content"}
                         sx={{
                             display: 'flex',
                             alignItems: 'space-between',

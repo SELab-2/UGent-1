@@ -67,14 +67,10 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
             const arrayBuffer = this.result;
             if (arrayBuffer !== null) {
                 formData.append('banner', new Blob([arrayBuffer], {type: 'image/png'}));
-                await postData("/courses/", formData).then((response) => {
-                    window.location.href = `/course/${response.course_id}`;
-                });
             }
+            await updateCourse(courseId, formData);
+            window.location.href = `/course/${courseId}/`;
         }
-        if (selectedImage) fileReader.readAsArrayBuffer(selectedImage);
-        await updateCourse(courseId, formData);
-        // window.location.href = `/course/${courseId}/`;
     };
 
     const handleImageUpload = (event: any) => {
@@ -237,12 +233,12 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                 <Button
                     type="submit"
                     color={'primary'}
+                    onClick={handleSubmit}
                     sx={{
                         width: 'fit-content',
                         backgroundColor: 'primary.main',
                         color: 'primary.contrastText'
                     }}
-                    href={'/course/' + courseId + "/"}
                 >
                     {t("save changes")}
                 </Button>
