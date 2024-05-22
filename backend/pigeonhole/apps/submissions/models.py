@@ -7,9 +7,19 @@ from rest_framework import serializers
 
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
+from django.conf import settings
+
 
 SUBMISSION_PATH = os.environ.get('SUBMISSION_PATH')
 registry_name = os.environ.get('REGISTRY_NAME')
+
+def submission_folder_path(group_id, submission_id):
+    return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
+
+
+# TODO test timestamp, file, output_test
+def submission_file_path(group_id, submission_id, relative_path):
+    return submission_folder_path(group_id, submission_id) + '/' + relative_path
 
 
 def get_upload_to(self, filename):
@@ -46,23 +56,25 @@ class Submissions(models.Model):
     # submission_nr is automatically assigned and unique per group, and
     # increments
     def save(
-            self, force_insert=False, force_update=False, using=None, update_fields=None
+            self, *args, **kwargs
     ):
         if not self.submission_nr:
             self.submission_nr = (
                     Submissions.objects.filter(group_id=self.group_id).count() + 1
             )
-        super(Submissions, self).save(force_insert, force_update, using, update_fields)
+        
+        super().save(*args, **kwargs)
 
-        self.eval()
+        #self.eval()
 
     def eval(self):
         client = DockerClient(base_url='unix://var/run/docker.sock')
 
-        group = Group.objects.get(group_id=self.group_id)
-        project = Project.objects.get(project_id=group.project_id)
+        group = self.group_id
+        project = group.project_id
 
         try:
+            print("running docker container")
             image_id = f"{registry_name}/{project.test_docker_image}"
 
             container = client.containers.run(
@@ -74,7 +86,7 @@ class Submissions(models.Model):
                     'SUBMISSION_ID': self.submission_id,
                 },
                 volumes={
-                    f'{SUBMISSION_PATH}/{self.group_id}/{self.submission_nr}': {
+                    f'{submission_folder_path(group_id=self.group_id.group_id, submission_id=self.submission_id)}': {
                         'bind': '/usr/src/submission/',
                         'mode': 'ro'
                     }
@@ -86,11 +98,14 @@ class Submissions(models.Model):
             # The container object returns the container logs and can be analyzed further
 
             self.eval_output = container.logs()
+            print(self.eval_output)
 
             container.remove(force=True)
 
-        except ContainerError:
+        except ContainerError as ce:
+            print(ce)
             self.eval_result = False
+            print("container failed")
 
         except APIError as e:
             raise IOError(f'There was an error evaluation the submission: {e}')

@@ -7,7 +7,6 @@ from os.path import realpath, basename
 from pathlib import Path
 
 import pytz
-from django.conf import settings
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -26,6 +25,7 @@ from backend.pigeonhole.apps.submissions.models import (
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
 from backend.pigeonhole.filters import CustomPageNumberPagination
 
+from .models import submission_folder_path, submission_file_path
 
 class ZipUtilities:
 
@@ -48,13 +48,7 @@ class ZipUtilities:
                 self.addFolderToZip(zip_file, full_path)
 
 
-def submission_folder_path(group_id, submission_id):
-    return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
 
-
-# TODO test timestamp, file, output_test
-def submission_file_path(group_id, submission_id, relative_path):
-    return submission_folder_path(group_id, submission_id) + '/' + relative_path
 
 
 class SubmissionsViewset(viewsets.ModelViewSet):
@@ -101,7 +95,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        serializer.save()
+        submission = serializer.save()
 
         # upload files
         try:
@@ -135,6 +129,8 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             else:
                 violations.update({'success': 1})
                 complete_message = violations
+        
+        submission.eval()
 
         return Response(complete_message, status=status.HTTP_201_CREATED)
 
