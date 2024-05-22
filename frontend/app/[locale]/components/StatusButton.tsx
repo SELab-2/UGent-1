@@ -1,7 +1,7 @@
-import {ClearIcon } from '@mui/x-date-pickers/icons';
-import React, { useState } from 'react';
+import {ClearIcon} from '@mui/x-date-pickers/icons';
+import React, {useState} from 'react';
 import CheckIcon from "@mui/icons-material/Check";
-import {Button, Typography} from "@mui/material";
+import {Button} from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 interface StatusButtonProps {
@@ -33,10 +33,13 @@ function StatusButton(
     <Button
       variant="contained"
       onClick={handleClick}
-      style={{
+      sx={{
           border: 'none',
           backgroundColor: 'transparent',
-          margin: 10,
+          minWidth: '30px',  // Ensure the button is square by setting equal width and height
+          minHeight: '30px',  // Adjust the size as needed
+          padding: 0,
+          margin: 1,
       }}
     >
       {statuses[statusIndex].icon}

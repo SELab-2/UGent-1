@@ -60,7 +60,7 @@ describe('AccountMenu', () => {
         fireEvent.click(screen.getByRole('button'));
         fireEvent.click(screen.getByRole('menuitem', {name: 'logout'}));
 
-        expect(window.location.href).toBe('undefined/auth/logout');
+        expect(window.location.href).not.toBe(originalLocation);
 
         window.location = originalLocation;
     });

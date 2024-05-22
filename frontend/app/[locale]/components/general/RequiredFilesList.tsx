@@ -1,10 +1,11 @@
 "use client"
 
-import {Button, IconButton, List, ListItem, ListItemText, TextField, Typography} from "@mui/material";
+import {Button, IconButton, List, ListItem, ListItemText, Tooltip, TextField, Typography} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, {useState} from "react";
 import Box from "@mui/material/Box";
 import StatusButton from "@app/[locale]/components/StatusButton";
+import {useTranslation} from "react-i18next";
 
 interface ItemsListProps {
     items: string[],
@@ -27,6 +28,7 @@ const ItemsList = ({
                    }: ItemsListProps) => {
     const [newItem, setNewItem] = useState('')
     const [noInput, setNoInput] = useState(false)
+    const {t} = useTranslation();
 
     const handleDelete = (index: number) => {
         const newFields = [...items];
@@ -37,8 +39,11 @@ const ItemsList = ({
     const addNewFile = () => {
         if (newItem !== '') {
             const newItems = [...items];
-            newItems.push(newItem)
+            const newStatuses = [...items_status];
+            newItems.push(newItem);
+            newStatuses.push("+");
             setItems(newItems);
+            setItemsStatus(newStatuses);
             setNewItem('');
             setNoInput(false);
         } else {
@@ -63,10 +68,10 @@ const ItemsList = ({
                 >
                     {items.map((field, index) => (
                         <ListItem
+                            disablePadding={true}
                             key={index}
                             secondaryAction={
                                 <div>
-                                    <StatusButton files={items_status} setFiles={setItemsStatus} fileIndex={index}/>
                                     <IconButton
                                         edge="end"
                                         aria-label="delete"
@@ -77,6 +82,11 @@ const ItemsList = ({
                                 </div>
                             }
                         >
+                            <Tooltip title={t("status_button_tooltip")} placement="top">
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <StatusButton files={items_status} setFiles={setItemsStatus} fileIndex={index} />
+                                </div>
+                            </Tooltip>
                             <ListItemText
                                 primary={field}
                             />
