@@ -13,7 +13,7 @@ describe("UserList", () => {
     render(<UserList />);
 
     // BackButton
-    const backButton = screen.getByRole("button", { name: /back to home page/i }); // Match translated button text partially
+    const backButton = screen.getByText("back_to home page"); // Match translated button text partially
 
     expect(backButton).toBeInTheDocument();
 
