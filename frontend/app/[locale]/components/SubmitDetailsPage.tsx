@@ -68,7 +68,7 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
         const userData = await fetchUserData();
         setUser(userData);
 
-        if (!userData?.course.includes(Number(projectData?.course_id))) {
+        if (!userData?.course.includes(Number(project?.course_id))) {
           window.location.href = `/403/`;
         } else {
           setAccessDenied(false);
@@ -81,6 +81,8 @@ const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
         setUserLoading(false);
       }
     }
+
+    fetchData();
   }, [projectData?.course_id, project_id]);
 
 
