@@ -124,7 +124,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
         } else {
             setLoadingProject(false);
         }
-    }, [project_id, loadingTranslations, isStudent, loadingProject, isTeacher]);
+    }, [project_id, isStudent, loadingProject, isTeacher]);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -153,7 +153,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
             }
         }
 
-        fetchUser().then(() => setLoadingUser(false));
+        fetchUser();
     }, [add_course_id, course_id, loadingProject, loadingUser, project_id]);
 
 
@@ -254,7 +254,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
         window.location.href = "/course/" + course_id + "/"
     }
 
-    if(loadingProject){
+    if(loadingProject || loadingUser){
         return <LinearProgress/>;
     }
 
