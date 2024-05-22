@@ -1,17 +1,21 @@
-import zipfile
+import fnmatch
+import os
 import shutil
+import zipfile
 from datetime import datetime
 from os.path import realpath, basename
+from pathlib import Path
 
 import pytz
+from django.conf import settings
 from django.http import FileResponse
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
@@ -21,12 +25,6 @@ from backend.pigeonhole.apps.submissions.models import (
 )
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
 from backend.pigeonhole.filters import CustomPageNumberPagination
-
-from django.conf import settings
-from pathlib import Path
-import json as JSON
-
-import os
 
 
 class ZipUtilities:
@@ -69,22 +67,28 @@ class SubmissionsViewset(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         group_id = request.data["group_id"]
         group = get_object_or_404(Group, group_id=group_id)
-
         data = request.data.copy()  # Create a mutable copy
-        data["file_urls"] = JSON.dumps([key for key in request.FILES])
+        if len(request.FILES) != 0:
+            file_urls = []
+            for key in request.FILES:
+                file_urls.append(key)
+        else:
+            file_urls = request.data["file_urls"].split(",")
 
         serializer = SubmissionsSerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
         if not group:
             return Response(
-                {"message": "Group not found"}, status=status.HTTP_404_NOT_FOUND
+                {"message": "Group not found", "errorcode":
+                    "ERROR_GROUP_NOT_FOUND"}, status=status.HTTP_404_NOT_FOUND
             )
 
         project = Project.objects.get(project_id=group.project_id.project_id)
         if not project:
             return Response(
-                {"message": "Project not found"}, status=status.HTTP_404_NOT_FOUND
+                {"message": "Project not found", "errorcode":
+                    "ERROR_PROJECT_NOT_FOUND"}, status=status.HTTP_404_NOT_FOUND
             )
 
         now_naive = datetime.now().replace(
@@ -92,7 +96,9 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         )  # Making it timezone-aware in UTC
         if project.deadline and now_naive > project.deadline:
             return Response(
-                {"message": "Deadline expired"}, status=status.HTTP_400_BAD_REQUEST
+                {"message": "Deadline expired",
+                 "errorcode": "ERROR_DEADLINE_EXPIRED"},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
         serializer.save()
@@ -113,10 +119,24 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         except IOError as e:
             print(e)
             return Response(
-                {"message": "Error uploading files"}, status=status.HTTP_400_BAD_REQUEST
+                {"message": "Error uploading files", "errorcode":
+                    "ERROR_FILE_UPLOAD"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        project = Project.objects.get(project_id=group.project_id.project_id)
+        # return Response(",".join(file_urls), status=status.HTTP_201_CREATED)
+        if project.file_structure is None or project.file_structure == "":
+            complete_message = {"message": "Submission successful"}
+        else:
+            violations = check_restrictions(file_urls, project.file_structure.split(","))
+
+            if not violations[0] and not violations[2]:
+                complete_message = {"success": 0}
+            else:
+                violations.update({'success': 1})
+                complete_message = violations
+
+        return Response(complete_message, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -129,13 +149,15 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         submission = self.get_object()
         if submission is None:
             return Response(
-                {"message": f"Submission with id {id} not found"},
+                {"message": f"Submission with id {id} not found", "errorcode":
+                    "ERROR_SUBMISSION_NOT_FOUND"},
                 status=status.HTTP_404_NOT_FOUND
             )
 
         archivename = "submission_" + str(submission.submission_id)
         downloadspath = 'backend/downloads/'
-        submission_path = submission_folder_path(submission.group_id.group_id, submission.submission_id)
+        submission_path = submission_folder_path(submission.group_id.group_id,
+                                                 submission.submission_id)
 
         shutil.make_archive(downloadspath + archivename, 'zip', submission_path)
 
@@ -161,7 +183,8 @@ class SubmissionsViewset(viewsets.ModelViewSet):
             submission = Submissions.objects.get(submission_id=ids[0])
             if submission is None:
                 return Response(
-                    {"message": f"Submission with id {ids[0]} not found"},
+                    {"message": f"Submission with id {ids[0]} not found",
+                     "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
@@ -175,14 +198,15 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 submission = Submissions.objects.get(submission_id=sid)
                 if submission is None:
                     return Response(
-                        {"message": f"Submission with id {id} not found"},
+                        {"message": f"Submission with id {id} not found",
+                         "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
                         status=status.HTTP_404_NOT_FOUND
                     )
                 submission_folders.append(
                     submission_folder_path(
                         submission.group_id.group_id, submission.submission_id
-                        )
                     )
+                )
 
             utilities = ZipUtilities()
             filename = path
@@ -195,3 +219,35 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         response["Content-Disposition"] = f"inline; filename={basename(path)}"
 
         return response
+
+    @action(detail=True, methods=["get"])
+    def get_project(self, request, *args, **kwargs):
+        return Response(
+            {"project": self.get_object().group_id.project_id.project_id},
+            status=status.HTTP_200_OK
+        )
+
+
+def check_restrictions(filenames, restrictions):
+    # 0: Required file not found
+    # 1: Required file found
+    # 2: Forbidden file found
+    # 3: No forbidden file found
+    violations = {0: [], 1: [], 2: [], 3: []}
+    for restriction_ in restrictions:
+        restriction = restriction_.strip()
+        if restriction.startswith('+'):
+            pattern = restriction[1:]
+            matching_files = fnmatch.filter(filenames, pattern)
+            if not matching_files:
+                violations[0].append(pattern)
+            else:
+                violations[1].append(pattern)
+        elif restriction.startswith('-'):
+            pattern = restriction[1:]
+            matching_files = fnmatch.filter(filenames, pattern)
+            if matching_files:
+                violations[2].append(pattern)
+            else:
+                violations[3].append(pattern)
+    return violations

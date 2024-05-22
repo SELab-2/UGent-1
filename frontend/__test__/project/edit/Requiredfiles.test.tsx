@@ -15,13 +15,13 @@ describe('Requiredfiles', () => {
                 files={["First", "Second"]}
                 setFiles={jest.fn()}
                 translations={translations.en}
-            />
+             file_status={["+", "-"]} setFileStatus={jest.fn()}/>
         );
 
         // check that the required files were rendered properly
-        expect(screen.getByText('Required files')).toBeInTheDocument();
-        expect(getByDisplayValue('First')).toBeInTheDocument();
-        expect(getByDisplayValue('Second')).toBeInTheDocument();
+        expect(screen.getByText('required_files')).toBeInTheDocument();
+        expect(screen.getByText('First')).toBeInTheDocument();
+        expect(screen.getByText('Second')).toBeInTheDocument();
 
     });
 });

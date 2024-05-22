@@ -1,18 +1,45 @@
-import React from 'react';
+"use client";
+import React, {useEffect, useState} from 'react';
 import initTranslations from "@app/i18n";
 import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
 import NavBar from "@app/[locale]/components/NavBar";
-import Footer from "@app/[locale]/components/Footer";
-import ListView from '@app/[locale]/components/ListView';
-import BackButton from '@app/[locale]/components/BackButton';
+import {fetchUserData, UserData} from "@lib/api";
+import UserList from "@app/[locale]/components/admin_components/UserList";
+import {Box, CircularProgress} from "@mui/material";
 
 const i18nNamespaces = ['common'];
 
-export default async function Users({ params: { locale } }: { params: { locale: any } }) {
-    const { t, resources } = await initTranslations(locale, i18nNamespaces);
+export default function Users({ params: { locale } }: { params: { locale: any } }) {
+    const [resources, setResources] = useState();
+    const [user, setUser] = useState<UserData | null>(null);
+    const [userLoading, setUserLoading] = useState(true);
+    const [accessDenied, setAccessDenied] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const headers = [t('email'), t('role')];
-    const headers_backend = ['email', 'role'];
+    useEffect(() => {
+        initTranslations(locale, ["common"]).then((result) => {
+            setResources(result.resources);
+        });
+
+        const fetchUser = async () => {
+            try {
+                const userData = await fetchUserData();
+                setUser(userData);
+                if (userData.role !== 1) {
+                    window.location.href = `/403/`;
+                } else {
+                    setAccessDenied(false);
+                }
+            } catch (error) {
+                console.error("There was an error fetching the user data:", error);
+            } finally {
+                setUserLoading(false);
+                setIsLoading(false);
+            }
+        }
+
+        fetchUser();
+    }, [locale]);
 
     return (
         <TranslationsProvider
@@ -21,26 +48,13 @@ export default async function Users({ params: { locale } }: { params: { locale: 
             namespaces={i18nNamespaces}
         >
             <NavBar />
-            <div style={{marginTop:60, padding:20}}>
-            <BackButton 
-                destination={'/admin'} 
-                text={t('back_to') + ' ' + t('admin') + ' ' +  t('page')}
-            />
-            <ListView
-                admin={true}
-                headers={headers}
-                headers_backend={headers_backend}
-                sortable={[true, false]}
-                get={'users'}
-                action_name={'remove'}
-                action_text={t('remove_user')}
-                search_text={t('search')}
-            />
-            </div>
-            <BackButton 
-                destination={'/admin'} 
-                text={t('back_to') + ' ' + t('admin') + ' ' +  t('page')}
-            />
+            {isLoading ? (
+                <Box padding={5} sx={{ display: 'flex' }}>
+                    <CircularProgress />
+                </Box>
+            ) : (
+                !accessDenied && <UserList />
+            )}
         </TranslationsProvider>
     );
 }

@@ -1,10 +1,10 @@
 "use client"
 
 import React, {useEffect, useState} from 'react';
-import {Box, Typography} from "@mui/material";
+import {Box, Typography, Skeleton} from "@mui/material";
 import EditCourseButton from "@app/[locale]/components/EditCourseButton";
 import {APIError, Course, getCourse, UserData, getUserData} from "@lib/api";
-import AddProjectButton from "@app/[locale]/components/AddProjectButton";
+import defaultBanner from "../../../public/ugent_banner.png";
 
 interface CourseBannerProps {
     course_id: number;
@@ -14,6 +14,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
     const [user, setUser] = useState<UserData | null>(null);
     const [course, setCourse] = useState<Course | null>(null);
     const [error, setError] = useState<APIError | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -24,62 +25,75 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                 if (error instanceof APIError) setError(error);
                 console.log(error);
             }
-
         };
 
-        fetchCourse();
+        fetchCourse().then(() => setLoading(false));
     }, [course_id]);
 
     return (
-        <Box
-            sx={{
-                backgroundColor: 'primary.main',
-                color: 'whiteS',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '140px',
-                width: "calc(100% - 40px)",
-                borderRadius: '16px',
-                margin: "0 auto",
-            }}
-        >
+        loading ? (
+            <Skeleton
+                variant="rounded"
+                height={"150px"}
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: '16px',
+                    margin: "0 auto",
+                }}
+            />
+        ) : (
             <Box
-                display="flex"
-                justifyContent="flex-start"
-                alignItems="center"
-                width={"calc(100% - 200px)"}
-                height={'100%'}
+                sx={{
+                    backgroundImage: `url(${course?.banner || defaultBanner})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    color: 'whiteS',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '150px',
+                    borderRadius: '16px',
+                }}
             >
-                <Typography
-                    variant="h1"
-                    textAlign="center"
-                    noWrap={true}
-                    padding={0}
-                    sx={{
-                        color: 'white',
-                        height: 'fit-content',
-                    }}
-                >
-                    {course?.name}
-                </Typography>
-            </Box>
-            {user?.role !== 3 ? (
                 <Box
-                    height="100%"
                     display="flex"
-                    flexDirection="column"
-                    justifyContent="flex-start"
-                    alignItems="flex-start"
-                    textAlign="left"
-                    paddingY={2}
+                    justifyContent={{ xs: 'center', sm: 'flex-start' }}
+                    alignItems="center"
+                    width={{ xs: '100%', sm: "calc(100% - 200px)" }}
+                    height={{ xs: 'auto', sm: '100%' }}
+                    textAlign={{ xs: 'center', sm: 'left' }}
                 >
-                    <EditCourseButton course_id={course_id}/>
-                    <AddProjectButton course_id={course_id}/>
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            color: 'white',
+                            height: 'fit-content',
+                            fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
+                            whiteSpace: { xs: 'normal', sm: 'nowrap' },
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                        }}
+                    >
+                        {course?.name + (course?.year === null ? "" : " " + course?.year)}
+                    </Typography>
                 </Box>
-            ): null}
-        </Box>
-    )
+                {user?.role !== 3 ? (
+                    <Box
+                        display="flex"
+                        justifyContent={{ xs: 'center', sm: 'flex-start' }}
+                        alignItems="center"
+                        paddingY={{ xs: 1, sm: 0 }}
+                        width={{ xs: '100%', sm: 'auto' }}
+                    >
+                        <EditCourseButton course_id={course_id} />
+                    </Box>
+                ) : null}
+            </Box>
+        )
+    );
 }
 
-export default CourseBanner
+export default CourseBanner;

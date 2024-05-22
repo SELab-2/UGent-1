@@ -11,7 +11,7 @@ describe('Finishbuttons', () => {
 
     it('renders correctly', async () => {
         const translations = await getTranslations();
-        const {getByText:  getByTestId} = render(
+        const {getByText: getByTestId} = render(
             <FinishButtons
                 visible={true}
                 setVisible={jest.fn()}
@@ -27,18 +27,18 @@ describe('Finishbuttons', () => {
         // check that the buttons were rendered properly
         expect(screen.getByTestId('AlarmOnIcon')).toBeInTheDocument();
         expect(screen.getByTestId('VisibilityIcon')).toBeInTheDocument();
-        expect(screen.getByText('Save')).toBeInTheDocument();
-        expect(screen.getByText('Cancel')).toBeInTheDocument();
-        expect(screen.getByText('Remove')).toBeInTheDocument();
+        expect(screen.getByText('save')).toBeInTheDocument();
+        expect(screen.getByText('cancel')).toBeInTheDocument();
+        expect(screen.getByText('remove')).toBeInTheDocument();
 
     });
 
     it('Cancels', async () => {
         const translations = await getTranslations();
-        const courseId = 1;
+        const projectId = 1;
 
         delete window.location;
-        window.location = { href: '' } as any;
+        window.location = {href: ''} as any;
 
         const {getByText} = render(
             <FinishButtons
@@ -47,16 +47,16 @@ describe('Finishbuttons', () => {
                 handleSave={jest.fn()}
                 setConfirmRemove={jest.fn()}
                 translations={translations.en}
-                course_id={courseId}
+                project_id={projectId}
                 setHasDeadline={jest.fn()}
                 hasDeadline={true}
             />
         );
 
-        const button = screen.getByText('Cancel');
+        const button = screen.getByText('cancel');
         fireEvent.click(button);
 
-        expect(window.location.href).toBe("/course/" + courseId + "/");
+        expect(window.location.href).toBe("/project/" + projectId + "/");
     });
 
     it('Saves', async () => {
@@ -75,7 +75,7 @@ describe('Finishbuttons', () => {
             />
         );
 
-        const button = screen.getByText('Save');
+        const button = screen.getByText('save');
         fireEvent.click(button);
 
         expect(handleSave).toHaveBeenCalled();
@@ -98,7 +98,7 @@ describe('Finishbuttons', () => {
             />
         );
 
-        const button = screen.getByText('Remove');
+        const button = screen.getByText('remove');
         fireEvent.click(button);
 
         expect(setConfirmRemove).toHaveBeenCalled();

@@ -293,6 +293,30 @@ export async function getArchivedCourses(page = 1, pageSize = 5, keyword?: strin
     return await getRequest(url);
 }
 
+export async function getOpenCourses(page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Course[]> {
+    let url = `/courses/get_open_courses?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
+export async function archiveCourse(id: number): Promise<number> {
+    return (await patchData(`/courses/${id}/`, {
+        archived: true
+    })).course_id;
+}
+
 export async function getCoursesForUser(): Promise<Course[]> {
     let page = 1;
     let results: Course[] = []
@@ -312,7 +336,12 @@ export async function updateCourse(id: number, data: any): Promise<Course> {
 }
 
 export async function updateUserData(id: number, data: any): Promise<UserData> {
+    localStorage.setItem('user', JSON.stringify({data: userData, lastcache: "0"}));
     return (await putData(`/users/${id}/`, data));
+}
+
+export async function deleteUser(id: number): Promise<void> {
+    return (await deleteData(`/users/${id}`));
 }
 
 export async function deleteCourse(id: number): Promise<void> {
@@ -336,7 +365,7 @@ export async function updateProject(id: number, data: any): Promise<Project> {
 }
 
 export async function deleteProject(id: number): Promise<void> {
-    return (await deleteData(`/projects/${id}/`));
+    return (await deleteData(`/projects/${id}`));
 }
 
 export async function getProjects(): Promise<Project[]> {
@@ -351,8 +380,8 @@ export async function getProjectsFromCourse(id: number): Promise<Project[]> {
     return (await getListRequest('/courses/' + id + '/get_projects'))
 }
 
-export async function getProjectFromSubmission(id: number): Promise<Project> {
-    return (await getRequest(`/submissions/${id}/get_project`))
+export async function getProjectFromSubmission(id: number): Promise<number> {
+    return (await getRequest(`/submissions/${id}/get_project`)).project;
 }
 
 export async function getTeachersFromCourse(id: number): Promise<User[]> {
@@ -387,6 +416,15 @@ export async function getProjects_by_course(courseId: number, page = 1, pageSize
 
 export async function getGroup(id: number): Promise<Group> {
     return (await getRequest(`/groups/${id}`));
+}
+
+export async function checkGroup(id: number) {
+    try {
+        await axios.get(backend_url + "/projects/" + id + "/get_group/", {withCredentials: true});
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
 export async function getGroups(): Promise<Group[]> {
@@ -459,7 +497,6 @@ export async function getUserData(): Promise<UserData> {
     }else if(localStorage.getItem('user')){
         const userobj = JSON.parse(localStorage.getItem('user') as string);
         const lastcache : string | undefined = userobj?.lastcache;
-
         
         if(lastcache && Date.now() - parseInt(lastcache) < 2 * 60 * 1000){
             console.log(Date.now() - parseInt(lastcache));
@@ -474,7 +511,7 @@ export async function getUserData(): Promise<UserData> {
     }
 }
 
-async function fetchUserData() : Promise<UserData> {
+export async function fetchUserData() : Promise<UserData> {
     try{
         userData = await getRequest('/users/current');
         localStorage.setItem('user', JSON.stringify({data: userData, lastcache: Date.now().toString()}));
@@ -589,6 +626,39 @@ export async function putData(path: string, data: any) {
     }
 }
 
+export async function patchData(path: string, data: any) {
+    axios.defaults.headers.patch['X-CSRFToken'] = getCookieValue('csrftoken');
+
+    try {
+        const response = await axios.patch(backend_url + path, data, {withCredentials: true});
+
+        if (response.status === 200 && response?.data) {
+            return response.data;
+        } else if (response?.data?.detail) {
+            console.error("Unexpected response structure:", response.data);
+            const error: APIError = new APIError();
+            error.status = response.status;
+            error.message = response.data.detail;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        } else {
+            const error: APIError = new APIError();
+            error.status = response.status;
+            error.message = response.statusText;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        }
+    } catch (error) {
+        const apierror: APIError = new APIError();
+        apierror.message = "error on put request";
+        apierror.type = ErrorType.REQUEST_ERROR;
+        apierror.trace = error;
+        throw apierror;
+    }
+}
+
 export async function deleteData(path: string) {
     axios.defaults.headers.delete['X-CSRFToken'] = getCookieValue('csrftoken');
 
@@ -608,7 +678,12 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any, project_id: string) : Promise<string>{
+type uploadResult = {
+    result: string;
+    errorcode: string | undefined;
+}
+
+export async function uploadSubmissionFile(event: any, project_id: string) : Promise<uploadResult>{
     axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
@@ -618,12 +693,16 @@ export async function uploadSubmissionFile(event: any, project_id: string) : Pro
 
     for(let file of event.target.fileList.files){
         let path = file.webkitRelativePath;
-        if(path)
         if (path.includes("/")) {
             path = path.substring((path.indexOf("/")??0)+1, path.length);
         }
         formData.append(path, file);
     }
+
+    for(let file of event.target.fileList2.files){
+        formData.append(file.name, file);
+    }
+
     formData.delete("fileList");
     const formDataObject = Object.fromEntries(formData.entries());
     console.log(formDataObject)
@@ -637,13 +716,13 @@ export async function uploadSubmissionFile(event: any, project_id: string) : Pro
                 'Content-Type': 'multipart/form-data'
             }
           });
-        return "yes";
+        return {result: "ok", errorcode: undefined};
     } catch (error) {
         const apierror : APIError = new APIError();
         apierror.message = "error posting form";
         apierror.type = ErrorType.REQUEST_ERROR;
         apierror.trace = error;
         console.error(apierror);
-        return "error";
+        return {result: "error", errorcode: error.response?.data?.errorcode};
     }
 }
