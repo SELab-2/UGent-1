@@ -23,6 +23,7 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
     const [submission, setSubmission] = useState<Submission>();
     const [projectId, setProjectId] = useState<number>();
     const [loadingSubmission, setLoadingSubmission] = useState<boolean>(true);
+    const [output, setOuput] = useState<string>("No output");
 
     useEffect(() => {
         const fetchSubmission = async () => {
@@ -33,6 +34,15 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
             }
         };
 
+        /* TODO setArtifacts
+        const fetchArtifacts = async () => {
+            try {
+                setArtifacts();
+            } catch (error) {
+                console.error("There was an error fetching the artifacts data:", error);
+            }
+        }
+        */
         const fetchProject = async () => {
             try {
                 setProjectId(await getProjectFromSubmission(submission_id));
@@ -110,6 +120,29 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                         size="small"
                                     >
                                         {t("download_file")}
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={12} sm={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                    <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                                        {t("output")}
+                                    </Typography>
+                                    <div style={{ display: "flex", alignItems: "center", columnGap: "10px" }}>
+                                        {output}
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} sm={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                    <Typography variant="h6" gutterBottom style={{ fontWeight: 'bold', color: 'primary.main', marginBottom: '10px' }}>
+                                        {t("artifacts")}
+                                    </Typography>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        startIcon={<DownloadIcon />}
+                                        //href={`${backend_url}/submissions/${submission_id}/download`} TODO change to artifacts link
+                                        download
+                                        size="small"
+                                    >
+                                        {t("download_artifacts")}
                                     </Button>
                                 </Grid>
                             </Grid>

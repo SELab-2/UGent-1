@@ -102,7 +102,7 @@
   "year": "Year",
   "archive_course": "Archive course",
   "visibility": "Visibility",
-  "download_file": "Download",
+  "download_file": "Download files",
   "denied": "Denied",
   "show_more": "Show more",
   "show_less": "Show less",
@@ -148,5 +148,8 @@
   "teachers": "Teachers",
   "courses_archive": "Courses archive",
   "courses_all": "All courses",
-  "open": "Open"
+  "open": "Open",
+  "artifacts": "Artifacts",
+  "download_artifacts": "Download artifacts",
+  "output": "Output"
 }

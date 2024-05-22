@@ -99,7 +99,7 @@
   "view_co_teachers": "Bekijk mede-docenten",
   "view_students": "Bekijk studenten",
   "visibility": "Zichtbaarheid",
-  "download_file": "Download",
+  "download_file": "Download files",
   "denied": "Gewijgerd",
   "show_more": "Toon meer",
   "show_less": "Toon minder",
@@ -151,5 +151,8 @@
   "teachers": "Docenten",
   "courses_archive": "Gearchiveerde cursussen",
   "courses_all": "Alle cursussen",
-  "open": "Open"
+  "open": "Open",
+  "artifacts": "Artifacts",
+  "download_artifacts": "Download artifacts",
+  "output": "Uitvoer"
 }
