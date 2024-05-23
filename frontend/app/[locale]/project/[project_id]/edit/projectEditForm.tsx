@@ -1,7 +1,6 @@
 "use client"
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import dayjs from "dayjs";
-import JSZip, {JSZipObject} from "jszip";
 import {
     addProject,
     deleteProject,
@@ -18,12 +17,18 @@ import Assignment from "@app/[locale]/components/project_components/assignment";
 import RequiredFiles from "@app/[locale]/components/project_components/requiredFiles";
 import Conditions from "@app/[locale]/components/project_components/conditions";
 import Groups from "@app/[locale]/components/project_components/groups";
-import TestFiles from "@app/[locale]/components/project_components/testfiles";
-import UploadTestFile from "@app/[locale]/components/project_components/uploadButton";
 import FinishButtons from "@app/[locale]/components/project_components/finishbuttons";
 import Deadline from "@app/[locale]/components/project_components/deadline";
 import RemoveDialog from "@app/[locale]/components/project_components/removedialog";
 import {LinearProgress} from "@mui/material";
+import {useTranslation} from "react-i18next";
+import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import {Grid, TextField} from "@mui/material";
+
+
+
 import {
     Button,
     Dialog,
@@ -44,6 +49,7 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [files, setFiles] = useState<string[]>([]);
     const [status_files, setStatusFiles] = useState<string[]>([]);
     const [title, setTitle] = useState('');
+    const [dockerImage, setDockerImage] = useState('');
     const [description, setDescription] = useState('');
     const [groupAmount, setGroupAmount] = useState(1);
     const [groupSize, setGroupSize] = useState(1);
@@ -55,7 +61,6 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [loadingTranslations, setLoadingTranslations] = useState(true);
     const [loadingProject, setLoadingProject] = useState(true);
     const [confirmRemove, setConfirmRemove] = useState(false);
-    const [testfilesData, setTestfilesData] = useState<JSZipObject[]>([]);
     const [isStudent, setIsStudent] = useState(false);
     const [isTeacher, setIsTeacher] = useState(false);
     const [loadingUser, setLoadingUser] = useState(true);
@@ -65,6 +70,9 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
     const [confirmSubmit, setConfirmSubmit] = useState(false);
     const [accessDenied, setAccessDenied] = useState(true);
 
+    const dockerfileref = useRef<HTMLInputElement>(null);
+
+    const {t} = useTranslation();
 
     const isTitleEmpty = !title
     const isAssignmentEmpty = !description
@@ -95,7 +103,6 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                     if (project.project_id !== null) {
                         setCourseId(project.course_id);
                     }
-                    if (project.test_files !== null) await setTestFiles(project);
                     setScore(+project["max_score"]);
                     if (project["conditions"] != null) {
                         let conditions_parsed: string[] = [];
@@ -157,23 +164,6 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
         fetchUser();
     }, [add_course_id, course_id, loadingProject, loadingUser, project_id]);
 
-
-
-    async function setTestFiles(project: Project) {
-        const zip = new JSZip();
-
-        const test_files_zip = await getTestFiles(project.test_files);
-        const zipData = await zip.loadAsync(test_files_zip);
-        const testfiles_name: string[] = [];
-        const testfiles_data: JSZipObject[] = [];
-        zipData.forEach((relativePath, file) => {
-            testfiles_data.push(file);
-            testfiles_name.push(relativePath);
-        });
-        setTestfilesName(testfiles_name);
-        setTestfilesData(testfiles_data);
-    }
-
     const handleSave = async () => {
         console.log(files);
         let message = "The following fields are required:\n";
@@ -190,17 +180,10 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
             alert(message);
             return;
         } else {
-            const zip = new JSZip();
-            testfilesData.forEach((file) => {
-                zip.file(file.name, file.async("blob"));
-            });
-
-            const zipFileBlob = await zip.generateAsync({type: "blob"});
             const formData = new FormData();
-            const zipFile = new File([zipFileBlob], "test_files.zip");
+            formData.append("test_docker_image", dockerImage);
 
             const required_files = files.map((item, index) => status_files[index] + item);
-            formData.append("test_files", zipFile);
             formData.append("name", title);
             formData.append("description", description);
             formData.append("max_score", score.toString());
@@ -296,16 +279,26 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                             isGroupSizeEmpty={isGroupSizeEmpty}
                             setGroupAmount={setGroupAmount}
                             setGroupSize={setGroupSize}/>
-                        <TestFiles
-                            testfilesName={testfilesName}
-                            setTestfilesName={setTestfilesName}
-                            testfilesData={testfilesData}
-                            setTestfilesData={setTestfilesData}/>
-                        <UploadTestFile
-                            testfilesName={testfilesName}
-                            setTestfilesName={setTestfilesName}
-                            testfilesData={testfilesData}
-                            setTestfilesData={setTestfilesData}/>
+                        
+                        <Typography variant="h5" className={"typographyStyle"}>
+                            {t("evaluation_docker_image")}
+                            <Tooltip title={
+                                <Typography variant="body1" className={"conditionsText"}>
+                                    {t("evaluation_docker_image_tooltip")}
+                                </Typography>
+                            } placement={"right"}>
+                                <HelpOutlineIcon className={"conditionsHelp"}/>
+                            </Tooltip>
+                        </Typography>
+                        <TextField
+                            variant="outlined"
+                            onChange={(event) => setDockerImage(event.target.value)}
+                            value={dockerImage}
+                            className={"titleGrids"}
+                            size="small"
+                            placeholder="test-helloworld:latest"
+                            label={t("evaluation_docker_image")}
+                        />
                     </Box>
                     <Box className={"pageBoxRight"}>
                         <FinishButtons

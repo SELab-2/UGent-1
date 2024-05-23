@@ -19,6 +19,7 @@ jobs:
           pip install -r ./backend/requirements.txt
       - name: Running Django tests
         run: |
+          source /home/selab2/hosting/.env.test
           sh ./backend/runtests.sh
 
   frontend-test:

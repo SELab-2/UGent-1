@@ -189,8 +189,8 @@ const ListView: NextPage<ListViewProps> = ({
                         setGroupSize((await getProject(data.project_id)).group_size);
                         return [data.group_id, data.user, data.group_nr, l.join(', ')];
                     },
-                    'submissions': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data.output_simple_test],
-                    'submissions_group': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data.output_simple_test],
+                    'submissions': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data?.output_simple_test && data?.eval_result],
+                    'submissions_group': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data?.output_simple_test && data?.eval_result],
                     'archived_courses': (data) => [data.course_id, data.name, data.description, data.open_course],
                 };
 

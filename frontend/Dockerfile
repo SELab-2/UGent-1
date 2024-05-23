@@ -1,5 +1,5 @@
 # pull official base image
-FROM cypress/base:20.11.0 AS deps
+FROM cypress/base:latest AS deps
 
 # set work directory
 WORKDIR /usr/src/app

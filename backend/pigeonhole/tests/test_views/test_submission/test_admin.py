@@ -34,6 +34,8 @@ class SubmissionTestAdmin(TestCase):
             name="Test Project",
             course_id=self.course,
             deadline="2025-12-12 12:12:12",
+            file_structure='*.sh',
+            test_docker_image="test-always-succeed",
         )
 
         self.group = Group.objects.create(group_nr=1, project_id=self.project)
@@ -45,7 +47,8 @@ class SubmissionTestAdmin(TestCase):
         self.group.user.set([self.admin])
 
         self.submission = Submissions.objects.create(
-            group_id=self.group, file_urls="file_urls"
+            group_id=self.group,
+            file_urls="main.sh",
         )
 
         self.client.force_authenticate(self.admin)
@@ -57,16 +60,24 @@ class SubmissionTestAdmin(TestCase):
         self.assertEqual(Group.objects.count(), 1)
         self.assertEqual(Submissions.objects.count(), 1)
 
-    def test_submit_submission(self):
+    def test_submit_submission(self) -> object:
         response = self.client.post(
-            API_ENDPOINT, {"file_urls": "file_urls", "group_id": self.group.group_id}
+            API_ENDPOINT, {
+                "group_id": self.group.group_id,
+                "file_urls": ""
+            },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_submit_submission_in_different_group(self):
         response = self.client.post(
             API_ENDPOINT,
-            {"file_urls": "file_urls", "group_id": self.group_not_of_admin.group_id},
+            {
+                "group_id": self.group_not_of_admin.group_id,
+                "file_urls": ""
+            },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Submissions.objects.count(), 2)
@@ -87,9 +98,9 @@ class SubmissionTestAdmin(TestCase):
             API_ENDPOINT,
             {
                 "group_id": 95955351,
-                "file_urls": "file_urls",
+                "file_urls": ""
             },
-            format="json",
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -98,8 +109,9 @@ class SubmissionTestAdmin(TestCase):
             API_ENDPOINT + str(self.submission.submission_id) + "/",
             {
                 "group_id": self.group.group_id,
-                "file_urls": "file_urls",
+                "file_urls": ""
             },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -107,8 +119,9 @@ class SubmissionTestAdmin(TestCase):
             API_ENDPOINT + str(self.submission.submission_id) + "/",
             {
                 "group_id": self.group.group_id,
-                "file_urls": "file_urls",
+                "file_urls": ""
             },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -118,16 +131,18 @@ class SubmissionTestAdmin(TestCase):
                 API_ENDPOINT + "4561313516/",
                 {
                     "group_id": self.group.group_id,
-                    "file_urls": "file_urls",
+                    "file_urls": ""
                 },
+                format='multipart',
             )
 
             self.client.patch(
                 API_ENDPOINT + "4563153/",
                 {
                     "group_id": self.group.group_id,
-                    "file_urls": "file_urls",
+                    "file_urls": ""
                 },
+                format='multipart',
             )
 
     def test_delete_submission_not_possible(self):

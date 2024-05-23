@@ -100,7 +100,7 @@
   "view_students": "Bekijk studenten",
   "visibility": "Zichtbaarheid",
   "download_file": "Download",
-  "denied": "Gewijgerd",
+  "denied": "Geweigerd",
   "show_more": "Toon meer",
   "show_less": "Toon minder",
   "select": "Selecteer",
@@ -141,6 +141,8 @@
   "submission_date": "Inleverdatum",
   "status": "Status",
   "join/leave": "Toetreden/Verlaten",
+  "evaluation_docker_image": "Docker image voor evaluatie",
+  "evaluation_docker_image_tooltip": "De docker image die gebruikt wordt voor evaluatie, geupload op de registry bij sel2-1.ugent.be:2002, voor meer info: zie de handleiding.",
   "group_nr": "Groep nr",
   "join_leave": "Toetreden/Verlaten",
   "not_in_group": "Je kan niet indienen zonder in een groep te zitten",
@@ -157,5 +159,9 @@
   "teachers": "Docenten",
   "courses_archive": "Gearchiveerde cursussen",
   "courses_all": "Alle cursussen",
-  "open": "Open"
+  "open": "Open",
+  "simple_tests_failed": "Bestandsstructuur tests: Gefaald",
+  "advanced_tests_failed": "Geadvanceerde tests: Gefaald",
+  "simple_tests_ok": "Bestandsstructuur: OK",
+  "advanced_tests_ok": "Geadvanceerde tests: OK"
 }
