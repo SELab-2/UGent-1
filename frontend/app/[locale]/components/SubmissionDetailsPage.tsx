@@ -3,7 +3,7 @@
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import { getProjectFromSubmission, getSubmission, Project, Submission } from "@lib/api";
-import { Button, Card, CardContent, Grid, LinearProgress, ThemeProvider, Divider, Typography } from "@mui/material";
+import { Button, Card, CardContent, Grid, LinearProgress, ThemeProvider, Divider, Typography, Paper } from "@mui/material";
 import ProjectReturnButton from "@app/[locale]/components/ProjectReturnButton";
 import { baseTheme } from "@styles/theme";
 import CheckIcon from "@mui/icons-material/Check";
@@ -95,7 +95,6 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                                 {`(${t("timestamp")}: ${formatDate(submission?.timestamp ?? "")})`}
                                             </Typography>
 
-                                            <div>
                                                 {submission?.output_simple_test ? (
                                                     <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
                                                         {t("simple_tests_ok")}
@@ -105,20 +104,58 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                                         {t("simple_tests_failed")}
                                                     </Typography>
                                                 )}
-                                            </div>
-                                            <div>
-                                                {submission?.eval_result ? (
-                                                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-                                                        {t("advanced_tests_ok")}
-                                                    </Typography>
-                                                ):(
-                                                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-                                                        {t("advanced_tests_failed")}
-                                                    </Typography>
-                                                )}
-                                            </div>
+                                                {
+                                                    !submission?.output_simple_test ? (
+                                                        <>
+                                                            <Divider style={{ marginBottom: '20px', marginTop: '20px' }}/>
+
+                                                            {submission?.feedback_simple_test?.["0"].length > 0 ? (
+                                                                <>
+                                                                    <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                                                                        {t("feedback_simple_test_0")}
+                                                                    </Typography>
+                                                                    {submission?.feedback_simple_test["0"].map((feedback, index) => (
+                                                                        <Typography key={index} variant="body1" style={{ marginBottom: '10px' }}>
+                                                                            {feedback}
+                                                                        </Typography>
+                                                                    ))}
+                                                                </>
+                                                            ) : null}
+
+                                                            {submission?.feedback_simple_test?.["2"].length > 0 ? (
+                                                                <>
+                                                                    <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                                                                        {t("feedback_simple_test_2")}
+                                                                    </Typography>
+                                                                    {submission?.feedback_simple_test["2"].map((feedback, index) => (
+                                                                        <Typography key={index} variant="body1" style={{ marginBottom: '10px' }}>
+                                                                            {feedback}
+                                                                        </Typography>
+                                                                    ))}
+                                                                </>
+                                                            ) : null}
+                                                        </>
+                                                    ) : null
+                                                }
+                                                <Paper style={{ padding: '10px', marginTop: '10px' }}>
+                                                    {submission?.eval_result ? (
+                                                        <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                                                            {t("advanced_tests_ok")}
+                                                        </Typography>
+                                                    ):(
+                                                        <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                                                            {t("advanced_tests_failed")}
+                                                        </Typography>
+                                                    )}
+                                                    {
+                                                        submission?.eval_output ? (
+                                                                <Typography variant="body1">
+                                                                    {submission?.eval_output}
+                                                                    </Typography>
+                                                        ) : null
+                                                    }
+                                                </Paper>
                                         </div>
-                                        
                                     </div>
                                 </Grid>
                                 <Grid item xs={12} sm={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
@@ -129,48 +166,27 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                         variant="contained"
                                         color="primary"
                                         startIcon={<DownloadIcon />}
-                                        href={`${backend_url}/submissions/${submission_id}/download`}
+                                        href={`${backend_url}/submissions_${submission_id}`}
                                         download
                                         size="small"
                                     >
                                         {t("download_file")}
                                     </Button>
+                                    <Typography variant="h6" gutterBottom style={{ fontWeight: 'bold', color: 'primary.main', marginBottom: '10px', marginTop: '40px' }}>
+                                        {t("artifacts")}
+                                    </Typography>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        startIcon={<DownloadIcon />}
+                                        href={`${backend_url}/submissions_${submission_id}_artifacts`}
+                                        download
+                                        size="small"
+                                    >
+                                        {t("download_artifacts")}
+                                    </Button>
                                 </Grid>
                             </Grid>
-                            {
-                                !submission?.output_simple_test ? (
-                                    <>
-                                        <Divider style={{ marginBottom: '20px', marginTop: '20px' }}/>
-
-                                        {submission?.feedback_simple_test?.["0"].length > 0 ? (
-                                            <>
-                                                <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
-                                                    {t("feedback_simple_test_0")}
-                                                </Typography>
-                                                {submission?.feedback_simple_test["0"].map((feedback, index) => (
-                                                    <Typography key={index} variant="body1" style={{ marginBottom: '10px' }}>
-                                                        {feedback}
-                                                    </Typography>
-                                                ))}
-                                            </>
-                                        ) : null}
-
-                                        {submission?.feedback_simple_test?.["2"].length > 0 ? (
-                                            <>
-                                                <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
-                                                    {t("feedback_simple_test_2")}
-                                                </Typography>
-                                                {submission?.feedback_simple_test["2"].map((feedback, index) => (
-                                                    <Typography key={index} variant="body1" style={{ marginBottom: '10px' }}>
-                                                        {feedback}
-                                                    </Typography>
-                                                ))}
-                                            </>
-                                        ) : null}
-                                    </>
-                                ) : null
-                            }
-
                         </CardContent>
                     </Card>
                 </Grid>

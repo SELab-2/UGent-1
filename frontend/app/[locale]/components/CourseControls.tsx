@@ -1,11 +1,9 @@
 "use client";
 import React, {useEffect, useState} from 'react';
 import {Box, Button, MenuItem, Select, Stack, Typography, Skeleton} from '@mui/material';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ArchiveIcon from '@mui/icons-material/Archive';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import {useTranslation} from "react-i18next";
@@ -64,7 +62,7 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                         {t("courses")}
                     </Typography>
                     <Stack direction="row" spacing={2} alignItems="center">
-                        {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                        {[1, 2, 3, 4, 5].map((i) => (
                             <Skeleton
                                 key={i}
                                 variant="rectangular"
@@ -141,15 +139,6 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                     >
                         {t("view_archive")}
                     </Button>
-                    {user?.role === 1 ? (
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        startIcon={<SupervisorAccountIcon/>}
-                        href={'/admin/users'}
-                    >
-                        {t("site users")}
-                    </Button>) : null}
                     <Select
                         value={selectedYear}
                         onChange={onYearChange}
