@@ -59,7 +59,13 @@ const CreateCourseForm = () => {
                 });
             }
         }
-        if (selectedImage) fileReader.readAsArrayBuffer(selectedImage);
+        if (selectedImage) {
+            fileReader.readAsArrayBuffer(selectedImage);
+        } else {
+            await postData("/courses/", formData).then((response) => {
+                window.location.href = `/course/${response.course_id}`;
+            });
+        }
     };
 
     useEffect(() => {
