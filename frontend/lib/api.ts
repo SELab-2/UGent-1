@@ -516,7 +516,7 @@ let userData: UserData | undefined = undefined;
 
 export async function getUserData(): Promise<UserData> {
     if(!userData && !localStorage.getItem('user') && window.location.pathname !== "/"){
-        window.location.href = "/";
+        await fetchUserData();
     }
 
     if (userData) {

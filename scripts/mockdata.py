@@ -6,6 +6,10 @@ from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.users.models import User
 
+from django.conf import settings
+
+base_dir = settings.BASE_DIR
+
 lorem_ipsum = (
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore "
     "magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo "
@@ -413,7 +417,7 @@ def run():
         {
             "group_id": group_1.group_id,
             "file_urls": "main.py, lorem_ipsum.txt",
-            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb'),
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_incorrect/main.py', 'rb'),
             "lorem_ipsum.txt": lorem_ipsum_file,
         },
         format='multipart',
@@ -425,7 +429,7 @@ def run():
         {
             "group_id": group_1.group_id,
             "file_urls": "main.py",
-            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_correct/main.py', 'rb')
         },
         format='multipart',
     )
@@ -436,7 +440,7 @@ def run():
         {
             "group_id": group_1.group_id,
             "file_urls": "main.py",
-            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb')
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_incorrect/main.py', 'rb')
         },
         format='multipart',
     )
@@ -447,7 +451,7 @@ def run():
         {
             "group_id": group_1.group_id,
             "file_urls": "main.py",
-            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_correct/main.py', 'rb')
         },
         format='multipart',
     )
@@ -464,7 +468,7 @@ def run():
         {
             "group_id": group_2.group_id,
             "file_urls": "main.py, lorem_ipsum.txt",
-            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb'),
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_incorrect/main.py', 'rb'),
             "lorem_ipsum.txt": lorem_ipsum_file,
         },
         format='multipart',
@@ -476,7 +480,7 @@ def run():
         {
             "group_id": group_2.group_id,
             "file_urls": "main.py",
-            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb')
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_incorrect/main.py', 'rb')
         },
         format='multipart',
     )
@@ -487,7 +491,7 @@ def run():
         {
             "group_id": group_2.group_id,
             "file_urls": "main.py",
-            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_correct/main.py', 'rb')
         },
         format='multipart',
     )
@@ -504,7 +508,7 @@ def run():
         {
             "group_id": group_3.group_id,
             "file_urls": "main.py, lorem_ipsum.txt",
-            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb'),
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_incorrect/main.py', 'rb'),
             "lorem_ipsum.txt": lorem_ipsum_file,
         },
         format='multipart',
@@ -516,7 +520,7 @@ def run():
         {
             "group_id": group_3.group_id,
             "file_urls": "main.py",
-            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb')
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_incorrect/main.py', 'rb')
         },
         format='multipart',
     )
@@ -527,7 +531,7 @@ def run():
         {
             "group_id": group_3.group_id,
             "file_urls": "main.py",
-            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_correct/main.py', 'rb')
         },
         format='multipart',
     )
@@ -544,7 +548,7 @@ def run():
         {
             "group_id": group_4.group_id,
             "file_urls": "main.py, lorem_ipsum.txt",
-            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb'),
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_incorrect/main.py', 'rb'),
             "lorem_ipsum.txt": lorem_ipsum_file,
         },
         format='multipart',
@@ -556,7 +560,7 @@ def run():
         {
             "group_id": group_4.group_id,
             "file_urls": "main.py",
-            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb')
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_incorrect/main.py', 'rb')
         },
         format='multipart',
     )
@@ -567,7 +571,7 @@ def run():
         {
             "group_id": group_4.group_id,
             "file_urls": "main.py",
-            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_correct/main.py', 'rb')
         },
         format='multipart',
     )
@@ -584,7 +588,7 @@ def run():
         {
             "group_id": group_5.group_id,
             "file_urls": "main.py, lorem_ipsum.txt",
-            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb'),
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_incorrect/main.py', 'rb'),
             "lorem_ipsum.txt": lorem_ipsum_file,
         },
         format='multipart',
@@ -596,7 +600,7 @@ def run():
         {
             "group_id": group_5.group_id,
             "file_urls": "main.py",
-            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb')
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_incorrect/main.py', 'rb')
         },
         format='multipart',
     )
@@ -607,7 +611,7 @@ def run():
         {
             "group_id": group_5.group_id,
             "file_urls": "main.py",
-            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+            "main.py": open(f'{base_dir}/../scripts/fibonacci_correct/main.py', 'rb')
         },
         format='multipart',
     )
