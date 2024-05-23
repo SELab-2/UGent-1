@@ -20,7 +20,7 @@ from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.submissions.models import (
     Submissions,
-    SubmissionsSerializer,
+    SubmissionsSerializer, artifacts_folder_path,
 )
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
 from backend.pigeonhole.filters import CustomPageNumberPagination
@@ -154,6 +154,31 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                                                  submission.submission_id)
 
         shutil.make_archive(downloadspath + archivename, 'zip', submission_path)
+
+        path = realpath(downloadspath + archivename + '.zip')
+        response = FileResponse(
+            open(path, 'rb'),
+            content_type="application/force-download"
+        )
+        response['Content-Disposition'] = f'inline; filename={basename(path)}'
+
+        return response
+
+    @action(detail=True, methods=["get"])
+    def download_artifacts(self, request, *args, **kwargs):
+        submission = self.get_object()
+        if submission is None:
+            return Response(
+                {"message": f"Submission with id {id} not found", "errorcode":
+                    "ERROR_SUBMISSION_NOT_FOUND"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        archivename = f"submission_{submission.submission_id}_artifacts"
+        downloadspath = 'backend/downloads/'
+        artifacts_path = artifacts_folder_path(submission.group_id.group_id, submission.submission_id)
+
+        shutil.make_archive(downloadspath + archivename, 'zip', artifacts_path)
 
         path = realpath(downloadspath + archivename + '.zip')
         response = FileResponse(

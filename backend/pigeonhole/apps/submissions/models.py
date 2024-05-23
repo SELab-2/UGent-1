@@ -17,6 +17,10 @@ def submission_folder_path(group_id, submission_id):
     return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
 
 
+def artifacts_folder_path(group_id, submission_id):
+    return f"{str(settings.STATIC_ROOT)}/artifacts/group_{group_id}/{submission_id}"
+
+
 def submission_folder_path_hostside(group_id, submission_id):
     return f"{SUBMISSIONS_PATH}/group_{group_id}/{submission_id}"
 

@@ -25,6 +25,7 @@ services:
       #- submissions:/usr/src/app/backend/uploads/submissions/
       - /var/run/docker.sock:/var/run/docker.sock
       - ${SUBMISSIONS_PATH}:/usr/src/app/backend/static/submissions/
+      - ${ARTIFACTS_PATH}:/usr/src/app/backend/static/artifacts/
     ports:
       - 8000:8000
     env_file:
