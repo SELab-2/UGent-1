@@ -6,7 +6,7 @@ django-filter==24.2
 django_microsoft_auth==3.0.1
 djangorestframework-simplejwt~=5.2.2
 djangorestframework~=3.14.0
-docker==7.0.0
+docker==7.1.0
 requests==2.32.2
 drf-yasg==1.21.7
 flake8==7.0.0
