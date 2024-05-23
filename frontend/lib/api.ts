@@ -320,6 +320,12 @@ export async function archiveCourse(id: number): Promise<number> {
     })).course_id;
 }
 
+export async function unArchiveCourse(id: number): Promise<number> {
+    return (await patchData(`/courses/${id}/`, {
+        archived: false
+    })).course_id;
+}
+
 export async function getCoursesForUser(): Promise<Course[]> {
     let page = 1;
     let results: Course[] = []

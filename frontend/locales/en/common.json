@@ -161,5 +161,6 @@
   "simple_tests_ok": "File structure tests: OK",
   "advanced_tests_ok": "Advanced tests: OK",
   "download_artifacts": "Download artifacts",
-  "artifacts": "Artifacts"
+  "artifacts": "Artifacts",
+  "unarchive course": "Unarchive course"
 }
