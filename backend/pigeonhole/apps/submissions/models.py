@@ -21,9 +21,10 @@ if not ARTIFACTS_PATH:
 if not registry_name:
     registry_name = "sel2-1.ugent.be:2002"
 
+SUBMISSIONS_DIR = f"{str(settings.STATIC_ROOT)}/submissions"
 
 def submission_folder_path(group_id, submission_id):
-    return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
+    return f"{SUBMISSIONS_DIR}/group_{group_id}/{submission_id}"
 
 
 def artifacts_folder_path(group_id, submission_id):
