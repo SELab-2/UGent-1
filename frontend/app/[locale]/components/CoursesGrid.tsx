@@ -1,37 +1,99 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import {APIError, Course, getCourses, getCoursesForUser, getUserData, UserData} from '@lib/api';
-import {Container, Grid} from '@mui/material';
-import CourseCard from './CourseCard';
+import {APIError, Course, getCoursesForUser} from '@lib/api';
+import { Grid, Skeleton } from '@mui/material';
+import CourseCard from '@app/[locale]/components/CourseCard';
+import {useTranslation} from "react-i18next";
 
-const CoursesGrid = () => {
-    const [user, setUser] = useState<UserData>({id: 0, emai: "", first_name: "", last_name: "", course: [], role: 3});
+const CoursesGrid = ({selectedYear}) => {
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<APIError | null>(null);
-    const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
+
+    const {t} = useTranslation()
+
+    const loadingArray = [1, 2, 3, 4, 5, 6];
 
     useEffect(() => {
-        const fetchCoursesAndUser = async () => {
+        const fetchCourses = async () => {
             try {
-                setUser(await getUserData());
                 setCourses(await getCoursesForUser());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
             }
         };
 
-        fetchCoursesAndUser();
-    }, []);  // assuming locale might affect how courses are fetched, though not used directly here
+        fetchCourses();
+        setLoading(false);
+    }, []);
+
+    useEffect(() => {
+        const [startYear, endYearSuffix] = selectedYear.split('-');
+        const startYearNumber = parseInt(startYear, 10);
+        const endYearNumber = parseInt(startYear.slice(0, 2) + endYearSuffix, 10);
+
+        const filtered = courses.filter(course => {
+            return course.year === startYearNumber || course.year === endYearNumber;
+        });
+
+        setFilteredCourses(filtered);
+    }, [selectedYear, courses]);
 
     return (
-        <Container sx={{pt: 2, pb: 4, maxHeight: 'calc(150vh - 260px)', overflowY: 'auto'}}>
-            <Grid container justifyContent="center" alignItems="flex-start" spacing={2}>
-                {courses.map((course: Course, index) => (
-                    <Grid  md={6} item ={true} key={index}>
-                        <CourseCard params={{course: course}}/>
-                    </Grid>
-                ))}
+            <Grid
+                container
+                justifyContent="center"
+                spacing={2}
+
+                sx={{
+                    paddingRight: 2,
+                    paddingBottom: 2,
+                    flexGrow: 1
+                }}
+            >
+                {loading ? (
+                    loadingArray.map((index) => (
+                        <Grid
+                            item={true}
+                            key={index}
+                            xs={12}
+                            sm={12}
+                            md={12}
+                            lg={6}
+                        >
+                            <Skeleton
+                                variant="rounded"
+                                sx={{
+                                    height: 450,
+                                    width: 600,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderRadius: '16px',
+                                    margin: "0 auto",
+                                }}
+                            />
+                        </Grid>
+                        ))
+                ) : (
+                    filteredCourses.map((course: Course, index) => (
+                        <Grid
+                            display={'flex'}
+                            item
+                            key={index}
+                            xs={12}
+                            sm={12}
+                            md={12}
+                            lg={6}
+                            width={'100%'}
+                            justifyContent={'center'}
+                        >
+                            <CourseCard params={{course: course}}/>
+                        </Grid>
+                    ))
+                )}
             </Grid>
-        </Container>
     );
 };
 

@@ -1,10 +1,8 @@
 import React from 'react';
-import initTranslations from "../../i18n";
-import {Box, Container} from '@mui/material';
-import NavBar from '../components/NavBar';
-import CourseControls from '../components/CourseControls';
-import TranslationsProvider from "../components/TranslationsProvider";
-import CoursesGrid from '../components/CoursesGrid';
+import initTranslations from "@app/i18n";
+import NavBar from '@app/[locale]/components/NavBar';
+import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
+import YearStateComponent from "@app/[locale]/components/YearStateComponent";
 
 const HomePage = async ({params: {locale}}: { params: { locale: any } }) => {
     const {t, resources} = await initTranslations(locale, ['common'])
@@ -16,12 +14,7 @@ const HomePage = async ({params: {locale}}: { params: { locale: any } }) => {
             namespaces={["common"]}
         >
             <NavBar/>
-            <Box sx={{position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#fff'}}>
-                <Container>
-                    <CourseControls/>
-                </Container>
-            </Box>
-            <CoursesGrid/>
+            <YearStateComponent/>
         </TranslationsProvider>
     );
 };

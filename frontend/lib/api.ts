@@ -1,5 +1,6 @@
 import axios, {AxiosError} from 'axios';
 import dayjs from "dayjs";
+import {JSZipObject} from "jszip";
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -33,6 +34,8 @@ export type Course = {
     open_course: boolean;
     invite_token: string;
     banner: string;
+    archived: boolean;
+    year: number;
 }
 
 export type Project = {
@@ -67,6 +70,18 @@ export type Group = {
     name: string;
     user: number[];
 
+}
+
+export type Submission = {
+    submission_id: number;
+    group_id: number;
+    submission_nr: number;
+    file: string;
+    timestamp: string;
+    output_simple_test: boolean;
+    feedback_simple_test: object;
+    eval_result : boolean;
+    eval_output: string | null;
 }
 
 export type UserData = {
@@ -263,6 +278,54 @@ export async function getCourses(page = 1, pageSize = 5, keyword?: string, order
     return await getRequest(url);
 }
 
+export async function getArchivedCourses(page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Course[]> {
+    let url = `/courses/get_archived_courses?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
+export async function getOpenCourses(page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Course[]> {
+    let url = `/courses/get_open_courses?page=${page}&page_size=${pageSize}`;
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return await getRequest(url);
+}
+
+export async function archiveCourse(id: number): Promise<number> {
+    return (await patchData(`/courses/${id}/`, {
+        archived: true
+    })).course_id;
+}
+
+export async function unArchiveCourse(id: number): Promise<number> {
+    return (await patchData(`/courses/${id}/`, {
+        archived: false
+    })).course_id;
+}
+
 export async function getCoursesForUser(): Promise<Course[]> {
     let page = 1;
     let results: Course[] = []
@@ -282,7 +345,12 @@ export async function updateCourse(id: number, data: any): Promise<Course> {
 }
 
 export async function updateUserData(id: number, data: any): Promise<UserData> {
+    localStorage.setItem('user', JSON.stringify({data: userData, lastcache: "0"}));
     return (await putData(`/users/${id}/`, data));
+}
+
+export async function deleteUser(id: number): Promise<void> {
+    return (await deleteData(`/users/${id}`));
 }
 
 export async function deleteCourse(id: number): Promise<void> {
@@ -306,35 +374,23 @@ export async function updateProject(id: number, data: any): Promise<Project> {
 }
 
 export async function deleteProject(id: number): Promise<void> {
-    return (await deleteData(`/projects/${id}/`));
+    return (await deleteData(`/projects/${id}`));
 }
 
 export async function getProjects(): Promise<Project[]> {
     return (await getListRequest('/projects'));
 }
 
-export async function addProject(course_id: number): Promise<number> {
-    return (await postData('/projects/', {
-        name: "New Project",
-        course_id: course_id,
-        description: "Description",
-        deadline: dayjs(),
-        visible: true,
-        max_score: 100,
-        number_of_groups: 1,
-        group_size: 1,
-        file_structure: "extra/verslag.pdf",
-        test_files: null,
-        conditions: "Project must compile and run without errors."
-    })).project_id;
+export async function addProject(data: any): Promise<number> {
+    return (await postData(`/projects/`, data)).project_id;
 }
 
 export async function getProjectsFromCourse(id: number): Promise<Project[]> {
     return (await getListRequest('/courses/' + id + '/get_projects'))
 }
 
-export async function getProjectFromSubmission(id: number): Promise<Project> {
-    return (await getRequest(`/submissions/${id}/get_project`))
+export async function getProjectFromSubmission(id: number): Promise<number> {
+    return (await getRequest(`/submissions/${id}/get_project`)).project;
 }
 
 export async function getTeachersFromCourse(id: number): Promise<User[]> {
@@ -369,6 +425,15 @@ export async function getProjects_by_course(courseId: number, page = 1, pageSize
 
 export async function getGroup(id: number): Promise<Group> {
     return (await getRequest(`/groups/${id}`));
+}
+
+export async function checkGroup(id: number) {
+    try {
+        await axios.get(backend_url + "/projects/" + id + "/get_group/", {withCredentials: true});
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
 export async function getGroups(): Promise<Group[]> {
@@ -432,17 +497,40 @@ export async function getGroupSubmissions(id: number, page = 1, pageSize = 5, ke
 let userData: UserData | undefined = undefined;
 
 export async function getUserData(): Promise<UserData> {
+    if(!userData && !localStorage.getItem('user') && window.location.pathname !== "/"){
+        await fetchUserData();
+    }
+
     if (userData) {
         return userData;
-    }/*else if(localStorage.getItem('user')){
-        let user : UserData = JSON.parse(localStorage.getItem('user') as string);
-        userData = user;
-        return user;
-    }*/ else {
-        let user: UserData = await getRequest('/users/current');
-        //localStorage.setItem('user', JSON.stringify(user));
-        return user;
+    }else if(localStorage.getItem('user')){
+        const userobj = JSON.parse(localStorage.getItem('user') as string);
+        const lastcache : string | undefined = userobj?.lastcache;
+        
+        if(lastcache && Date.now() - parseInt(lastcache) < 2 * 60 * 1000){
+            console.log(Date.now() - parseInt(lastcache));
+            let user : UserData = userobj.data;
+            userData = user;
+            return user;
+        }else{
+            return fetchUserData();
+        }
+    }else {
+        return fetchUserData();
     }
+}
+
+export async function fetchUserData() : Promise<UserData> {
+    try{
+        userData = await getRequest('/users/current');
+        localStorage.setItem('user', JSON.stringify({data: userData, lastcache: Date.now().toString()}));
+        return userData!;
+    }catch(e){
+        console.error(e);
+        window.location.href = "/";
+        return userData!;
+    }
+    
 }
 
 export async function logOut() {
@@ -547,6 +635,39 @@ export async function putData(path: string, data: any) {
     }
 }
 
+export async function patchData(path: string, data: any) {
+    axios.defaults.headers.patch['X-CSRFToken'] = getCookieValue('csrftoken');
+
+    try {
+        const response = await axios.patch(backend_url + path, data, {withCredentials: true});
+
+        if (response.status === 200 && response?.data) {
+            return response.data;
+        } else if (response?.data?.detail) {
+            console.error("Unexpected response structure:", response.data);
+            const error: APIError = new APIError();
+            error.status = response.status;
+            error.message = response.data.detail;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        } else {
+            const error: APIError = new APIError();
+            error.status = response.status;
+            error.message = response.statusText;
+            error.type = ErrorType.UNKNOWN;
+            error.trace = undefined;
+            throw error;
+        }
+    } catch (error) {
+        const apierror: APIError = new APIError();
+        apierror.message = "error on put request";
+        apierror.type = ErrorType.REQUEST_ERROR;
+        apierror.trace = error;
+        throw apierror;
+    }
+}
+
 export async function deleteData(path: string) {
     axios.defaults.headers.delete['X-CSRFToken'] = getCookieValue('csrftoken');
 
@@ -566,24 +687,52 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
     return (await postData(`/courses/${course_id}/join_course_with_token/${token}/`, {}));
 }
 
-export async function uploadSubmissionFile(event: any, project_id : string) : Promise<string>{
-    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
+type uploadResult = {
+    result: string;
+    errorcode: string | undefined;
+    submission_id: number;
+}
+
+export async function uploadSubmissionFile(event: any, project_id: string) : Promise<uploadResult>{
     axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
+    axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
+
     const formData = new FormData(event.target);
+    //filter files by key
+
+    for(let file of event.target.fileList.files){
+        let path = file.webkitRelativePath;
+        if (path.includes("/")) {
+            path = path.substring((path.indexOf("/")??0)+1, path.length);
+        }
+        formData.append(path, file);
+    }
+
+    for(let file of event.target.fileList2.files){
+        formData.append(file.name, file);
+    }
+
+    formData.delete("fileList");
     const formDataObject = Object.fromEntries(formData.entries());
+    console.log(formDataObject)
     try {
         let groupres = await axios.get(backend_url + "/projects/" + project_id + "/get_group/", {withCredentials: true});
         const group_id = groupres.data.group_id;
         formDataObject.group_id = group_id;
-        await axios.post(backend_url + "/submissions/", formDataObject, {withCredentials: true, headers: {'Content-Type': 'multipart/form-data'}});
-        return "yes";
+        const response = await axios.post(backend_url + '/submissions/', formDataObject,
+         { withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+          });
+        return {result: "ok", errorcode: undefined, submission_id: response.data.submission_id};
     } catch (error) {
-        const apierror: APIError = new APIError();
+        const apierror : APIError = new APIError();
         apierror.message = "error posting form";
         apierror.type = ErrorType.REQUEST_ERROR;
         apierror.trace = error;
-        console.error(error);
-        return "error"
+        console.error(apierror);
+        return {result: "error", errorcode: error.response?.data?.errorcode};
     }
 }

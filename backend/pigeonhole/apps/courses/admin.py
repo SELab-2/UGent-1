@@ -38,6 +38,14 @@ class CourseAdmin(admin.ModelAdmin):
                     'open_course',
                 )
             }
+        ),
+        (
+            'banner',
+            {
+                'fields': (
+                    'banner',
+                )
+            }
         )
     )
 

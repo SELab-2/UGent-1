@@ -11,6 +11,7 @@ const Footer = () => {
                 width={"100vw"}
                 bottom={0}
                 left={0}
+                marginTop={2}
                 sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -18,7 +19,7 @@ const Footer = () => {
                     backgroundColor: 'primary.main',
                     height: 80,
                     marginX: 0,
-                    position: 'fixed',
+                    position: 'static',
                     right: 0,
                     bottom: 0,
                     clear: 'both',

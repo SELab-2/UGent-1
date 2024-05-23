@@ -36,18 +36,28 @@ class SubmissionAdmin(admin.ModelAdmin):
             }
         ),
         (
-            'Files',
+            'Simple evaluation',
             {
                 'fields': (
-                    'file',
+                    'output_simple_test',
+                    'feedback_simple_test',
                 )
             }
         ),
         (
-            'Tests',
+            'Advanced evaluation',
             {
                 'fields': (
-                    'output_test',
+                    'eval_result',
+                    'eval_output',
+                )
+            }
+        ),
+        (
+            'file urls',
+            {
+                'fields': (
+                    'file_urls',
                 )
             }
         ),

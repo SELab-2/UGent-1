@@ -16,6 +16,8 @@ class CourseUserPermissions(permissions.BasePermission):
             "leave_course",
             "get_teachers",
             "get_students",
+            "get_archived_courses",
+            "get_open_courses"
         ]:
             return True
 
@@ -23,8 +25,7 @@ class CourseUserPermissions(permissions.BasePermission):
             if view.action in ["create", "list", "retrieve"]:
                 return True
             elif (
-                view.action in ["update", "partial_update", "destroy",
-                                "get_projects"]
+                view.action in ["update", "partial_update", "destroy", "get_projects"]
                 and User.objects.filter(
                     id=request.user.id, course=view.kwargs["pk"]
                 ).exists()

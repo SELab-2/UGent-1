@@ -1,39 +1,31 @@
+"use client";
+
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import React from "react";
+import React, {useState} from "react";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Box from "@mui/material/Box";
-import {TextField} from "@mui/material";
-import TranslationsProvider from "@app/[locale]/components/TranslationsProvider";
+import {useTranslation} from "react-i18next";
+import RequiredFilesList from "@app/[locale]/components/general/RequiredFilesList";
 
 interface RequiredFilesProps {
     files: any[],
     setFiles: (value: (((prevState: any[]) => any[]) | any[])) => void,
-    translations: { t: any; resources: any; locale: any; i18nNamespaces: string[]; }
+    file_status: any[],
+    setFileStatus: (value: (((prevState: any[]) => any[]) | any[])) => void,
 }
 
 function RequiredFiles(
-    {files, setFiles, translations}: RequiredFilesProps
+    {files, setFiles, file_status, setFileStatus}: RequiredFilesProps
 ) {
-    const handleFieldChange = (index: number, event: any) => {
-        const newFields = [...files];
-        newFields[index] = event.target.value;
-        setFiles(newFields);
-
-        if (index === files.length - 1 && event.target.value !== '') {
-            setFiles([...newFields, '']);
-        } else if (event.target.value === '' && index < files.length - 1) {
-            newFields.splice(index, 1);
-            setFiles(newFields);
-        }
-    }
+    const {t} = useTranslation();
 
     return <div>
         <Typography variant="h5" className={"typographyStyle"}>
-            {translations.t("required_files")}
+            {t("required_files")}
             <Tooltip title={
                 <Typography variant="body1" className={"conditionsText"}>
-                    {translations.t("required_files_info").split('\n').map((line: string, index: number) => (
+                    {t("required_files_info").split('\n').map((line: string, index: number) => (
                         <React.Fragment key={index}>
                             {line}
                             <br/>
@@ -45,16 +37,15 @@ function RequiredFiles(
             </Tooltip>
         </Typography>
         <Box className={"conditionsBox"}>
-            {files.map((field, index) => (
-                <TextField
-                    key={index}
-                    variant="outlined"
-                    className={"conditionsSummation"}
-                    value={field}
-                    onChange={(event) => handleFieldChange(index, event)}
-                    size="small"
-                />
-            ))}
+            <RequiredFilesList
+                items={files}
+                setItems={setFiles}
+                input_placeholder={t("new_file_example")}
+                empty_list_placeholder={t("no_required_files")}
+                button_text={t("add")}
+                items_status={file_status}
+                setItemsStatus={setFileStatus}
+            />
         </Box>
     </div>;
 }

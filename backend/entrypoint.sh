@@ -19,4 +19,6 @@ python manage.py runscript push_site
 
 python manage.py createsuperuser --noinput --email $DJANGO_SUPERUSER_EMAIL
 
+docker login $REGISTRY_URL -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+
 exec "$@"
