@@ -7,8 +7,10 @@ const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 const redirect_url = process.env['NEXT_PUBLIC_REDIRECT_URL'];
 
 const CASButton = () => {
+    /*
+    * Button to login with CAS
+    * */
     const handleCASLogin = (): void => {
-        // Implement CAS login logic here
         console.log('Login with CAS');
         window.location.href = backend_url + "/microsoft/to-auth-redirect?next=" + redirect_url + "/home"
     };

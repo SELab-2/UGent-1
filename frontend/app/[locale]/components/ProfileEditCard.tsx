@@ -15,6 +15,9 @@ import {APIError, getImage, getUserData, updateUserData, UserData} from "@lib/ap
 import {useTranslation} from "react-i18next";
 
 const ProfileEditCard = () => {
+    /*
+    * This component is the profile edit card that is displayed on the profile edit page.
+    */
     const [user, setUser] = useState<UserData>({
         id: 0,
         email: "",

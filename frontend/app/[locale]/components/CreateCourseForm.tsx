@@ -16,6 +16,9 @@ import {visuallyHidden} from "@mui/utils";
 import dayjs from "dayjs";
 
 const CreateCourseForm = () => {
+    /*
+    * Form component for creating a new course
+    */
     const { t } = useTranslation();
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [selectedImageURL, setSelectedImageURL] = useState<string>("");
@@ -25,6 +28,7 @@ const CreateCourseForm = () => {
     const [openConfirmation, setOpenConfirmation] = useState(false); // State for confirmation dialog
     const [year, setYear] = useState(0);
 
+    // Function to handle image upload
     const handleImageUpload = (event: any) => {
         const imageFile = event.target.files[0];
         setSelectedImage(imageFile);
@@ -33,15 +37,18 @@ const CreateCourseForm = () => {
         setSelectedImageURL(imageURL);
     };
 
+    // Function to handle form submission
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         setOpenConfirmation(true); // Open confirmation dialog
     };
 
+    // Function to close confirmation dialog
     const handleConfirmationClose = () => {
         setOpenConfirmation(false);
     };
 
+    // Function to accept confirmation dialog
     const handleConfirmationYes = async () => {
         setOpenConfirmation(false);
         const formData = new FormData();
@@ -62,6 +69,7 @@ const CreateCourseForm = () => {
         if (selectedImage) fileReader.readAsArrayBuffer(selectedImage);
     };
 
+    // Load banner image
     useEffect(() => {
         if (selectedImage === null) {
             fetch(banner.src)

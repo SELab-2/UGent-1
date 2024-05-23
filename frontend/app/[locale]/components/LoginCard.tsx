@@ -5,6 +5,9 @@ import Image from 'next/image';
 import logo from '../../../public/logo.png';
 
 const LoginCard: React.FC = () => {
+    /*
+    * This component is the login card that is displayed on the login page.
+    */
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline/>

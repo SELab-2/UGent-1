@@ -4,6 +4,9 @@ import React from 'react'
 import {useTranslation} from "react-i18next";
 
 const CancelButton = () => {
+    /*
+    * This component displays the cancel button.
+    */
     const {t} = useTranslation()
 
     const handleCancel = () => {

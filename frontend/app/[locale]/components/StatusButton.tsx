@@ -10,9 +10,15 @@ interface StatusButtonProps {
     fileIndex: number,
 }
 
-function StatusButton(
-    {files, setFiles, fileIndex}: StatusButtonProps,
-) {
+function StatusButton({files, setFiles, fileIndex}: StatusButtonProps,) {
+    /*
+    * This component is a button that displays the status of a file.
+    * The status can be one of three values: +, ~ or -, which correspond to required, optional or forbidden.
+    * The button cycles through these values when clicked.
+    * @param files: The list of files that the status button is associated with
+    * @param setFiles: The function to update the list of files
+    * @param fileIndex: The index of the file in the list of files
+     */
   const [statusIndex, setStatusIndex] = useState(getStart(files[fileIndex]));
   const statuses = [
     { icon: <CheckIcon style={{ color: '#66bb6a' }} /> },

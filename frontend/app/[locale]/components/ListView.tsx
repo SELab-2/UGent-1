@@ -4,14 +4,10 @@ import {
     Box,
     Button,
     Checkbox,
-    Container,
     CssBaseline,
     Typography,
-    IconButton,
     TextField,
     tableCellClasses,
-    TableSortLabel,
-    TablePagination,
     Table,
     TableBody,
     TableCell,
@@ -25,15 +21,12 @@ import {
 } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import CropSquareIcon from '@mui/icons-material/CropSquare';
 import {styled} from '@mui/system';
 import {NextPage} from 'next';
-import checkMarkImage from './check-mark.png';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from "@mui/icons-material/Cancel";
 import {
-    deleteData, getArchivedCourses,
-    getCourses,
+    getArchivedCourses,
     getGroups_by_project,
     getGroupSubmissions,
     getProject,
@@ -42,7 +35,6 @@ import {
     getStudents_by_course,
     getTeachers_by_course,
     getUser,
-    getUserData,
     getUsers,
     postData,
     getOpenCourses,
@@ -50,7 +42,6 @@ import {
 } from '@lib/api';
 import baseTheme from "../../../styles/theme";
 import {useTranslation} from "react-i18next";
-import StudentCoTeacherButtons from './StudentCoTeacherButtons';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
