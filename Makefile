@@ -21,6 +21,9 @@ registry:
 	docker build examples/advanced-evaluation/helloworld -t test-helloworld
 	docker tag test-helloworld localhost:5000/test-helloworld
 	docker push localhost:5000/test-helloworld
+	docker build examples/advanced-evaluation/fibonacci-python -t fibonacci-python
+	docker tag fibonacci-python localhost:5000/fibonacci-python
+	docker push localhost:5000/fibonacci-python
 
 evaltest:
 	docker exec -it pigeonhole-backend python manage.py runscript eval_test
