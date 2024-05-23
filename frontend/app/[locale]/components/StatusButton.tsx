@@ -33,10 +33,13 @@ function StatusButton(
     <Button
       variant="contained"
       onClick={handleClick}
-      style={{
+      sx={{
           border: 'none',
           backgroundColor: 'transparent',
-          margin: 10,
+          minWidth: '30px',  // Ensure the button is square by setting equal width and height
+          minHeight: '30px',  // Adjust the size as needed
+          padding: 0,
+          margin: 1,
       }}
     >
       {statuses[statusIndex].icon}

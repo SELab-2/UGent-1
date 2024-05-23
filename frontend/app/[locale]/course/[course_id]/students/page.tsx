@@ -8,6 +8,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React, {useEffect, useState} from "react";
 import EmailIcon from '@mui/icons-material/Email';
 import {fetchUserData, UserData} from "@lib/api";
+import Typography from "@mui/material/Typography";
 
 const i18nNamespaces = ['common']
 
@@ -69,6 +70,16 @@ export default function StudentsPage({params: {locale, course_id}}: { params: { 
                     >
                         {translations.t('back_to') + ' ' + translations.t('course') + ' ' + translations.t('page')}
                     </Button>
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontWeight: 'medium',
+                            marginTop: 2,
+                            marginBottom: 2
+                        }}
+                    >
+                        {translations.t('students')}
+                    </Typography>
                     <Box marginTop={{ xs: 2, md: 4 }}>
                         <ListView
                             admin={true}

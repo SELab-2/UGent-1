@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {getCourse, getImage, postData, updateCourse} from "@lib/api";
 import Typography from "@mui/material/Typography";
-import {Box, Button, Input, LinearProgress, MenuItem, Select, TextField} from "@mui/material";
+import {Box, Button, Input, LinearProgress, MenuItem, Select, TextField, Dialog, DialogActions, DialogTitle} from "@mui/material";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
@@ -24,6 +24,8 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [selectedImageURL, setSelectedImageURL] = useState<string>("");
     const [loading, setLoading] = useState(true);
+    const [openConfirmation, setOpenConfirmation] = useState(false); // State for confirmation dialog
+
 
     useEffect(() => {
         const fetchCourseData = async () => {
@@ -57,6 +59,15 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
+        setOpenConfirmation(true); // Open confirmation dialog
+    };
+
+    const handleConfirmationClose = () => {
+        setOpenConfirmation(false);
+    };
+
+    const handleConfirmationYes = async () => {
+        setOpenConfirmation(false);
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
@@ -66,16 +77,15 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
         fileReader.onload = async function () {
             const arrayBuffer = this.result;
             if (arrayBuffer !== null) {
-                formData.append('banner', new Blob([arrayBuffer], {type: 'image/png'}));
-                await postData("/courses/", formData).then((response) => {
-                    window.location.href = `/course/${response.course_id}`;
+                formData.append('banner', new Blob([arrayBuffer], { type: 'image/png' }));
+                await updateCourse(courseId, formData).then((response) => {
+                    window.location.href = `/course/${courseId}/`;
                 });
             }
         }
         if (selectedImage) fileReader.readAsArrayBuffer(selectedImage);
-        await updateCourse(courseId, formData);
-        // window.location.href = `/course/${courseId}/`;
     };
+
 
     const handleImageUpload = (event: any) => {
         const imageFile = event.target.files[0];
@@ -237,12 +247,12 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                 <Button
                     type="submit"
                     color={'primary'}
+                    onClick={handleSubmit}
                     sx={{
                         width: 'fit-content',
                         backgroundColor: 'primary.main',
                         color: 'primary.contrastText'
                     }}
-                    href={'/course/' + courseId + "/"}
                 >
                     {t("save changes")}
                 </Button>
@@ -257,6 +267,22 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     {t("cancel")}
                 </Button>
             </Box>
+            <Dialog
+                open={openConfirmation}
+                onClose={handleConfirmationClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{t("Are you sure you want to submit this course?")}</DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleConfirmationClose} color="primary">
+                        {t("cancel")}
+                    </Button>
+                    <Button onClick={handleConfirmationYes} color="primary" autoFocus>
+                        {t("edit course")}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }
