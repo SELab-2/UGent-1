@@ -46,7 +46,7 @@ import {
     getUsers,
     postData,
     getOpenCourses,
-    fetchUserData, getLatestSubmissions
+    fetchUserData
 } from '@lib/api';
 import baseTheme from "../../../styles/theme";
 import {useTranslation} from "react-i18next";
@@ -191,7 +191,6 @@ const ListView: NextPage<ListViewProps> = ({
                     },
                     'submissions': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data?.output_simple_test && data?.eval_result],
                     'submissions_group': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data?.output_simple_test && data?.eval_result],
-                    'submissions_latest': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data?.output_simple_test && data?.eval_result],
                     'archived_courses': (data) => [data.course_id, data.name, data.description, data.open_course],
                 };
 
@@ -219,9 +218,6 @@ const ListView: NextPage<ListViewProps> = ({
                     },
                     'submissions_group': async () => {
                         return parse_pages(await getGroupSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
-                    },
-                    'submissions_latest': async () => {
-                        return parse_pages(await getLatestSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'archived_courses': async () => {
                         return parse_pages(await getArchivedCourses(currentPage, page_size, searchTerm));
@@ -387,7 +383,7 @@ const ListView: NextPage<ListViewProps> = ({
                 </DialogActions>
             </Dialog>
 
-            {admin && user?.role !== 3 && action_name && action_name === 'download_submission' && (
+            {admin && action_name && action_name === 'download_submission' && (
                 <RemoveButton
                     onClick={() => {
                         const download_url = `${backend_url}/projects/${get_id}/download_submissions`
@@ -398,7 +394,7 @@ const ListView: NextPage<ListViewProps> = ({
                 </RemoveButton>
             )}
 
-            {admin && user?.role !== 3 && action_name && action_name === 'download_submission' && (
+            {admin && action_name && action_name === 'download_submission' && (
                 <RemoveButton
                     onClick={() => {
                         const selected_ids = Array.from(document.querySelectorAll('input[type="checkbox"]'))
@@ -595,7 +591,7 @@ const ListView: NextPage<ListViewProps> = ({
                                             </Button>
                                         </StyledTableCell>
                                     )}
-                                    {(get == 'submissions' || get == 'submissions_group' || get == 'submissions_latest') && (
+                                    {(get == 'submissions' || get == 'submissions_group') && (
                                         <StyledTableCell>
                                             <Button onClick={() => window.location.href = '/submission/' + row[0]}>
                                                 {t('View')}

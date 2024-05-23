@@ -223,28 +223,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
         )
 
     @action(detail=True, methods=["get"])
-    def get_last_group_submissions(self, request, *args, **kwargs):
-        project = self.get_object()
-        groups = Group.objects.filter(project_id=project)
-        latest_submission_ids = []
-
-        for group in groups:
-            latest_submission = Submissions.objects.filter(group_id=group).order_by('-timestamp').first()
-            if latest_submission:
-                latest_submission_ids.append(latest_submission.submission_id)
-
-        queryset = Submissions.objects.filter(submission_id__in=latest_submission_ids)
-        submissions_filter = SubmissionFilter(request.GET, queryset=queryset)
-        filtered_submissions = submissions_filter.qs
-        paginator = CustomPageNumberPagination()
-        paginated_submissions = paginator.paginate_queryset(
-            filtered_submissions, request
-        )
-
-        serializer = SubmissionsSerializer(paginated_submissions, many=True)
-        return paginator.get_paginated_response(serializer.data)
-
-    @action(detail=True, methods=["get"])
     def download_submissions(self, request, *args, **kwargs):
         project = self.get_object()
         groups = Group.objects.filter(project_id=project)
