@@ -3,8 +3,13 @@ import {useEffect, useState} from 'react';
 import {getUserData, joinCourseUsingToken} from '@lib/api';
 
 const JoinCourseWithToken = ({token, course_id}: { token: any, course_id: any }) => {
+    /*
+    * Component that joins the user to the course using the token, and redirects to the course page.
+    * The component is invisible to the user and is used in the course page.
+    * @param token: token used to join the course
+    * @param course_id: id of the course
+    */
     const [joined, setJoined] = useState(false);
-
 
     useEffect(() => {
         const join = async () => {

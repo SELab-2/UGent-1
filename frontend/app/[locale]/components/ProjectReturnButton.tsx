@@ -10,6 +10,11 @@ interface ProjectReturnButtonProps {
 }
 
 const ProjectReturnButton: React.FC<ProjectReturnButtonProps> = ({locale, project_id}) => {
+    /*
+    * This component is the return button that is displayed on the project page.
+    * @param locale: The current locale of the page
+    * @param project_id: The id of the project
+    */
     const {t} = useTranslation();
 
     return (

@@ -1,4 +1,3 @@
-'use client'
 import React from 'react';
 import {Button} from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -10,6 +9,11 @@ interface BackButtonProps {
 
 // back button has to take the destination as a prop and navigate to it
 export default function BackButton({destination, text}: BackButtonProps) {
+    /*
+    * general back button component
+    * @param destination: The destination of the button
+    * @param text: The text of the button
+    * */
 
     return (
         <Button

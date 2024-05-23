@@ -8,6 +8,10 @@ interface EditCourseButtonProps{
 }
 
 const EditCourseButton = ({course_id}: EditCourseButtonProps) => {
+    /*
+    * Button that redirects to the edit course page
+    * @param course_id: id of the course
+    */
     const {t} = useTranslation();
 
     return (

@@ -8,6 +8,10 @@ import AccesAlarm from '@mui/icons-material/AccessAlarm';
 import Person from '@mui/icons-material/Person';
 
 const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
+    /*
+    * Card component displayed in the home page that represent a course
+    * @param course: Course object of the course that is to be displayed in the card
+    * */
     const [projects, setProjects] = useState<Project[]>([]);
     const [last_submission, setSubmission] =
         useState<Submission>({
@@ -44,7 +48,7 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
         };
 
         fetchProjects();
-    }, [course.course_id]);
+    }, [course.course_id, last_submission, projects]);
 
 
 

@@ -34,9 +34,15 @@ interface SubmitDetailsPageProps {
 }
 
 const SubmitDetailsPage: React.FC<SubmitDetailsPageProps> = ({
-  locale,
-  project_id,
-}) => {
+    locale,
+    project_id,
+  }) => {
+    /*
+    * This component is the submit details page that is displayed when the user wants to submit a project.
+    * It allows the user to upload folders and files to submit the project.
+    * @param locale: The locale used for the translations
+    * @param project_id: The id of the project
+    */
   const { t } = useTranslation();
 
   const [projectData, setProjectData] = useState<Project>();
