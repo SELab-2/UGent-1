@@ -7,6 +7,8 @@ import { Button, Box } from "@mui/material";
 import React from "react";
 import GroupsIcon from '@mui/icons-material/Groups';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import Typography from "@mui/material/Typography";
+
 
 const i18nNamespaces = ['common']
 
@@ -36,6 +38,16 @@ export default async function GroupPage({ params }: { params: { locale: any, pro
                 >
                     {t("return_project")}
                 </Button>
+                <Typography
+                    variant="h3"
+                    sx={{
+                        fontWeight: 'medium',
+                        marginTop: 2,
+                        marginBottom: 2
+                    }}
+                >
+                    {t('groups')}
+                </Typography>
                 <ListView
                     admin={true}
                     headers={headers}

@@ -38,7 +38,11 @@ const DeleteButton = ({ userId }: DeleteButtonProps) => {
                     whiteSpace: 'nowrap',
                 }}
             >
-                {t("delete user")}
+                <Typography
+                    paddingX={3}
+                >
+                    {t("delete user")}
+                </Typography>
             </Button>
             <Dialog
                 open={open}

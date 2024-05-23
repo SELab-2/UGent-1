@@ -39,15 +39,7 @@ class SubmissionAdmin(admin.ModelAdmin):
             'Files',
             {
                 'fields': (
-                    'file',
-                )
-            }
-        ),
-        (
-            'Tests',
-            {
-                'fields': (
-                    'output_test',
+                    'file_urls',
                 )
             }
         ),
