@@ -7,17 +7,11 @@ import { useTranslation } from 'react-i18next';
 import i18nConfig from '../../../i18nConfig';
 
 const LanguageSelect = () => {
-    /*
-    * This component is a language select dropdown that allows the user to change the language of the website.
-    * It uses the i18n hook to get the current locale and the router to redirect to the new locale path.
-    * It is used in the NavBar component.
-    */
     const { i18n } = useTranslation();
     const currentLocale = i18n.language;
     const router = useRouter();
     let currentPathname = usePathname();
 
-    // handle change of language
     const handleChange = (e: SelectChangeEvent<String>) => {
         const newLocale = e.target.value;
 

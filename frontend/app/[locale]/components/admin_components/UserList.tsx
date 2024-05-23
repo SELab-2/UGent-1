@@ -7,10 +7,6 @@ import {useTranslation} from "react-i18next";
 
 
 const UserList = () => {
-    /*
-    * This component displays the list of users.
-    * It allows the admin to remove users.
-    */
     const {t} = useTranslation();
 
     const headers = [

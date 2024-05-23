@@ -5,9 +5,6 @@ import { Button, Typography } from '@mui/material'
 import Link from "next/link";
 
 const HomeButton = () => {
-    /*
-    * Button that redirects to the home page, displayed in the header
-    */
     return (
         <div>
             <Link href={'/home'}>

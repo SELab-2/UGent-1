@@ -28,15 +28,9 @@ interface ProjectDetailsPageProps {
 }
 
 const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
-      locale,
-      project_id,
-    }) => {
-    /*
-     * This component is the project details page that is displayed when a user clicks on a project.
-     * It displays the project details, submissions and groups.
-     * @param locale: The locale used for the translations
-     * @param project_id: The id of the project
-     */
+  locale,
+  project_id,
+}) => {
   const { t } = useTranslation();
 
   const [project, setProject] = useState<Project>();
@@ -307,7 +301,6 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
   );
 };
 
-// Function to build a tree structure from a list of paths
 function buildTree(paths) {
     const tree = {};
     if (!paths) {
@@ -334,7 +327,6 @@ function buildTree(paths) {
     return tree;
 }
 
-// Function to build a string representation of a tree structure
 function buildTreeString(tree, indent = '') {
     let treeString = '';
 

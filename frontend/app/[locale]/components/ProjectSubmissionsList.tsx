@@ -9,16 +9,10 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 
 const ProjectSubmissionsList = ({project_id, page_size = 5, search}: {
-        project_id: number,
-        page_size: number,
-        search: string
-    }) => {
-    /*
-    * This component is the list of submissions that is displayed on the project page.
-    * @param project_id: The id of the project
-    * @param page_size: The number of submissions to display per page
-    * @param search: The search text to filter submissions
-    */
+    project_id: number,
+    page_size: number,
+    search: string
+}) => {
     const {t} = useTranslation()
     const headers = [
         <React.Fragment key="group_nr"><GroupsIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('group_number')}</React.Fragment>

@@ -89,13 +89,13 @@ function ProjectEditForm({project_id, add_course_id}: ProjectEditFormProps) {
                     if (project.deadline !== null) setDeadline(dayjs(project["deadline"]));
                     setDescription(project.description)
                     if (project.file_structure !== null && project.file_structure !== "") {
+                        console.log(project.file_structure)
                         const file_structure = project.file_structure.split(",").map((item: string) => item.trim().replace(/"/g, ''));
                         const file_structure_status = file_structure.map((item: string) => item[0]);
                         const file_structure_name = file_structure.map((item: string) => item.substring(1));
                         setFiles(file_structure_name);
                         setStatusFiles(file_structure_status);
                     }
-                    setDockerImage(project["test_docker_image"])
                     setGroupSize(project["group_size"])
                     setTitle(project["name"])
                     setGroupAmount(project["number_of_groups"])

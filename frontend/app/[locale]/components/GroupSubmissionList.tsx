@@ -8,16 +8,10 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const GroupSubmissionList = ({project_id, page_size = 5, search}: {
-        project_id: number,
-        page_size: number,
-        search: string
-    }) => {
-    /*
-    * Component that displays the list of group submissions(used in the project details page)
-    * @param project_id: id of the project
-    * @param page_size: number of items per page(for the listview pagination)
-    * @param search: search text
-    */
+    project_id: number,
+    page_size: number,
+    search: string
+}) => {
     const {t} = useTranslation()
     const headers = [
         <React.Fragment key="group_nr"><GroupsIcon style={{ fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px' }}/>{" " + t('group_number')}</React.Fragment>,

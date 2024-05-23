@@ -15,10 +15,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import Link from "next/link";
 
 const ProfileCard = () => {
-    /*
-    * This component is the profile card that is displayed on the profile page.
-    * It displays the user's profile picture, name, email, role and a button to edit the account.
-    */
     const [user, setUser] = useState<UserData>({
         id: 0,
         email: "",

@@ -20,16 +20,13 @@ import {useEffect, useState} from "react";
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 export default function AccountMenu() {
-    /*
-    * Account menu component, used to display the user's name and a dropdown menu with options to go to the profile page and logout(right side of the navbar)
-    * */
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<APIError | null>(null);
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
     const { t } = useTranslation()
 
     useEffect(() => {
+
+
         const fetchCourses = async () => {
             try{
                 setUser(await getUserData());
@@ -42,23 +39,26 @@ export default function AccountMenu() {
         fetchCourses();
     }, []);
 
-    //Utility & navigation functions
+
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
+        //TODO: Handle settings and My profile actions!!
         setAnchorEl(null);
     };
 
     const toProfile = () => {
         window.location.href = '/profile'
-    };
+    }
 
     const handleLogout = () => {
         setAnchorEl(null);
         window.location.href = backend_url + "/auth/logout";
     };
-
     return (
         <React.Fragment>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -108,6 +108,12 @@ export default function AccountMenu() {
                     <Avatar /> {t('my_profile')}
                 </MenuItem>
                 <Divider />
+                <MenuItem onClick={handleClose}>
+                    <ListItemIcon>
+                        <Settings fontSize="small" />
+                    </ListItemIcon>
+                    {t('settings')}
+                </MenuItem>
                 <MenuItem onClick={handleLogout}>
                     <ListItemIcon>
                         <Logout fontSize="small" />

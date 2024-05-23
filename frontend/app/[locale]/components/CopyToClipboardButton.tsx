@@ -9,10 +9,6 @@ interface CopyToClipboardButtonProps {
 }
 
 const CopyToClipboardButton = ({text}: CopyToClipboardButtonProps) => {
-    /*
-    * General Button that copies text to clipboard.
-    * @param text: text that has to be copied to clipboard.
-    * */
     const [open, setOpen] = useState(false);
     const {t} = useTranslation();
 

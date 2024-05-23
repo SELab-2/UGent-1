@@ -14,14 +14,6 @@ interface ItemsListProps {
 }
 
 const ItemsList = ({items, setItems, input_placeholder, empty_list_placeholder, button_text}: ItemsListProps) => {
-    /*
-    * This component displays a list of items and allows the user to add and delete items.
-    * @param items: The list of items
-    * @param setItems: The function to set the list of items
-    * @param input_placeholder: The placeholder for the input field
-    * @param empty_list_placeholder: The placeholder for the list when it is empty
-    * @param button_text: The text for the button
-    */
     const [newItem, setNewItem] = useState('')
     const [noInput, setNoInput] = useState(false)
 

@@ -11,10 +11,6 @@ interface CourseBannerProps {
 }
 
 const CourseBanner = ({course_id}: CourseBannerProps) => {
-    /*
-    * Banner component displayed in the course details page
-    * @param course_id: id of the course.
-    * */
     const [user, setUser] = useState<UserData | null>(null);
     const [course, setCourse] = useState<Course | null>(null);
     const [error, setError] = useState<APIError | null>(null);
@@ -81,10 +77,10 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
                             textOverflow: 'ellipsis',
                         }}
                     >
-                        {course?.name + (course?.year === null ? "" : " " + course?.year) /*Display the course name + the year of the course*/}
+                        {course?.name + (course?.year === null ? "" : " " + course?.year)}
                     </Typography>
                 </Box>
-                {user?.role !== 3 ? ( //Do not display edit button if the user is a student.
+                {user?.role !== 3 ? (
                     <Box
                         display="flex"
                         justifyContent={{ xs: 'center', sm: 'flex-start' }}

@@ -206,26 +206,40 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         if not ids:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        path = 'backend/downloads/submissions.zip'
-        submission_folders = []
+        path = ""
 
-        for sid in ids:
-            submission = Submissions.objects.get(submission_id=sid)
+        if len(ids) == 1:
+            submission = Submissions.objects.get(submission_id=ids[0])
             if submission is None:
                 return Response(
-                    {"message": f"Submission with id {id} not found",
+                    {"message": f"Submission with id {ids[0]} not found",
                      "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_404_NOT_FOUND,
                 )
-            submission_folders.append(
-                submission_folder_path(
-                    submission.group_id.group_id, submission.submission_id
-                )
-            )
 
-        utilities = ZipUtilities()
-        filename = path
-        utilities.toZip(submission_folders, filename)
+            path = submission.file.path
+
+        else:
+            path = 'backend/downloads/submissions.zip'
+            submission_folders = []
+
+            for sid in ids:
+                submission = Submissions.objects.get(submission_id=sid)
+                if submission is None:
+                    return Response(
+                        {"message": f"Submission with id {id} not found",
+                         "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+                submission_folders.append(
+                    submission_folder_path(
+                        submission.group_id.group_id, submission.submission_id
+                    )
+                )
+
+            utilities = ZipUtilities()
+            filename = path
+            utilities.toZip(submission_folders, filename)
 
         path = realpath(path)
         response = FileResponse(

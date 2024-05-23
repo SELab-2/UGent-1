@@ -10,11 +10,6 @@ import {useTranslation} from "react-i18next";
 import {APIError, fetchUserData, UserData} from "@lib/api";
 
 const CourseControls = ({selectedYear, onYearChange}) => {
-    /*
-    * Component containing the text and buttons displayed at the top of the home page
-    * @param selectedYear: currently selected year
-    * @param onYearChange: function that shows course cards of the selected year
-    * */
     const currentYear = new Date().getFullYear();
     const academicYear = `${currentYear - 1}-${currentYear.toString().slice(-2)}`;
 
@@ -38,7 +33,9 @@ const CourseControls = ({selectedYear, onYearChange}) => {
         setLoading(false);
     }, []);
 
-    // displayed academic year
+
+
+
     const years = [
         `${currentYear - 2}-${(currentYear - 1).toString().slice(-2)}`,
         academicYear,
@@ -108,7 +105,7 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                     height={'fit-content'}
                     gap={2}
                 >
-                    {user?.role !== 3 ? ( // Students may not see the add course button.
+                    {user?.role !== 3 ? (
                         <Button
                             variant="contained"
                             color="secondary"
