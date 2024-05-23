@@ -43,7 +43,6 @@ describe('AccountMenu', () => {
         fireEvent.click(screen.getByRole('button'));
         const menu = screen.getByRole('menu');
         expect(menu).toBeVisible();
-        expect(menu).not.toBeVisible();
     });
 
 
