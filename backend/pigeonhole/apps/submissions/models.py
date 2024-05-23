@@ -51,7 +51,7 @@ class Submissions(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, blank=True)
     draft = models.BooleanField(default=True)
 
-    eval_result = models.BooleanField(default=False)
+    eval_result = models.BooleanField(default=None, null=True)
     eval_output = models.TextField(null=True)
 
     objects = models.Manager()
@@ -80,7 +80,7 @@ class Submissions(models.Model):
             print(f"running evaluation container for submission {self.submission_id}")
             image_id = f"{registry_name}/{project.test_docker_image}"
 
-            client.containers.run(
+            container = client.containers.run(
                 image=image_id,
                 name=f'pigeonhole-submission-{self.submission_id}-evaluation',
                 detach=False,
@@ -98,25 +98,28 @@ class Submissions(models.Model):
             # The container object returns the container logs and can be analyzed further
 
             # this gave an error when i ran it so i commented it out
-            # self.eval_output = container.logs()
-            # print(self.eval_output)
-
-            # container.remove(force=True)
+            self.eval_output = container.decode('utf-8')
+            super().save(update_fields=["eval_output"])
 
         except ContainerError as ce:
             print(ce)
             print(f"evaluation container for submission {self.submission_id} FAILED")
+
             self.eval_result = False
+            self.eval_output = ce
+            super().save(update_fields=["eval_result", "eval_output"])
+
             client.close()
-            super().save(update_fields=["eval_result"])
             return
 
         except APIError as e:
             raise IOError(f'There was an error evaluation the submission: {e}')
 
         print(f"evaluation container for submission {self.submission_id} SUCCES")
+
         self.eval_result = True
         super().save(update_fields=["eval_result"])
+
         client.close()
 
 
