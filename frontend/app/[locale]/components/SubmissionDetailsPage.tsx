@@ -166,7 +166,7 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                         variant="contained"
                                         color="primary"
                                         startIcon={<DownloadIcon />}
-                                        href={`${backend_url}/submissions_${submission_id}`}
+                                        href={`${backend_url}/submissions/${submission_id}/download`}
                                         download
                                         size="small"
                                     >
@@ -179,7 +179,7 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                         variant="contained"
                                         color="primary"
                                         startIcon={<DownloadIcon />}
-                                        href={`${backend_url}/submissions_${submission_id}_artifacts`}
+                                        href={`${backend_url}/submissions/${submission_id}/download_artifacts`}
                                         download
                                         size="small"
                                     >
