@@ -101,7 +101,7 @@
   "visibility": "Visibility",
   "year": "Year",
   "archive_course": "Archive course",
-  "download_file": "Download",
+  "download_file": "Download files",
   "denied": "Denied",
   "show_more": "Show more",
   "show_less": "Show less",
@@ -159,5 +159,7 @@
   "simple_tests_failed": "File structure tests: Failed",
   "advanced_tests_failed": "Advanced tests: Failed",
   "simple_tests_ok": "File structure tests: OK",
-  "advanced_tests_ok": "Advanced tests: OK"
+  "advanced_tests_ok": "Advanced tests: OK",
+  "download_artifacts": "Download artifacts",
+  "artifacts": "Artifacts"
 }

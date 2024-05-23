@@ -99,7 +99,7 @@
   "view_co_teachers": "Bekijk mede-docenten",
   "view_students": "Bekijk studenten",
   "visibility": "Zichtbaarheid",
-  "download_file": "Download",
+  "download_file": "Download bestanden",
   "denied": "Geweigerd",
   "show_more": "Toon meer",
   "show_less": "Toon minder",
@@ -163,5 +163,7 @@
   "simple_tests_failed": "Bestandsstructuur tests: Gefaald",
   "advanced_tests_failed": "Geadvanceerde tests: Gefaald",
   "simple_tests_ok": "Bestandsstructuur: OK",
-  "advanced_tests_ok": "Geadvanceerde tests: OK"
+  "advanced_tests_ok": "Geadvanceerde tests: OK",
+  "download_artifacts": "Download artefacten",
+  "artifacts": "Artefacten"
 }
