@@ -8,6 +8,7 @@
   "dependencies": {
     "@mui/icons-material": "^5.15.17",
     "@mui/lab": "^5.0.0-alpha.170",
-    "jszip": "^3.10.1"
+    "jszip": "^3.10.1",
+    "react-calendar": "^5.0.0"
   }
 }

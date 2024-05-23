@@ -42,7 +42,7 @@ class CanAccessSubmission(permissions.BasePermission):
                 return False
         else:
             if ("pk" not in view.kwargs.keys()) and (
-                user.is_teacher or user.is_admin or user.is_superuser
+                    user.is_teacher or user.is_admin or user.is_superuser
             ):
                 return True
             submission = Submissions.objects.get(submission_id=view.kwargs["pk"])
@@ -68,6 +68,7 @@ class CanAccessSubmission(permissions.BasePermission):
                         "retrieve",
                         "create",
                         "download",
+                        "download_artifacts",
                         "get_project",
                     ]
             return False

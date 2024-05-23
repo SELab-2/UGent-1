@@ -2,13 +2,15 @@ Django~=4.2.11
 coverage~=6.3
 django-cors-headers~=3.14.0
 django-extensions==3.2.3
+django-filter==24.2
 django_microsoft_auth==3.0.1
 djangorestframework-simplejwt~=5.2.2
 djangorestframework~=3.14.0
+docker==7.1.0
+requests==2.32.2
 drf-yasg==1.21.7
 flake8==7.0.0
 psycopg2-binary~=2.9.5
 pytz~=2022.7.1
 pyyaml==6.0.1
 uritemplate==4.1.1
-django-filter==24.2

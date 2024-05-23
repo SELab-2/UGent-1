@@ -1,4 +1,5 @@
 import fnmatch
+import json
 import os
 import shutil
 import zipfile
@@ -7,7 +8,6 @@ from os.path import realpath, basename
 from pathlib import Path
 
 import pytz
-from django.conf import settings
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -21,10 +21,11 @@ from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.submissions.models import (
     Submissions,
-    SubmissionsSerializer,
+    SubmissionsSerializer, artifacts_folder_path,
 )
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
 from backend.pigeonhole.filters import CustomPageNumberPagination
+from .models import submission_folder_path, submission_file_path
 
 
 class ZipUtilities:
@@ -48,15 +49,6 @@ class ZipUtilities:
                 self.addFolderToZip(zip_file, full_path)
 
 
-def submission_folder_path(group_id, submission_id):
-    return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
-
-
-# TODO test timestamp, file, output_test
-def submission_file_path(group_id, submission_id, relative_path):
-    return submission_folder_path(group_id, submission_id) + '/' + relative_path
-
-
 class SubmissionsViewset(viewsets.ModelViewSet):
     queryset = Submissions.objects.all()
     serializer_class = SubmissionsSerializer
@@ -74,9 +66,6 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 file_urls.append(key)
         else:
             file_urls = request.data["file_urls"].split(",")
-
-        serializer = SubmissionsSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
 
         if not group:
             return Response(
@@ -101,7 +90,28 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        serializer.save()
+        project = Project.objects.get(project_id=group.project_id.project_id)
+        # return Response(",".join(file_urls), status=status.HTTP_201_CREATED)
+        if project.file_structure is None or project.file_structure == "":
+            complete_message = {"message": "Submission successful"}
+            data["output_simple_test"] = True
+        else:
+            violations = check_restrictions(file_urls, project.file_structure.split(","))
+
+            if not violations[0] and not violations[2]:
+                complete_message = {"success": 0}
+                data["output_simple_test"] = True
+            else:
+                violations.update({'success': 1})
+                data["output_simple_test"] = False
+                complete_message = violations
+
+            json_violations = json.dumps(violations)
+            data["feedback_simple_test"] = json_violations
+
+        serializer = SubmissionsSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        submission = serializer.save()
 
         # upload files
         try:
@@ -116,6 +126,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                     for chunk in file.chunks():
                         dest.write(chunk)
                 # submission.file_urls = '[el path]'
+                print("Uploaded file: " + filepathstring)
         except IOError as e:
             print(e)
             return Response(
@@ -123,18 +134,11 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                     "ERROR_FILE_UPLOAD"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        project = Project.objects.get(project_id=group.project_id.project_id)
-        # return Response(",".join(file_urls), status=status.HTTP_201_CREATED)
-        if project.file_structure is None or project.file_structure == "":
-            complete_message = {"message": "Submission successful"}
-        else:
-            violations = check_restrictions(file_urls, project.file_structure.split(","))
+        complete_message["submission_id"] = serializer.data["submission_id"]
 
-            if not violations[0] and not violations[2]:
-                complete_message = {"success": 0}
-            else:
-                violations.update({'success': 1})
-                complete_message = violations
+        # doing advanced tests makes no sense if the simple tests failed
+        if data["output_simple_test"]:
+            submission.eval()
 
         return Response(complete_message, status=status.HTTP_201_CREATED)
 
@@ -160,6 +164,31 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                                                  submission.submission_id)
 
         shutil.make_archive(downloadspath + archivename, 'zip', submission_path)
+
+        path = realpath(downloadspath + archivename + '.zip')
+        response = FileResponse(
+            open(path, 'rb'),
+            content_type="application/force-download"
+        )
+        response['Content-Disposition'] = f'inline; filename={basename(path)}'
+
+        return response
+
+    @action(detail=True, methods=["get"])
+    def download_artifacts(self, request, *args, **kwargs):
+        submission = self.get_object()
+        if submission is None:
+            return Response(
+                {"message": f"Submission with id {id} not found", "errorcode":
+                    "ERROR_SUBMISSION_NOT_FOUND"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        archivename = f"submission_{submission.submission_id}_artifacts"
+        downloadspath = 'backend/downloads/'
+        artifacts_path = artifacts_folder_path(submission.group_id.group_id, submission.submission_id)
+
+        shutil.make_archive(downloadspath + archivename, 'zip', artifacts_path)
 
         path = realpath(downloadspath + archivename + '.zip')
         response = FileResponse(

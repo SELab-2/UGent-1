@@ -22,12 +22,15 @@ services:
     volumes:
       - static_volume:/home/app/web/backend/static
       - media_volume:/home/app/web/uploads
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${SUBMISSIONS_PATH}:/home/app/web/backend/static/submissions
     expose:
       - 8000
     env_file:
       - ${ENV_LOCATION}
     depends_on:
       - database
+      - registry
     restart: always
     labels:
       - "traefik.enable=true"
@@ -45,8 +48,8 @@ services:
       - static_volume:/usr/local/apache2/htdocs/
     depends_on:
       - backend
-    ports:
-      - 5000:80
+    expose:
+      - 5000
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.static.rule=Host(`sel2-1.ugent.be`) && PathPrefix(`/static`)"
@@ -74,6 +77,27 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
   
+  registry:
+    image: "registry:latest"
+    restart: always
+    container_name: registry
+    ports:
+      - "5000:5000"
+    environment:
+        REGISTRY_AUTH: htpasswd
+        REGISTRY_AUTH_HTPASSWD_REALM: Registry-Realm
+        REGISTRY_AUTH_HTPASSWD_PATH: /auth/registry.passwd
+        REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+    volumes:
+      - registrydata:/data
+      - ${PASSWD_FOLDER_PATH}:/auth
+    labels:
+      - "traefik.enable=true"
+      - "traefik.address=:2002"
+      - "traefik.http.routers.registry.rule=Host(`sel2-1.ugent.be`)"
+      - "traefik.http.routers.registry.entrypoints=otherport"
+      - "traefik.http.routers.registry.tls.certresolver=myresolver"
+  
   traefik:
     image: "traefik:v2.11"
     container_name: "traefik"
@@ -84,6 +108,8 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.otherport.address=:2002"
+      - "--entrypoints.otherport.http.tls=myresolver"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory" #for testing
       - "--certificatesresolvers.myresolver.acme.email=robin.paret@ugent.be"
@@ -95,6 +121,7 @@ services:
       - "80:80"
       - "443:443"
       - "8080:8080"
+      - "2002:2002"
     volumes:
       - certificate_volume:/letsencrypt
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
@@ -105,3 +132,4 @@ volumes:
   static_volume:
   media_volume:
   certificate_volume:
+  registrydata:

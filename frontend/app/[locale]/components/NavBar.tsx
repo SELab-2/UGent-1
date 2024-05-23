@@ -115,7 +115,7 @@ const NavBar = () => {
             {user?.role === 1 ? (
                 <>
                     <Divider/>
-                    <Link href={'/admin'} style={{textDecoration: 'none', color: 'inherit'}}>
+                    <Link href={'/admin/users'} style={{textDecoration: 'none', color: 'inherit'}}>
                         <ListItemButton>
                             <ListItemIcon>
                                 <ConstructionIcon/>

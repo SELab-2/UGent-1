@@ -38,6 +38,7 @@ class SubmissionTestCase(TestCase):
             course_id=course,
             deadline="2021-12-12 12:12:12",
             description="Project Description",
+            test_docker_image="test-helloworld",
         )
 
         # Create group

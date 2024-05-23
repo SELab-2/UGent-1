@@ -8,6 +8,8 @@ from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.submissions.models import Submissions
 from backend.pigeonhole.apps.users.models import User
 
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 API_ENDPOINT = "/submissions/"
 
 
@@ -34,28 +36,40 @@ class SubmissionTestStudent(TestCase):
             name="Test Project",
             course_id=self.course,
             deadline="2025-12-12 12:12:12",
-            file_structure="+extra/verslag.pdf"
+            file_structure="+extra/verslag.pdf",
+            test_docker_image="test-always-succeed",
         )
 
         self.project_2 = Project.objects.create(
             name="Test Project",
             course_id=self.course,
             deadline="2025-12-12 12:12:12",
-            file_structure="-extra/verslag.pdf"
+            file_structure="-extra/verslag.pdf",
+            test_docker_image="test-always-succeed",
         )
 
         self.project_3 = Project.objects.create(
             name="Test Project",
             course_id=self.course,
             deadline="2025-12-12 12:12:12",
-            file_structure="+src/*.py"
+            file_structure="+src/*.py",
+            test_docker_image="test-always-succeed",
         )
 
         self.project_4 = Project.objects.create(
             name="Test Project",
             course_id=self.course,
             deadline="2025-12-12 12:12:12",
-            file_structure="-src/*.py"
+            file_structure="-src/*.py",
+            test_docker_image="test-always-succeed",
+        )
+
+        self.project_5 = Project.objects.create(
+            name="Test Project",
+            course_id=self.course,
+            deadline="2025-12-12 12:12:12",
+            file_structure="*.sh",
+            test_docker_image="test-always-succeed",
         )
 
         self.group_1 = Group.objects.create(group_nr=1, project_id=self.project_1)
@@ -83,55 +97,110 @@ class SubmissionTestStudent(TestCase):
         self.client.force_authenticate(self.student)
 
     def test_can_create_submission_without(self):
-        response = self.client.post(API_ENDPOINT, {"group_id": self.group_1.group_id, "file_urls": ""})
+        response = self.client.post(
+            API_ENDPOINT,
+            {
+                "group_id": self.group_1.group_id,
+                "file_urls": ""
+            },
+            format='multipart',
+        )
         self.assertEqual(1, response.data['success'])
         self.assertEqual("extra/verslag.pdf", response.data[0][0])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_withfile(self):
-        response = self.client.post(API_ENDPOINT, {"group_id": self.group_1.group_id, "file_urls": "extra/verslag.pdf"})
+        response = self.client.post(
+            API_ENDPOINT,
+            {
+                "group_id": self.group_1.group_id,
+                "file_urls": "extra/verslag.pdf"
+            },
+            format='multipart',
+        )
         self.assertEqual(0, response.data['success'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_without_forbidden(self):
-        response = self.client.post(API_ENDPOINT, {"group_id": self.group_2.group_id, "file_urls": ""})
+        response = self.client.post(
+            API_ENDPOINT,
+            {
+                "group_id": self.group_2.group_id,
+                "file_urls": ""
+            },
+            format='multipart',
+        )
         self.assertEqual(0, response.data['success'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_with_forbidden(self):
-        response = self.client.post(API_ENDPOINT, {"group_id": self.group_2.group_id, "file_urls": "extra/verslag.pdf"})
+        response = self.client.post(
+            API_ENDPOINT,
+            {
+                "group_id": self.group_2.group_id,
+                "file_urls": "extra/verslag.pdf"
+            },
+            format='multipart',
+        )
         self.assertEqual(1, response.data['success'])
         self.assertIn("extra/verslag.pdf", response.data[2])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_without_wildcard(self):
-        response = self.client.post(API_ENDPOINT, {"group_id": self.group_3.group_id,
-                                                   "file_urls": "src/main.jar, src/test.dockerfile"})
+        response = self.client.post(
+            API_ENDPOINT,
+            {
+                "group_id": self.group_3.group_id,
+                "file_urls": "src/main.jar, src/test.dockerfile"
+            },
+            format='multipart',
+        )
         self.assertEqual(1, response.data['success'])
         self.assertIn("src/*.py", response.data[0])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_with_wildcard(self):
-        response = self.client.post(API_ENDPOINT, {"group_id": self.group_3.group_id, "file_urls": "src/main.py"})
+        response = self.client.post(
+            API_ENDPOINT,
+            {
+                "group_id": self.group_3.group_id,
+                "file_urls": "src/main.py"
+            }
+        )
         self.assertEqual(0, response.data['success'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_can_create_submission_without_forbidden_wildcard(self):
-        response = self.client.post(API_ENDPOINT, {"group_id": self.group_4.group_id,
-                                                   "file_urls": "src/main.jar, src/test.dockerfile"})
+        response = self.client.post(
+            API_ENDPOINT,
+            {
+                "group_id": self.group_4.group_id,
+                "file_urls": "src/main.jar, src/test.dockerfile"
+            }
+        )
         self.assertEqual(0, response.data['success'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     #
     def test_can_create_submission_with_forbidden_wildcard(self):
-        response = self.client.post(API_ENDPOINT, {"group_id": self.group_4.group_id, "file_urls": "src/main.py"})
+        response = self.client.post(
+            API_ENDPOINT,
+            {
+                "group_id": self.group_4.group_id,
+                "file_urls": "src/main.py"
+            }
+        )
         self.assertEqual(1, response.data['success'])
         self.assertIn("src/*.py", response.data[2])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_cant_create_invalid_submission(self):
         response = self.client.post(
-            API_ENDPOINT, {"file_urls": "file_urls", "group_id": 489454134561}
+            API_ENDPOINT,
+            {
+                "file_urls": "",
+                "group_id": 489454134561
+            }
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -230,3 +299,28 @@ class SubmissionTestStudent(TestCase):
             self.client.delete(
                 API_ENDPOINT + "4563153/",
             )
+
+    # test advanced evaluation
+
+    def test_helloworld(self):
+        main_file = SimpleUploadedFile(
+            'main.sh',
+            "echo hello world.".encode('utf-8'),
+            content_type="text/plain"
+        )
+        main_file.seek(0)
+
+        response = self.client.post(
+            API_ENDPOINT,
+            {
+                "group_id": self.group_1.group_id,
+                "file_urls": "main.sh",
+                "main.sh": main_file
+            },
+            format='multipart',
+        )
+
+        self.assertEqual(1, response.data['success'])
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # TODO: check status and output
