@@ -58,7 +58,7 @@ const NavBar = () => {
     const handleBottomItems = (event: React.MouseEvent<HTMLElement>, button: string) => {
         switch (button) {
             case t('manual'):
-                //TODO: Route to manual page(in wiki or separate page?)
+                window.location.href = "https://github.com/SELab-2/UGent-1/blob/user-manual/user_manual/manual.pdf"
                 break;
             case t('github'):
                 window.location.href = 'https://github.com/SELab-2/UGent-1'

@@ -320,6 +320,12 @@ export async function archiveCourse(id: number): Promise<number> {
     })).course_id;
 }
 
+export async function unArchiveCourse(id: number): Promise<number> {
+    return (await patchData(`/courses/${id}/`, {
+        archived: false
+    })).course_id;
+}
+
 export async function getCoursesForUser(): Promise<Course[]> {
     let page = 1;
     let results: Course[] = []
@@ -488,11 +494,29 @@ export async function getGroupSubmissions(id: number, page = 1, pageSize = 5, ke
     return (await getRequest(url))
 }
 
+export async function getLatestSubmissions(id: number, page = 1, pageSize = 5, keyword?: string, orderBy?: string, sortOrder?: string): Promise<Submission[]> {
+    let url = `/projects/${id}/get_last_group_submissions?page=${page}&page_size=${pageSize}`
+
+    if (keyword) {
+        url += `&keyword=${keyword}`;
+    }
+
+    if (orderBy) {
+        url += `&order_by=${orderBy}`;
+    }
+
+    if (sortOrder) {
+        url += `&sort_order=${sortOrder}`;
+    }
+
+    return (await getRequest(url))
+}
+
 let userData: UserData | undefined = undefined;
 
 export async function getUserData(): Promise<UserData> {
     if(!userData && !localStorage.getItem('user') && window.location.pathname !== "/"){
-        window.location.href = "/";
+        await fetchUserData();
     }
 
     if (userData) {
@@ -500,7 +524,7 @@ export async function getUserData(): Promise<UserData> {
     }else if(localStorage.getItem('user')){
         const userobj = JSON.parse(localStorage.getItem('user') as string);
         const lastcache : string | undefined = userobj?.lastcache;
-        
+
         if(lastcache && Date.now() - parseInt(lastcache) < 2 * 60 * 1000){
             console.log(Date.now() - parseInt(lastcache));
             let user : UserData = userobj.data;
@@ -524,7 +548,7 @@ export async function fetchUserData() : Promise<UserData> {
         window.location.href = "/";
         return userData!;
     }
-    
+
 }
 
 export async function logOut() {

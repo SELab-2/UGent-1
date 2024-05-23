@@ -165,5 +165,6 @@
   "simple_tests_ok": "Bestandsstructuur: OK",
   "advanced_tests_ok": "Geadvanceerde tests: OK",
   "download_artifacts": "Download artefacten",
-  "artifacts": "Artefacten"
+  "artifacts": "Artefacten",
+  "unarchive course": "Cursus uit archief halen"
 }

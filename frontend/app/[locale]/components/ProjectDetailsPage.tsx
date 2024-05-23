@@ -18,6 +18,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import DownloadIcon from "@mui/icons-material/Download";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import LatestSubmissionList from "@app/[locale]/components/LatestSubmissionList";
 
 const backend_url = process.env["NEXT_PUBLIC_BACKEND_URL"];
 
@@ -293,7 +294,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
                 search={t("submission_search")}
               />
             ) : (
-              <ProjectSubmissionsList
+              <LatestSubmissionList
                 project_id={project_id}
                 page_size={8}
                 search={t("submission_search")}

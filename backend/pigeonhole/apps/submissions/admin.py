@@ -36,18 +36,20 @@ class SubmissionAdmin(admin.ModelAdmin):
             }
         ),
         (
-            'eval output',
+            'Simple evaluation',
             {
                 'fields': (
-                    'eval_output',
+                    'output_simple_test',
+                    'feedback_simple_test',
                 )
             }
         ),
         (
-            'eval result',
+            'Advanced evaluation',
             {
                 'fields': (
                     'eval_result',
+                    'eval_output',
                 )
             }
         ),

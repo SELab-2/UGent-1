@@ -110,7 +110,7 @@ const mockLastSubmission = {
     output_test: 'output',
 };
 
-const headers = ['name',
+const headers1 = ['name',
     <React.Fragment key="description"><NotesIcon
         style={{fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px'}}/>{" " + 'description'}
     </React.Fragment>,
@@ -118,7 +118,9 @@ const headers = ['name',
     <React.Fragment key="joinleave"><MeetingRoomIcon
         style={{fontSize: '20px', verticalAlign: 'middle', marginBottom: '3px'}}/>{" " + 'join_leave'}
     </React.Fragment>];
-const headers_backend = ['name', 'description', 'open', 'join/leave']
+const headers_backend1 = ['name', 'description', 'open', 'join/leave']
+
+
 
 
 describe('ListView', () => {
@@ -147,8 +149,8 @@ describe('ListView', () => {
         act(() => {
         render(<ListView
             admin={true}
-            headers={headers}
-            headers_backend={headers_backend}
+            headers={headers1}
+            headers_backend={headers_backend1}
             sortable={[true, true, true, true]}
             get={'courses'}
             search_text={"search_course"}

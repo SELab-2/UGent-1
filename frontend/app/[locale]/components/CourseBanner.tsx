@@ -50,7 +50,7 @@ const CourseBanner = ({course_id}: CourseBannerProps) => {
         ) : (
             <Box
                 sx={{
-                    backgroundImage: `url(${course?.banner ? course.banner : defaultBanner.src})`,
+                    backgroundImage: `url(${course?.banner || defaultBanner.src})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",

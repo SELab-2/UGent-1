@@ -2,9 +2,9 @@
 
 import {Button} from "@mui/material";
 import ArchiveIcon from '@mui/icons-material/Archive';
-import {APIError, archiveCourse} from "@lib/api";
+import {APIError, archiveCourse, getCourse, unArchiveCourse} from "@lib/api";
 import {useTranslation} from "react-i18next";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 interface ArchiveButtonProps {
     course_id: number
@@ -16,17 +16,45 @@ const ArchiveButton = ({course_id}: ArchiveButtonProps) => {
     * @param course_id: The id of the course
     */
     const [error, setError] = useState<APIError | null>(null);
+    const [archived, setArchived] = useState<boolean>(false);
     const {t} = useTranslation()
 
+
+    useEffect(() => {
+        const fetchCourseData = async () => {
+            try {
+                const course = await getCourse(course_id);
+                setArchived(course.archived);
+            } catch (error) {
+                console.error("There was an error fetching the course data:", error);
+            }
+        };
+
+        fetchCourseData();
+    }, [course_id]);
+
+
+
     const handleClick = async () => {
-        try {
-            const id = await archiveCourse(course_id);
-            console.log("successfully archived course: " + id);
-            window.location.href = "/home";
-        } catch (error) {
-            if (error instanceof APIError) setError(error);
-            console.error(error);
+        if (archived){
+            try {
+                await unArchiveCourse(course_id);
+                window.location.href = "/home";
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
+                console.error(error);
+            }
         }
+        else {
+            try {
+                await archiveCourse(course_id);
+                window.location.href = "/home";
+            } catch (error) {
+                if (error instanceof APIError) setError(error);
+                console.error(error);
+            }
+        }
+
     }
 
     return (
@@ -45,7 +73,11 @@ const ArchiveButton = ({course_id}: ArchiveButtonProps) => {
             }}
             onClick={handleClick}
         >
-                {t("archive course")}
+            {
+                archived ?
+                    t("unarchive course") :
+                    t("archive course")
+            }
         </Button>
     )
 }
