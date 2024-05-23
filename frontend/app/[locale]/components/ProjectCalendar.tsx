@@ -138,25 +138,25 @@ const ProjectCalendar: React.FC = () => {
     );
   };
 
-  function customDay(props: PickersDayProps<Date> & { highlightedDays?: number[] }) {
-    const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+function customDay(props: PickersDayProps<Date> & { highlightedDays?: number[] }) {
+  const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
 
-    const isHighlighted = highlightedDays.includes(day.getDate());
+  const isHighlighted = !outsideCurrentMonth && highlightedDays.includes(day.getDate());
 
-    return (
-        <Badge
-            key={props.day.toString()}
-            overlap="circular"
-            badgeContent={
-              isHighlighted ? (
-                  <AssignmentIcon color={'primary'} fontSize={'small'} />
-              ) : undefined
-            }
-        >
-          <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
-        </Badge>
-    );
-  }
+  return (
+    <Badge
+      key={props.day.toString()}
+      overlap="circular"
+      badgeContent={
+        isHighlighted ? (
+          <AssignmentIcon color={'primary'} fontSize={'small'} />
+        ) : undefined
+      }
+    >
+      <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
+    </Badge>
+  );
+}
 
   return (
       <Box
