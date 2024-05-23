@@ -94,6 +94,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         # return Response(",".join(file_urls), status=status.HTTP_201_CREATED)
         if project.file_structure is None or project.file_structure == "":
             complete_message = {"message": "Submission successful"}
+            data["output_simple_test"] = True
         else:
             violations = check_restrictions(file_urls, project.file_structure.split(","))
 
@@ -135,7 +136,9 @@ class SubmissionsViewset(viewsets.ModelViewSet):
 
         complete_message["submission_id"] = serializer.data["submission_id"]
 
-        submission.eval()
+        # doing advanced tests makes no sense if the simple tests failed
+        if data["output_simple_test"]:
+            submission.eval()
 
         return Response(complete_message, status=status.HTTP_201_CREATED)
 

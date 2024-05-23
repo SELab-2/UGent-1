@@ -82,17 +82,17 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                         {`${t("evaluation")} status`}
                                     </Typography>
                                     <div style={{ display: "flex", alignItems: "center", columnGap: "10px" }}>
-                                        {submission?.output_simple_test ? (
+                                        {(submission?.output_simple_test && submission?.eval_result) ? (
                                             <CheckIcon color="success" style={{ fontSize: 40 }}/>
                                         ) : (
                                             <CancelIcon color="error" style={{ fontSize: 40 }}/>
                                         )}
                                         <div>
                                             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-                                                {submission?.output_simple_test ? t("accepted") : t("denied")}
+                                                {(submission?.output_simple_test && submission?.eval_result) ? t("accepted") : t("denied")}
                                             </Typography>
                                             <Typography variant="caption">
-                                                {`(${t("timestamp")}: ${formatDate(submission?.timestamp)})`}
+                                                {`(${t("timestamp")}: ${formatDate(submission?.timestamp ?? "")})`}
                                             </Typography>
                                         </div>
                                     </div>

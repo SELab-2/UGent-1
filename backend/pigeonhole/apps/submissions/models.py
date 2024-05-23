@@ -91,10 +91,17 @@ class Submissions(models.Model):
         # self.eval()
 
     def eval(self):
-        client = DockerClient(base_url='unix://var/run/docker.sock')
+
 
         group = self.group_id
         project = group.project_id
+
+        if not project.test_docker_image:
+            self.eval_result = True
+            super().save(update_fields=["eval_result"])
+            return
+
+        client = DockerClient(base_url='unix://var/run/docker.sock')
 
         try:
             print(f"running evaluation container for submission {self.submission_id}")
@@ -162,5 +169,6 @@ class SubmissionsSerializer(serializers.ModelSerializer):
             "draft",
             "output_simple_test",
             "feedback_simple_test",
-            "eval_result"
+            "eval_result",
+            "eval_output"
         ]
