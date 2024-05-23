@@ -1,9 +1,9 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
+from rest_framework.test import APIClient
 
 from backend.pigeonhole.apps.courses.models import Course
 from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.projects.models import Project
-from backend.pigeonhole.apps.submissions.models import Submissions
 from backend.pigeonhole.apps.users.models import User
 
 lorem_ipsum = (
@@ -11,6 +11,12 @@ lorem_ipsum = (
     "magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo "
     "consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
     "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+)
+
+lorem_ipsum_file = SimpleUploadedFile(
+    'lorem_ipsum.txt',
+    lorem_ipsum.encode('utf-8'),
+    content_type="text/plain"
 )
 
 
@@ -271,43 +277,48 @@ def run():
         name='SELab 2 project',
         description=lorem_ipsum,
         course_id=course_5,
-        deadline='2021-12-12 12:12:14',
-        file_structure='+src/*.py,+extra/verslag.pdf',
+        deadline='2030-12-12 12:12:14',
         visible=True,
         number_of_groups=1,
-        group_size=8
+        group_size=8,
+        file_structure='*.py',
+        test_docker_image='fibonacci-python'
     )
 
     project_2, _ = Project.objects.get_or_create(
         name='AI project',
         description=lorem_ipsum,
         course_id=course_1,
-        deadline='2021-12-12 12:12:14',
+        deadline='2030-12-12 12:12:14',
         visible=True,
         number_of_groups=4,
-        group_size=2
+        group_size=2,
+        file_structure='*.py',
+        test_docker_image='fibonacci-python'
     )
 
     project_3, _ = Project.objects.get_or_create(
         name='Opdracht met file structure',
         description=lorem_ipsum,
         course_id=course_6,
-        deadline='2025-12-12 12:12:14',
+        deadline='2030-12-12 12:12:14',
         visible=True,
         number_of_groups=10,
         group_size=2,
-        file_structure='+extra/verslag.pdf,+src/*.py'
+        file_structure='*.py',
+        test_docker_image='fibonacci-python'
     )
 
     project_4, _ = Project.objects.get_or_create(
         name='Opdracht 2',
         description=lorem_ipsum,
         course_id=course_6,
-        deadline='2021-12-12 12:12:14',
+        deadline='2030-12-12 12:12:14',
         visible=True,
         number_of_groups=10,
         group_size=2,
-        file_structure='+extra/verslag.pdf,+src/*.py'
+        file_structure='*.py',
+        test_docker_image='fibonacci-python'
     )
 
     # Create groups
@@ -393,64 +404,213 @@ def run():
 
     # Create submissions
 
-    lorem_ipsum_file = SimpleUploadedFile(
-        'lorem_ipsum.txt',
-        lorem_ipsum.encode('utf-8'),
-        content_type="text/plain"
-    )
+    client = APIClient()
+    client.force_authenticate(user_1)
 
-    Submissions.objects.get_or_create(
-        group_id=group_1,
-        submission_nr=1,
-        file_urls='src/main.py, extra/verslag.pdf',
-        timestamp='2021-12-12 12:12:12'
+    lorem_ipsum_file.seek(0)
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_1.group_id,
+            "file_urls": "main.py, lorem_ipsum.txt",
+            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb'),
+            "lorem_ipsum.txt": lorem_ipsum_file,
+        },
+        format='multipart',
     )
+    print(f'{response.status_code} {response.data}')
 
-    Submissions.objects.get_or_create(
-        group_id=group_1,
-        submission_nr=2,
-        file_urls='src/main.py, extra/verslag.pdf',
-        timestamp='2021-12-12 12:12:13'
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_1.group_id,
+            "file_urls": "main.py",
+            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+        },
+        format='multipart',
     )
+    print(f'{response.status_code} {response.data}')
 
-    Submissions.objects.get_or_create(
-        group_id=group_1,
-        submission_nr=3,
-        file_urls='src/main.py, extra/verslag.pdf',
-        timestamp='2021-12-12 12:12:15'
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_1.group_id,
+            "file_urls": "main.py",
+            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb')
+        },
+        format='multipart',
     )
+    print(f'{response.status_code} {response.data}')
 
-    Submissions.objects.get_or_create(
-        group_id=group_1,
-        submission_nr=4,
-        file_urls='src/main.py, extra/verslag.pdf',
-        timestamp='2021-12-12 12:12:16'
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_1.group_id,
+            "file_urls": "main.py",
+            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+        },
+        format='multipart',
     )
+    print(f'{response.status_code} {response.data}')
 
-    Submissions.objects.get_or_create(
-        group_id=group_2,
-        submission_nr=1,
-        file_urls='src/main.py, extra/verslag.pdf',
-        timestamp='2021-12-12 12:12:12'
-    )
+    client.logout()
 
-    Submissions.objects.get_or_create(
-        group_id=group_3,
-        submission_nr=1,
-        file_urls='src/main.py, extra/verslag.pdf',
-        timestamp='2021-12-12 12:12:13'
-    )
+    client = APIClient()
+    client.force_authenticate(user_1)
 
-    Submissions.objects.get_or_create(
-        group_id=group_4,
-        submission_nr=1,
-        file_urls='src/main.py, extra/verslag.pdf',
-        timestamp='2021-12-12 12:12:15'
+    lorem_ipsum_file.seek(0)
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_2.group_id,
+            "file_urls": "main.py, lorem_ipsum.txt",
+            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb'),
+            "lorem_ipsum.txt": lorem_ipsum_file,
+        },
+        format='multipart',
     )
+    print(f'{response.status_code} {response.data}')
 
-    Submissions.objects.get_or_create(
-        group_id=group_5,
-        submission_nr=1,
-        file_urls='src/main.py, extra/verslag.pdf',
-        timestamp='2021-12-12 12:12:16'
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_2.group_id,
+            "file_urls": "main.py",
+            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb')
+        },
+        format='multipart',
     )
+    print(f'{response.status_code} {response.data}')
+
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_2.group_id,
+            "file_urls": "main.py",
+            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+        },
+        format='multipart',
+    )
+    print(f'{response.status_code} {response.data}')
+
+    client.logout()
+
+    client = APIClient()
+    client.force_authenticate(user_3)
+
+    lorem_ipsum_file.seek(0)
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_3.group_id,
+            "file_urls": "main.py, lorem_ipsum.txt",
+            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb'),
+            "lorem_ipsum.txt": lorem_ipsum_file,
+        },
+        format='multipart',
+    )
+    print(f'{response.status_code} {response.data}')
+
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_3.group_id,
+            "file_urls": "main.py",
+            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb')
+        },
+        format='multipart',
+    )
+    print(f'{response.status_code} {response.data}')
+
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_3.group_id,
+            "file_urls": "main.py",
+            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+        },
+        format='multipart',
+    )
+    print(f'{response.status_code} {response.data}')
+
+    client.logout()
+
+    client = APIClient()
+    client.force_authenticate(user_5)
+
+    lorem_ipsum_file.seek(0)
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_4.group_id,
+            "file_urls": "main.py, lorem_ipsum.txt",
+            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb'),
+            "lorem_ipsum.txt": lorem_ipsum_file,
+        },
+        format='multipart',
+    )
+    print(f'{response.status_code} {response.data}')
+
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_4.group_id,
+            "file_urls": "main.py",
+            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb')
+        },
+        format='multipart',
+    )
+    print(f'{response.status_code} {response.data}')
+
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_4.group_id,
+            "file_urls": "main.py",
+            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+        },
+        format='multipart',
+    )
+    print(f'{response.status_code} {response.data}')
+
+    client.logout()
+
+    client = APIClient()
+    client.force_authenticate(user_7)
+
+    lorem_ipsum_file.seek(0)
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_5.group_id,
+            "file_urls": "main.py, lorem_ipsum.txt",
+            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb'),
+            "lorem_ipsum.txt": lorem_ipsum_file,
+        },
+        format='multipart',
+    )
+    print(f'{response.status_code} {response.data}')
+
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_5.group_id,
+            "file_urls": "main.py",
+            "main.py": open('/usr/src/app/scripts/fibonacci_incorrect/main.py', 'rb')
+        },
+        format='multipart',
+    )
+    print(f'{response.status_code} {response.data}')
+
+    response = client.post(
+        "/submissions/",
+        {
+            "group_id": group_5.group_id,
+            "file_urls": "main.py",
+            "main.py": open('/usr/src/app/scripts/fibonacci_correct/main.py', 'rb')
+        },
+        format='multipart',
+    )
+    print(f'{response.status_code} {response.data}')
+
+    client.logout()
