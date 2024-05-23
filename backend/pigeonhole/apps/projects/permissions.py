@@ -24,7 +24,9 @@ class CanAccessProject(permissions.BasePermission):
             return False
         elif view.action in ['get_group_submissions']:
             return True
-        elif view.action in ['download_submissions', 'download_testfiles', 'get_last_group_submissions']:
+        elif view.action in ['download_submissions', 'download_testfiles',
+                             'get_last_group_submissions',
+                             'get_submissions']:
             return user.is_teacher or user.is_admin or user.is_superuser
         elif view.action in ['get_group']:
             return True
