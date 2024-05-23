@@ -141,7 +141,7 @@ const ProjectCalendar: React.FC = () => {
   function customDay(props: PickersDayProps<Date> & { highlightedDays?: number[] }) {
     const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
 
-    const isHighlighted = highlightedDays.includes(day.getDate());
+    const isHighlighted = !outsideCurrentMonth && highlightedDays.includes(day.getDate());
 
     return (
         <Badge
