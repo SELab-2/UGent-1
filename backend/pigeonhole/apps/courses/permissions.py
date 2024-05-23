@@ -16,6 +16,7 @@ class CourseUserPermissions(permissions.BasePermission):
             "leave_course",
             "get_teachers",
             "get_students",
+            "get_archived_courses",
         ]:
             return True
 
