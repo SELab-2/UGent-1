@@ -1,5 +1,5 @@
 {
-  "accepted": "aanvaard",
+  "accepted": "Aanvaard",
   "description_of_your_course": "Beschrijving van je cursus",
   "access": "Toegang",
   "action_dialog": "Deze actie kan niet ongedaan worden gemaakt.",
@@ -149,6 +149,8 @@
   "project_calendar": "Project kalender",
   "edit_user_details": "Gebruiker bewerken",
   "status_button_tooltip": "Verplicht, optioneel of verboden bestand",
+  "feedback_simple_test_0": "Je hebt de volgende bestanden niet ingeleverd:",
+  "feedback_simple_test_2": "Je hebt de volgende bestanden ingeleverd die niet nodig zijn:",
   "no_deadline": "Geen deadline",
   "all_submissions": "Alle indieningen",
   "students": "Studenten",

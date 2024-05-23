@@ -31,6 +31,8 @@ class Submissions(models.Model):
     file_urls = models.TextField(null=True)
     timestamp = models.DateTimeField(auto_now_add=True, blank=True)
     draft = models.BooleanField(default=True)
+    output_simple_test = models.BooleanField(default=False, blank=True)
+    feedback_simple_test = models.JSONField(null=True, blank=True)
     objects = models.Manager()
 
     # submission_nr is automatically assigned and unique per group, and
@@ -58,4 +60,6 @@ class SubmissionsSerializer(serializers.ModelSerializer):
             "submission_nr",
             "group_id",
             "draft",
+            "output_simple_test",
+            "feedback_simple_test",
         ]
