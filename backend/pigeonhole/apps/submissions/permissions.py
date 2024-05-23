@@ -68,6 +68,7 @@ class CanAccessSubmission(permissions.BasePermission):
                         "retrieve",
                         "create",
                         "download",
+                        "download_artifacts",
                         "get_project",
                     ]
             return False
