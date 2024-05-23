@@ -422,6 +422,7 @@ def run():
         },
         format='multipart',
     )
+    print(response)
     print(f'{response.status_code} {response.data}')
 
     response = client.post(
