@@ -25,28 +25,28 @@ from backend.pigeonhole.apps.submissions.models import (
 )
 from backend.pigeonhole.apps.submissions.permissions import CanAccessSubmission
 from backend.pigeonhole.filters import CustomPageNumberPagination
-from .models import submission_folder_path, submission_file_path
+from .models import submission_folder_path, submission_file_path, SUBMISSIONS_DIR
 
 
 class ZipUtilities:
 
-    def toZip(self, folderpaths, zip_path):
+    def toZip(self, folderpaths, zip_path, root=SUBMISSIONS_DIR):
         zip_file = zipfile.ZipFile(zip_path, 'w')
 
         for folder_path in folderpaths:
             if os.path.isfile(folder_path):
-                zip_file.write(folder_path)
+                zip_file.write(folder_path, arcname=folder_path)
             else:
-                self.addFolderToZip(zip_file, folder_path)
+                self.addFolderToZip(zip_file, folder_path, root)
         zip_file.close()
 
-    def addFolderToZip(self, zip_file, folder):
+    def addFolderToZip(self, zip_file, folder, root=SUBMISSIONS_DIR):
         for file in os.listdir(folder):
             full_path = os.path.join(folder, file)
             if os.path.isfile(full_path):
-                zip_file.write(full_path)
+                zip_file.write(full_path, arcname=os.path.relpath(folder, root) + '/' + file)
             elif os.path.isdir(full_path):
-                self.addFolderToZip(zip_file, full_path)
+                self.addFolderToZip(zip_file, full_path, root)
 
 
 class SubmissionsViewset(viewsets.ModelViewSet):
@@ -206,26 +206,41 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         if not ids:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        path = 'backend/downloads/submissions.zip'
-        submission_folders = []
+        path = ""
 
-        for sid in ids:
-            submission = Submissions.objects.get(submission_id=sid)
+        if len(ids) == 1:
+            submission = Submissions.objects.get(submission_id=ids[0])
             if submission is None:
                 return Response(
-                    {"message": f"Submission with id {id} not found",
+                    {"message": f"Submission with id {ids[0]} not found",
                      "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_404_NOT_FOUND,
                 )
-            submission_folders.append(
-                submission_folder_path(
-                    submission.group_id.group_id, submission.submission_id
-                )
-            )
 
-        utilities = ZipUtilities()
-        filename = path
-        utilities.toZip(submission_folders, filename)
+            path = submission.file.path
+
+        else:
+            path = 'backend/downloads/submissions.zip'
+            submission_folders = []
+            print(ids)
+
+            for sid in ids:
+                submission = Submissions.objects.get(submission_id=sid)
+                if submission is None:
+                    return Response(
+                        {"message": f"Submission with id {id} not found",
+                         "errorcode": "ERROR_SUBMISSION_NOT_FOUND"},
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+                submission_folders.append(
+                    submission_folder_path(
+                        submission.group_id.group_id, submission.submission_id
+                    )
+                )
+
+            utilities = ZipUtilities()
+            filename = path
+            utilities.toZip(submission_folders, filename, SUBMISSIONS_DIR)
 
         path = realpath(path)
         response = FileResponse(
