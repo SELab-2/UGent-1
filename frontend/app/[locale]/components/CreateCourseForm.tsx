@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 const CreateCourseForm = () => {
     const { t } = useTranslation();
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [newImage, setNewImage] = useState<boolean>(false);
     const [selectedImageURL, setSelectedImageURL] = useState<string>("");
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -31,6 +32,8 @@ const CreateCourseForm = () => {
 
         const imageURL = URL.createObjectURL(imageFile);
         setSelectedImageURL(imageURL);
+
+        setNewImage(newImage);
     };
 
     const handleSubmit = async (event: any) => {
@@ -59,7 +62,7 @@ const CreateCourseForm = () => {
                 });
             }
         }
-        if (selectedImage) {
+        if (selectedImage && newImage) {
             fileReader.readAsArrayBuffer(selectedImage);
         } else {
             await postData("/courses/", formData).then((response) => {
