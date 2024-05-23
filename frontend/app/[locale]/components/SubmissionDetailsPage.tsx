@@ -65,11 +65,11 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
 
     return (
         <ThemeProvider theme={baseTheme}>
-            <Grid container justifyContent="center" alignItems="flex-start" style={{ width: '100%', padding: '20px' }}>
-                <Grid item xs={12} style={{paddingBottom: '20px'}}>
+            <Grid container direction={'column'} justifyContent="flex-start" alignItems="stretch" style={{ padding: '20px', width: '100%'}}>
+                <Grid item style={{paddingBottom: '20px', width: '100%'}}>
                     <ProjectReturnButton locale={locale} project_id={projectId} />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item>
                     <Card raised style={{ width: '100%' }}>
                         <CardContent>
                             <Typography variant="h4" style={{ fontWeight: 'bold', marginBottom: '20px' }}>
@@ -82,14 +82,14 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                         {`${t("evaluation")} status`}
                                     </Typography>
                                     <div style={{ display: "flex", alignItems: "center", columnGap: "10px" }}>
-                                        {submission?.output_test !== "" ? (
+                                        {submission?.output_simple_test ? (
                                             <CheckIcon color="success" style={{ fontSize: 40 }}/>
                                         ) : (
                                             <CancelIcon color="error" style={{ fontSize: 40 }}/>
                                         )}
                                         <div>
                                             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-                                                {submission?.output_test !== "" ? t("accepted") : t("denied")}
+                                                {submission?.output_simple_test ? t("accepted") : t("denied")}
                                             </Typography>
                                             <Typography variant="caption">
                                                 {`(${t("timestamp")}: ${formatDate(submission?.timestamp)})`}
@@ -113,6 +113,40 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                     </Button>
                                 </Grid>
                             </Grid>
+                            {
+                                !submission?.output_simple_test ? (
+                                    <>
+                                        <Divider style={{ marginBottom: '20px', marginTop: '20px' }}/>
+
+                                        {submission?.feedback_simple_test["0"].length > 0 ? (
+                                            <>
+                                                <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                                                    {t("feedback_simple_test_0")}
+                                                </Typography>
+                                                {submission?.feedback_simple_test["0"].map((feedback, index) => (
+                                                    <Typography key={index} variant="body1" style={{ marginBottom: '10px' }}>
+                                                        {feedback}
+                                                    </Typography>
+                                                ))}
+                                            </>
+                                        ) : null}
+
+                                        {submission?.feedback_simple_test["2"].length > 0 ? (
+                                            <>
+                                                <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                                                    {t("feedback_simple_test_2")}
+                                                </Typography>
+                                                {submission?.feedback_simple_test["2"].map((feedback, index) => (
+                                                    <Typography key={index} variant="body1" style={{ marginBottom: '10px' }}>
+                                                        {feedback}
+                                                    </Typography>
+                                                ))}
+                                            </>
+                                        ) : null}
+                                    </>
+                                ) : null
+                            }
+
                         </CardContent>
                     </Card>
                 </Grid>

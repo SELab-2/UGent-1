@@ -63,6 +63,8 @@ class Submissions(models.Model):
     eval_result = models.BooleanField(default=None, null=True)
     eval_output = models.TextField(null=True)
 
+    output_simple_test = models.BooleanField(default=False, blank=True)
+    feedback_simple_test = models.JSONField(null=True, blank=True)
     objects = models.Manager()
 
     # submission_nr is automatically assigned and unique per group, and
@@ -149,4 +151,6 @@ class SubmissionsSerializer(serializers.ModelSerializer):
             "submission_nr",
             "group_id",
             "draft",
+            "output_simple_test",
+            "feedback_simple_test",
         ]

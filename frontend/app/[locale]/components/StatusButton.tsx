@@ -1,4 +1,4 @@
-import {ClearIcon} from '@mui/x-date-pickers/icons';
+import ClearIcon from '@mui/icons-material/Clear';
 import React, {useState} from 'react';
 import CheckIcon from "@mui/icons-material/Check";
 import {Button} from "@mui/material";

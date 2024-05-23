@@ -1,5 +1,5 @@
 {
-  "accepted": "accepted",
+  "accepted": "Accepted",
   "description_of_your_course": "Description of your course",
   "access": "Access",
   "action_dialog": "This action cannot be undone.",
@@ -101,7 +101,6 @@
   "visibility": "Visibility",
   "year": "Year",
   "archive_course": "Archive course",
-  "visibility": "Visibility",
   "download_file": "Download",
   "denied": "Denied",
   "show_more": "Show more",
@@ -132,6 +131,7 @@
   "ERROR_DEADLINE_EXPIRED": "Deadline expired",
   "ERROR_FILE_UPLOAD": "Error when uploading file",
   "ERROR_SUBMISSION_NOT_FOUND": "Submission not found",
+  "deadlines": "Deadlines",
   "upload_folders": "Upload folders:",
   "group_number": "Group number",
   "submission_date": "Submission date",
@@ -142,6 +142,9 @@
   "group_nr": "Group nr",
   "join_leave": "Join/Leave",
   "not_in_group": "Join a group to submit",
+  "projects_on_selected_date": "Projects on selected date",
+  "no_projects_on_selected_date": "No projects on selected date",
+  "project_calendar": "Project calendar",
   "edit_user_details": "Edit user details",
   "status_button_tooltip": "Required, optional or forbidden file",
   "no_deadline": "No deadline",
@@ -150,5 +153,7 @@
   "teachers": "Teachers",
   "courses_archive": "Courses archive",
   "courses_all": "All courses",
-  "open": "Open"
+  "open": "Open",
+  "feedback_simple_test_0": "You forgot to upload the following files:",
+  "feedback_simple_test_2": "You uploaded the following files that were not required:"
 }
