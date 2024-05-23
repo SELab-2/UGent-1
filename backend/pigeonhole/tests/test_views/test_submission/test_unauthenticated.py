@@ -34,6 +34,8 @@ class SubmissionTestTeacher(TestCase):
             name="Test Project",
             course_id=self.course,
             deadline="2021-12-12 12:12:12",
+            file_structure='*.sh',
+            test_docker_image="test-helloworld",
         )
 
         self.group = Group.objects.create(group_nr=1, project_id=self.project)
@@ -54,13 +56,23 @@ class SubmissionTestTeacher(TestCase):
 
     def test_cant_create_submission(self):
         response = self.client.post(
-            API_ENDPOINT, {"file_urls": "file_urls", "group_id": self.group.group_id}
+            API_ENDPOINT,
+            {
+                "file_urls": "",
+                "group_id": self.group.group_id
+            },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_cant_create_invalid_submission(self):
         response = self.client.post(
-            API_ENDPOINT, {"file_urls": "file_urls", "group_id": 489454134561}
+            API_ENDPOINT,
+            {
+                "file_urls": "",
+                "group_id": 489454134561
+            },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -81,8 +93,9 @@ class SubmissionTestTeacher(TestCase):
             API_ENDPOINT + str(self.submission.submission_id) + "/",
             {
                 "group_id": self.group.group_id,
-                "file_urls": "file_urls",
+                "file_urls": "",
             },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -90,8 +103,9 @@ class SubmissionTestTeacher(TestCase):
             API_ENDPOINT + str(self.submission.submission_id) + "/",
             {
                 "group_id": self.group.group_id,
-                "file_urls": "file_urls",
+                "file_urls": "",
             },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -100,8 +114,9 @@ class SubmissionTestTeacher(TestCase):
             API_ENDPOINT + str(self.submission_not_of_student.submission_id) + "/",
             {
                 "group_id": self.group_not_of_student.group_id,
-                "file_urls": "file_urls",
+                "file_urls": "",
             },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -109,8 +124,9 @@ class SubmissionTestTeacher(TestCase):
             API_ENDPOINT + str(self.submission_not_of_student.submission_id) + "/",
             {
                 "group_id": self.group_not_of_student.group_id,
-                "file_urls": "file_urls",
+                "file_urls": "",
             },
+            format='multipart',
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

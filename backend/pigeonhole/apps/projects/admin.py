@@ -63,6 +63,14 @@ class ProjectAdmin(admin.ModelAdmin):
                 )
             }
         ),
+        (
+            'test docker image',
+            {
+                'fields': (
+                    'test_docker_image',
+                )
+            }
+        ),
     )
 
     raw_id_fields = (
