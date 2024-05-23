@@ -562,6 +562,15 @@ const ListView: NextPage<ListViewProps> = ({
                                             </StyledTableCell>)
                                     }
                                     {
+                                        // view archived course
+                                        get == 'archived_courses' &&
+                                        <StyledTableCell>
+                                            <Button onClick={() => window.location.href = '/course/' + row[0]}>
+                                                {t('View')}
+                                            </Button>
+                                        </StyledTableCell>
+                                    }
+                                    {
                                         // group leave button
                                         get === 'groups' && (row[1].includes(user.id)) && (
                                             <StyledTableCell>
