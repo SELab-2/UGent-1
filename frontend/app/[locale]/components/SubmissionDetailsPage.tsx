@@ -118,7 +118,7 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                     <>
                                         <Divider style={{ marginBottom: '20px', marginTop: '20px' }}/>
 
-                                        {submission?.feedback_simple_test["0"].length > 0 ? (
+                                        {submission?.feedback_simple_test?.["0"].length > 0 ? (
                                             <>
                                                 <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
                                                     {t("feedback_simple_test_0")}
@@ -131,7 +131,7 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                             </>
                                         ) : null}
 
-                                        {submission?.feedback_simple_test["2"].length > 0 ? (
+                                        {submission?.feedback_simple_test?.["2"].length > 0 ? (
                                             <>
                                                 <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
                                                     {t("feedback_simple_test_2")}

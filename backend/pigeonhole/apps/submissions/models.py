@@ -162,4 +162,5 @@ class SubmissionsSerializer(serializers.ModelSerializer):
             "draft",
             "output_simple_test",
             "feedback_simple_test",
+            "eval_result"
         ]
