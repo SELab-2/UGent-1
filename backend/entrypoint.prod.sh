@@ -17,5 +17,6 @@ python manage.py runscript push_site
 
 python manage.py collectstatic --noinput
 
+docker login $REGISTRY_URL -u $REGISTRY_USER -p $REGISTRY_PASSWORD
 
 exec "$@"

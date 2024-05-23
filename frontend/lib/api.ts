@@ -80,6 +80,8 @@ export type Submission = {
     timestamp: string;
     output_simple_test: boolean;
     feedback_simple_test: object;
+    eval_result : boolean;
+    eval_output: string | null;
 }
 
 export type UserData = {

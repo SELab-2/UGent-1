@@ -82,19 +82,43 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                         {`${t("evaluation")} status`}
                                     </Typography>
                                     <div style={{ display: "flex", alignItems: "center", columnGap: "10px" }}>
-                                        {submission?.output_simple_test ? (
+                                        {(submission?.output_simple_test && submission?.eval_result) ? (
                                             <CheckIcon color="success" style={{ fontSize: 40 }}/>
                                         ) : (
                                             <CancelIcon color="error" style={{ fontSize: 40 }}/>
                                         )}
                                         <div>
                                             <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
-                                                {submission?.output_simple_test ? t("accepted") : t("denied")}
+                                                {(submission?.output_simple_test && submission?.eval_result) ? t("accepted") : t("denied")}
                                             </Typography>
                                             <Typography variant="caption">
-                                                {`(${t("timestamp")}: ${formatDate(submission?.timestamp)})`}
+                                                {`(${t("timestamp")}: ${formatDate(submission?.timestamp ?? "")})`}
                                             </Typography>
+
+                                            <div>
+                                                {submission?.output_simple_test ? (
+                                                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                                                        {t("simple_tests_ok")}
+                                                    </Typography>
+                                                ):(
+                                                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                                                        {t("simple_tests_failed")}
+                                                    </Typography>
+                                                )}
+                                            </div>
+                                            <div>
+                                                {submission?.eval_result ? (
+                                                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                                                        {t("advanced_tests_ok")}
+                                                    </Typography>
+                                                ):(
+                                                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                                                        {t("advanced_tests_failed")}
+                                                    </Typography>
+                                                )}
+                                            </div>
                                         </div>
+                                        
                                     </div>
                                 </Grid>
                                 <Grid item xs={12} sm={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
@@ -118,7 +142,7 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                     <>
                                         <Divider style={{ marginBottom: '20px', marginTop: '20px' }}/>
 
-                                        {submission?.feedback_simple_test["0"].length > 0 ? (
+                                        {submission?.feedback_simple_test?.["0"].length > 0 ? (
                                             <>
                                                 <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
                                                     {t("feedback_simple_test_0")}
@@ -131,7 +155,7 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                             </>
                                         ) : null}
 
-                                        {submission?.feedback_simple_test["2"].length > 0 ? (
+                                        {submission?.feedback_simple_test?.["2"].length > 0 ? (
                                             <>
                                                 <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '10px' }}>
                                                     {t("feedback_simple_test_2")}
