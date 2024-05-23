@@ -383,7 +383,7 @@ const ListView: NextPage<ListViewProps> = ({
                 </DialogActions>
             </Dialog>
 
-            {admin && action_name && action_name === 'download_submission' && (
+            {admin && user?.role !== 3 && action_name && action_name === 'download_submission' && (
                 <RemoveButton
                     onClick={() => {
                         const download_url = `${backend_url}/projects/${get_id}/download_submissions`
@@ -394,7 +394,7 @@ const ListView: NextPage<ListViewProps> = ({
                 </RemoveButton>
             )}
 
-            {admin && action_name && action_name === 'download_submission' && (
+            {admin && user?.role !== 3 && action_name && action_name === 'download_submission' && (
                 <RemoveButton
                     onClick={() => {
                         const selected_ids = Array.from(document.querySelectorAll('input[type="checkbox"]'))
