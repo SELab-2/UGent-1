@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { DateCalendar, PickersDay, PickersDayProps } from '@mui/x-date-pickers';
-import { CircularProgress, Box, Typography, Paper, List, ListItem, Divider, Badge } from '@mui/material';
+import { CircularProgress, Box, Typography, Paper, List, ListItem, Divider, Badge, Skeleton } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -35,6 +35,7 @@ const ProjectCalendar: React.FC = () => {
     const requestAbortController = useRef<AbortController | null>(null);
     const [value, setValue] = useState<Date | null>(new Date());
     const [highlightedDays, setHighlightedDays] = useState<number[]>([]);
+    const [loadingCalendar, setLoadingCalendar] = useState<boolean>(true);
     const { projects, loading, error } = useProjects();
     const { t } = useTranslation();
 
@@ -61,12 +62,43 @@ const ProjectCalendar: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchHighlightedDays(new Date());
+        try {
+            fetchHighlightedDays(new Date());
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoadingCalendar(false);
+        }
         return () => requestAbortController.current?.abort();
     }, [projects]);
 
-    if (loading) {
-        return <CircularProgress />;
+    if (loading || loadingCalendar) {
+        return(
+            <Box
+                display={'flex'}
+                flexDirection={'column'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                width={'100%'}
+            >
+                <Skeleton
+                    variant="rectangular"
+                    width={300} height={300}
+                    sx={{
+                        borderRadius: 1,
+                        marginTop: 2
+                    }}
+                />
+                <Skeleton
+                    variant="rectangular"
+                    width={400} height={100}
+                    sx={{
+                        borderRadius: 1,
+                        marginTop: 4
+                    }}
+                />
+            </Box>
+        );
     }
 
     if (error) {
