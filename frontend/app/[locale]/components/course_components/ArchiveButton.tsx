@@ -11,6 +11,10 @@ interface ArchiveButtonProps {
 }
 
 const ArchiveButton = ({course_id}: ArchiveButtonProps) => {
+    /*
+    * This component displays the archive button for a course.
+    * @param course_id: The id of the course
+    */
     const [error, setError] = useState<APIError | null>(null);
     const [archived, setArchived] = useState<boolean>(false);
     const {t} = useTranslation()

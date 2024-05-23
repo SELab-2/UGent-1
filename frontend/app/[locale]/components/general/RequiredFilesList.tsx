@@ -26,6 +26,18 @@ const ItemsList = ({
                        items_status,
                        setItemsStatus
                    }: ItemsListProps) => {
+    /*
+    * This component is a variation of the ItemsList that works specifically for the required files of a project.
+    * It displays a list of files and allows the user to add and delete files.
+    * It also allows the user to set the status of the files.
+    * @param items: The list of files
+    * @param setItems: The function to set the list of files
+    * @param input_placeholder: The placeholder for the input field
+    * @param empty_list_placeholder: The placeholder for the list when it is empty
+    * @param button_text: The text for the button
+    * @param items_status: The list of statuses for the files
+    * @param setItemsStatus: The function to set the list of statuses for the files
+    */
     const [newItem, setNewItem] = useState('')
     const [noInput, setNoInput] = useState(false)
     const {t} = useTranslation();

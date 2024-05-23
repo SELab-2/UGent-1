@@ -3,15 +3,16 @@ import React, {useEffect, useState} from 'react';
 import {APIError, Course, getCoursesForUser} from '@lib/api';
 import { Grid, Skeleton } from '@mui/material';
 import CourseCard from '@app/[locale]/components/CourseCard';
-import {useTranslation} from "react-i18next";
 
 const CoursesGrid = ({selectedYear}) => {
+    /*
+    * Grid component that displays the course cards on the home page
+    * @param selectedYear: currently selected year
+    * */
     const [courses, setCourses] = useState<Course[]>([]);
     const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<APIError | null>(null);
-
-    const {t} = useTranslation()
 
     const loadingArray = [1, 2, 3, 4, 5, 6];
 
@@ -21,13 +22,15 @@ const CoursesGrid = ({selectedYear}) => {
                 setCourses(await getCoursesForUser());
             } catch (error) {
                 if (error instanceof APIError) setError(error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchCourses();
-        setLoading(false);
     }, []);
 
+    // filter courses by selected year
     useEffect(() => {
         const [startYear, endYearSuffix] = selectedYear.split('-');
         const startYearNumber = parseInt(startYear, 10);

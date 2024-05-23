@@ -3,13 +3,17 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { deleteCourse } from "@lib/api";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
 
 interface DeleteButtonProps {
     courseId: number
 }
 
 const DeleteButton = ({ courseId }: DeleteButtonProps) => {
+    /*
+    * This component displays the delete button for a course.
+    * @param courseId: The id of the course
+    */
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
 

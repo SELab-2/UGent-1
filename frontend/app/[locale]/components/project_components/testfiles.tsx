@@ -14,6 +14,14 @@ interface TestFilesProps {
 }
 
 function TestFiles({testfilesName, setTestfilesName, testfilesData, setTestfilesData}: TestFilesProps) {
+    /*
+    * This component displays the list of test files for a project.
+    * It allows the user to delete test files.
+    * @param testfilesName: The list of names of the test files
+    * @param setTestfilesName: The function to set the list of names of the test files
+    * @param testfilesData: The list of data of the test files
+    * @param setTestfilesData: The function to set the list of data of the test files
+    */
     const {t} = useTranslation();
 
     return <div>

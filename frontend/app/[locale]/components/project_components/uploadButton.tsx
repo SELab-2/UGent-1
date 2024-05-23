@@ -11,14 +11,19 @@ interface UploadTestFileProps {
     setTestfilesData: (value: (((prevState: JSZipObject[]) => JSZipObject[]) | JSZipObject[])) => void,
 }
 
-function UploadTestFile(
-    {
+function UploadTestFile({
         testfilesName,
         setTestfilesName,
         testfilesData,
         setTestfilesData,
-    }: UploadTestFileProps
-) {
+        }: UploadTestFileProps) {
+    /*
+    * This component allows the user to upload test files for a project.
+    * @param testfilesName: The list of names of the test files
+    * @param setTestfilesName: The function to set the list of names of the test files
+    * @param testfilesData: The list of data of the test files
+    * @param setTestfilesData: The function to set the list of data of the test files
+    */
     const {t} = useTranslation();
     const handleFileChange = async (event: any) => {
         let zip = new JSZip();

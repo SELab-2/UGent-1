@@ -3,13 +3,17 @@ import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {getUser, updateUserData} from "@lib/api";
 import Typography from "@mui/material/Typography";
-import {Box, Button, Input, MenuItem, Select, TextField} from "@mui/material";
+import {Box, Button, MenuItem, Select, TextField} from "@mui/material";
 
 interface EditUserFormProps {
     userId: number
 }
 
 const EditUserForm = ({userId}: EditUserFormProps) => {
+    /*
+    * Form component that allows the user to edit their details
+    * @param userId: id of the user
+    */
     const [firstname, setFirstName] = useState('');
     const [lastname, setLastName] = useState('');
     const [role, setRole] = useState('');
@@ -23,7 +27,7 @@ const EditUserForm = ({userId}: EditUserFormProps) => {
                 const user = await getUser(userId);
                 setFirstName(user.first_name);
                 setLastName(user.last_name);
-                setRole(user.role);
+                setRole(user.role.toString());
                 setEmail(user.email);
             } catch (error) {
                 console.error("There was an error fetching the user data:", error);
@@ -34,6 +38,7 @@ const EditUserForm = ({userId}: EditUserFormProps) => {
         fetchCourseData();
     }, [userId]);
 
+    // Submit the form + reroute to the users page
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         const formData = new FormData();
@@ -41,7 +46,9 @@ const EditUserForm = ({userId}: EditUserFormProps) => {
         formData.append('last_name', lastname);
         formData.append('role', role.toString());
         formData.append('email', email);
-        await updateUserData(userId, formData);
+        await updateUserData(userId, formData).then(() => {
+            window.location.href = '/admin/users';
+        });
     };
 
     return (

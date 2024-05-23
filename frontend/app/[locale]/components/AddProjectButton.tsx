@@ -9,6 +9,10 @@ interface EditCourseButtonProps{
 }
 
 const AddProjectButton = ({course_id}: EditCourseButtonProps) => {
+    /*
+    * Specific add project button component
+    * @param course_id: The id of the course to which the project will be added
+    * */
     const {t} = useTranslation();
     const [user, setUser] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -38,7 +42,7 @@ const AddProjectButton = ({course_id}: EditCourseButtonProps) => {
                 }}
             /> :
         <>
-        {user?.role !== 3 && (
+        {user?.role !== 3 && ( // If the user is not a student
             <Button
                 variant="contained"
                 color="secondary"
