@@ -56,3 +56,14 @@ silentcomponenttest:
 resetdb:
 	docker exec pigeonhole-backend python manage.py flush --noinput
 	docker exec -it pigeonhole-backend python manage.py runscript mockdata
+
+prodregistry:
+	docker build examples/advanced-evaluation/always-succeed -t test-always-succeed
+	docker tag test-always-succeed sel2-1.ugent.be:2002/test-always-succeed
+	docker push sel2-1.ugent.be:2002/test-always-succeed
+	docker build examples/advanced-evaluation/helloworld -t test-helloworld
+	docker tag test-helloworld sel2-1.ugent.be:2002/test-helloworld
+	docker push sel2-1.ugent.be:2002/test-helloworld
+	docker build examples/advanced-evaluation/fibonacci-python -t fibonacci-python
+	docker tag fibonacci-python sel2-1.ugent.be:2002/fibonacci-python
+	docker push sel2-1.ugent.be:2002/fibonacci-python
