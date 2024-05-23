@@ -136,7 +136,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         complete_message["submission_id"] = serializer.data["submission_id"]
 
         submission.eval()
-        
+
         return Response(complete_message, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
