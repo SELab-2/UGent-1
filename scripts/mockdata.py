@@ -7,6 +7,7 @@ from backend.pigeonhole.apps.projects.models import Project
 from backend.pigeonhole.apps.users.models import User
 
 from django.conf import settings
+from django.http import HttpResponseBadRequest
 
 base_dir = settings.BASE_DIR
 
@@ -422,7 +423,7 @@ def run():
         },
         format='multipart',
     )
-    print(response)
+    print(response.serialize())
     print(f'{response.status_code} {response.data}')
 
     response = client.post(
