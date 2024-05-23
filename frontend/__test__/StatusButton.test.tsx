@@ -5,8 +5,6 @@ import StatusButton from '@app/[locale]/components/StatusButton';
 
 jest.mock('@mui/icons-material/Check', () => () => <div data-testid="check-icon" />);
 jest.mock('@mui/icons-material/HelpOutline', () => () => <div data-testid="help-icon" />);
-jest.mock('@mui/x-date-pickers/icons', () => ({ ClearIcon: () => <div data-testid="clear-icon" /> }));
-
 describe('StatusButton', () => {
     let files: any[];
     let setFiles: jest.Mock;
