@@ -91,8 +91,6 @@ class Submissions(models.Model):
         # self.eval()
 
     def eval(self):
-
-
         group = self.group_id
         project = group.project_id
 
