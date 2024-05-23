@@ -7,6 +7,7 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import {useTranslation} from "react-i18next";
 import {APIError, fetchUserData, UserData} from "@lib/api";
 
@@ -123,6 +124,14 @@ const CourseControls = ({selectedYear, onYearChange}) => {
                         href={'/course/all'}
                     >
                         {t("all_courses")}
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<CalendarMonthIcon/>}
+                        href={'/calendar'}
+                    >
+                        {t("deadlines")}
                     </Button>
                     <Button
                         variant="contained"
