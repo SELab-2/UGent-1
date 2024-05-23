@@ -12,6 +12,15 @@ SUBMISSIONS_PATH = os.environ.get('SUBMISSIONS_PATH')
 ARTIFACTS_PATH = os.environ.get('ARTIFACTS_PATH')
 registry_name = os.environ.get('REGISTRY_NAME')
 
+if not SUBMISSIONS_PATH:
+    SUBMISSIONS_PATH = "/home/selab2/testing/submisssions"
+
+if not ARTIFACTS_PATH:
+    ARTIFACTS_PATH = "/home/selab2/testing/artifacts"
+
+if not registry_name:
+    registry_name = "sel2-1.ugent.be:2002"
+
 
 def submission_folder_path(group_id, submission_id):
     return f"{str(settings.STATIC_ROOT)}/submissions/group_{group_id}/{submission_id}"
