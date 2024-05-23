@@ -8,7 +8,7 @@ const redirect_url = process.env['NEXT_PUBLIC_REDIRECT_URL'];
 
 const CASButton = () => {
     /*
-    * Button to login with CAS
+    * Button to login with CAS logic
     * */
     const handleCASLogin = (): void => {
         console.log('Login with CAS');
