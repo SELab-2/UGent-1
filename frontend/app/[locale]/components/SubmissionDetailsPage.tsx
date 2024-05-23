@@ -94,7 +94,31 @@ const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, s
                                             <Typography variant="caption">
                                                 {`(${t("timestamp")}: ${formatDate(submission?.timestamp ?? "")})`}
                                             </Typography>
+
+                                            <div>
+                                                {submission?.output_simple_test ? (
+                                                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                                                        {t("simple_tests_ok")}
+                                                    </Typography>
+                                                ):(
+                                                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                                                        {t("simple_tests_failed")}
+                                                    </Typography>
+                                                )}
+                                            </div>
+                                            <div>
+                                                {submission?.eval_result ? (
+                                                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                                                        {t("advanced_tests_ok")}
+                                                    </Typography>
+                                                ):(
+                                                    <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                                                        {t("advanced_tests_failed")}
+                                                    </Typography>
+                                                )}
+                                            </div>
                                         </div>
+                                        
                                     </div>
                                 </Grid>
                                 <Grid item xs={12} sm={6} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>

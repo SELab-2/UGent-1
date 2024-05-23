@@ -18,6 +18,8 @@ const CourseCard = ({params: {course}}: { params: { course: Course } }) => {
             timestamp: '',
             output_simple_test: false,
             feedback_simple_test: {},
+            eval_output: "",
+            eval_result: false,
         });
     const [hover, setHover] = useState(false);
 

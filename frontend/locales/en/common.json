@@ -155,5 +155,9 @@
   "courses_all": "All courses",
   "open": "Open",
   "feedback_simple_test_0": "You forgot to upload the following files:",
-  "feedback_simple_test_2": "You uploaded the following files that were not required:"
+  "feedback_simple_test_2": "You uploaded the following files that were not required:",
+  "simple_tests_failed": "File structure tests: Failed",
+  "advanced_tests_failed": "Advanced tests: Failed",
+  "simple_tests_ok": "File structure tests: OK",
+  "advanced_tests_ok": "Advanced tests: OK"
 }

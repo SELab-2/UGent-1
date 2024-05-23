@@ -159,5 +159,9 @@
   "teachers": "Docenten",
   "courses_archive": "Gearchiveerde cursussen",
   "courses_all": "Alle cursussen",
-  "open": "Open"
+  "open": "Open",
+  "simple_tests_failed": "Bestandsstructuur tests: Gefaald",
+  "advanced_tests_failed": "Geadvanceerde tests: Gefaald",
+  "simple_tests_ok": "Bestandsstructuur: OK",
+  "advanced_tests_ok": "Geadvanceerde tests: OK"
 }
