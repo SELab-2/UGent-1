@@ -1,4 +1,3 @@
-import zipfile
 from os.path import basename, realpath
 
 from django.db import transaction
@@ -16,7 +15,7 @@ from backend.pigeonhole.apps.groups.models import Group
 from backend.pigeonhole.apps.groups.models import GroupSerializer
 from backend.pigeonhole.apps.submissions.models import (
     Submissions,
-    SubmissionsSerializer,
+    SubmissionsSerializer, submission_folder_path,
 )
 from backend.pigeonhole.apps.users.models import User
 from backend.pigeonhole.filters import (
@@ -26,6 +25,7 @@ from backend.pigeonhole.filters import (
 )
 from .models import Project, ProjectSerializer
 from .permissions import CanAccessProject
+from ..submissions.views import ZipUtilities
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -253,22 +253,19 @@ class ProjectViewSet(viewsets.ModelViewSet):
         if len(submissions) == 0:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        path = ""
+        path = 'backend/downloads/submissions.zip'
+        submission_folders = []
 
-        if len(submissions) == 1:
-            path = submissions[0].file.path
-
-        else:
-            path = "backend/downloads/submissions.zip"
-            zipf = zipfile.ZipFile(file=path, mode="w", compression=zipfile.ZIP_STORED)
-
-            for submission in submissions:
-                zipf.write(
-                    filename=submission.file.path,
-                    arcname=basename(submission.file.path),
+        for submission in submissions:
+            submission_folders.append(
+                submission_folder_path(
+                    submission.group_id.group_id, submission.submission_id
                 )
+            )
 
-            zipf.close()
+        utilities = ZipUtilities()
+        filename = path
+        utilities.toZip(submission_folders, filename)
 
         path = realpath(path)
         response = FileResponse(
