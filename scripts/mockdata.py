@@ -285,7 +285,7 @@ def run():
         visible=True,
         number_of_groups=1,
         group_size=8,
-        file_structure='*.py',
+        file_structure='+*.py',
         test_docker_image='fibonacci-python'
     )
 
@@ -297,7 +297,7 @@ def run():
         visible=True,
         number_of_groups=4,
         group_size=2,
-        file_structure='*.py',
+        file_structure='+*.py',
         test_docker_image='fibonacci-python'
     )
 
@@ -309,7 +309,7 @@ def run():
         visible=True,
         number_of_groups=10,
         group_size=2,
-        file_structure='*.py',
+        file_structure='+*.py',
         test_docker_image='fibonacci-python'
     )
 
@@ -321,7 +321,7 @@ def run():
         visible=True,
         number_of_groups=10,
         group_size=2,
-        file_structure='*.py',
+        file_structure='+*.py',
         test_docker_image='fibonacci-python'
     )
 
