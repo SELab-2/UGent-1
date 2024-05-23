@@ -595,7 +595,7 @@ const ListView: NextPage<ListViewProps> = ({
                                             </Button>
                                         </StyledTableCell>
                                     )}
-                                    {(get == 'submissions' || get == 'submissions_group') && (
+                                    {(get == 'submissions' || get == 'submissions_group' || get == 'submissions_latest') && (
                                         <StyledTableCell>
                                             <Button onClick={() => window.location.href = '/submission/' + row[0]}>
                                                 {t('View')}
