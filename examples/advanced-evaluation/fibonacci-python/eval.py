@@ -35,12 +35,12 @@ if __name__ == '__main__':
         fibonacci = module_from_spec(spec)
         spec.loader.exec_module(fibonacci)
 
+        write_sequences_to_file(fibonacci.fibonacci)
+
         assert check_fibonacci(fibonacci.fibonacci(0)), 'Fibonacci sequence with length 0 incorrect'
         assert check_fibonacci(fibonacci.fibonacci(1)), 'Fibonacci sequence with length 1 incorrect'
         assert check_fibonacci(fibonacci.fibonacci(2)), 'Fibonacci sequence with length 2 incorrect'
         assert check_fibonacci(fibonacci.fibonacci(1000)), 'Fibonacci sequence with length 1000 incorrect'
-
-        write_sequences_to_file(fibonacci.fibonacci)
 
     except FileNotFoundError:
         sys.exit("Required main file missing.\nPlease consult the project assignment.")
