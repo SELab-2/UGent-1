@@ -1,5 +1,5 @@
 {
-  "accepted": "accepted",
+  "accepted": "Accepted",
   "description_of_your_course": "Description of your course",
   "access": "Access",
   "action_dialog": "This action cannot be undone.",
@@ -101,7 +101,6 @@
   "visibility": "Visibility",
   "year": "Year",
   "archive_course": "Archive course",
-  "visibility": "Visibility",
   "download_file": "Download",
   "denied": "Denied",
   "show_more": "Show more",
@@ -152,5 +151,7 @@
   "teachers": "Teachers",
   "courses_archive": "Courses archive",
   "courses_all": "All courses",
-  "open": "Open"
+  "open": "Open",
+  "feedback_simple_test_0": "You forgot to upload the following files:",
+  "feedback_simple_test_2": "You uploaded the following files that were not required:"
 }

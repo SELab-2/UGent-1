@@ -78,7 +78,8 @@ export type Submission = {
     submission_nr: number;
     file: string;
     timestamp: string;
-    output_test: string;
+    output_simple_test: boolean;
+    feedback_simple_test: object;
 }
 
 export type UserData = {
@@ -681,13 +682,14 @@ export async function joinCourseUsingToken(course_id: number, token: string) {
 type uploadResult = {
     result: string;
     errorcode: string | undefined;
+    submission_id: number;
 }
 
 export async function uploadSubmissionFile(event: any, project_id: string) : Promise<uploadResult>{
     axios.defaults.headers.get['X-CSRFToken'] = getCookieValue('csrftoken');
     axios.defaults.headers.post['X-CSRFToken'] = getCookieValue('csrftoken');
     event.preventDefault();
-    console.log(event.target.fileList.files);
+
     const formData = new FormData(event.target);
     //filter files by key
 
@@ -710,13 +712,13 @@ export async function uploadSubmissionFile(event: any, project_id: string) : Pro
         let groupres = await axios.get(backend_url + "/projects/" + project_id + "/get_group/", {withCredentials: true});
         const group_id = groupres.data.group_id;
         formDataObject.group_id = group_id;
-        await axios.post(backend_url + '/submissions/', formDataObject,
+        const response = await axios.post(backend_url + '/submissions/', formDataObject,
          { withCredentials: true,
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
           });
-        return {result: "ok", errorcode: undefined};
+        return {result: "ok", errorcode: undefined, submission_id: response.data.submission_id};
     } catch (error) {
         const apierror : APIError = new APIError();
         apierror.message = "error posting form";

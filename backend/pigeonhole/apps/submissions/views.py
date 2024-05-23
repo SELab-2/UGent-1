@@ -1,4 +1,5 @@
 import fnmatch
+import json
 import os
 import shutil
 import zipfile
@@ -75,9 +76,6 @@ class SubmissionsViewset(viewsets.ModelViewSet):
         else:
             file_urls = request.data["file_urls"].split(",")
 
-        serializer = SubmissionsSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-
         if not group:
             return Response(
                 {"message": "Group not found", "errorcode":
@@ -101,6 +99,26 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        project = Project.objects.get(project_id=group.project_id.project_id)
+        # return Response(",".join(file_urls), status=status.HTTP_201_CREATED)
+        if project.file_structure is None or project.file_structure == "":
+            complete_message = {"message": "Submission successful"}
+        else:
+            violations = check_restrictions(file_urls, project.file_structure.split(","))
+
+            if not violations[0] and not violations[2]:
+                complete_message = {"success": 0}
+                data["output_simple_test"] = True
+            else:
+                violations.update({'success': 1})
+                data["output_simple_test"] = False
+                complete_message = violations
+
+            json_violations = json.dumps(violations)
+            data["feedback_simple_test"] = json_violations
+
+        serializer = SubmissionsSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
         serializer.save()
 
         # upload files
@@ -123,19 +141,7 @@ class SubmissionsViewset(viewsets.ModelViewSet):
                     "ERROR_FILE_UPLOAD"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        project = Project.objects.get(project_id=group.project_id.project_id)
-        # return Response(",".join(file_urls), status=status.HTTP_201_CREATED)
-        if project.file_structure is None or project.file_structure == "":
-            complete_message = {"message": "Submission successful"}
-        else:
-            violations = check_restrictions(file_urls, project.file_structure.split(","))
-
-            if not violations[0] and not violations[2]:
-                complete_message = {"success": 0}
-            else:
-                violations.update({'success': 1})
-                complete_message = violations
-
+        complete_message["submission_id"] = serializer.data["submission_id"]
         return Response(complete_message, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
