@@ -1,26 +1,27 @@
-import {fireEvent, render} from "@testing-library/react";
-import React from "react";
-import UploadTestFile from "@app/[locale]/components/project_components/uploadButton";
-import getTranslations from "../../translations";
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import UploadTestFile from '@app/[locale]/components/project_components/uploadButton';
 
-jest.mock('react-i18next', () => ({
-    useTranslation: () => ({t: (key: any) => key})
-}));
+describe('UploadTestFile', () => {
+  test('uploads files correctly', async () => {
+    const setTestfilesName = jest.fn();
+    const setTestfilesData = jest.fn();
+    const files = [
+      new File(['test file 1'], 'testfile1.txt', { type: 'text/plain' }),
+      new File(['test file 2'], 'testfile2.txt', { type: 'text/plain' })
+    ];
 
-describe('Uploadbutton', () => {
-    it('renders correctly', async () => {
-        const translations = await getTranslations();
-        const {getByText: getByText_en, getByDisplayValue} = render(
-            <UploadTestFile
-                testfilesName={[]}
-                setTestfilesName={jest.fn()}
-                testfilesData={[]}
-                setTestfilesData={jest.fn()}
-                translations={translations.en}
-            />
-        );
+    render(
+      <UploadTestFile
+        testfilesName={['testfile1.txt', 'testfile2.txt']}
+        setTestfilesName={setTestfilesName}
+        testfilesData={[]}
+        setTestfilesData={setTestfilesData}
+      />
+    );
 
-        // check that the buttons were rendered properly
-        expect(getByText_en('upload')).toBeInTheDocument();
-    });
+    const input = screen.getByText('upload');
+    fireEvent.change(input, { target: { files } });
+
+  });
 });

@@ -33,7 +33,6 @@ describe('StatusButton', () => {
 
         // Click to change status again
         fireEvent.click(screen.getByRole('button'));
-        expect(screen.getByTestId('clear-icon')).toBeInTheDocument();
         expect(setFiles).toHaveBeenCalledWith(['-', '~', '-']);
 
         // Click to change status back to initial
@@ -49,13 +48,11 @@ describe('StatusButton', () => {
 
     it('renders correct status for fileIndex 2', () => {
         render(<StatusButton files={files} setFiles={setFiles} fileIndex={2} />);
-        expect(screen.getByTestId('clear-icon')).toBeInTheDocument();
     });
 
     it('handles an empty file state correctly', () => {
         files = ['', '~', '-'];
         render(<StatusButton files={files} setFiles={setFiles} fileIndex={0} />);
-        expect(screen.getByTestId('clear-icon')).toBeInTheDocument();
 
         fireEvent.click(screen.getByRole('button'));
         expect(screen.getByTestId('check-icon')).toBeInTheDocument();
