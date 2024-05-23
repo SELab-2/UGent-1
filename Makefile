@@ -28,6 +28,9 @@ registry:
 evaltest:
 	docker exec -it pigeonhole-backend python manage.py runscript eval_test
 
+submit:
+	docker exec -it pigeonhole-backend python manage.py runscript submit
+
 reset:
 	docker image prune -af
 	docker system prune

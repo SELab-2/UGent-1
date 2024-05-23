@@ -21,6 +21,7 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./backend/:/usr/src/app/backend/
+      - ./scripts/:/usr/src/app/scripts/
       #- submissions:/usr/src/app/backend/uploads/submissions/
       - /var/run/docker.sock:/var/run/docker.sock
       - ${SUBMISSIONS_PATH}:/usr/src/app/backend/static/submissions/
