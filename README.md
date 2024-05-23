@@ -11,3 +11,5 @@
 - Rune Dyselinck: Secretary
 
 ## Bekijk de [wiki](https://github.com/SELab-2/UGent-1/wiki) om alles over de applicatie te weten te komen.
+
+## Bekijk de [user manual](https://github.com/SELab-2/UGent-1/blob/user-manual/user_manual/manual.pdf) voor de gebruikershandleiding.
