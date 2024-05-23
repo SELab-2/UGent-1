@@ -9,6 +9,7 @@ from rest_framework import serializers
 from backend.pigeonhole.apps.groups.models import Group
 
 SUBMISSIONS_PATH = os.environ.get('SUBMISSIONS_PATH')
+ARTIFACTS_PATH = os.environ.get('ARTIFACTS_PATH')
 registry_name = os.environ.get('REGISTRY_NAME')
 
 
@@ -18,6 +19,10 @@ def submission_folder_path(group_id, submission_id):
 
 def submission_folder_path_hostside(group_id, submission_id):
     return f"{SUBMISSIONS_PATH}/group_{group_id}/{submission_id}"
+
+
+def artifact_folder_path_hostside(group_id, submission_id):
+    return f"{ARTIFACTS_PATH}/group_{group_id}/{submission_id}"
 
 
 # TODO test timestamp, file, output_test
@@ -89,6 +94,10 @@ class Submissions(models.Model):
                     f'{submission_folder_path_hostside(self.group_id.group_id, self.submission_id)}': {
                         'bind': '/usr/src/submission/',
                         'mode': 'ro'
+                    },
+                    f'{artifact_folder_path_hostside(self.group_id.group_id, self.submission_id)}': {
+                        'bind': '/usr/out/artifacts/',
+                        'mode': 'rw'
                     }
                 }
             )

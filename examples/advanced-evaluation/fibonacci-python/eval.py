@@ -18,6 +18,14 @@ def check_fibonacci(sequence: List) -> bool:
     return True
 
 
+def write_sequences_to_file(fibonacci_method, limit: int = 25) -> None:
+    for i in range(1, limit):
+        sequence = fibonacci_method(i)
+        with open(f'/usr/out/artifacts/fibonacci_{i}.txt', 'w') as outfile:
+            for n in sequence:
+                outfile.write(f'{n}\n')
+
+
 if __name__ == '__main__':
     try:
         spec = spec_from_file_location(
@@ -31,6 +39,8 @@ if __name__ == '__main__':
         assert check_fibonacci(fibonacci.fibonacci(1)), 'Fibonacci sequence with length 1 incorrect'
         assert check_fibonacci(fibonacci.fibonacci(2)), 'Fibonacci sequence with length 2 incorrect'
         assert check_fibonacci(fibonacci.fibonacci(1000)), 'Fibonacci sequence with length 1000 incorrect'
+
+        write_sequences_to_file(fibonacci.fibonacci)
 
     except FileNotFoundError:
         sys.exit("Required main file missing.\nPlease consult the project assignment.")
