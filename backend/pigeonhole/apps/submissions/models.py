@@ -23,6 +23,7 @@ if not registry_name:
 
 SUBMISSIONS_DIR = f"{str(settings.STATIC_ROOT)}/submissions"
 
+
 def submission_folder_path(group_id, submission_id):
     return f"{SUBMISSIONS_DIR}/group_{group_id}/{submission_id}"
 
