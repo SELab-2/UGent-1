@@ -3,17 +3,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { deleteUser } from "@lib/api";
-import { Button, Dialog, DialogActions, DialogTitle, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material';
 
 interface DeleteButtonProps {
     userId: number
 }
 
 const DeleteButton = ({ userId }: DeleteButtonProps) => {
-    /*
-    * This component displays the delete button for a user.
-    * @param userId: The id of the user
-    */
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
 

@@ -18,12 +18,6 @@ interface SubmissionDetailsPageProps {
 }
 
 const SubmissionDetailsPage: React.FC<SubmissionDetailsPageProps> = ({ locale, submission_id }) => {
-    /*
-    * This component displays the submission details page.
-    * It shows the evaluation status of the submission, the uploaded files and the artifacts.
-    * @param locale: The locale used for the translation
-    * @param submission_id: The id of the submission
-    */
     const { t } = useTranslation();
 
     const [submission, setSubmission] = useState<Submission>();

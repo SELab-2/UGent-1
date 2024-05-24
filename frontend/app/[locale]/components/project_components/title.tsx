@@ -13,15 +13,6 @@ interface TitleProps {
 }
 
 function Title({isTitleEmpty, setTitle, title, score, isScoreEmpty, setScore}: TitleProps) {
-    /*
-    * This component displays the title and the maximum score of a project.
-    * @param isTitleEmpty: A boolean that indicates if the title is empty
-    * @param setTitle: The function to set the title
-    * @param title: The title of the project
-    * @param score: The maximum score of the project
-    * @param isScoreEmpty: A boolean that indicates if the score is empty
-    * @param setScore: The function to set the score
-    */
     const {t} = useTranslation();
 
     const handleScoreChange = (event: any) => {

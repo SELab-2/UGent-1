@@ -14,14 +14,11 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import {visuallyHidden} from "@mui/utils";
 import dayjs from "dayjs";
+import defaultBanner from "../../../public/ugent_banner.png";
 
 const CreateCourseForm = () => {
-    /*
-    * Form component for creating a new course
-    */
     const { t } = useTranslation();
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
-    const [newImage, setNewImage] = useState<boolean>(false);
     const [selectedImageURL, setSelectedImageURL] = useState<string>("");
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -29,29 +26,23 @@ const CreateCourseForm = () => {
     const [openConfirmation, setOpenConfirmation] = useState(false); // State for confirmation dialog
     const [year, setYear] = useState(0);
 
-    // Function to handle image upload
     const handleImageUpload = (event: any) => {
         const imageFile = event.target.files[0];
         setSelectedImage(imageFile);
 
         const imageURL = URL.createObjectURL(imageFile);
         setSelectedImageURL(imageURL);
-
-        setNewImage(newImage);
     };
 
-    // Function to handle form submission
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         setOpenConfirmation(true); // Open confirmation dialog
     };
 
-    // Function to close confirmation dialog
     const handleConfirmationClose = () => {
         setOpenConfirmation(false);
     };
 
-    // Function to accept confirmation dialog
     const handleConfirmationYes = async () => {
         setOpenConfirmation(false);
         const formData = new FormData();
@@ -59,6 +50,7 @@ const CreateCourseForm = () => {
         formData.append('description', description);
         formData.append('open_course', open.toString());
         formData.append('year', year.toString());
+
         const fileReader = new FileReader();
         fileReader.onload = async function () {
             const arrayBuffer = this.result;
@@ -67,25 +59,22 @@ const CreateCourseForm = () => {
                 await postData("/courses/", formData).then((response) => {
                     window.location.href = `/course/${response.course_id}`;
                 });
+                return;
             }
         }
-        if (selectedImage && newImage) {
-            fileReader.readAsArrayBuffer(selectedImage);
-        } else {
-            await postData("/courses/", formData).then((response) => {
-                window.location.href = `/course/${response.course_id}`;
-            });
-        }
+        await postData("/courses/", formData).then((response) => {
+            window.location.href = `/course/${response.course_id}`;
+        });
+        if (selectedImage) fileReader.readAsArrayBuffer(selectedImage);
     };
 
-    // Load banner image
     useEffect(() => {
         if (selectedImage === null) {
             fetch(banner.src)
                 .then(response => response.blob())
                 .then(blob => {
                     const file = new File([blob], "filename", {type: "image/png"});
-                    setSelectedImage(file);
+
                     setSelectedImageURL(banner.src)
                 })
         }
@@ -159,7 +148,7 @@ const CreateCourseForm = () => {
                     <Box
                         component={'img'}
                         alt={t('select image')}
-                        src={selectedImageURL}
+                        src={selectedImageURL ? selectedImageURL : defaultBanner.src}
                         sx={{
                             borderRadius: '16px',
                             height: 'fit-content',

@@ -30,14 +30,9 @@ import {APIError, Course, getCoursesForUser, UserData, getUserData} from "@lib/a
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
 const NavBar = () => {
-    /*
-    * This component is the navigation bar that is displayed at the top of the page.
-    * It contains the menu button that opens the drawer with the course list and the bottom menu items.
-    */
     const [courses, setCourses] = useState<Course[]>([]); // Initialize courses as an empty array
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<APIError | null>(null);
-    const [open, setOpen] = React.useState(false);
     const {t} = useTranslation();
 
     useEffect(() => {
@@ -80,9 +75,13 @@ const NavBar = () => {
         window.location.href = backend_url + "/auth/logout";
     };
 
+    const [open, setOpen] = React.useState(false);
+
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
     };
+
+    //const courses = ["Course1", "Course2", "Course3", "Course4"];
 
     const DrawerList = (
         <Box sx={{width: 250}}

@@ -18,7 +18,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import DownloadIcon from "@mui/icons-material/Download";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import LatestSubmissionList from "@app/[locale]/components/LatestSubmissionList";
 
 const backend_url = process.env["NEXT_PUBLIC_BACKEND_URL"];
 
@@ -28,15 +27,9 @@ interface ProjectDetailsPageProps {
 }
 
 const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
-      locale,
-      project_id,
-    }) => {
-    /*
-     * This component is the project details page that is displayed when a user clicks on a project.
-     * It displays the project details, submissions and groups.
-     * @param locale: The locale used for the translations
-     * @param project_id: The id of the project
-     */
+  locale,
+  project_id,
+}) => {
   const { t } = useTranslation();
 
   const [project, setProject] = useState<Project>();
@@ -294,7 +287,7 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
                 search={t("submission_search")}
               />
             ) : (
-              <LatestSubmissionList
+              <ProjectSubmissionsList
                 project_id={project_id}
                 page_size={8}
                 search={t("submission_search")}
@@ -307,7 +300,6 @@ const ProjectDetailsPage: React.FC<ProjectDetailsPageProps> = ({
   );
 };
 
-// Function to build a tree structure from a list of paths
 function buildTree(paths) {
     const tree = {};
     if (!paths) {
@@ -334,7 +326,6 @@ function buildTree(paths) {
     return tree;
 }
 
-// Function to build a string representation of a tree structure
 function buildTreeString(tree, indent = '') {
     let treeString = '';
 

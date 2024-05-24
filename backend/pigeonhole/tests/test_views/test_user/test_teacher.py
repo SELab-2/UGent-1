@@ -60,7 +60,7 @@ class UserTestTeacher(TestCase):
             'course': [self.course.course_id]
         }
         response = self.client.put(f'{API_ENDPOINT}{self.teacher.id}/', updated_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_self(self):
         response = self.client.delete(f'{API_ENDPOINT}{self.teacher.id}/')

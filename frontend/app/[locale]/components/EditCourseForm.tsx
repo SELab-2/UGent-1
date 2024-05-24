@@ -10,31 +10,27 @@ import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {visuallyHidden} from '@mui/utils';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import dayjs from "dayjs";
+import defaultBanner from "../../../public/ugent_banner.png";
 
 interface EditCourseFormProps {
     courseId: number
 }
 
 const EditCourseForm = ({courseId}: EditCourseFormProps) => {
-    /*
-    * Form used to edit a course
-    * @param courseId: id of the course
-    */
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [open, setOpen] = useState(false);
     const [year, setYear] = useState(0);
+    const {t} = useTranslation();
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [selectedImageURL, setSelectedImageURL] = useState<string>("");
     const [loading, setLoading] = useState(true);
     const [openConfirmation, setOpenConfirmation] = useState(false); // State for confirmation dialog
-    const {t} = useTranslation();
 
 
     useEffect(() => {
         const fetchCourseData = async () => {
             try {
-                // Fetch course data + setting the states with the fetched data
                 const course = await getCourse(courseId);
                 setName(course.name);
                 setDescription(course.description);
@@ -67,12 +63,10 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
         setOpenConfirmation(true); // Open confirmation dialog
     };
 
-    // Close confirmation dialog
     const handleConfirmationClose = () => {
         setOpenConfirmation(false);
     };
 
-    // Handle confirmation dialog yes button
     const handleConfirmationYes = async () => {
         setOpenConfirmation(false);
         const formData = new FormData();
@@ -174,7 +168,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     <Box
                         component={'img'}
                         alt={t('select image')}
-                        src={selectedImageURL}
+                        src={selectedImageURL ? selectedImageURL : defaultBanner.src}
                         sx={{
                             borderRadius: '16px',
                             height: 'fit-content',

@@ -6,10 +6,6 @@ import React, {useState} from "react";
 import {useTranslation} from "react-i18next";
 
 const YearStateComponent = () => {
-    /*
-    * This component displays the course controls and the courses grid.
-    * It allows the user to select the academic year and view the courses.
-    */
     const currentYear = new Date().getFullYear();
     const academicYear = `${currentYear - 1}-${currentYear.toString().slice(-2)}`;
     const [selectedYear, setSelectedYear] = useState(academicYear);

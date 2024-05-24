@@ -2,14 +2,13 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { DateCalendar, PickersDay, PickersDayProps } from '@mui/x-date-pickers';
-import { Box, Typography, Paper, List, ListItem, Divider, Badge, Skeleton } from '@mui/material';
+import { CircularProgress, Box, Typography, Paper, List, ListItem, Divider, Badge, Skeleton } from '@mui/material';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useProjects } from '../calendar/useProjects';
 import { useTranslation } from 'react-i18next';
 
-// Fake fetch function that simulates fetching deadlines from the server
 function fakeFetch(
     date: Date,
     { signal }: { signal: AbortSignal },
@@ -33,11 +32,6 @@ function fakeFetch(
 }
 
 const ProjectCalendar: React.FC = () => {
-    /*
-    * This component is the project calendar that is displayed in the calendar page.
-    * It displays a calendar with highlighted days that have projects due on that day.
-    * It also displays the projects due on the selected day.
-    */
     const requestAbortController = useRef<AbortController | null>(null);
     const [value, setValue] = useState<Date | null>(new Date());
     const [highlightedDays, setHighlightedDays] = useState<number[]>([]);
@@ -45,7 +39,6 @@ const ProjectCalendar: React.FC = () => {
     const { projects, loading, error } = useProjects();
     const { t } = useTranslation();
 
-    // Fetch highlighted days from the server
     const fetchHighlightedDays = (date: Date) => {
         const controller = new AbortController();
         fakeFetch(
@@ -68,7 +61,6 @@ const ProjectCalendar: React.FC = () => {
         requestAbortController.current = controller;
     };
 
-    // Fetch highlighted days when the component mounts
     useEffect(() => {
         try {
             fetchHighlightedDays(new Date());
@@ -80,7 +72,6 @@ const ProjectCalendar: React.FC = () => {
         return () => requestAbortController.current?.abort();
     }, [projects]);
 
-    // Loading state
     if (loading || loadingCalendar) {
         return(
             <Box
@@ -122,7 +113,6 @@ const ProjectCalendar: React.FC = () => {
         );
     };
 
-    // Handle month and year change(refetch highlighted days when month or year changes)
     const handleMonthChange = (date: Date) => {
         if (requestAbortController.current) {
             requestAbortController.current.abort();
@@ -141,7 +131,6 @@ const ProjectCalendar: React.FC = () => {
         fetchHighlightedDays(date);
     };
 
-    // Render projects on the selected day
     const renderProjects = (date: Date) => {
         const projectsOnThisDay = projects.filter((project) =>
             isSameDay(new Date(project.deadline), date)
@@ -164,7 +153,6 @@ const ProjectCalendar: React.FC = () => {
         );
     };
 
-    // Custom day component that displays a badge with a schedule icon if the day has a project due
     function customDay(props: PickersDayProps<Date> & { highlightedDays?: number[] }) {
         const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
 

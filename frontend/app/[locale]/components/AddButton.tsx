@@ -3,12 +3,8 @@ import { Button } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import {useTranslation} from "react-i18next";
 
+//TODO: route to add project page
 function AddButton({translationkey, href} : {translationkey: string, href : string|undefined}){
-    /*
-    * General add button component
-    * @param translationkey: The key of the translation in the i18n file
-    * @param href: The href of the button
-    * */
     const { t } = useTranslation()
 
     return(

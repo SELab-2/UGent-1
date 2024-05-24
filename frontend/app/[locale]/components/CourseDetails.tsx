@@ -13,10 +13,6 @@ interface CourseDetailsProps {
 }
 
 export default function CourseDetails({course_id}: CourseDetailsProps) {
-    /*
-    * Component used in course details page that shows the information of the course(not the title, this is displayed in the courseBanner).
-    * @param course_id: id of the course
-    * */
     const [user, setUser] = useState<UserData | null>(null);
     const [course, setCourse] = useState<Course | null>(null);
     const [error, setError] = useState<APIError | null>(null);

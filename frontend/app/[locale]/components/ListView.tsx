@@ -4,10 +4,14 @@ import {
     Box,
     Button,
     Checkbox,
+    Container,
     CssBaseline,
     Typography,
+    IconButton,
     TextField,
     tableCellClasses,
+    TableSortLabel,
+    TablePagination,
     Table,
     TableBody,
     TableCell,
@@ -21,12 +25,15 @@ import {
 } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import CropSquareIcon from '@mui/icons-material/CropSquare';
 import {styled} from '@mui/system';
 import {NextPage} from 'next';
+import checkMarkImage from './check-mark.png';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from "@mui/icons-material/Cancel";
 import {
-    getArchivedCourses,
+    deleteData, getArchivedCourses,
+    getCourses,
     getGroups_by_project,
     getGroupSubmissions,
     getProject,
@@ -35,6 +42,7 @@ import {
     getStudents_by_course,
     getTeachers_by_course,
     getUser,
+    getUserData,
     getUsers,
     postData,
     getOpenCourses,
@@ -42,6 +50,7 @@ import {
 } from '@lib/api';
 import baseTheme from "../../../styles/theme";
 import {useTranslation} from "react-i18next";
+import StudentCoTeacherButtons from './StudentCoTeacherButtons';
 
 const backend_url = process.env['NEXT_PUBLIC_BACKEND_URL'];
 
@@ -234,9 +243,6 @@ const ListView: NextPage<ListViewProps> = ({
                     },
                     'submissions_group': async () => {
                         return parse_pages(await getGroupSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
-                    },
-                    'submissions_latest': async () => {
-                        return parse_pages(await getLatestSubmissions(get_id, currentPage, page_size, searchTerm, sortConfig.key.toLowerCase(), sortConfig.direction === 'asc' ? 'asc' : 'desc'));
                     },
                     'archived_courses': async () => {
                         return parse_pages(await getArchivedCourses(currentPage, page_size, searchTerm));
@@ -610,7 +616,7 @@ const ListView: NextPage<ListViewProps> = ({
                                             </Button>
                                         </StyledTableCell>
                                     )}
-                                    {(get == 'submissions' || get == 'submissions_group' || get == 'submissions_latest') && (
+                                    {(get == 'submissions' || get == 'submissions_group') && (
                                         <StyledTableCell>
                                             <Button onClick={() => window.location.href = '/submission/' + row[0]}>
                                                 {t('View')}
