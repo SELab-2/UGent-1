@@ -38,7 +38,7 @@ import {
     getUsers,
     postData,
     getOpenCourses,
-    fetchUserData, getLatestSubmissions
+    fetchUserData, getLatestSubmissions, getGroup
 } from '@lib/api';
 import baseTheme from "../../../styles/theme";
 import {useTranslation} from "react-i18next";
@@ -180,9 +180,33 @@ const ListView: NextPage<ListViewProps> = ({
                         setGroupSize((await getProject(data.project_id)).group_size);
                         return [data.group_id, data.user, data.group_nr, l.join(', ')];
                     },
-                    'submissions': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data?.output_simple_test && data?.eval_result],
-                    'submissions_group': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data?.output_simple_test && data?.eval_result],
-                    'submissions_latest': (data) => [data.submission_id, data.group_id, convertDate(t, data.timestamp), data?.output_simple_test && data?.eval_result],
+                    'submissions': async (data) => {
+                        let group = data.group_id;
+                        let group_nr;
+                        await getGroup(group).then((group) => {
+                            group_nr = group.group_nr;
+                        }
+                        );
+                        return [data.submission_id, group_nr, convertDate(t, data.timestamp), data?.output_simple_test && data?.eval_result]
+                    } ,
+                    'submissions_group': async (data) => {
+                        let group = data.group_id;
+                        let group_nr;
+                        await getGroup(group).then((group) => {
+                            group_nr = group.group_nr;
+                        }
+                        );
+                        return [data.submission_id, group_nr, convertDate(t, data.timestamp), data?.output_simple_test && data?.eval_result]
+                    },
+                    'submissions_latest': async (data) => {
+                        let group = data.group_id;
+                        let group_nr;
+                        await getGroup(group).then((group) => {
+                            group_nr = group.group_nr;
+                        }
+                        );
+                       return [data.submission_id, group_nr, convertDate(t, data.timestamp), data?.output_simple_test && data?.eval_result]
+                        },
                     'archived_courses': (data) => [data.course_id, data.name, data.description, data.open_course],
                 };
 
