@@ -34,7 +34,6 @@ class ZipUtilities:
         zip_file = zipfile.ZipFile(zip_path, 'w')
 
         for folder_path in folderpaths:
-            print(folder_path)
             if os.path.isfile(folder_path):
                 zip_file.write(folder_path, arcname=folder_path)
             else:
