@@ -10,6 +10,7 @@ import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {visuallyHidden} from '@mui/utils';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import dayjs from "dayjs";
+import defaultBanner from "../../../public/ugent_banner.png";
 
 interface EditCourseFormProps {
     courseId: number
@@ -167,7 +168,7 @@ const EditCourseForm = ({courseId}: EditCourseFormProps) => {
                     <Box
                         component={'img'}
                         alt={t('select image')}
-                        src={selectedImageURL}
+                        src={selectedImageURL ? selectedImageURL : defaultBanner.src}
                         sx={{
                             borderRadius: '16px',
                             height: 'fit-content',

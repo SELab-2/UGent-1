@@ -14,6 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import {visuallyHidden} from "@mui/utils";
 import dayjs from "dayjs";
+import defaultBanner from "../../../public/ugent_banner.png";
 
 const CreateCourseForm = () => {
     const { t } = useTranslation();
@@ -49,6 +50,7 @@ const CreateCourseForm = () => {
         formData.append('description', description);
         formData.append('open_course', open.toString());
         formData.append('year', year.toString());
+
         const fileReader = new FileReader();
         fileReader.onload = async function () {
             const arrayBuffer = this.result;
@@ -57,8 +59,12 @@ const CreateCourseForm = () => {
                 await postData("/courses/", formData).then((response) => {
                     window.location.href = `/course/${response.course_id}`;
                 });
+                return;
             }
         }
+        await postData("/courses/", formData).then((response) => {
+            window.location.href = `/course/${response.course_id}`;
+        });
         if (selectedImage) fileReader.readAsArrayBuffer(selectedImage);
     };
 
@@ -68,7 +74,7 @@ const CreateCourseForm = () => {
                 .then(response => response.blob())
                 .then(blob => {
                     const file = new File([blob], "filename", {type: "image/png"});
-                    setSelectedImage(file);
+
                     setSelectedImageURL(banner.src)
                 })
         }
@@ -142,7 +148,7 @@ const CreateCourseForm = () => {
                     <Box
                         component={'img'}
                         alt={t('select image')}
-                        src={selectedImageURL}
+                        src={selectedImageURL ? selectedImageURL : defaultBanner.src}
                         sx={{
                             borderRadius: '16px',
                             height: 'fit-content',
