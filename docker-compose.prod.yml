@@ -4,6 +4,7 @@ services:
   database:
     container_name: pigeonhole-database
     image: postgres:13.0-alpine
+    restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -66,6 +67,7 @@ services:
       context: ./frontend
       target: runner
     command: npm run start
+    restart: always
     ports:
       - 3000:3000
     depends_on:
@@ -102,6 +104,7 @@ services:
   traefik:
     image: "traefik:v2.11"
     container_name: "traefik"
+    restart: always
     command:
       - "--log.level=DEBUG"
       - "--api.insecure=false"
