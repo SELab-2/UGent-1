@@ -36,7 +36,7 @@
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
     "react-i18next": "^14.1.0",
-    "react-router-dom": "^5.3.4",
+    "react-router-dom": "^6.26.2",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7"
   },
